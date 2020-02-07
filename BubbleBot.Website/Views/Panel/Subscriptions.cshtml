@@ -1,0 +1,64 @@
+﻿@model BubbleBot.Website.Models.User
+
+@{
+    ViewData["Title"] = "Abonnements";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="alert alert-info" role="alert">
+    @if (Model.IsSubscribedToTouch)
+    {
+        @: Vous êtes abonné jusqu'au @Model.TouchEndDate.Value.ToString("G").
+    }
+    else
+    {
+        @: Vous n'êtes pas abonné.
+    }
+</div>
+
+<div class="row">
+    @foreach (BubbleBot.Website.Models.SubscriptionPlan sp in ViewBag.SubscriptionsPlans)
+    {
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <div>
+                        <h4>@sp.Name</h4>
+                    </div>
+                    <h6 class="card-subtitle mt-1 text-muted">@(sp.Price == 0 ? "Gratuit" : $"{sp.Price} Points / 2 Semaines")</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @Html.Raw(sp.Description)
+                </ul>
+                <div class="card-footer">
+                    <form asp-controller="Buy" asp-action="BuySubscription" method="post">
+                        <div>
+                            <div>
+                                <input type="hidden" name="id" value="@sp.Id" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-warning" @if (sp.Price > Model.Points) { @Html.Raw("disabled")   }>
+                            @if (sp.Id == 1)
+                            {
+                                <i class="fa fa-download"></i>@: Télécharger
+                            }
+                            else
+                            {
+                                <i class="fa fa-shopping-cart"></i>@:  Acheter
+                            }
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

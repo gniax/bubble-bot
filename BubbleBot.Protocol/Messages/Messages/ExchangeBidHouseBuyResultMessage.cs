@@ -1,0 +1,24 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class ExchangeBidHouseBuyResultMessage : Message
+	{
+
+		// Properties
+		public uint Uid { get; set; }
+		public bool Bought { get; set; }
+
+
+		// Constructors
+		public ExchangeBidHouseBuyResultMessage() { }
+
+		public ExchangeBidHouseBuyResultMessage(uint uid = 0, bool bought = false)
+		{
+			Uid = uid;
+			Bought = bought;
+		}
+
+	}
+}

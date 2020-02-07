@@ -1,0 +1,22 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class DungeonLeftMessage : Message
+	{
+
+		// Properties
+		public uint DungeonId { get; set; }
+
+
+		// Constructors
+		public DungeonLeftMessage() { }
+
+		public DungeonLeftMessage(uint dungeonId = 0)
+		{
+			DungeonId = dungeonId;
+		}
+
+	}
+}

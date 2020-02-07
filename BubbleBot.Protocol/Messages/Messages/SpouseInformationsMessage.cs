@@ -1,0 +1,22 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class SpouseInformationsMessage : Message
+	{
+
+		// Properties
+		public FriendSpouseInformations Spouse { get; set; }
+
+
+		// Constructors
+		public SpouseInformationsMessage() { }
+
+		public SpouseInformationsMessage(FriendSpouseInformations spouse = null)
+		{
+			Spouse = spouse;
+		}
+
+	}
+}

@@ -1,0 +1,74 @@
+﻿@model BubbleBot.Website.Models.User
+
+@{ string currentAction = ViewContext.RouteData.Values["action"].ToString(); }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Bot - @ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/panel.css" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-info">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+            <img src="~/images/Logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+            Bubble Bot
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebar-collapse" aria-controls="sidebar-collapse" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <div id="sidebar-collapse" class="col-12 col-md-3 col-lg-3 col-xl-2 sidebar">
+        <img src="@Model.AvatarUrl" alt="Avatar" />
+        <h4 class="text-center">@Model.Username</h4>
+        <h5 class="text-center text-muted">@(Model.IsSubscribedToTouch ? "Abonné" : "Non abonné")</h5>
+        <hr />
+        <ul class="nav nav-pills flex-column">
+            <li class="@(currentAction == "Index" ? "active" : "")">
+                <a class="nav-link" asp-action="Index" asp-controller="Panel"><span class="fa fa-home"></span> Accueil</a>
+            </li>
+            <li class="@(currentAction == "Points" ? "active" : "")">
+                <a class="nav-link" asp-action="Points" asp-controller="Panel">
+                    <span class="fa fa-star"></span> Points<span class="badge badge-pill badge-warning float-right mt-2">@Model.Points</span>
+                </a>
+            </li>
+            <li class="@(currentAction == "Subscriptions" || currentAction == "BuySubscription" ? "active" : "")">
+                <a class="nav-link" asp-action="Subscriptions" asp-controller="Panel"><span class="fa fa-shopping-cart"></span> Abonnements</a>
+            </li>
+            <li class="@(currentAction == "Extensions" ? "active" : "")">
+                <a class="nav-link" asp-action="Extensions" asp-controller="Panel"><span class="fa fa-puzzle-piece"></span> Extensions</a>
+            </li>
+            <li class="@(currentAction == "Downloads" ? "active" : "")">
+                <a class="nav-link" asp-action="Downloads" asp-controller="Panel"><span class="fa fa-download"></span> Téléchargements</a>
+            </li>
+            <li class="@(currentAction == "Bots" ? "active" : "")">
+                <a class="nav-link" asp-action="Bots" asp-controller="Panel"><span class="fa fa-users"></span> Mes bots</a>
+            </li>
+            <li>
+                <a class="nav-link" asp-action="LogOut" asp-controller="Panel"><span class="fa fa-sign-out"></span> Se déconnecter</a>
+            </li>
+        </ul>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-3 col-xl-2">
+            </div>
+            <div class="col-12 col-md-9 col-lg-9 col-xl-10 main">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/popper.js/dist/umd/popper.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

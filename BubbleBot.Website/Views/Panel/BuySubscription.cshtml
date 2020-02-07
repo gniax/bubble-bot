@@ -1,0 +1,50 @@
+﻿@model BubbleBot.Website.Models.User
+@{
+    var subscriptionToBuy = ViewBag.SubscriptionToBuy;
+    bool canBuyOneMonth = Model.Points >= subscriptionToBuy.Price * 2;
+}
+@{
+    ViewData["Title"] = "Acheter un abonnement";
+}
+
+<h3 class="mb-3">Acheter un abonnement @subscriptionToBuy.Name</h3>
+
+<!-- If the user doesn't have enough points -->
+@if (Model.Points < subscriptionToBuy.Price)
+{
+    <div class="alert alert-danger" role="alert">
+        Vous n'avez pas assez de points pour acheter cet abonnement
+    </div>
+}
+else
+{
+    <form method="post" asp-action="BuySubscriptionConfirm" asp-controller="Buy">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Choisissez un offre</h4>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div>
+                        <input type="hidden" name="id" value="@subscriptionToBuy.Id" />
+                    </div>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="offer" value="2" checked>
+                        2 Semaines (@subscriptionToBuy.Price Points)
+                    </label>
+                </div>
+                <div class="form-check @(canBuyOneMonth ? "" : "disabled")">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="offer" value="4" @if (!canBuyOneMonth) { @Html.Raw("disabled")   }>
+                        1 Mois (@(subscriptionToBuy.Price * 2) Points)
+                    </label>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-warning btn-lg float-right">Confirmer</button>
+            </div>
+        </div>
+    </form>
+}

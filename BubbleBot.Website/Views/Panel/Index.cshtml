@@ -1,0 +1,49 @@
+﻿@model BubbleBot.Website.Models.User;
+
+@{
+    ViewData["Title"] = "Accueil";
+}
+
+<h2 class="mb-4 mt-1">Bienvenue sur ton panel, @Model.Username</h2>
+
+<div class="row">
+    <div class="col">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Utilisateurs</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Utilisateurs au total</td>
+                <td>@ViewBag.TotalUsers</td>
+            </tr>
+            <tr>
+                <td>Utilisateurs abonnés à Bubble Bot</td>
+                <td>@ViewBag.SubscribedToTouch</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Extensions</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            @foreach (BubbleBot.Website.Models.Extension e in ViewBag.Extensions)
+            {
+                <tr>
+                    <td>Extensions @e.Name achetés</td>
+                    <td>@e.ExtensionsBought.Count</td>
+                </tr>
+                <tr>
+                    <td>Extensions @e.Name actives</td>
+                    <td>@e.ExtensionsBought.Where(eb => eb.EndDate > DateTime.Now).Count()</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

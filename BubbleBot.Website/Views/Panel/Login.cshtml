@@ -1,0 +1,62 @@
+﻿@model BubbleBot.Website.ViewModels.LoginViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Bot - Connexion</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/panel.css" />
+</head>
+<body>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
+            @ViewBag.ErrorMessage
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-info">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+            <img src="~/images/Logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">Bubble Bot
+        </a>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-4 text-center mt-4 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <img class="center-image mb-2" src="~/images/Logo.png" alt="Logo" width="128" height="128" />
+                        <h3>Bubble Bot  Connexion</h3>
+                    </div>
+                    <div class="card-body">
+                        <form asp-controller="Panel" asp-action="Login" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <input asp-for="Username" class="form-control" placeholder="Identifiant" type="text" autofocus="" minlength="3" required>
+                                    <span asp-validation-for="Username"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="Password" class="form-control" placeholder="Mot de passe" type="password" value="" minlength="5" required>
+                                    <span asp-validation-for="Password"></span>
+                                </div>
+                                <a>Mot de passe oublié ?</a>
+                                <div class="alert alert-info" role="alert">Vous n'êtes pas inscrit ?<br\></br\> Il suffit de cliquer <a asp-action="Register" asp-controller="Home">ici</a>.</div>
+                                <button type="submit" class="btn btn-lg btn-info float-right" id="btnLogin">Se connecter</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/popper.js/dist/umd/popper.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </body>
+</html>

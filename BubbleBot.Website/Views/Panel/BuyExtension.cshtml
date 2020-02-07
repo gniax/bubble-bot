@@ -1,0 +1,46 @@
+﻿@model BubbleBot.Website.Models.User
+@{
+    var extensionToBuy = (BubbleBot.Website.Models.Extension)ViewBag.ExtensionToBuy;
+}
+@{
+    ViewData["Title"] = "Acheter un abonnement";
+}
+
+<!-- If the user doesn't have enough points -->
+@if (Model.Points < extensionToBuy.Price)
+{
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Acheter l'extension @extensionToBuy.Name (@extensionToBuy.Price  Point / Semaine)</h4>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert">
+                Vous n'avez pas assez de points pour acheter cet extension
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <form method="post" asp-action="BuyExtensionConfirm" asp-controller="Buy">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Acheter l'extension @extensionToBuy.Name (@extensionToBuy.Price  Point / Semaine)</h4>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div>
+                        <input type="hidden" name="id" value="@extensionToBuy.Id" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de semaines à acheter</label>
+                    <input name="weeks" type="number" min="1" max="@(Model.Points / extensionToBuy.Price)" value="1" class="form-control" />
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-warning btn-lg float-right">Confirmer</button>
+            </div>
+        </div>
+    </form>
+}

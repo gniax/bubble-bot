@@ -1,0 +1,22 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class GameFightTurnReadyRequestMessage : Message
+	{
+
+		// Properties
+		public int Id { get; set; }
+
+
+		// Constructors
+		public GameFightTurnReadyRequestMessage() { }
+
+		public GameFightTurnReadyRequestMessage(int id = 0)
+		{
+			Id = id;
+		}
+
+	}
+}

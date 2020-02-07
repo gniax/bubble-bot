@@ -1,0 +1,54 @@
+﻿@model BubbleBot.Website.Models.User
+
+@{
+    ViewData["Title"] = "Points";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="alert alert-info" role="alert">
+    Vous disposez actuellement de <b>@Model.Points</b> points, vous pouvez facilement créditer votre compte à tout moment.<br />
+    Vous aurez besoin des points pour pouvoir acheter un abonnement ou une extension.
+</div>
+<div class="alert alert-warning" role="alert">
+    Si vous voulez payer en <i class="fa fa-bitcoin"></i> Bitcoin, veuillez me contacter sur le Discord (Apokah#8011).
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach (BubbleBot.Website.Models.PointsPlan pp in ViewBag.PointsPlans)
+        {
+            <div class="col">
+                <form method="post" asp-controller="Payments" asp-action="BuyPoints">
+                    <div>
+                        <div>
+                            <input type="hidden" name="id" value="@pp.Id" />
+                        </div>
+                    </div>
+                    <div class="card text-center points-card">
+                        <div class="card-header">
+                            <h4>@pp.Name</h4>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@pp.Price€</h4>
+                            <h6 class="card-subtitle mb-2 text-muted">@pp.Points Points</h6>
+                            @{ int bonus = pp.Points - (int)pp.Price; }
+                            <span class="card-text">@(bonus == 0 ? "-" : $"{bonus} Point(s) bonus")</span>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-warning"><i class="fa fa-paypal"></i> Acheter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+                                }
+    </div>
+</div>

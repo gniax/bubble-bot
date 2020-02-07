@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <ProjectGuid>{1987AB55-8012-46F5-B3D0-8E17EB0F2205}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BubbleBot.Protocol\BubbleBot.Protocol.csproj">
+      <Project>{7d1c5b65-0d64-46db-8f9b-e1b57daf3f10}</Project>
+      <Name>BubbleBot.Protocol</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

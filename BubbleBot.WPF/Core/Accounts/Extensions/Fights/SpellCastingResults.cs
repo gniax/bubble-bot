@@ -1,0 +1,9 @@
+namespace BubbleBot.Core.Accounts.Extensions.Fights
+{
+    public enum SpellCastingResults
+    {
+        CASTED,
+        MOVED,
+        NOT_CASTED
+    }
+}

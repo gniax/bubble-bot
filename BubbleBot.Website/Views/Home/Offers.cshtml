@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Offres";
+}
+
+<div class="container">
+    <h1 class="text-center mb-5 mt-2">Offres</h1>
+
+    <div class="row">
+        @foreach (BubbleBot.Website.Models.SubscriptionPlan sp in ViewBag.SubscriptionsPlans)
+        {
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h4>@sp.Name</h4>
+                        </div>
+                        <h6 class="card-subtitle mt-1 text-muted">@(sp.Price == 0 ? "Gratuit" : $"{sp.Price} Points / 2 Semaines")</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @Html.Raw(sp.Description)
+                    </ul>
+                    <div class="card-footer">
+                        <div>
+                            <div>
+                                <input type="hidden" name="id" value="@sp.Id" />
+                            </div>
+                        </div>
+                        <a asp-action="Index" asp-controller="Panel" class="btn btn-lg btn-warning">
+                            @if (sp.Id == 1)
+                            {
+                                <i class="fa fa-download"></i>@: Télécharger
+                            }
+                            else
+                            {
+                                <i class="fa fa-shopping-cart"></i>@:  Acheter
+                            }
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

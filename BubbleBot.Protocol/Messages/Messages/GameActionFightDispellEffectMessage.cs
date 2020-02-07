@@ -1,0 +1,25 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class GameActionFightDispellEffectMessage : GameActionFightDispellMessage
+	{
+
+		// Properties
+		public uint BoostUID { get; set; }
+
+
+		// Constructors
+		public GameActionFightDispellEffectMessage() { }
+
+		public GameActionFightDispellEffectMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, uint boostUID = 0)
+		{
+			ActionId = actionId;
+			SourceId = sourceId;
+			TargetId = targetId;
+			BoostUID = boostUID;
+		}
+
+	}
+}

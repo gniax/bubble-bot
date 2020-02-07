@@ -1,0 +1,70 @@
+﻿@model BubbleBot.Website.Models.User
+
+@{
+    ViewData["Title"] = "Extensions";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
+        @ViewBag.Error
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="alert alert-warning" role="alert">
+    Les extensions sont utilisables et affichées que si vous êtes abonnés.
+</div>
+
+<h5 class="mb-3">Vos extensions</h5>
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Date de fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kvp in Model.GetCurrentExtensions())
+        {
+            <tr>
+                <td>@kvp.Key </td>
+                <td>@kvp.Value.ToString("G")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h5 class="mt-4 mb-3">Liste d'extensions</h5>
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Description</th>
+            <th scope="col" style="width: 120px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (BubbleBot.Website.Models.Extension extension in ViewBag.Extensions)
+        {
+            <tr>
+                <td>@extension.Name</td>
+                <td>@extension.Price Point / Semaine</td>
+                <td>@extension.Description</td>
+                <td>
+                    <form method="post" asp-action="BuyExtension" asp-controller="Buy">
+                        <div>
+                            <div>
+                                <input type="hidden" name="id" value="@extension.Id" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning" @if (extension.Price > Model.Points) { @Html.Raw("disabled")   }><i class="fa fa-shopping-cart"></i> Acheter</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

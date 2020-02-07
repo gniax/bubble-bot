@@ -1,0 +1,44 @@
+﻿body {
+    padding-top: 60px;
+}
+
+/* Set widths on the form inputs since otherwise they're 100% wide */
+inputx,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar {
+    padding: 0.2rem 0.4rem !important;
+}
+
+.center-image {
+    display: block;
+    margin: auto;
+}
+
+footer {
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    padding: 0px 10px;
+    margin-top: 20px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+.title-with-image img {
+    width: 32px;
+    height: 32px;
+    Display: inline-block;
+    vertical-align: middle;
+}
+
+.title-with-image h4 {
+    display: inline-block;
+    margin-bottom: 0px;
+    vertical-align: middle;
+}

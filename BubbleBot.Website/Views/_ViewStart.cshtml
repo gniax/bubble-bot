@@ -1,0 +1,13 @@
+﻿@{
+    string currentController = ViewContext.RouteData.Values["controller"].ToString();
+    string currentAction = ViewContext.RouteData.Values["action"].ToString();
+
+    if (currentController == "Home")
+    {
+        Layout = "_HomeLayout";
+    }
+    else if (currentAction != "Login")
+    {
+        Layout = "_PanelLayout";
+    }
+}

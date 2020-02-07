@@ -1,0 +1,24 @@
+using System.Collections.Generic;
+using BubbleBot.Protocol.Types;
+
+namespace BubbleBot.Protocol.Messages
+{
+	public class DungeonKeyRingMessage : Message
+	{
+
+		// Properties
+		public List<uint> Availables { get; set; }
+		public List<uint> Unavailables { get; set; }
+
+
+		// Constructors
+		public DungeonKeyRingMessage() { }
+
+		public DungeonKeyRingMessage(List<uint> availables = null, List<uint> unavailables = null)
+		{
+			Availables = availables;
+			Unavailables = unavailables;
+		}
+
+	}
+}

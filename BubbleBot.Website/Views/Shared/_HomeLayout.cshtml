@@ -1,0 +1,68 @@
+﻿@{ string currentAction = ViewContext.RouteData.Values["action"].ToString(); }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Bot - @ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/home.css" />
+    <link rel="stylesheet" href="~/lib/ekko-lightbox/dist/ekko-lightbox.min.css" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-info">
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+            <img src="~/images/Logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+            Bubble Bot
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item @(currentAction == "Index" ? "active" : "")">
+                    <a class="nav-link" asp-action="Index" asp-controller="Home">Accueil</a>
+                </li>
+                <li class="nav-item @(currentAction == "Functionalities" ? "active" : "")">
+                    <a class="nav-link" asp-action="Functionalities" asp-controller="Home">Fonctionnalités</a>
+                </li>
+                <li class="nav-item @(currentAction == "Galery" ? "active" : "")">
+                    <a class="nav-link" asp-action="Galery" asp-controller="Home">Galerie</a>
+                </li>
+                <li class="nav-item @(currentAction == "Offers" ? "active" : "")">
+                    <a class="nav-link" asp-action="Offers" asp-controller="Home">Offres</a>
+                </li>
+                @if(!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item @(currentAction == "Register" ? "active" : "")">
+                        <a class="nav-link" asp-action="Register" asp-controller="Home">Inscription</a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="Index" asp-controller="Panel">Panel</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    @RenderBody()
+    <footer class="text-light bg-info">
+        <span>&copy; 2020 - Bubble Bot - Mamar & Gniax</span>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/popper.js/dist/umd/popper.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/ekko-lightbox/dist/ekko-lightbox.js"></script>
+    <script>
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
