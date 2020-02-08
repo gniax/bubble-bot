@@ -211,9 +211,9 @@ namespace BubbleBot.Configurations
             _semaphore.Release();
         }
 
-        public void AddAccountAndSave(string username, string password, string server, string character, string nickname)
+        public void AddAccountAndSave(string username, string password, string server, string character, string nickname,string identifiant)
         {
-            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname));
+            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant));
             RaisePropertyChanged("AccountsList");
 
             Save();

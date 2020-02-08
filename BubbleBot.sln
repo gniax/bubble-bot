@@ -24,6 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		DEV.txt = DEV.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Langs", "Langs", "{59B8A78B-1879-496B-9D19-672ECD66918E}"
+	ProjectSection(SolutionItems) = preProject
+		BubbleBot.WPF\bin\Debug\Langs\en.lang = BubbleBot.WPF\bin\Debug\Langs\en.lang
+		BubbleBot.WPF\bin\Debug\Langs\fr.lang = BubbleBot.WPF\bin\Debug\Langs\fr.lang
+		BubbleBot.WPF\bin\Debug\Langs\pt.lang = BubbleBot.WPF\bin\Debug\Langs\pt.lang
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU

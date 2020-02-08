@@ -16,8 +16,8 @@
     WindowStartupLocation="CenterOwner"
     ResizeMode="CanMinimize"
     Title="{_:Lang 237}" 
-    Height="542" 
-    Width="760" >
+    Height="544.049" 
+    Width="855.285" >
 
     <Window.Resources>
 
@@ -27,8 +27,8 @@
     </Window.Resources>
 
     <TabControl Controls:TabControlHelper.Underlined="TabPanel"
-                TabStripPlacement="Left">
-        
+                TabStripPlacement="Left" Margin="0,0,0,6">
+
         <!-- Connect accounts -->
         <TabItem Controls:ControlsHelper.HeaderFontSize="16" Width="213">
             <TabItem.HeaderTemplate>
@@ -68,7 +68,7 @@
                           x:Name="LvAccounts"
                           MouseDoubleClick="LvAccounts_MouseDoubleClick"
                           SelectionChanged="LvAccounts_SelectionChanged"
-                          ItemsSource="{Binding AccountsList}">
+                          ItemsSource="{Binding AccountsList}" Width="621">
                     <ListView.ContextMenu>
                         <ContextMenu Width="220">
                             <MenuItem Header="{_:Lang 238}" 
@@ -82,7 +82,7 @@
                             <MenuItem Header="Editer">
                                 <MenuItem.Items>
                                     <MenuItem Header="Changer Pseudo"  Click="BtnChangeAccountPseudo" />
-                                    <MenuItem Header="Modifier Compte" />
+                                    <MenuItem Header="Modifier Compte" Click="BtnEditerCompte"/>
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Connecter au serveur">
@@ -122,7 +122,12 @@
                             </GridViewColumn>
                             <GridViewColumn Width="110" DisplayMemberBinding="{Binding Nickname}">
                                 <Border BorderThickness="0 0 0 1" BorderBrush="White" >
-                                    <TextBlock FontSize="11" Width="110" Text="{_:Lang 243}"/>
+                                    <TextBlock FontSize="11" Width="122" Text="{_:Lang 243}"/>
+                                </Border>
+                            </GridViewColumn>
+                            <GridViewColumn Width="110" DisplayMemberBinding="{Binding Identifiant}">
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White" Width="107" >
+                                    <TextBlock FontSize="11" Text="{_:Lang 644}" Margin="10,0,-10,0"/>
                                 </Border>
                             </GridViewColumn>
                         </GridView>
@@ -130,7 +135,7 @@
                 </ListView>
             </DockPanel>
         </TabItem>
-        
+
         <!-- Add account -->
         <TabItem Controls:ControlsHelper.HeaderFontSize="16" Width="213">
             <TabItem.HeaderTemplate>
@@ -141,10 +146,10 @@
                     </StackPanel>
                 </DataTemplate>
             </TabItem.HeaderTemplate>
-            
+
             <StackPanel>
                 <!-- Add an account -->
-                <GroupBox Header="Ajouter un compte">
+                <GroupBox Header="Ajouter un compte" Height="285">
                     <StackPanel Orientation="Vertical">
                         <TextBox Margin="0 0 0 10"
                              Controls:TextBoxHelper.ClearTextButton="True"
@@ -172,13 +177,17 @@
                              Controls:TextBoxHelper.ClearTextButton="True"
                              Controls:TextBoxHelper.Watermark="{_:Lang 247}"
                              Name="TxtCharacter"/>
-                        <TextBox Margin="0 0 0 8"
+                        <TextBox Margin="0 0 0 10"
                              Controls:TextBoxHelper.ClearTextButton="True"
                              Controls:TextBoxHelper.Watermark="{_:Lang 248}"
                              Name="TxtNickname"/>
+                        <TextBox Margin="0 0 0 8"
+                            Controls:TextBoxHelper.ClearTextButton="True"
+                            Controls:TextBoxHelper.Watermark="{_:Lang 645}"
+                            x:Name="TxtIdentifiant"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Name="BtnAddAccount" 
-                                Width="96" Height="32"
+                            <Button x:Name="BtnAddAccount" 
+                                Width="81" Height="33"
                                 Background="{StaticResource AccentColorBrush}"
                                 Click="BtnAddAccount_Click">
                                 <StackPanel Orientation="Horizontal">
@@ -189,10 +198,8 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                
-                <!-- Import acounts -->
-                <GroupBox Header="Importer des comptes" Height="236">
-                    <TabControl Controls:TabControlHelper.Underlined="TabPanel">
+                <GroupBox Header="Importer des comptes" Height="250">
+                    <TabControl Controls:TabControlHelper.Underlined="TabPanel" Margin="0,0,0,23">
                         <!-- From a file -->
                         <TabItem>
                             <TabItem.HeaderTemplate>
@@ -210,21 +217,21 @@
                             <StackPanel Margin="4 0" VerticalAlignment="Center">
                                 <DockPanel Margin="4">
                                     <TextBlock Text="{_:Lang 546}" VerticalAlignment="Center" />
-                                    <TextBox Name="TxtSeparator" 
+                                    <TextBox x:Name="TxtSeparator" 
                                              Margin="4 0"
                                              TextChanged="TxtSeparator_OnTextChanged" />
                                 </DockPanel>
-                                <TextBlock Name="TxtSeparatorPreview" 
+                                <TextBlock x:Name="TxtSeparatorPreview" 
                                            HorizontalAlignment="Right"
                                            Margin="8 0" />
                                 <StackPanel Margin="4">
                                     <TextBlock Text="{_:Lang 547}" Margin="0 0 0 4" />
                                     <DockPanel>
-                                        <TextBox Name="TxtFilePath" Width="430" />
+                                        <TextBox x:Name="TxtFilePath" Width="430" />
                                         <Button Content="..." Margin="4 0 0 0" Click="BtnSelectFilePath_OnClick" />
                                     </DockPanel>
                                 </StackPanel>
-                                <Button Name="BtnImportAccounts" 
+                                <Button x:Name="BtnImportAccounts" 
                                         Width="90" Height="32"
                                         HorizontalAlignment="Right"
                                         Margin="4 8 4 0"
@@ -254,30 +261,30 @@
                                 <TextBox Margin="4"
                                          Controls:TextBoxHelper.ClearTextButton="True"
                                          Controls:TextBoxHelper.Watermark="{_:Lang 244}" 
-                                         Name="TxtUsernameIncr"
+                                         x:Name="TxtUsernameIncr"
                                          TextChanged="TxtUsernameIncr_OnTextChanged" />
                                 <PasswordBox Margin="4"
                                              Controls:TextBoxHelper.ClearTextButton="True"
                                              Controls:TextBoxHelper.Watermark="{_:Lang 245}"
                                              Style="{StaticResource Win8MetroPasswordBox}"
-                                             Name="TxtPasswordIncr" />
+                                             x:Name="TxtPasswordIncr" />
                                 <DockPanel Margin="4">
                                     <TextBlock Text="{_:Lang 549}" VerticalAlignment="Center" />
-                                    <Controls:NumericUpDown Name="NudStartIncr"
+                                    <Controls:NumericUpDown x:Name="NudStartIncr"
                                             Minimum="0" 
                                             Value="0" 
                                             Margin="4 0"
                                             ValueChanged="NudIncr_OnValueChanged"
                                             Width="144" />
                                     <TextBlock Text="{_:Lang 550}" VerticalAlignment="Center" />
-                                    <Controls:NumericUpDown Name="NudEndIncr"
+                                    <Controls:NumericUpDown x:Name="NudEndIncr"
                                                             Minimum="1" 
                                                             Value="10" 
                                                             Margin="4 0 0 0"
                                                             ValueChanged="NudIncr_OnValueChanged" />
                                 </DockPanel>
-                                <TextBlock Name="TxtIncrPreview" Margin="4 2 4 6" HorizontalAlignment="Right" />
-                                <Button Name="BtnImportAccountsIncr" 
+                                <TextBlock x:Name="TxtIncrPreview" Margin="4 2 4 6" HorizontalAlignment="Right" />
+                                <Button x:Name="BtnImportAccountsIncr" 
                                         Width="90" Height="32"
                                         HorizontalAlignment="Right"
                                         Margin="4 0 4 0"
@@ -292,9 +299,11 @@
                         </TabItem>
                     </TabControl>
                 </GroupBox>
+
+                <!-- Import acounts -->
             </StackPanel>
         </TabItem>
-        
+
         <!-- Characters creator -->
         <TabItem Controls:ControlsHelper.HeaderFontSize="16" Width="213">
             <TabItem.HeaderTemplate>
@@ -444,7 +453,7 @@
                                     <iconPacks:PackIconMaterial Width="12" Height="12" Kind="Refresh" />
                                 </Button>
                             </StackPanel>
-                            
+
                             <!-- Configurations -->
                             <GroupBox Header="{_:Lang 510}"
                                       Height="108">
@@ -606,7 +615,7 @@
                          DisplayMemberPath="Username"
                          Height="500"
                          Width="140" />
-                
+
                 <!-- Proxy informations -->
                 <StackPanel Margin="4">
                     <DockPanel Margin="4">
@@ -659,7 +668,7 @@
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
-            
+
         </TabItem>
 
     </TabControl>

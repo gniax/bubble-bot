@@ -14,11 +14,13 @@ namespace BubbleBot.Configurations
 
 
         // Properties
-        public string Username { get; }
-        public string Password { get; }
-        public string Server { get; }
-        public string Character { get; }
-        public string Nickname { get; set; }
+        public string Username { get; set;}
+        public string Password { get; set;}
+        public string Server { get; set;}
+        public string Character { get; set;}
+        public string Nickname { get; set;}
+        public string Identifiant { get; set;}
+
         public ProxyConfiguration Proxy { get; private set; }
         public CharacterCreation CharacterCreation { get; set; }
         public bool PlanificationActivated
@@ -34,13 +36,14 @@ namespace BubbleBot.Configurations
 
 
         // Constructor
-        public AccountConfiguration(string username, string password, string server, string character, string nickname)
+        public AccountConfiguration(string username, string password, string server, string character, string nickname,string identifiant)
         {
             Username = username;
             Password = password;
             Server = server;
             Character = character;
             Nickname = nickname;
+            Identifiant = identifiant;
             Proxy = new ProxyConfiguration();
             CharacterCreation = new CharacterCreation();
             Planification = new ObservableCollection<bool>(Enumerable.Repeat(true, 24));
@@ -64,6 +67,7 @@ namespace BubbleBot.Configurations
             bw.Write(Server);
             bw.Write(Character);
             bw.Write(Nickname);
+            bw.Write(Identifiant);
 
             bw.Write(Proxy.Ip);
             bw.Write(Proxy.Port);
@@ -77,7 +81,7 @@ namespace BubbleBot.Configurations
         {
             try
             {
-                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "M€rcy$Bôt"), br.ReadString(), br.ReadString(), br.ReadString());
+                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "M€rcy$Bôt"), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString());
 
                 acc.Proxy = new ProxyConfiguration
                 {

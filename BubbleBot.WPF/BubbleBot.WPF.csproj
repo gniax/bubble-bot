@@ -499,6 +499,9 @@
     <Compile Include="ViewModel\MapViewer\MapViewerCellViewModel.cs" />
     <Compile Include="ViewModel\MapViewer\MapViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\AccountsEditor.xaml.cs">
+      <DependentUpon>AccountsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AccountsEditPseudo.xaml.cs">
       <DependentUpon>AccountsEditPseudo.xaml</DependentUpon>
     </Compile>
@@ -554,6 +557,10 @@
       <DependentUpon>QuickActionsWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Theme\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AccountsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

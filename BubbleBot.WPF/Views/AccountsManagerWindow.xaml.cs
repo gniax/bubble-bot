@@ -130,11 +130,12 @@ namespace BubbleBot.Views
                 return;
             }
 
-            GlobalConfiguration.Instance.AddAccountAndSave(TxtUsername.Text, TxtPassword.Password, CmbServer.Text, TxtCharacter.Text, TxtNickname.Text);
+            GlobalConfiguration.Instance.AddAccountAndSave(TxtUsername.Text, TxtPassword.Password, CmbServer.Text, TxtCharacter.Text, TxtNickname.Text, TxtIdentifiant.Text);
 
             TxtUsername.Clear();
             TxtPassword.Clear();
             TxtCharacter.Clear();
+            TxtNickname.Clear();
             TxtNickname.Clear();
         }
 
@@ -164,14 +165,14 @@ namespace BubbleBot.Views
                 int nbparameters = infos.Length;
 
                 if (nbparameters == 2)
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", ""));
+                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "",""));
 
                 if (nbparameters == 3)
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2]));
+                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2],""));
 
                 if (nbparameters == 5)
                 {
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2]));
+                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2],""));
                     try
                     {
                         ushort paramport = 0;
@@ -221,7 +222,7 @@ namespace BubbleBot.Views
             var accounts = new List<AccountConfiguration>();
             for (int i = start; i <= end; i++)
             {
-                accounts.Add(new AccountConfiguration($"{TxtUsernameIncr.Text}{i}", TxtPasswordIncr.Password, "-", "", ""));
+                accounts.Add(new AccountConfiguration($"{TxtUsernameIncr.Text}{i}", TxtPasswordIncr.Password, "-", "", "",""));
             }
 
             if (accounts.Count <= 0)
@@ -468,6 +469,12 @@ namespace BubbleBot.Views
 
                 GlobalConfiguration.Instance.Save();
             }
+        }
+        private void BtnEditerCompte(object sender, RoutedEventArgs e)
+        {
+            var comtpeInterface = new AccountsEditor();
+            comtpeInterface.ShowDialog();
+
         }
         #endregion
 
