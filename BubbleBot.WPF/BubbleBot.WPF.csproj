@@ -806,6 +806,9 @@
   <ItemGroup>
     <Resource Include="logo.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Langs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Langs\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -826,9 +829,9 @@
       <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
     </ItemGroup>
   </Target>
-  <Import Project="..\packages\Fody.6.0.5\build\Fody.targets" Condition=" '$(Configuration)' == 'Debug' " />
+  <Import Project="..\packages\Fody.6.0.5\build\Fody.targets" />
   <!-- Below is the clean-up - removing the input dll files-->
-  <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths" Condition=" '$(Configuration)' == 'Debug' ">
+  <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
     <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
   <Import Project="..\packages\CefSharp.OffScreen.75.1.143\build\CefSharp.OffScreen.targets" Condition="Exists('..\packages\CefSharp.OffScreen.75.1.143\build\CefSharp.OffScreen.targets')" />

@@ -49,7 +49,7 @@ namespace BubbleBot.Updates
                 return false;
 
             // Check for temp files that need to be deleted
-            foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "*.mbtemp", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "*.bbtemp", SearchOption.AllDirectories))
             {
                 File.Delete(file);
             }
@@ -111,7 +111,7 @@ namespace BubbleBot.Updates
                 // If the file we want to move to the current directory already exists, rename it to a tmp name
                 if (File.Exists(kvp.Key))
                 {
-                    File.Move(kvp.Key, $"temp{i}.mbtemp");
+                    File.Move(kvp.Key, $"temp{i}.bbtemp");
                     i++;
                 }
 
