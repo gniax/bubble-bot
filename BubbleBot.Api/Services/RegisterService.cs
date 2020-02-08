@@ -53,7 +53,7 @@ namespace BubbleBot.Website.Services
             string subject = "Instructions d'activation";
             string body = "Bonjour <b>" + username + "</b> !</br>Vous allez enfin pouvoir profiter de toutes nos fonctionnalitées :) !</br></br>" +
                           "Pour confirmer et activer votre compte, veuillez cliquer sur ce lien :" +
-                          "</br></br><a href=\"" + Program.Constants.VpsIpAddress + "/verifyEmail?validationToken=" + validationToken + "\"><b>Cliquez ici pour activer votre compte !</b></a>" +
+                          "</br></br><a href=\"" + Program.Constants.WebsiteIpAddress + "/verifyEmail?validationToken=" + validationToken + "\"><b>Cliquez ici pour activer votre compte !</b></a>" +
                           "</br></br>Que les kamas vous bénissent !</br></br>" +
                           "[LogoBubble] </br></br>https://www.bubblebot.fr/";
             string attachmentPath = "images/logo_x128.png";

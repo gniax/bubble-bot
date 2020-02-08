@@ -145,7 +145,7 @@ namespace BubbleBot.Website.Controllers
                 return View(lvm);
             }
 
-            var response = await _httpClient.GetAsync(Program.Constants.VpsApiIpAddress + $"/api/register?username={lvm.Username}&password={lvm.Password}&email={lvm.EmailAddress}&token=1997");
+            var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/register?username={lvm.Username}&password={lvm.Password}&email={lvm.EmailAddress}&token=1997");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

@@ -25,7 +25,7 @@ namespace BubbleBot.Website.Models
         public List<PaypalTransaction> PaypalTransactions { get; set; }
         public List<ExtensionBought> ExtensionsBought { get; set; }
 
-        public string AvatarUrl => string.IsNullOrEmpty(Avatar) ? Program.Constants.VpsIpAddress + $"/uploads/avatars/default.jpg" : Program.Constants.VpsIpAddress + $"/uploads/avatars/{Avatar}";
+        public string AvatarUrl => string.IsNullOrEmpty(Avatar) ? Program.Constants.WebsiteIpAddress + $"/uploads/avatars/default.jpg" : Program.Constants.WebsiteIpAddress + $"/uploads/avatars/{Avatar}";
         public bool IsSubscribedToTouch => TouchEndDate != null && DateTime.Now < TouchEndDate.Value;
 
 

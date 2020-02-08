@@ -99,7 +99,7 @@ namespace BubbleBot.Server
                 return;
 
             Task.Delay(2000);
-            _client.Connect("93.113.207.95", 3000); 
+            _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService); 
             FunctionalitiesManager.Initialize();
         }
 

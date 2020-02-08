@@ -19,6 +19,13 @@ using System.Net;
 
 namespace BubbleBot
 {
+    public static class Constants
+    {
+        public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address -- http://localhost:80 / http://93.113.207.95:80
+        public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address -- http://localhost:5001 / http://93.113.207.95:5001
+        public static string ServerHost = "93.113.207.95"; // Server host -- localhost / 93.113.207.95
+        public static int ServerService = 3000; // Server host -- localhost / 93.113.207.95
+    }
     public class BubbleBotMain : ViewModelBase
     {
 

@@ -20,8 +20,8 @@ namespace BubbleBot.Server
     {
         // Server Infos
         public const int Port = 3000;
-        public const string IP = "93.113.207.95"; // 127.0.0.1
-        public const string VpsApiIpAddress = "http://93.113.207.95:5001"; // Vps ip API
+        public const string IP = "93.113.207.95"; // 127.0.0.1 / Server IP
+        public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP -- http://93.113.207.95:5001 / http://localhost:5001
 
         // Dofus Touch
         public static string AppVersion { get; set; } = "0.0.0";

@@ -53,7 +53,7 @@ namespace BubbleBot.Website.Controllers
 
             try
             {
-                var response = await _httpClient.GetAsync(Program.Constants.VpsApiIpAddress + $"/api/login?username={lvm.Username}&password={lvm.Password}&token=1997");
+                var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/login?username={lvm.Username}&password={lvm.Password}&token=1997");
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();

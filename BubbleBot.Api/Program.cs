@@ -7,9 +7,8 @@ namespace BubbleBot.Api
     {
         public static class Constants
         {
-            public static string HostAddress = "http://localhost:80"; // Website addr
-            public static string VpsIpAddress = "http://93.113.207.95:80"; // Vps ip + port
-            public static string VpsApiIpAddress = "http://93.113.207.95:5001"; // Vps ip API
+            public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address -- http://localhost:80 / http://93.113.207.95:80
+            public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address -- http://localhost:5001 / http://93.113.207.95:5001
         }
         public static void Main(string[] args)
         {
@@ -19,7 +18,7 @@ namespace BubbleBot.Api
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls(Constants.VpsApiIpAddress)
+                .UseUrls(Constants.ApiIpAddress)
                 .Build();
     }
 }

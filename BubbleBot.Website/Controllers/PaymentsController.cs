@@ -104,7 +104,7 @@ namespace BubbleBot.Website.Controllers
 
                 var guid = Convert.ToString(new Random().Next(100000));
                 //var redirectUrl = $"https://BubbleBot.net/Payments/CompleteBuyingPoints?guid={guid}&result=";
-                var redirectUrl = Program.Constants.VpsIpAddress + $"/Payments/CompleteBuyingPoints?guid={guid}&result=";
+                var redirectUrl = Program.Constants.WebsiteIpAddress + $"/Payments/CompleteBuyingPoints?guid={guid}&result=";
 
                 var payment = Payment.Create(apiContext, new Payment
                 {

@@ -16,7 +16,7 @@ namespace BubbleBot.Server.Utility
         {
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri(Constants.VpsApiIpAddress + "/api/")//"http://BubbleBot.fr/api/")
+                BaseAddress = new Uri(Constants.ApiIpAddress + "/api/")//"http://BubbleBot.fr/api/")
             };
         }
 
