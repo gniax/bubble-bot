@@ -1,0 +1,567 @@
+1|Erro ao carregar a conta {0}.\nMensagem: {1}
+2|Mensagem: {0}
+3|Inicia script
+4|Parar script
+5|Canais
+6|Limpar Logs
+7|Copiar Logs
+8|Remover
+9|Começar
+10|Carregando conta...
+11|Conectando conta...
+12|Conectando
+13|Desconectado
+14|Parado (razão: {0}).
+15|Movendo
+16|Inventario
+17|Falando
+18|Comprando
+19|Venda
+20|Chapéu
+21|Mascote
+22|Escudo
+23|Sentado
+24|Companheiro
+25|Não equipado
+26|Célula vazia
+27|Auto
+28|Unequip
+29|Equipar
+30|Network Manager
+31|Desconectado.
+32|Invalido HTTP Code {0}.
+33|Conta incorreta ou senha.
+34|Bid Extension
+35|Nenhum objeto para vender.
+36|Obtendo os preços necessários da proposta.
+37|Preços necessários obtidos.
+38|Sessão de vendas iniciada.
+39|Alterando o preço de {0} {1} (preço novo: {2}).
+40|Attention, you do not have enough quantity left for {0} {1}.
+41|Vendido {0} {1} (preço: {2}).
+42|A sessão de vendas terminou.
+43|ScriptsManager
+44|A próxima sessão está em {0} minutos.
+45|O preço de {0} {1} é de 1 kamas em lance, não pode ser mais baixado.
+46|O preço de {0} {1} excedeu o preço mínimo (preço em oferta: {2}, preço mínimo: {3}).
+47|Turno {0} iniciado.
+48|Turno terminou.
+49|ProcessSpells
+50|Índice máximo
+51|Max relaunchs
+52|FightsManager
+53|Não é seu turno
+54|Feitiço falhou..
+55|O movimento falhou.
+56|(Fim do turno) Movendo-se para a célula {0}.
+57|Passando turno.
+58|Colocando o caractere na célula {0}.
+59|(Spell) Posicionando o caractere na célula {0}.
+60|The monster to approach wasn't found in this fight.
+61|(Monstro) Colocando personagem na célula {0}.
+62|Casting {0} (touching {1} ennemies) on cell {2}.
+63|Movendo para célula {0} para iniciar {1}.
+64|Casting {0} on cell {1}.
+65|especial
+66|smart
+67|Parameters\Fights
+68|{0}_{1}.fconfig
+69|Dofus
+70|Queue: {0}/{1}
+71|SecurityFrame
+72|Recaptcha # {0} recebeu, parando tudo para lidar com isso.
+73|Não foi encontrada a chave anti-captcha.
+74|Recaptcha resolvido em {0} segundo(s).
+75|Enviando resposta Recaptcha.
+76|Reencaminhamento do script.
+77|CharacterSelectionFrame
+78|O caractere {0} não foi encontrado.
+79|Selecionando o caractere {0} (Lv. {1}).
+80|Nenhum caractere para selecionar.
+81|Conectado ao servidor de login.
+82|Conexão falhou (razão: {0}).
+83|Identificado
+84|(A conta já estava conectada).
+85|IdentificationFrame
+86|Falha na identificação (razão: {0}).
+87|ServerSelectionFrame
+88|O servidor {0} não foi encontrado ou não possui caracteres.
+89|Não é possível conectar ao servidor {0} (status: {1}).
+90|Selecionando o servidor {0}.
+91|Conectado ao servidor de jogos.
+92|Achievement [{0}] accepted (+{1} points).
+93|Você ganhou {0} pontos de experiência.
+94|Level up!
+95|{0} saúde regenerada.
+96|Erro relacionado a um objeto (razão: {0}).
+97|A luta terminou em {0}.
+98|A luta começou.
+99|O personagem entrou em uma briga.
+100|MapFrame
+101|FightFrame
+102|Bid
+103|Não há suficientes kamas para comprar este item (gid: {0}, lote: {1}, preço: {2}).
+104|Você não tem quantidade suficiente do item {0} (quantidade: {1}, quantidade necessária: {2}).
+105|{0} {1} vendido para {2} kamas.
+106|{0} {1} removido do lance.
+107|Personagem
+108|{0} ponto(s) colocar a característica {1}.
+109|{0} equipado.
+110|{0} não equipado.
+111|{0} {1} usado.
+112|{0} {1} caiu.
+113|Inventário
+114|{0} {1} excluído.
+115|ExperiencePercent
+116|Validado.
+117|Troca
+118|{0} {1} depositado.
+119|{0} {1} retirado.
+120|{0} kamas depositado.
+121|{0} kamas retirado.
+122|Movendo para a célula {0} para reunir o elemento {1}.
+123|Um camelo roubou seu recurso.
+124|Elemento de reunião {0}.
+125|Um camelo roubou seu recurso 2.
+126|Colheita Completa
+127|Erro ao usar o elemento {0}.
+128|Interactives
+129|Movendo para a célula {0} para usar o elemento {1}.
+130|Using interactive {0}.
+131|Interactive {0} used.
+132|Banco
+133|Colheitando
+134|Todos os itens foram depositados.
+135|Todos os itens foram retirados.
+136|Todos os itens que já estão presentes no banco foram depositados.
+137|Todos os itens que já estão presentes no inventário foram retirados.
+138|Um script já está sendo executado.
+139|.lua
+140|Arquivo não encontrado ou inválido.
+141|Carregado.
+142|Começado.
+143|A função {0} é inválida ou não encontrada.
+144|Nenhuma ação foi encontrada para este mapa.
+145|MAX_PODS
+146|MAX_PODS atingiu, mudando para a função bancária.
+147|AUTO_DELETE
+148|A sessão AUTO_DELETE foi iniciada.
+149|A sessão AUTO_DELETE terminou.
+150|Regeneração iniciada (pontos de segurança a recuperar: {0}, tempo estimado: {1} segundos).
+151|A regeneração terminou.
+152|O personagem tornou-se um túmulo, libertador.
+153|O personagem é um fantasma, mudando para a função fenix.
+154|OPEN_BAGS
+155|{0} saco(s) aberto.
+156|O personagem não é mais um fantasma, mudando para mover a função.
+157|The character isn't full weight anymore, switching to move function.
+158|A lista de recursos a serem reunidos está vazia (verifique ELEMENTS_TO_GATHER ou seus trabalhos).
+159|No group of monsters.
+160|Não há fênix na célula {0}.
+161|Não há porta na célula {0}.
+162|Cell/direction invalid in a changeMap.
+163|Pausado.
+164|Unpaused.
+165|Scripts
+166|Avançar para um grupo de monstros (célula: {0}, monstros: {1}, nível: {2}).
+167|O caminho para o grupo de monstros provavelmente é bloqueado.
+168|O movimento em direção a um grupo de monstros falhou 1.
+169|Erro ao reunir 1.
+170|Impossível alterar o mapa (direção: {0}, célula: {1}).
+171|Alterando o mapa (direção: {0}, célula: {1}).
+172|Impossível alterar o mapa (direção: {0}).
+173|Alterando o mapa (direção: {0}).
+174|Mudando para célula {0} falhou (resultado: {1}).
+175|Mudando para celular {0}.
+176|Error while using an interactive (cell: {0}).
+177|Error while using an interactive (id: {0}).
+178|Erro durante uma conversa com um NPC (npcId: {0}, actionIndex: {1}).
+179|Erro durante uma conversa com um NPC bancário.
+180|Erro ao enviar uma resposta (id: {0}).
+181|Atenção, você não tem mais itens necessários para AUTO_REGEN.
+182|MapAPI
+183|Verify your changeMap("{0}").
+184|Erro ao iniciar uma luta, o grupo pode ter se mudado ou foi roubado.
+185|O movimento em direção a um grupo de monstros falhou 2.
+186|Mudando para a célula {0} falhou.
+187|DISPLAY_FIGHT_COUNT
+188|Fight #{0}.
+189|Erro durante a colheita 2.
+190|DISPLAY_GATHER_COUNT
+191|Gather #{0}.
+192|Error while using an interactive.
+193|Erro ao enviar uma resposta a um NPC do banco (resposta: {0}).
+194|O gerenciamento do banco começou.
+195|O gerenciamento do banco terminou.
+196|Exchange management started.
+197|Exchange management ended.
+198|mapId
+199|Comandos
+200|MapId: {0}.
+201|cellId
+202|CellId: {0}.
+203|Ally
+204|Ennemy
+205|Sim
+206|Não
+207|Amuleto
+208|Cinto
+209|Bota
+210|Capa
+211|Arma
+212|Mount
+213|Anel
+214|Follower
+215|Inativo
+216|Luta
+217|Administrador
+218|Aliança
+219|Arena
+220|Guild
+221|Noob
+222|Party
+223|Vendas
+224|Seek
+225|Team
+226|Agilidade
+227|Chance
+228|Inteligencia
+229|Força
+230|Vitalidade
+231|Sabedoria
+232|The server is powered by a lemon and two electrodes..
+233|A few bits tried to escape, but we caught them..
+234|Follow the white rabbit..
+235|At least you're not on hold..
+236|..and enjoy the elevator music...
+237|Mercy Bot - gerente de contas
+238|Conectar
+239|Delete
+240|NOME DO USUÁRIO
+241|SERVIDOR
+242|PERSONAGEM
+243|APELIDO
+244|Conta
+245|Senha
+246|Servidor
+247|Personagem (opcionall)
+248|Apelido (opcional)
+249|Erro
+250|Verifique as informações da conta.
+251|Características
+252|Summary
+253|Pontos de saúde
+254|Pontos de ação
+255|Pontos de movimento
+256|Iniciativa
+257|Prospecção
+258|Alcance
+259|Invocações
+260|Add
+261|Feitiços
+262|Level
+263|Boost
+264|Jobs
+265|Experiência
+266|Geral
+267|Preparação
+268|Coloque o personagem no início da luta:
+269|Longe de inimigos
+270|Perto de inimigos
+271|Não se mova
+272|Aproxime-se do monstro:
+273|Coloque a identificação do monstro que você deseja abordar no início da luta, se o monstro não estiver na luta, a opção será ignorada.
+274|Abordagem para lançar o feitiço:
+275|O personagem tentará se aproximar para lançar o feitiço escolhido, se ele não puder, ele se colocará normalmente.
+276|Bloquear modo espectador:
+277|Nunca
+278|Sempre
+279|Quando alguém se junta
+280|Bloqueie a luta
+281|Durante a luta
+282|Tática:
+283|Agressivo
+284|Passivo
+285|Fugitivo
+286|Approach if we are far from 
+287|células do inimigo mais próximo.
+288|Approach if no spell was casted.
+289|Base calculations on all the monsters when we want to approach (Agressive Tactic)
+290|Regenerate if our life points are less than or equal to 
+291| regenerate up to 
+292|Defina isto como 0 se desejar desativar a regeneração.
+293|Alvo
+294|Turnos
+295|Relaunchs
+296|Mão a mão
+297|Adicione um feitiço
+298|Feitiços: 
+299|Alvo:
+300|Auto:
+301|Turnos:
+302|Relaunchs: 
+303|Target's health &lt;= 
+304|Character's health <= 
+305|Resistência
+306|Neutro
+307|Terra
+308|Fogo
+309|Ar
+310|Agua
+311| of the target <= 
+312|Distância entre nós e o inimigo mais próximo <=
+313|Touch as many enemies as possible
+314|Avoid touching our character (^)
+315|Avoid touching our allies (^)
+316|Equipamentos
+317|Quantidade
+318|Posição
+319|Equip/Unequip
+320|Drop
+321|Destruir
+322|Consumíveis
+323|Usar
+324|Recursos
+325|Id
+326|Nome
+327|Objetos de busca
+328|How many {0} do you want to drop?\n(0 = all the quantity)
+329|How many {0} do you want to destroy?\n(0 = all the quantity)
+330|How many {0} do you want to use?\n(0 = all the quantity)
+331|Our character
+332|Monstros
+333|Outros jogadores
+334|Portas
+335|NPCs
+336|Mostrar CellIds
+337|Conectar/desconectar
+338|Carregar um script
+339|Console
+340|Mapa
+341|Lot
+342|Preço mínimo
+343|Preço base
+344|Interval between each check (in minutes): 
+345|Script to launch after each check (leave this blank to ignore the option):
+346|Ativar
+347|Desativar
+348|GID do objeto:
+349|Lot of the object: 
+350|Número de lotes para vender:
+351|Preço mínimo não superior:
+352|Preço base (quando o item não está mais no lance):
+353|O total de kamas ganhou: {0}
+354|Total de kamas pagos por impostos: {0}
+355|O proxy está funcionando.
+356|O proxy não parece ser funcional.
+357|Sucesso
+358|IPAddress: 
+359|e.g: 127.0.0.1
+360|Porta:
+361|Teste o proxy
+362|Salve 
+363|Consider the AUTO__REGEN parameter in scripts.
+364|Aumento automático
+365|Outras
+366|Aceite o sucesso automaticamente.
+367|Gerenciamento de reCAPTCHAs
+368|Anti-captcha key: 
+369|Obter uma chave de anti-captcha
+370|Mostrar logs DEBUG.
+371|Característica para aumentar automaticamente:
+372|Spell não encontrado.
+373|O feitiço já foi adicionado.
+374|{0} aumentou para o nível {1}.
+375|Estatisticas
+376|Exchanges
+377|Se a lista dos caracteres autorizados para nos trocar está vazia, o bot recusará todos os pedidos de troca.
+378|Lista de caracteres autorizados
+379|Se você quiser saber o id de um personagem, use o comando/player {name} (veja a documentação para obter mais informações).
+380|ID do personagem:
+381|Adicione caracteres não autorizados à lista de ignorar.
+382|Troca não autorizada negada (jogador ignorado).
+383|Unauthorized exchange refused.
+384|Permitiu permissão aceita.
+385|Status
+386|acessível
+387|AFK
+388|Privado
+389|Solo
+390|Deseja criar um grupo?
+391|Líder:
+392|Os membros do grupo devem estar no mesmo servidor que o líder.
+393|Um jogador que não faz parte do seu grupo tentou se juntar à sua luta. Ele foi expulso.
+394|Verifique se todos os membros do grupo estão no mesmo mapa que o líder.
+395|Verifique se todos os membros do grupo estão inativos.
+396|Lembre-se da conta
+397|Log in
+398|Uma conta com a mesma conta já existe.
+399|Você atingiu o limite de contas conectadas para sua assinatura.
+400|Você atingiu o limite de instâncias que sua assinatura permite.
+401|Falha no Login.\nRazão: Não permitido.
+402|Falha no Login.\nReason: Conta não encontrada
+403|Falha no Login.\nReason: Conta aguardando a ativação.
+404|Falha no Login.\nReason: Conta banida.
+405|Falha no Login.\nReason: Senha incorreta.
+406|Você não pode visualizar este conteúdo sem uma assinatura.
+407|Você não pode usar um proxy sem uma assinatura.
+408|Você não pode usar trocas sem uma assinatura.
+409|Você não pode usar a abertura de bolsas automática sem uma assinatura.
+410|Você não pode usar a exclusão automática sem uma assinatura.
+411|Você não pode usar a função fenix sem uma assinatura.
+412|Você não pode usar as funções de lances sem a extensão.
+413|Você não pode usar um personagem acima do nível 9 sem uma assinatura.
+414|Você não possui uma assinatura Ruby. É impossível conectar-se a grupos.
+415|Mensalmente faturado mensalmente
+416|Inscrito até {0}
+417|Não subscrito
+418|Ativado
+419|Desativado
+420|Sentence
+421|Canal
+422|Juntando-se
+423|Deixando
+424|Configuração
+425|Interval of the Seek channel 
+426|Intervalo do canal de vendas
+427|Intervalo do canal Global
+428|Adicione uma frase
+429|Frase:
+430|Canal:
+431|Privado
+432|Quando um personagem se junta ao mapa
+433|Quando um personagem deixa o mapa
+434|Informações
+435|Em cada canal, apenas uma frase é escolhida aleatoriamente para ser enviada.
+436|Você pode usar esses atributos em todos os canais:
+437|%nbr% : Insere um número aleatório.
+438|%smiley% : Insere um smiley aleatório.
+439|Você pode usar esses atributos somente no canal particular:
+440|%name% : Insere o nome do jogador.
+441|%level% : Insere o nível do jogador.
+442|Níveis obtidos: {0}
+443|Total de pontos de experiência obtidos: {0}
+444|Total de kamas ganhou: {0}
+445|Conquistas finalizadas: {0}
+446|Número de lutas feitas: {0}
+447|Total time spent in fights: {0:hh\:mm\:ss}
+448|Tempo médio por luta: {0:hh\:mm\:ss}
+449|Lutas conquistadas: {0} / {1}
+450|Objetos obtidos
+451|Percentage
+452|Número de colheitas realizadas: {0}
+453|Tempo total gasto nos coletores: {0:hh\:mm\:ss}
+454|Recursos obtidos
+455|Língua
+456|Idioma atual:
+457|Para que a mudança de idioma entre em vigor, você deve reiniciar Mercy Bot.
+458|Conectar contas
+459|Adicionar contas
+460|Mercy Bot - Login
+461|Adicione um item para vender
+462|Capital
+463|Não
+464|Gerente de contas
+465|Minimizar
+466|Feitiços para aumentar automaticamente
+467|Nível para alcançar
+468|Spell's id: 
+469|Nível para alcançar:
+470|Nome de usuário (opcional)
+471|Senha (opcional)
+472|Lutas
+473|Colheitas
+474|Parâmetros
+475|Privado
+476|{0} contas conectadas, {1} bots conectados
+477|Mudança de mapa falhou
+478|Sua conta está banida.
+479|Começado.
+480|Parado.
+481|Todos os captchas foram resolvidos, reiniciando o script.
+482|Mercy Bot agora está minimizado.
+483|Carregando
+484|A conexão foi negada pelo servidor.
+485|Atualizações
+486|Verificando atualizações ... Não feche o bot.
+487|Atualização em andamento..
+488|Download do arquivo
+489|A atualização falhou, fechando o bot em 5 segundos.
+490|Atualização concluída, reiniciando o bot em 5 segundos.
+491|Mercy Bot está atualizado.
+492|Importar
+493|Mercy Bot - Importar contas
+494|Sintaxe:
+495|Nome de usuário{0}Senha
+496|Verifique as informações fornecidas.
+497|{0}Contas importadas.
+498|Nenhuma conta foi importada, verifique o separador escolhido ou o conteúdo do arquivo.
+499|Exclua o proxy da conta:
+500|Criador de personagens
+501|Mercy Bot - Criador de personagens
+502|Selecionar tudo
+503|Desmarcar todos
+504|Crie um personagem
+505|Deixe em branco um nome aleatório
+506|Servidor:
+507|Aleatória
+508|Masculino
+509|Fêmea
+510|Configurações
+511|Parâmetros:
+512|Lutas:
+513|Complete o tutorial
+514|Salvar e conectar
+515|Ao contrário de outros bots, ao verificar esta opção, seu personagem irá fazer o tutorial em vez de cancelá-lo (o que não é possível no Dofus Touch).
+516|Criação de personagens
+517|Etapa: {0}.
+518|Etapa de validação {0}.
+519|Parâmetros copiados.
+520|Configuração de lutas copiadas.
+521|Selecionando o caractere {0} pela primeira vez.
+522|Começou a criação de personagens.
+523|Gerando um nome aleatório ..
+524|Nome aleatório gerado ({0}).
+525|Personagem criado
+526|Erro ao criar o caractere (resultado: {0}).
+527|Tutorial iniciado.
+528|Etapa {0} validado.
+529|Tutorial completado.
+530|Nenhum recurso.
+531|Depositing all the items..
+532|All the items have been deposited.
+533|Disconnect the account once the 800 fights limit is reached.
+534|800 fights limit reached, disconnecting.
+535|800 fights limit reached, stopping the script.
+536|Interactive not found on cell {0}.
+537|Zaap not found on this map.
+538|Error while using a zaap.
+539|
+540|
+541|
+542|
+543|
+544|
+545|
+546|
+547|
+548|
+549|
+550|
+551|
+552|
+553|
+554|
+555|
+556|
+557|
+558|
+559|
+560|
+561|
+562|
+563|
+564|
+565|
+566|
+567|

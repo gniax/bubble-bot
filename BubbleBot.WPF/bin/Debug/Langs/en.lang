@@ -1,0 +1,596 @@
+1|Error loading account {0}.\nMessage: {1}
+2|Message: {0}
+3|Start script
+4|Stop script
+5|Channels
+6|Empty logs
+7|Copy logs
+8|Remove
+9|Started
+10|Loading account..
+11|Connecting account..
+12|Connecting
+13|Disconnected
+14|Stopped (reason: {0}).
+15|Moving
+16|Storage
+17|Talking
+18|Buying
+19|Selling
+20|Hat
+21|Pet
+22|Shield
+23|Sitting
+24|Companion
+25|Not equipped
+26|Empty cell
+27|Self
+28|Unequip
+29|Equip
+30|Network Manager
+31|Disconnected.
+32|Invalid HTTP Code {0}.
+33|Wrong account or password.
+34|Bid Extension
+35|No objects to sell.
+36|Obtaining the necessary prices from the bid..
+37|Necessary prices obtained.
+38|Sales session begun.
+39|Changing the price of {0} {1} (new price: {2}).
+40|Attention, you do not have enough quantity left for {0} {1}.
+41|Sold {0} {1} (price: {2}).
+42|Sales session ended.
+43|ScriptsManager
+44|Next session is in {0} minutes.
+45|The price of {0} {1} is 1 kamas in bid, it cannot be lowered anymore.
+46|The price of {0} {1} exceeded the minimum price (price in bid: {2}, minimum price: {3}).
+47|Turn {0} started.
+48|Turn ended.
+49|ProcessSpells
+50|Max index
+51|Max relaunchs
+52|FightsManager
+53|Not this turn
+54|Spell failed.
+55|Movement failed.
+56|(End of turn) Moving to cell {0}.
+57|Passing turn.
+58|Placing character on cell {0}.
+59|(Spell) Placing character on cell {0}.
+60|The monster to approach wasn't found in this fight.
+61|(Monster) Placing character on cell {0}.
+62|Casting {0} (touching {1} ennemies) on cell {2}.
+63|Moving to cell {0} to launch {1}.
+64|Casting {0} on cell {1}.
+65|special
+66|smart
+67|Parameters\Fights
+68|{0}_{1}.fconfig
+69|Dofus
+70|Queue: {0}/{1}
+71|SecurityFrame
+72|Recaptcha #{0} received, stopping everything in order to handle it.
+73|Anti-captcha key not found.
+74|Recaptcha resolved in {0} second(s).
+75|Sending Recaptcha response.
+76|Restarting script.
+77|CharacterSelectionFrame
+78|The character {0} wasn't found.
+79|Selecting character {0} (Lv. {1}).
+80|No character to select.
+81|Connected to login server.
+82|Connexion failed (reason: {0}).
+83|Identified
+84| (The account was already connected).
+85|IdentificationFrame
+86|Identification failed (reason: {0}).
+87|ServerSelectionFrame
+88|The server {0} wasn't found or has no characters.
+89|Unable to connect to server {0} (status: {1}).
+90|Selecting server {0}.
+91|Connected to game server.
+92|Achievement [{0}] accepted (+{1} points).
+93|You gained {0} experience points.
+94|Level up!
+95|{0} regenerated health.
+96|Error related to an object (reason: {0}).
+97|Fight ended in {0}.
+98|Fight started.
+99|The character entered a fight.
+100|MapFrame
+101|FightFrame
+102|Bid
+103|Not enough kamas to buy this item (gid: {0}, lot: {1}, price: {2}).
+104|You don't have enough quantity of the item {0} (quantity: {1}, quantity needed: {2}).
+105|{0} {1} sold for {2} kamas.
+106|{0} {1} removed from bid.
+107|Character
+108|{0} point(s) put in the characteristic {1}.
+109|{0} equipped.
+110|{0} unequipped.
+111|{0} {1} used.
+112|{0} {1} dropped.
+113|Inventory
+114|{0} {1} deleted.
+115|ExperiencePercent
+116|Validated.
+117|Exchange
+118|{0} {1} deposited.
+119|{0} {1} withdrawn.
+120|{0} kamas deposited.
+121|{0} kamas withdrawn.
+122|Moving to cell {0} to gather element {1}.
+123|A camel stole your resource.
+124|Gathering element {0}.
+125|A camel stole your resource 2.
+126|Gather completed.
+127|Error while using element {0}.
+128|Interactives
+129|Moving to cell {0} to use element {1}.
+130|Using interactive {0}.
+131|Interactive {0} used.
+132|Bank
+133|Gather
+134|All the items were deposited.
+135|All the items were withdrawn.
+136|All the items that are already present in the bank were deposited.
+137|All the items that are already present in the inventory were withdrawn.
+138|A script is already running.
+139|.lua
+140|File not found or invalid.
+141|Loaded.
+142|Started.
+143|The function {0} is invalid or not found.
+144|No action was found for this map.
+145|MAX_PODS
+146|MAX_PODS reached, switching to bank function.
+147|AUTO_DELETE
+148|AUTO_DELETE session started.
+149|AUTO_DELETE session ended.
+150|Regeneration started (health points to recover: {0}, estimated time: {1} seconds).
+151|Regeneration ended.
+152|The character became a tomb, liberating.
+153|The character is a phantom, switching to phenix function.
+154|OPEN_BAGS
+155|{0} bag(s) open.
+156|The character isn't a phantom anymore, switching to move function.
+157|The character isn't full weight anymore, switching to move function.
+158|List of resources to gather is empty (check ELEMENTS_TO_GATHER or your jobs).
+159|No group of monsters.
+160|There is no phenix on cell {0}.
+161|There is no door on cell {0}.
+162|Cell/direction invalid in a changeMap.
+163|Paused.
+164|Unpaused.
+165|Scripts
+166|Moving towards a group of monsters (cell: {0}, monsters: {1}, level: {2}).
+167|The path towards the group of monsters is probably blocked.
+168|Movement towards a group of monsters failed 1.
+169|Error during gather 1.
+170|Impossible to change map (direction: {0}, cell: {1}).
+171|Changing map (direction: {0}, cell: {1}).
+172|Impossible to change map (direction: {0}).
+173|Changing map (direction: {0}).
+174|Moving to cell {0} failed (result: {1}).
+175|Moving to cell {0}.
+176|Error while using an interactive (cell: {0}).
+177|Error while using an interactive (id: {0}).
+178|Error during a conversation with an NPC (npcId: {0}, actionIndex: {1}).
+179|Error during a conversation with a bank NPC.
+180|Erreur while sending a reply (id: {0}).
+181|Attention, you don't have any more required items for AUTO_REGEN.
+182|MapAPI
+183|Verify your changeMap("{0}").
+184|Error when launching a fight, the group may have moved or was stolen.
+185|Movement towards a group of monsters failed 2.
+186|Moving to cell {0} failed.
+187|DISPLAY_FIGHT_COUNT
+188|Fight #{0}.
+189|Error during gather 2.
+190|DISPLAY_GATHER_COUNT
+191|Gather #{0}.
+192|Error while using an interactive.
+193|Error sending a reply to a bank NPC (reply: {0}).
+194|Bank management started.
+195|Bank management ended.
+196|Exchange management started.
+197|Exchange management ended.
+198|mapId
+199|Commands
+200|MapId: {0}.
+201|cellId
+202|CellId: {0}.
+203|Ally
+204|Ennemy
+205|Yes
+206|No
+207|Amulet
+208|Belt
+209|Boots
+210|Cape
+211|Weapon
+212|Mount
+213|Ring
+214|Follower
+215|Inactive
+216|Fighting
+217|Admin
+218|Alliance
+219|Arena
+220|Guild
+221|Noob
+222|Party
+223|Sales
+224|Seek
+225|Team
+226|Agility
+227|Chance
+228|Intelligence
+229|Strength
+230|Vitality
+231|Wisdom
+232|The server is powered by a lemon and two electrodes..
+233|A few bits tried to escape, but we caught them..
+234|Follow the white rabbit..
+235|At least you're not on hold..
+236|..and enjoy the elevator music...
+237|Mercy Bot - Accounts manager
+238|Connect
+239|Delete
+240|USERNAME
+241|SERVER
+242|CHARACTER
+243|PSEUDO
+244|Username
+245|Password
+246|Server
+247|Character (optional)
+248|Pseudo (optional)
+249|Error
+250|Please check the account's informations.
+251|Characteristics
+252|Summary
+253|Health points
+254|Action points
+255|Movement points
+256|Initiative
+257|Prospecting
+258|Range
+259|Invocations
+260|Add
+261|Spells
+262|Level
+263|Boost
+264|Jobs
+265|Experience
+266|General
+267|Preparation
+268|Place the character at the beginning ot the fight: 
+269|Far from ennemies
+270|Close to ennemies
+271|Don't move
+272|Approach the monster: 
+273|Put the ID of the monster you want to approach at the beginning of the fight, if the monster is not in the fight the option will be ignored.
+274|Approach to cast the spell: 
+275|The character will try to approach to cast the chosen spell, if he can't, he will place himself normally.
+276|Block spectator mode: 
+277|Never
+278|Always
+279|When someone joins
+280|Block the fight
+281|During the fight
+282|Tactic:
+283|Agressive
+284|Passive
+285|Fugitive
+286|Approach if we are far from 
+287| cells of the nearest ennemy.
+288|Approach if no spell was casted.
+289|Base calculations on all the monsters when we want to approach (Agressive Tactic)
+290|Regenerate if our life points are less than or equal to 
+291| regenerate up to 
+292|Set this to 0 if you want to disable regeneration.
+293|Target
+294|Turns
+295|Relaunchs
+296|Hand to hand
+297|Add a spell
+298|Spell: 
+299|Target: 
+300|Self: 
+301|Turns: 
+302|Relaunchs: 
+303|Target's health &lt;= 
+304|Character's health <= 
+305|Resistance
+306|Neutral
+307|Earth
+308|Fire
+309|Air
+310|Water
+311| of the target <= 
+312|Distance between us and the closest enemy <=
+313|Touch as many enemies as possible
+314|Avoid touching our character (^)
+315|Avoid touching our allies (^)
+316|Equipments
+317|Quantity
+318|Position
+319|Equip/Unequip
+320|Drop
+321|Destroy
+322|Consumables
+323|Use
+324|Resources
+325|Id
+326|Name
+327|Quest objects
+328|How many {0} do you want to drop?\n(0 = all the quantity)
+329|How many {0} do you want to destroy?\n(0 = all the quantity)
+330|How many {0} do you want to use?\n(0 = all the quantity)
+331|Our character
+332|Monsters
+333|Other players
+334|Doors
+335|NPCs
+336|Show CellIds
+337|Connect/Disconnect
+338|Load a script
+339|Console
+340|Map
+341|Lot
+342|Minimum price
+343|Base price
+344|Interval between each check (in minutes): 
+345|Script to launch after each check (leave this blank to ignore the option):
+346|Activate
+347|Deactivate
+348|GID of the object: 
+349|Lot of the object: 
+350|Number of lots to sell: 
+351|Minimum price not to exceed: 
+352|Base price (when the item is no longer in the bid): 
+353|Total kamas gained: {0}
+354|Total kamas paid for taxes: {0}
+355|The proxy seems to be working.
+356|The proxy doesn't appear to be functional.
+357|Succes
+358|IPAddress: 
+359|e.g: 127.0.0.1
+360|Port: 
+361|Test the proxy
+362|Save
+363|Consider the AUTO__REGEN parameter in scripts.
+364|Automatic boosting
+365|Others
+366|Accept success automatically.
+367|Management of reCAPTCHAs
+368|Anti-captcha key: 
+369|Obtain a key from anti-captcha
+370|Show DEBUG logs.
+371|Characteristic to boost automatically: 
+372|Spell not found.
+373|Spell already added.
+374|{0} boosted to level {1}.
+375|Statistics
+376|Exchanges
+377|If the list of the authorized characters to exchange us is empty, the bot will refuse all exchange requests.
+378|List of authorized characters
+379|If you want to know a character's id, use the /player {name} command (see the documentation for more informations).
+380|Character's id: 
+381|Add unathorized characters to the ignore list.
+382|Unauthorized exchange denied (player ignored).
+383|Unauthorized exchange refused.
+384|Allowed exchange accepted.
+385|Status
+386|Available
+387|AFK
+388|Private
+389|Solo
+390|Do you want to create a group?
+391|Leader: 
+392|Group members must be in the same server as their leader.
+393|A player not part of your group tried to join your fight. He was expelled.
+394|Make sure all the members of the group are on the same map as the leader.
+395|Make sure that all the members of the group are inactive.
+396|Remember account
+397|Log in
+398|An account with the same account already exists.
+399|You have reached the limit of connected accounts for your subscription.
+400|You have reached the limit of instances that your subscription allows.
+401|Login failed.\nReason: Not allowed.
+402|Login failed.\nReason: Account not found.
+403|Login failed.\nReason: Account waiting for activation.
+404|Login failed.\nReason: Account banned.
+405|Login failed.\nReason: Wrong password.
+406|You can't view this content without a subscription.
+407|You can't use a proxy without a subscription.
+408|You can't use exchanges without a subscription.
+409|You can't use the automatic bags opening without a subscription.
+410|You can't use the automatic deletion without a subscription.
+411|You can't use the phenix function without a subscription.
+412|You can't use the bid functions without the extension.
+413|You can't use a character above level 9 without a subscription.
+414|You don't have a Ruby subscription. It's impossible for you to connect groups.
+415|Automatically billed monthly
+416|Subscribed until {0}
+417|Not subscribed
+418|Activated
+419|Deactivated
+420|Sentence
+421|Channel
+422|Joining
+423|Leaving
+424|Configuration
+425|Interval of the Seek channel 
+426|Interval of the Sales channel 
+427|Interval of the Global channel 
+428|Add a sentence
+429|Sentence: 
+430|Channel: 
+431|Private
+432|When a character joins the map
+433|When a character leave the map
+434|Informations
+435|On each channel, only 1 sentence is chosen randomly to be sent.
+436|You can use these attributes on all channels:
+437|%nbr% : Inserts a random number.
+438|%smiley% : Inserts a random smiley.
+439|You can use these attributes only on the private channel:
+440|%name% : Inserts the player's name.
+441|%level% : Inserts the player's level.
+442|Levels gained : {0}
+443|Total experience points gained: {0}
+444|Total kamas gained: {0}
+445|Finished achievements: {0}
+446|Number of fights done: {0}
+447|Total time spent in fights: {0:hh\:mm\:ss}
+448|Average time per fight: {0:hh\:mm\:ss}
+449|Fights won: {0} / {1}
+450|Objects gained
+451|Percentage
+452|Number of gathers done: {0}
+453|Total time spent in gathers: {0:hh\:mm\:ss}
+454|Resources gained
+455|Language
+456|Current language: 
+457|In order for the language change to take effect, you have to restart Mercy Bot.
+458|Connect accounts
+459|Add accounts
+460|Mercy Bot - Login
+461|Add an item to sell
+462|Capital
+463|None
+464|Accounts manager
+465|Minimize
+466|Spells to boost automatically
+467|Level to reach
+468|Spell's id: 
+469|Level to reach: 
+470|Username (optional)
+471|Password (optional)
+472|Fights
+473|Gathers
+474|Parameters
+475|Private
+476|{0} accounts connected, {1} bots connected
+477|Map changement failed
+478|Your account is banned.
+479|Started.
+480|Stopped.
+481|All captchas have been resolved, restarting the script.
+482|Mercy Bot is now minimized.
+483|Loading
+484|The connection was denied by the server.
+485|Updates
+486|Checking updates.. Do not close the bot.
+487|Update in progress..
+488|Downloading file
+489|Update failed, closing the bot in 5 seconds.
+490|Update finished, restarting the bot in 5 seconds.
+491|Mercy Bot is up to date.
+492|Import
+493|Mercy Bot - Import accounts
+494|Syntax: 
+495|Username{0}Password
+496|Please verify the given informations.
+497|{0} accounts imported.
+498|No account has been imported, verify the chosen separator or the file's content.
+499|Delete the proxy of the account: 
+500|Characters creator
+501|Mercy Bot - Characters creator
+502|Select all
+503|Deselect all
+504|Create a character
+505|Leave blank for a random name
+506|Server: 
+507|Random
+508|Male
+509|Female
+510|Configurations
+511|Parameters: 
+512|Fights: 
+513|Complete the tutorial
+514|Save and connect
+515|Unlike other bots, by checking this option your character will do the tutorial instead of canceling it (which is not possible in Dofus Touch).
+516|Characters creation
+517|Step: {0}.
+518|Validating step {0}.
+519|Parameters copied.
+520|Fights configuration copied.
+521|Selecting character {0} for the first time.
+522|Character creation started.
+523|Generating a random name..
+524|Random name generated ({0}).
+525|Character created.
+526|Error while creating the character (result: {0}).
+527|Tutorial started.
+528|Step {0} validated.
+529|Tutorial completed.
+530|No resource.
+531|Depositing all the items..
+532|All the items have been deposited.
+533|Disconnect the account once the 800 fights limit is reached.
+534|800 fights limit reached, disconnecting.
+535|800 fights limit reached, stopping the script.
+536|Interactive not found on cell {0}.
+537|Zaap not found on this map.
+538|Error while using a zaap.
+539|Zaapi not found on this map.
+540|
+541|
+542|
+543|
+544|
+545|
+546|
+547|
+548|
+549|
+550|
+551|
+552|
+553|
+554|
+555|
+556|
+557|Do you want to restart Mercy Bot now?
+558|Configurations copier
+559|You were banned until {0}.
+560|Ignore invocations
+561|Invalid code.
+562|Sending the door's code.
+563|Wrong code.
+564|Door unlocked.
+565|Error while using a locked door.
+566|Error while using a locked storage.
+567|Storage unlocked.
+571|Monter automatique sur la monture
+573|Le serveur {0} est actuellement en cours de sauvegarde...
+574|Actions 
+575|Actions rapides
+576|Connecter tous les comptes 
+577|Déconnecter tous les comptes 
+578|Charger le script à tous les comptes 
+579|Démarrer le script à tous les comptes 
+580|Arrêter le script à tous les comptes 
+581|Enregistrer les logs (debug)
+582|Captcha en cours: tentative numéro : {0}
+583|Planification réussie
+584|Deconnexion du compte (heure rouge)
+585|Connexion du compte (heure verte)
+586|Planificateur de comptes 
+587|Planificateur 
+588|Actif 
+589|Inactif 
+590| ??
+591|Vitesse de combat
+592|Suicidaire
+593|Rapide
+594|Normal
+600|Planificateur
+601|COMPTE {0}
+602|Création du pseudo
+603|Pour désactiver cette fenêtre allez dans le menu options
+604|Nickname invalide ou déjà utilisé
+605|Générer automatiquement un pseudo pour un nouveau compte
