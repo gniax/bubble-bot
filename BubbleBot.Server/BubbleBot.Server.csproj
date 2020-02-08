@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <ProjectGuid>{1987AB55-8012-46F5-B3D0-8E17EB0F2205}</ProjectGuid>
   </PropertyGroup>

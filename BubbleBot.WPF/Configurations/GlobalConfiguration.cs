@@ -32,7 +32,7 @@ namespace BubbleBot.Configurations
         #endregion
 
         // Fields
-        private readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.mb");
+        private readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.bb");
         private bool _loaded;
         private string _antiCaptchaKey;
         private bool _showDebugMessages;

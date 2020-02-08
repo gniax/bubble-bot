@@ -27,7 +27,8 @@ namespace BubbleBot.Server.Commands
             }
 
             Constants.FilesHashes = filesHashes;
-            //Console.WriteLine("Files hashes refreshed.");
+            if (args.Length != 0)
+                Console.WriteLine("Files hashes refreshed !");
         }
 
         [Command("setDTVersions")]
