@@ -379,10 +379,6 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UnEquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UseItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeActionByName.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Manager\GetPlayerId.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Manager\GetPlayerLevel.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Manager\GetPlayerName.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Manager\GetPlayerStates.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />
