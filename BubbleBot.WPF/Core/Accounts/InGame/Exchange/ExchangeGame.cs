@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Accounts.InGame.Exchange
 {
@@ -63,15 +64,16 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             return true;
         }
 
-        public bool GetAccountId(string playerMngGrp, string playerMngId)
+        public bool StartExchangeByName(string targetName)
         {
             if (_account.IsBusy)
                 return false;
 
-          //  if (_account.Game.Map.Players.FirstOrDefault(p => p.Id == id) == null)
-           //     return false;
+            if (_account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName) == null)
+                return false;
 
-          //  _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
+            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)_account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+            
             return true;
         }
 

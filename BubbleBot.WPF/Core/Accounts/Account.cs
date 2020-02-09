@@ -45,6 +45,8 @@ namespace BubbleBot.Core.Accounts
         private bool _fightLimitReached;
 
         // Properties
+        public static List<uint> AuthorizeByDefautTrade = new List<uint>();
+        public static readonly SemaphoreSlim _AddSemaphore = new SemaphoreSlim(1,1);
         public AccountConfiguration AccountConfig { get; private set; }
         public Configuration Configuration { get; private set; }
         public FramesData FramesData { get; private set; }
@@ -89,8 +91,15 @@ namespace BubbleBot.Core.Accounts
         public event Action<Account, bool> RecaptchaResolved;
 
 
-        // Constructor
-        public Account(AccountConfiguration accountConfig)
+        public static void addAutorizedPlayer(uint playerId)
+        {
+            _AddSemaphore.Wait();
+            AuthorizeByDefautTrade.Add(playerId);
+            _AddSemaphore.Release();
+        }
+
+            // Constructor
+            public Account(AccountConfiguration accountConfig)
         {
             AccountConfig = accountConfig;
             State = AccountStates.DISCONNECTED;
