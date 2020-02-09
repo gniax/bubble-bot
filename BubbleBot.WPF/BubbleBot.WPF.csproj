@@ -377,6 +377,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\EquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UnEquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UseItemAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\GetAccountId.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />
@@ -816,6 +817,7 @@
   <ItemGroup>
     <Content Include="Langs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Langs\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

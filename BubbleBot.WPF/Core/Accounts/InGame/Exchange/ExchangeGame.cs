@@ -50,7 +50,6 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             Objects = new List<ObjectEntry>();
             RemoteObjects = new List<ObjectEntry>();
         }
-        
 
         public bool StartExchange(int id)
         {
@@ -61,6 +60,18 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 return false;
 
             _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
+            return true;
+        }
+
+        public bool GetAccountId(string playerMngGrp, string playerMngId)
+        {
+            if (_account.IsBusy)
+                return false;
+
+          //  if (_account.Game.Map.Players.FirstOrDefault(p => p.Id == id) == null)
+           //     return false;
+
+          //  _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
             return true;
         }
 
