@@ -1186,6 +1186,7 @@
     <Compile Include="Server\Enums\ServerConnectionStates.cs" />
     <Compile Include="Server\Messages\AddAuthorizedTradeFromMessage.cs" />
     <Compile Include="Server\Messages\AddAuthorizedTradeFromRequestMessage.cs" />
+    <Compile Include="Server\Messages\BotInformationsMessage.cs" />
     <Compile Include="Server\Messages\BotSelectedSuccessMessage.cs" />
     <Compile Include="Server\Messages\BotsInformationsMessage.cs" />
     <Compile Include="Server\Messages\BotsInformationsRequestMessage.cs" />

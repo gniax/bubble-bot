@@ -38,6 +38,8 @@ namespace BubbleBot.Core.Extensions
                     return LanguageManager.Translate("23");              
                 case AccountStates.RECAPTCHA:
                     return "reCaptcha";
+                case AccountStates.BANNED:
+                    return LanguageManager.Translate("646");
                 default:
                     return "-";
             }

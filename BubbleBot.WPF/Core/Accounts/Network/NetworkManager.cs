@@ -102,6 +102,7 @@ namespace BubbleBot.Core.Accounts.Network
 
         public async Task Disconnect(string reason, bool info = false)
         {
+            Account.FightLimitReached = false;
             if (!Connected)
                 return;
 

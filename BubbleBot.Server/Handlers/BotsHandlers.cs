@@ -21,7 +21,19 @@ namespace BubbleBot.Server.Handlers
                 }
             });
 
-        public static Task HandleBotsInformationsMessage(Client client, BotsInformationsMessage message)
+        public static Task HandleBotInformationsMessage(Client client, BotInformationsMessage message)
+            => Task.Run(() =>
+            {
+                if (!client.LoggedIn)
+                    return;
+
+                if (client.Accounts.TryGetValue(message.Account, out Account account))
+                {
+                    account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition, message.State);
+                }
+            });
+
+                public static Task HandleBotsInformationsMessage(Client client, BotsInformationsMessage message)
             => Task.Run(() =>
             {
                 if (!client.LoggedIn)
