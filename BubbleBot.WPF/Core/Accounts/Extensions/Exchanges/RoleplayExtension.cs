@@ -2,6 +2,7 @@ using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using BubbleBot;
 
 namespace BubbleBot.Core.Accounts.Extensions.Exchanges
 {
@@ -25,8 +26,19 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
 
         private void Exchange_ExchangeRequested(int from)
         {
+            bool defautAuthorized = false;
+
+            //Si un personnage du bot ajoute sont id il est accepter pour echange
+            foreach(uint playerIdTmp in Account.AuthorizeByDefautTrade)
+            {
+                if(playerIdTmp == from)
+                {
+                    defautAuthorized = true;
+                }
+            }
+
             // If this character isn't authorized to trade us, refuse it
-            if (!_account.Configuration.AuthorizedTradesFrom.Contains(from))
+            if (!_account.Configuration.AuthorizedTradesFrom.Contains(from) && defautAuthorized == false)
             {
                 if (_account.Configuration.IgnoreNonAuthorizedTrades)
                 {

@@ -30,6 +30,12 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         public void StartExchange(uint playerId)
             => _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int)playerId), true);
 
+        public void AddAccountManagerId()
+            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangeAddAccountManager(),true);
+
+        public void StartExchangeByName(string playerName)
+            => _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeActionByName(playerName), true);
+
         public void SendReady()
             => _account.Scripts.ActionsManager.EnqueueAction(new SendReadyAction(), true);
 

@@ -355,6 +355,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\SellItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\StartBuyingAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\StartSellingAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeAddAccountManager.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangePutAllItemsAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangePutItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangePutKamasAction.cs" />
@@ -377,7 +378,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\EquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UnEquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UseItemAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\GetAccountId.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeActionByName.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />
