@@ -453,6 +453,10 @@ namespace BubbleBot.Core.Accounts
                                 {
                                     Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
                                     SpinWait.SpinUntil(() => (IsFighting() != true), TimeSpan.FromSeconds(180));
+                                    if (HasGroup && IsGroupChief)
+                                        Group.Chief.Scripts.StartScript();
+                                    else if(!HasGroup)
+                                        Scripts.StartScript();
                                 }
                                 if (HasGroup && IsGroupChief)
                                 {
@@ -465,14 +469,15 @@ namespace BubbleBot.Core.Accounts
                                     SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
                                     Task.Delay(1500);
                                     Scripts.StartScript();
-
                                 }
                             }
                             else
                             {
                                 Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
                                 IsIntentionalDisconnection = false;
-                                Network.Disconnect("CLIENT_CLOSING", true);
+                                Network.Disconnect("CLIENT_CLOSING");
+                                Network_Disconnected(networkManager);
+                                return;
                             }
                         });
                     }
@@ -480,6 +485,7 @@ namespace BubbleBot.Core.Accounts
             }
             IsIntentionalDisconnection = false;
         }
+
 
         private async void Planification_Callback(object state)
         {

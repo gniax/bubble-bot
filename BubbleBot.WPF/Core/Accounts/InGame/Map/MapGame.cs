@@ -374,6 +374,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 else
                 {
                     _account.Logger.LogWarning("", "Same map.");
+                   // _account.Scripts.StartScript(); //Tentative de debug de l arret du bot apres deco en combat
                 }
                 _running = false;
             }
