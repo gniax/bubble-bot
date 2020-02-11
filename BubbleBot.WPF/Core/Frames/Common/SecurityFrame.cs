@@ -4,6 +4,8 @@ using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using MoonSharp.Interpreter.Debugging;
+using BubbleBot.Server.Messages;
+using BubbleBot.Core.Extensions;
 
 namespace BubbleBot.Core.Frames.Common
 {
@@ -53,17 +55,7 @@ namespace BubbleBot.Core.Frames.Common
                 }
                 else
                 {
-                    int codeCount = account.Scripts.ScriptManager.Script.SourceCodeCount;
-                    SourceCode code = account.Scripts.ScriptManager.Script.GetSourceCode(codeCount - 1);
-
-                    if (code.Code.Contains("hasReachFightLimit"))
-                    {
-                        account.FightLimitReached = true;
-                    }
-                    else
-                    {
-                        account.Scripts.StopScript(LanguageManager.Translate("535"));
-                    }
+                    account.FightLimitReached = true;
                 }
 
             });
@@ -71,7 +63,19 @@ namespace BubbleBot.Core.Frames.Common
         public static Task HandleAccountLoggingKickedMessage(Account account, AccountLoggingKickedMessage message)
             => Task.Run(() =>
             {
+                account.State = Enums.AccountStates.BANNED;
                 var until = DateTime.Now.AddDays(message.Days).AddHours(message.Hours).AddMinutes(message.Minutes);
+                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                    account.AccountConfig.Username,
+                    account.Game.Character.Level,
+                    (byte)account.Game.Character.Stats.EnergyPercent,
+                    (byte)account.Game.Character.Inventory.WeightPercent,
+                    account.Game.Character.Inventory.Kamas,
+                    account.Game.Map.Id,
+                    account.Game.Map.CurrentPosition,
+                    account.State.ToFriendlyString()
+                ));
+
                 account.Logger.LogError("", LanguageManager.Translate("559", until.ToString("G")));
             });
 

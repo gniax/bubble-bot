@@ -14,6 +14,7 @@ namespace BubbleBot.Core.Enums
         BUYING,
         SELLING,
         REGENERATING,
-        RECAPTCHA
+        RECAPTCHA,
+        BANNED
     }
 }

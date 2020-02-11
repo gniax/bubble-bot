@@ -88,7 +88,6 @@ namespace BubbleBot.Views
                     case LoginResults.TOO_MANY_INSTANCES:
                         msg = LanguageManager.Translate("400"); break;
                 }
-
                 SetAlert(msg, Visibility.Visible);
                 btnConnect.IsEnabled = true;
                 txtUsername.IsEnabled = true;

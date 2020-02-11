@@ -29,6 +29,8 @@ using System.Text;
 using CefSharp.OffScreen;
 using CefSharp;
 using System.Runtime.CompilerServices;
+using BubbleBot.Server.Messages;
+using BubbleBot.Core.Extensions;
 
 namespace BubbleBot.Core.Accounts
 {
@@ -42,7 +44,7 @@ namespace BubbleBot.Core.Accounts
         private bool _wasScriptEnabled;
         private ChromiumWebBrowser browser;
         private string _apiKey = "";
-        private bool _fightLimitReached;
+        private bool _fightLimitReached = false;
 
         // Properties
         public static List<uint> AuthorizeByDefautTrade = new List<uint>();
@@ -173,6 +175,7 @@ namespace BubbleBot.Core.Accounts
                         string html = taskHtml.Result;
                         Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(html));
                         Logger.LogError("", dictionaryRes["reason"].ToString() == "BAN" ? LanguageManager.Translate("478") : LanguageManager.Translate("552"));
+                        if(dictionaryRes["reason"].ToString() == "BAN") this.State = Enums.AccountStates.BANNED;
                         _apiKey = "failed";
                     });
                    
@@ -275,51 +278,10 @@ namespace BubbleBot.Core.Accounts
                 }
                 _apiKey = "";
                 return false;
-                ////On gère ici la récupération du token
-                //HttpClient client = new HttpClient();
-                //client.Headers["Content-Type"] = "application/json";
-                //client.Headers.Add("apikey", _apiKey);
-                //client.Headers.Add("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; ONEPLUS A3003 Build/NMF26F; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/59.0.3071.92 Mobile Safari/537.36)");
-
-                //client.UploadData("https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18", "POST", Encoding.Default.GetBytes("{\"Data\": \"Test\"}"));
-
-                //HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18");
-
-                //if (AccountConfig.Proxy.IsValid)
-                //{
-                //    httpWebRequest.Proxy = new WebProxy(AccountConfig.Proxy.Url, true)
-                //    {
-                //        UseDefaultCredentials = false,
-                //        Credentials = new NetworkCredential(AccountConfig.Proxy.Username, AccountConfig.Proxy.Password)
-                //    };
-                //    httpWebRequest.PreAuthenticate = true;
-                //    httpWebRequest.UseDefaultCredentials = false;
-                //}
-
-                //httpWebRequest.Accept = "application/json";
-                //httpWebRequest.Headers.Add("apikey", _apiKey);
-                //httpWebRequest.UserAgent = "Mozilla/5.0 (Linux; Android 7.1.1; ONEPLUS A3003 Build/NMF26F; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/59.0.3071.92 Mobile Safari/537.36";
-
-                //HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                //Stream responseStream = httpWebResponse.GetResponseStream();
-
-                //string token1 = "";
-                //try
-                //{
-                //    StreamReader streamReader = new StreamReader(responseStream);
-                //    token1 = streamReader.ReadToEnd().Replace("token", "").Replace("\"", "")
-                //            .Replace("{", "")
-                //            .Replace("}", "")
-                //            .Replace(":", "");
-                //        ((IDisposable)responseStream).Dispose();
-                //Console.WriteLine("[3/3] - Authenticated");
-                //Token = token1;
-                //return true;   
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erreur");
+                Console.WriteLine("Erreur {0}", ex);
             }
 
             return false;
@@ -434,6 +396,17 @@ namespace BubbleBot.Core.Accounts
             // In case there was a script enabled
             if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
             {
+                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                    AccountConfig.Username,
+                    Game.Character.Level,
+                    (byte)Game.Character.Stats.EnergyPercent,
+                    (byte)Game.Character.Inventory.WeightPercent,
+                    Game.Character.Inventory.Kamas,
+                    Game.Map.Id,
+                    Game.Map.CurrentPosition,
+                    State.ToFriendlyString()
+                ));
+
                 _wasScriptEnabled = Scripts.Enabled;
                 Scripts.StopScript();
                 Extensions.Flood.Stop();
