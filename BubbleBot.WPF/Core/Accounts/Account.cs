@@ -449,8 +449,6 @@ namespace BubbleBot.Core.Accounts
                                 Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
                                 IsIntentionalDisconnection = false;
                                 Network.Disconnect("CLIENT_CLOSING");
-                                Network_Disconnected(networkManager);
-                                return;
                             }
                         });
                     }

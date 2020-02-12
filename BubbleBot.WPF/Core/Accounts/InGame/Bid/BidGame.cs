@@ -256,7 +256,14 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 return null;
 
             int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
-
+           // foreach(var specItem in _itemDescriptionTcs.Task.Result)
+            //{
+                
+              //  foreach (var spec in specItem.Effects)
+                //{
+             //     _account.Logger.LogInfo("ITEM", specItem.Effects[index].ToString());
+                //}
+            //}
             return _itemDescriptionTcs.Task.Result.OrderBy(o => o.Prices[index]).First();
         }
 
