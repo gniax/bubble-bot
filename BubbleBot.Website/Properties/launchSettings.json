@@ -18,7 +18,6 @@
     },
     "BubbleBot.Website": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "Panel",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

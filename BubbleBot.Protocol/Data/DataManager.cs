@@ -66,7 +66,7 @@ namespace BubbleBot.Protocol.Data
                 else
                 {
                     // If it exists as a file
-                    string filePath = Path.Combine(dir, $"{id}.bb");
+                    string filePath = Path.Combine(dir, $"{id}.bbot");
                     if (File.Exists(filePath))
                     {
                         var dataEntry = (T)JsonConvert.DeserializeObject(File.ReadAllText(filePath), typeof(T));
@@ -113,7 +113,7 @@ namespace BubbleBot.Protocol.Data
 
                     // Then save it
                     var dir = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Data", className));
-                    File.WriteAllText(Path.Combine(dir.FullName, $"{entry.Id}.bb"), JsonConvert.SerializeObject(entry, Formatting.None));
+                    File.WriteAllText(Path.Combine(dir.FullName, $"{entry.Id}.bbot"), JsonConvert.SerializeObject(entry, Formatting.None));
                 }
 
                 return data;

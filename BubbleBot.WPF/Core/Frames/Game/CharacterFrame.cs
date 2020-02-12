@@ -4,12 +4,13 @@ using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Server.Messages;
+using BubbleBot.Core.Extensions;
 
 namespace BubbleBot.Core.Frames.Game
 {
     public static class CharacterFrame
     {
-
         public static Task HandleEmotePlayMessage(Account account, EmotePlayMessage message)
             => Task.Run(() => account.Game.Character.Update(message));
 

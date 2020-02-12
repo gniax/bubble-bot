@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using BubbleBot.Core.Enums;
 using System.Threading;
+using BubbleBot.Server.Messages;
+using BubbleBot.Core.Extensions;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
@@ -364,11 +366,10 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                     _joinedFight = false;
                     _account.Logger.LogDebug("", "Triggering MapChanged;");
                     MapChanged?.Invoke();
-
                     if (_firstTime)
                     {
                         _firstTime = false;
-                        MapLoaded?.Invoke();
+                        MapLoaded?.Invoke();                      
                     }
                 }
                 else

@@ -19,6 +19,10 @@ namespace BubbleBot.Server.Commands
             string releaseDir = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Release");
 
             var filesHashes = new Dictionary<string, string>();
+            if(!Directory.Exists(releaseDir))
+            {
+                Directory.CreateDirectory(releaseDir);
+            }
 
             foreach (var file in Directory.GetFiles(releaseDir, "*.*", SearchOption.AllDirectories))
             {
@@ -27,8 +31,9 @@ namespace BubbleBot.Server.Commands
             }
 
             Constants.FilesHashes = filesHashes;
-            if (args.Length != 0)
-                Console.WriteLine("Files hashes refreshed !");
+            if (args != null)
+                if(args.Length != 0)
+                    Console.WriteLine("Files hashes refreshed !");
         }
 
         [Command("setDTVersions")]

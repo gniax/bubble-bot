@@ -251,7 +251,7 @@ namespace BubbleBot.Core.Accounts.Network
                 Console.WriteLine($"Message not found: {messageType}");
                 return;
             }
-            //Console.WriteLine("message recu: " + message); //123456
+            Console.WriteLine("message recu: " + message); //123456
 
             // Register all messages except these ones
             if (!MessagesToIgnore.Contains(messageType))

@@ -97,7 +97,6 @@ namespace BubbleBot.Api.Controllers
                 return;
 
             // TODO : Check if infos are corrupted or are a threat
-
             _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state);
         }
     }
