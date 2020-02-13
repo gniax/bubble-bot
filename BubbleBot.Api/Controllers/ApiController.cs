@@ -99,5 +99,16 @@ namespace BubbleBot.Api.Controllers
             // TODO : Check if infos are corrupted or are a threat
             _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state);
         }
+
+        [HttpPatch("characters/archive")]
+        public void BotArchiveInfos(int id, string token, int user_id, int character_id, string account, string name, string server, byte level,
+                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+        {
+            if (token != _token)
+                return;
+
+            // TODO : Check if infos are corrupted or are a threat
+            _botService.ArchiveAndAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state);
+        }
     }
 }

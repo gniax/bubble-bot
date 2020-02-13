@@ -56,6 +56,22 @@ namespace BubbleBot.Server.Clients.Accounts
             await HttpClientUtility.PatchAsync($"characters/{BotId}", GeneratePostContent(clientId));
         }
 
+        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, byte botLevel, byte botEnergyPercent, byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState)
+        {
+            BotId = botId;
+            BotName = botName;
+            BotServer = botServer;
+            BotLevel = botLevel;
+            BotEnergyPercent = botEnergyPercent;
+            BotWeightPercent = botWeightPercent;
+            BotKamas = botKamas;
+            BotMapId = botMapId;
+            BotMapPosition = botMapPosition;
+            BotState = botState;
+
+            await HttpClientUtility.PatchAsync($"characters/archive/", GeneratePostContent(clientId));
+        }
+
         private FormUrlEncodedContent GeneratePostContent(int clientId)
             => new FormUrlEncodedContent(new[]
                {
