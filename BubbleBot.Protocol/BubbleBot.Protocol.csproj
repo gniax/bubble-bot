@@ -225,6 +225,7 @@
     <Compile Include="Enums\NicknameErrorEnum.cs" />
     <Compile Include="Enums\NicknameGeneratingFailureEnum.cs" />
     <Compile Include="Enums\NumericalValueTypeEnum.cs" />
+    <Compile Include="Enums\ObjectEffectsEnum.cs" />
     <Compile Include="Enums\ObjectErrorEnum.cs" />
     <Compile Include="Enums\PartStateEnum.cs" />
     <Compile Include="Enums\PartyJoinErrorEnum.cs" />

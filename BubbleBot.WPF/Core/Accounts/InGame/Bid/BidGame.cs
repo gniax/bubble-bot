@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         // Properties
         public uint MaxItemsPerAccount { get; private set; }
         public List<ObjectItemToSellInBid> ObjectsInSale { get; private set; }
-
+        public List<BidUserCondition> UserCondition = null;
 
         // Events
         public event Action StartedBuying;
@@ -256,14 +256,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 return null;
 
             int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
-           // foreach(var specItem in _itemDescriptionTcs.Task.Result)
-            //{
-                
-              //  foreach (var spec in specItem.Effects)
-                //{
-             //     _account.Logger.LogInfo("ITEM", specItem.Effects[index].ToString());
-                //}
-            //}
+
             return _itemDescriptionTcs.Task.Result.OrderBy(o => o.Prices[index]).First();
         }
 
@@ -289,6 +282,116 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
+        public bool ExtendedBuyItem(uint gid, uint lot)
+        {
+            if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
+                return false;
+
+            var cheapestItem = GetAllItemInSell(gid, lot);
+
+            // In case the item wasn't found
+            if (cheapestItem == null)
+                return false;
+
+            List<BidExchangerObjectInfo> filteredItem = null;
+
+           // o.Effects[i] is ObjectEffectInteger oei
+
+            foreach (var item in cheapestItem)  //Pour chaque item du type selectionner
+            {
+                for(int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
+                {
+                    bool isVerified = false;
+                    if (UserCondition != null)
+                    {
+                        foreach (var condition in UserCondition)    //Pour chaque condition selectionner par l'utilisateur
+                        {
+                            if (item.Effects[effId] is ObjectEffectInteger oei)  //Truc chelou qui converti la classe 
+                            {
+                                if (condition.ItemEffectsId == oei.ActionId) //Si la condition s'applique a l'effet selectionner
+                                {
+                                    if (condition.BidConditionChecker((int)oei.Value)) //Verifie si la condition est valide 
+                                    {
+                                        _account.Logger.LogInfo("BID_EXTENDED", oei.Value.ToString());
+                                        isVerified = true;
+                                    }
+                                    else
+                                    {
+                                        isVerified = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(isVerified == true)
+                    {
+                        filteredItem.Add(item);
+                    }
+                }      
+            }
+
+            //Si on a recuperer des items 
+            if (filteredItem != null)
+            {
+                BidExchangerObjectInfo itemToBuy = null;
+
+                int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
+                uint price = 0;
+
+                //On recupere le moin chere qui correspond aux conditions
+                foreach(var itemSelected in filteredItem)
+                {
+                    if (price == 0)
+                    {
+                        price = itemSelected.Prices[index];
+                        itemToBuy = itemSelected;
+                    }
+                    else
+                    {
+                        if (price > itemSelected.Prices[index])
+                        {
+                            price = itemSelected.Prices[index];
+                            itemToBuy = itemSelected;
+                        } 
+                    }
+                }
+
+                // Not enough kamas
+                if (price > _account.Game.Character.Inventory.Kamas)
+                {
+                    _account.Logger.LogWarning(LanguageManager.Translate("102"), LanguageManager.Translate("103", gid, lot, price));
+                    return false;
+                }
+
+                if(itemToBuy != null)
+                    _account.Network.SendMessage(new ExchangeBidHouseBuyMessage(itemToBuy.ObjectUID, lot, price));
+            }
+
+            return true;
+        }
+
+        private List<BidExchangerObjectInfo> GetAllItemInSell(uint gid, uint lot)
+        {
+            if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
+                return null;
+
+            if (!InitializeGetItemPrice(gid))
+                return null;
+
+            // Item not found in bid
+            if (_itemDescriptionTcs.Task.Result == null || _itemDescriptionTcs.Task.Result.Count == 0)
+                return null;
+
+            int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
+
+            return _itemDescriptionTcs.Task.Result;
+        }
+
+        private void AddBuyItemCondition(int EffectsId, string conditionType , int EffectsValue)
+        {
+            UserCondition.Add(new BidUserCondition(EffectsId, conditionType, EffectsValue));
+        }
+
         #region IDisposable Support
 
         private bool disposedValue = false;
@@ -300,6 +403,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 ObjectsInSale?.Clear();
                 ObjectsInSale = null;
                 _account = null;
+                UserCondition = null;
 
                 disposedValue = true;
             }

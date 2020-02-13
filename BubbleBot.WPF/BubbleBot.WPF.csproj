@@ -306,6 +306,7 @@
     <Compile Include="Core\Accounts\FramesData.cs" />
     <Compile Include="Core\Accounts\IClearable.cs" />
     <Compile Include="Core\Accounts\InGame\Bid\BidGame.cs" />
+    <Compile Include="Core\Accounts\InGame\Bid\BidUserCondition.cs" />
     <Compile Include="Core\Accounts\InGame\Character\CharacterGame.cs" />
     <Compile Include="Core\Accounts\InGame\Character\CharacterStats.cs" />
     <Compile Include="Core\Accounts\InGame\Character\Inventory\InventoryGame.cs" />
@@ -351,6 +352,7 @@
     <Compile Include="Core\Accounts\Network\RegisteredMessage.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\BuyItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\EditItemInSalePriceAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Bid\ExtendBuyItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\RemoveItemInSaleAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\SellItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\StartBuyingAction.cs" />
