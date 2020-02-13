@@ -37,7 +37,7 @@ namespace BubbleBot.Server
 
         
     }
-    public class ServerMain
+    public static class ServerMain
     { 
         public static List<Client> Clients { get; private set; }
         static void Main(string[] args)
@@ -52,6 +52,7 @@ namespace BubbleBot.Server
             ConsoleLogger(1);  
             CommandsManager.Initialize();
             ConstantsCommands.RefreshFilesHashesCommand(null);
+            StatisticsManager.Initialize();
             
             ConsoleLogger(2);  
 
@@ -68,6 +69,7 @@ namespace BubbleBot.Server
 
             ConsoleLogger(4, result);
 
+
             // Commands
             string command;
             while ((command = Console.ReadLine()) != "exit")
@@ -79,46 +81,6 @@ namespace BubbleBot.Server
             }
 
         }
-        public static readonly Spinner spinner = new Spinner(150);
-        private static void ConsoleLogger(int step, bool result = false)
-        {
-
-            switch (step)
-            {
-                case 1:
-                    Console.OutputEncoding = System.Text.Encoding.UTF8;
-                    Console.WriteLine("-----------------------------------------------------");
-                    Console.Write("[1/3] - Initialisation des outils Serveur");
-                    spinner.Start("", 5);
-                    break;
-
-                case 2:
-                    spinner.Stop();
-                    ConsoleTools.ConsoleWriteSuccess();
-                    Console.Write("[2/3] - Récupération des versions de Touch");
-                    spinner.Start("", 5);
-                    break;
-
-                case 3:
-                    spinner.Stop();
-                    if (result)
-                        ConsoleTools.ConsoleWriteSuccess();
-                    else
-                        ConsoleTools.ConsoleWriteError();
-                    Console.Write("[3/3] - Démarrage du Serveur " + Constants.IP + ":" + Constants.Port);
-                    spinner.Start("", 5);
-                    break;
-
-                case 4:
-                    spinner.Stop();
-                    if (result)
-                        ConsoleTools.ConsoleWriteSuccess();
-                    else
-                        ConsoleTools.ConsoleWriteError();
-                    Console.WriteLine("-----------------------------------------------------\n");
-                    break;
-            }
-        }
         private static void Server_ErrorOccured(Exception exception)
         {
             Console.WriteLine(exception.ToString());
@@ -128,6 +90,7 @@ namespace BubbleBot.Server
             Clients.Add(new Client(client));
             Console.WriteLine("[+] Client connecté : {0}", client._ip);
         }
+
         private static async void Server_ClientDisconnected(ClientWrapper handler)
         {
             var client = Clients.FirstOrDefault(c => c.Network == handler);
@@ -203,5 +166,46 @@ namespace BubbleBot.Server
 
         public static int GetClientBotsCount(string username)
             => Clients.Where(c => c.LoggedIn && c.Informations.Name == username).Sum(c => c.Accounts.Count);
+
+        public static readonly Spinner spinner = new Spinner(150);
+        private static void ConsoleLogger(int step, bool result = false)
+        {
+
+            switch (step)
+            {
+                case 1:
+                    Console.OutputEncoding = System.Text.Encoding.UTF8;
+                    Console.WriteLine("-----------------------------------------------------");
+                    Console.Write("[1/3] - Initialisation des outils Serveur");
+                    spinner.Start("", 5);
+                    break;
+
+                case 2:
+                    spinner.Stop();
+                    ConsoleTools.ConsoleWriteSuccess();
+                    Console.Write("[2/3] - Récupération des versions de Touch");
+                    spinner.Start("", 5);
+                    break;
+
+                case 3:
+                    spinner.Stop();
+                    if (result)
+                        ConsoleTools.ConsoleWriteSuccess();
+                    else
+                        ConsoleTools.ConsoleWriteError();
+                    Console.Write("[3/3] - Démarrage du Serveur " + Constants.IP + ":" + Constants.Port);
+                    spinner.Start("", 5);
+                    break;
+
+                case 4:
+                    spinner.Stop();
+                    if (result)
+                        ConsoleTools.ConsoleWriteSuccess();
+                    else
+                        ConsoleTools.ConsoleWriteError();
+                    Console.WriteLine("-----------------------------------------------------\n");
+                    break;
+            }
+        }
     }
 }
