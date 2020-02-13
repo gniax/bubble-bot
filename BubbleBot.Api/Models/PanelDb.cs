@@ -11,6 +11,7 @@ namespace BubbleBot.Website.Models
         public DbSet<PointsPlan> PointsPlans { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Character> Characters { get; set; }
+        public DbSet<ArchivedCharacter> ArchivedCharacters { get; set; }
         public DbSet<PaypalTransaction> PaypalTransactions { get; set; }
         public DbSet<Extension> Extensions { get; set; }
         public DbSet<SubscriptionBought> SubscriptionsBought { get; set; }

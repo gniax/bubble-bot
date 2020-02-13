@@ -64,5 +64,19 @@ namespace BubbleBot.Website.Services
             // Finally, save the panel's db
             _panelDb.SaveChanges();
         }
+
+        public void ArchiveAndAdd(int user_id, int character_id, string account, string name, string server, byte level,
+                                byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+        {
+            if (_panelDb == null) return;
+
+            DateTime currDate = DateTime.Now;
+
+            ArchivedCharacter character = new ArchivedCharacter(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, currDate);
+            _panelDb.ArchivedCharacters.Add(character);
+
+            // Finally, save the panel's db
+            _panelDb.SaveChanges();
+        }
     }
 }

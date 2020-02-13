@@ -34,7 +34,7 @@ namespace BubbleBot.Server.Handlers
                 }
             });
 
-                public static Task HandleBotsInformationsMessage(Client client, BotsInformationsMessage message)
+        public static Task HandleBotsInformationsMessage(Client client, BotsInformationsMessage message)
             => Task.Run(() =>
             {
                 if (!client.LoggedIn)
@@ -45,6 +45,9 @@ namespace BubbleBot.Server.Handlers
                     if (client.Accounts.TryGetValue(kvp.Key, out Account account))
                     {
                         account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition, 
+                            kvp.Value.State);
+
+                        account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,
                             kvp.Value.State);
                     }
                 }
