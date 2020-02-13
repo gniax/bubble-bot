@@ -92,7 +92,6 @@ namespace BubbleBot.Core.Accounts
         public event Action<Account> RecaptchaReceived;
         public event Action<Account, bool> RecaptchaResolved;
 
-
         public static void addAutorizedPlayer(uint playerId)
         {
             _AddSemaphore.Wait();
@@ -415,32 +414,36 @@ namespace BubbleBot.Core.Accounts
                 {
                     if (GlobalConfiguration.Instance.AutomaticReconnection)
                     {
-                        Task.Run(() =>
+                        var task = Task.Run(() =>
                         {
                             Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
                             Connect();
                             SpinWait.SpinUntil(() => (Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
                             if (Network.Phase == NetworkPhases.GAME)
                             {
-                                if(IsFighting())
+                                //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
+                                SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
+                                Thread.Sleep(1500);
+                                if (IsFighting())
                                 {
                                     Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                    SpinWait.SpinUntil(() => (IsFighting() != true), TimeSpan.FromSeconds(180));
+                                    SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
+                                    Thread.Sleep(1500);
                                     if (HasGroup && IsGroupChief)
                                         Group.Chief.Scripts.StartScript();
-                                    else if(!HasGroup)
+                                    else if (!HasGroup)
                                         Scripts.StartScript();
                                 }
                                 if (HasGroup && IsGroupChief)
                                 {
                                     SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                                    Task.Delay(1500);
+                                    Thread.Sleep(1500);
                                     Group.Chief.Scripts.StartScript();
                                 }
                                 else if (!HasGroup)
                                 {
                                     SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                                    Task.Delay(1500);
+                                    Thread.Sleep(1500);
                                     Scripts.StartScript();
                                 }
                             }
@@ -448,7 +451,9 @@ namespace BubbleBot.Core.Accounts
                             {
                                 Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
                                 IsIntentionalDisconnection = false;
-                                Network.Disconnect("CLIENT_CLOSING");
+                                Network.Disconnect("CLIENT_CLOSING", true);
+                                Network_Disconnected(networkManager);
+                                return;
                             }
                         });
                     }
@@ -490,7 +495,6 @@ namespace BubbleBot.Core.Accounts
         {
             if (!AccountConfig.PlanificationActivated || !_wasScriptEnabled)
                 return;
-
             await Task.Delay(1500);
             Logger.LogInfo("Planificateur", LanguageManager.Translate("583"));
             Scripts.StartScript();

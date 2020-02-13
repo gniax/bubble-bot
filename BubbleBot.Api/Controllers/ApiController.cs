@@ -78,10 +78,10 @@ namespace BubbleBot.Api.Controllers
             return Json(new { success = true });
         }
 
-        [HttpGet("characters/{id}")]
+        [HttpPatch("characters/{id}")]
         public void BotUpdateInfos(int id, string token, int user_id, int character_id, string account, string name, string server, byte level,
                           byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
-        {
+        {   
             if (token != _token)
                 return;
 

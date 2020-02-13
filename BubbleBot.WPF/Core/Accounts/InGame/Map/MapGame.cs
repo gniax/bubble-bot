@@ -38,6 +38,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         private string _subArea;
         private bool _joinedFight;
         private bool _firstTime = true;
+        private bool _oneTime = true;
 
 
         // Properties
@@ -71,7 +72,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         public IEnumerable<StatedElementEntry> StatedElements => _statedElements.Values;
         public IEnumerable<ElementInCellEntry> Phenixs => _phenixs.Values;
         public IEnumerable<ElementInCellEntry> LockedStroages => _lockedStorages.Values;
-        public int Id => Data.Id;
+        public int Id => Data != null ? Data.Id : 0;
 
         public List<short> OccupiedCells => Players.Select(f => f.CellId)
             .Union(MonstersGroups.Select(f => f.CellId))
@@ -223,6 +224,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
             PosX = 0;
             PosY = 0;
             _firstTime = true;
+            _oneTime = true;
             RaisePropertyChanged("CurrentPosition");
         }
 
@@ -268,6 +270,28 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 TeleportableCells.Clear();
                 BlacklistedMonsters.Clear();
                 Zaap = null;
+
+                await Task.Run(() => {
+                    if(_oneTime && _account.Game.Map.CurrentPosition != "0,0")
+                    {
+                            bool result = SpinWait.SpinUntil(() => (_account.Game.Map.Data.Id != 0), TimeSpan.FromSeconds(10));
+                            if(result)
+                            {                      
+                                Thread.Sleep(2000);
+                                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                                    _account.AccountConfig.Username,
+                                    _account.Game.Character.Level,
+                                    (byte)_account.Game.Character.Stats.EnergyPercent,
+                                    (byte)_account.Game.Character.Inventory.WeightPercent,
+                                    _account.Game.Character.Inventory.Kamas,
+                                    _account.Game.Map.Id,
+                                    _account.Game.Map.CurrentPosition,
+                                    _account.State.ToFriendlyString()
+                                ));
+                                _oneTime = false;
+                            } 
+                    }
+                }).ConfigureAwait(false);
 
                 // Entities
                 foreach (var actor in message.Actors)
@@ -368,8 +392,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                     MapChanged?.Invoke();
                     if (_firstTime)
                     {
-                        _firstTime = false;
-                        MapLoaded?.Invoke();                      
+                        MapLoaded?.Invoke();
                     }
                 }
                 else
