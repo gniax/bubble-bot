@@ -54,6 +54,8 @@ namespace BubbleBot.Core.Accounts
         public FramesData FramesData { get; private set; }
         public string Token { get; private set; }
         public string Login { get; internal set; }
+        public string GroupId { get; internal set; }
+        public byte Group_Chief { get; internal set; }
         public DateTime? SubscriptionEndDate
         {
             get => _subscriptionEndDate;
@@ -99,9 +101,11 @@ namespace BubbleBot.Core.Accounts
             _AddSemaphore.Release();
         }
 
-            // Constructor
-            public Account(AccountConfiguration accountConfig)
+        // Constructor
+        public Account(AccountConfiguration accountConfig)
         {
+            GroupId = "-";
+            Group_Chief = 0;
             AccountConfig = accountConfig;
             State = AccountStates.DISCONNECTED;
 
@@ -392,6 +396,7 @@ namespace BubbleBot.Core.Accounts
                     browser.Dispose();
                 }
             }
+
             // In case there was a script enabled
             if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
             {
@@ -403,7 +408,10 @@ namespace BubbleBot.Core.Accounts
                     Game.Character.Inventory.Kamas,
                     Game.Map.Id,
                     Game.Map.CurrentPosition,
-                    State.ToFriendlyString()
+                    State.ToFriendlyString(),
+                    this.GroupId,
+                    this.Group_Chief,
+                    Scripts.CurrentScriptName != null ? Scripts.CurrentScriptName : "-"
                 ));
 
                 _wasScriptEnabled = Scripts.Enabled;

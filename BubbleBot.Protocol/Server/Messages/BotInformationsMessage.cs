@@ -18,12 +18,15 @@ namespace BubbleBot.Server.Messages
         public int MapId { get; private set; }
         public string MapPosition { get; private set; }
         public string State { get; private set; }
+        public string Group_Id { get; private set; }
+        public byte Group_Chief { get; private set; }
+        public string Script_Name { get; private set; }
 
 
         // Constructor
         public BotInformationsMessage() { }
 
-        public BotInformationsMessage(string account, byte level, byte energyPercent, byte weightPercent, int kamas, int mapId, string mapPosition, string state)
+        public BotInformationsMessage(string account, byte level, byte energyPercent, byte weightPercent, int kamas, int mapId, string mapPosition, string state, string group_id = "-", byte group_chief = 0, string script_name = "-")
         {
             Account = account;
             Level = level;
@@ -33,6 +36,9 @@ namespace BubbleBot.Server.Messages
             MapId = mapId;
             MapPosition = mapPosition;
             State = state;
+            Group_Id = group_id;
+            Group_Chief = group_chief;
+            Script_Name = script_name;
         }
 
 
@@ -46,6 +52,9 @@ namespace BubbleBot.Server.Messages
             writer.Write(MapId);
             writer.Write(MapPosition);
             writer.Write(State);
+            writer.Write(Group_Id);
+            writer.Write(Group_Chief);
+            writer.Write(Script_Name);
         }
 
         public void Deserialize(BinaryReader reader)
@@ -58,6 +67,9 @@ namespace BubbleBot.Server.Messages
             MapId = reader.ReadInt32();
             MapPosition = reader.ReadString();
             State = reader.ReadString();
+            Group_Id = reader.ReadString();
+            Group_Chief = reader.ReadByte();
+            Script_Name = reader.ReadString();
         }
 
     }

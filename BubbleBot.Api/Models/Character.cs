@@ -25,11 +25,15 @@ namespace BubbleBot.Website.Models
         public string State { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
+        public string Group_Id { get; set; }
+        public byte Group_Chief { get; set; }
+        public string Script_Name { get; set; }
 
         public Character() { }
 
         public Character(int user_id, int character_id, string account, string name, string server, byte level,
-                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, DateTime created_at, DateTime updated_at)
+                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, DateTime created_at, DateTime updated_at,
+                          string group_id, byte group_chief, string script_name)
         {
             User_id = user_id;
             Character_id = character_id;
@@ -45,6 +49,9 @@ namespace BubbleBot.Website.Models
             State = state;
             Created_at = created_at;
             Updated_at = updated_at;
+            Group_Id = group_id;
+            Group_Chief = group_chief;
+            Script_Name = script_name;
         }
     }
 }

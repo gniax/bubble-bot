@@ -22,7 +22,7 @@ namespace BubbleBot.Website.Services
 
 
         public void UpdateOrAdd(int user_id, int character_id, string account, string name, string server, byte level,
-                                byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, int id = -1)
+                                byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string groupid, byte groupchief, string scriptname, int id = -1)
         {
             if (_panelDb == null) return;
 
@@ -42,7 +42,7 @@ namespace BubbleBot.Website.Services
             // If the user doesn't exist in the database, add it
             if (character == null)
             {
-                character = new Character(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, currDate, currDate);
+                character = new Character(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, currDate, currDate, groupid, groupchief, scriptname);
                 _panelDb.Characters.Add(character);
             }
             // Otherwise just update the informations
@@ -58,6 +58,9 @@ namespace BubbleBot.Website.Services
                 character.Map_pos = map_pos;
                 character.State = state;
                 character.Updated_at = currDate;
+                character.Group_Id = groupid;
+                character.Group_Chief = groupchief;
+                character.Script_Name = scriptname;
                 _panelDb.Characters.Update(character);
             }
 
@@ -66,13 +69,13 @@ namespace BubbleBot.Website.Services
         }
 
         public void ArchiveAndAdd(int user_id, int character_id, string account, string name, string server, byte level,
-                                byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+                                byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string groupid, byte groupchief, string scriptname)
         {
             if (_panelDb == null) return;
 
             DateTime currDate = DateTime.Now;
 
-            ArchivedCharacter character = new ArchivedCharacter(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, currDate);
+            ArchivedCharacter character = new ArchivedCharacter(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, currDate, groupid, groupchief, scriptname);
             _panelDb.ArchivedCharacters.Add(character);
 
             // Finally, save the panel's db

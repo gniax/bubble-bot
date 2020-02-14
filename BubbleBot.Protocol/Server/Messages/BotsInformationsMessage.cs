@@ -59,10 +59,13 @@ namespace BubbleBot.Server.Messages
         public int MapId { get; private set; }
         public string MapPosition { get; private set; }
         public string State { get; private set; }
+        public string Group_Id { get; private set; }
+        public byte Group_Chief { get; private set; }
+        public string Script_Name { get; private set; }
 
 
         // Constructor
-        public Bot(byte level, byte energyPercent, byte weightPercent, int kamas, int mapId, string mapPosition, string state)
+        public Bot(byte level, byte energyPercent, byte weightPercent, int kamas, int mapId, string mapPosition, string state, string group_id = "-", byte group_chief = 0, string script_name = "-")
         {
             Level = level;
             EnergyPercent = energyPercent;
@@ -71,6 +74,9 @@ namespace BubbleBot.Server.Messages
             MapId = mapId;
             MapPosition = mapPosition;
             State = state;
+            Group_Id = group_id;
+            Group_Chief = group_chief;
+            Script_Name = script_name;
         }
 
 
@@ -83,10 +89,13 @@ namespace BubbleBot.Server.Messages
             writer.Write(MapId);
             writer.Write(MapPosition);
             writer.Write(State);
+            writer.Write(Group_Id);
+            writer.Write(Group_Chief);
+            writer.Write(Script_Name);
         }
 
         public static Bot Deserialize(BinaryReader reader)
-            => new Bot(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString());
+            => new Bot(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadByte(), reader.ReadString());
 
     }
 

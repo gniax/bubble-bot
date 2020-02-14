@@ -30,7 +30,8 @@ namespace BubbleBot.Server.Handlers
 
                 if (client.Accounts.TryGetValue(message.Account, out Account account))
                 {
-                    account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition, message.State);
+                    account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, 
+                                                  message.MapId, message.MapPosition, message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
                 }
             });
 
@@ -44,11 +45,12 @@ namespace BubbleBot.Server.Handlers
                 {
                     if (client.Accounts.TryGetValue(kvp.Key, out Account account))
                     {
+                        Console.WriteLine("test:" + kvp.Value.Script_Name);
                         account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition, 
-                            kvp.Value.State);
+                            kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
 
                         account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,
-                            kvp.Value.State);
+                            kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
                     }
                 }
             });

@@ -73,7 +73,10 @@ namespace BubbleBot.Core.Frames.Common
                     account.Game.Character.Inventory.Kamas,
                     account.Game.Map.Id,
                     account.Game.Map.CurrentPosition,
-                    account.State.ToFriendlyString()
+                    account.State.ToFriendlyString(),
+                    account.GroupId,
+                    account.Group_Chief,
+                    account.Scripts.CurrentScriptName != null ? account.Scripts.CurrentScriptName : "-"
                 ));
 
                 account.Logger.LogError("", LanguageManager.Translate("559", until.ToString("G")));

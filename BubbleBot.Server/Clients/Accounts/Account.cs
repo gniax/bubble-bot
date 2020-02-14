@@ -20,7 +20,9 @@ namespace BubbleBot.Server.Clients.Accounts
         public int BotMapId { get; private set; }
         public string BotMapPosition { get; private set; }
         public string BotState { get; private set; }
-
+        public string BotGroupId { get; private set; }
+        public byte BotGroupChief { get; private set; }
+        public string BotScriptName { get; private set; }
         public bool HasBot => BotId > 0;
 
 
@@ -43,7 +45,8 @@ namespace BubbleBot.Server.Clients.Accounts
             await HttpClientUtility.PostAsync("characters", GeneratePostContent(clientId));
         }
 
-        public async void UpdateBotInformations(int clientId, byte botLevel, byte botEnergyPercent, byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState)
+        public async void UpdateBotInformations(int clientId, byte botLevel, byte botEnergyPercent, byte botWeightPercent, 
+                                                int botKamas, int botMapId, string botMapPosition, string botState, string botGroupId, byte botGroupChief, string botScriptName)
         {
             BotLevel = botLevel;
             BotEnergyPercent = botEnergyPercent;
@@ -52,11 +55,15 @@ namespace BubbleBot.Server.Clients.Accounts
             BotMapId = botMapId;
             BotMapPosition = botMapPosition;
             BotState = botState;
+            BotGroupId = botGroupId;
+            BotGroupChief = botGroupChief;
+            BotScriptName = botScriptName;
 
             await HttpClientUtility.PatchAsync($"characters/{BotId}", GeneratePostContent(clientId));
         }
 
-        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, byte botLevel, byte botEnergyPercent, byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState)
+        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, byte botLevel, byte botEnergyPercent, 
+                                                  byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState, string botGroupId, byte botGroupChief, string botScriptName)
         {
             BotId = botId;
             BotName = botName;
@@ -68,6 +75,9 @@ namespace BubbleBot.Server.Clients.Accounts
             BotMapId = botMapId;
             BotMapPosition = botMapPosition;
             BotState = botState;
+            BotGroupId = botGroupId;
+            BotGroupChief = botGroupChief;
+            BotScriptName = botScriptName;
 
             await HttpClientUtility.PatchAsync($"characters/archive/", GeneratePostContent(clientId));
         }
@@ -87,7 +97,10 @@ namespace BubbleBot.Server.Clients.Accounts
                    new KeyValuePair<string, string>("kamas", BotKamas.ToString()),
                    new KeyValuePair<string, string>("map_id", BotMapId.ToString()),
                    new KeyValuePair<string, string>("map_pos", BotMapPosition),
-                   new KeyValuePair<string, string>("state", BotState)
+                   new KeyValuePair<string, string>("state", BotState),
+                   new KeyValuePair<string, string>("group_id", BotGroupId),
+                   new KeyValuePair<string, string>("group_chief", BotGroupChief.ToString()),
+                   new KeyValuePair<string, string>("script_name", BotScriptName)
                });
 
     }

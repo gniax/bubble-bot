@@ -80,35 +80,35 @@ namespace BubbleBot.Api.Controllers
 
         [HttpPatch("characters/{id}")]
         public void BotUpdateInfos(int id, string token, int user_id, int character_id, string account, string name, string server, byte level,
-                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string group_id, byte group_chief, string script_name)
         {   
             if (token != _token)
                 return;
 
             // TODO : Check if infos are corrupted or are a threat
-            _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, id);
+            _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, group_id, group_chief, script_name, id);
         }
 
         [HttpPost("characters")]
         public void BotInitialUpdateOrAdd(string token, int user_id, int character_id, string account, string name, string server, byte level,
-                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string group_id, byte group_chief, string script_name)
         {
             if (token != _token)
                 return;
 
             // TODO : Check if infos are corrupted or are a threat
-            _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state);
+            _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, group_id, group_chief, script_name);
         }
 
         [HttpPatch("characters/archive")]
         public void BotArchiveInfos(int id, string token, int user_id, int character_id, string account, string name, string server, byte level,
-                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state)
+                          byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string group_id, byte group_chief, string script_name)
         {
             if (token != _token)
                 return;
 
             // TODO : Check if infos are corrupted or are a threat
-            _botService.ArchiveAndAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state);
+            _botService.ArchiveAndAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, group_id, group_chief, script_name);
         }
     }
 }

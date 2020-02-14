@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BubbleBot.Core.Groups
 {
@@ -19,7 +21,7 @@ namespace BubbleBot.Core.Groups
         // Fields
         private Grouping _grouping;
         private Dictionary<Account, ManualResetEvent> _membersAccountsFinished;
-
+        private string _groupId = null;
 
         // Properties
         public Account Chief { get; private set; }
@@ -29,9 +31,13 @@ namespace BubbleBot.Core.Groups
         // Constructor
         public Group(Account chief)
         {
+            _groupId = GenerateGroupId(16);
             _grouping = new Grouping(this);
             _membersAccountsFinished = new Dictionary<Account, ManualResetEvent>();
             Chief = chief;
+            chief.Group_Chief = 1;
+            chief.GroupId = _groupId;
+
             Members = new ObservableCollection<Account>();
 
             Chief.Group = this;
@@ -39,6 +45,23 @@ namespace BubbleBot.Core.Groups
             Chief.RecaptchaResolved += Account_RecaptchaResolved;
         }
 
+        public string GenerateGroupId(int size)
+        {
+            // Characters except I, l, O, 1, and 0 to decrease confusion when hand typing tokens
+            var charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var chars = charSet.ToCharArray();
+            var data = new byte[1];
+            var crypto = new RNGCryptoServiceProvider();
+            crypto.GetNonZeroBytes(data);
+            data = new byte[size];
+            crypto.GetNonZeroBytes(data);
+            var result = new StringBuilder(size);
+            foreach (var b in data)
+            {
+                result.Append(chars[b % (chars.Length)]);
+            }
+            return result.ToString();
+        }
 
         public void AddMember(Account member)
         {
@@ -48,6 +71,7 @@ namespace BubbleBot.Core.Groups
 
             member.Group = this;
             Members.Add(member);
+            member.GroupId = _groupId;
             _membersAccountsFinished.Add(member, new ManualResetEvent(false));
 
             member.Scripts.ActionsManager.ActionsFinished += Member_ActionsFinished;
