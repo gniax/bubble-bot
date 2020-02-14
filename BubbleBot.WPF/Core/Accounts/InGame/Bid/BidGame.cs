@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         // Properties
         public uint MaxItemsPerAccount { get; private set; }
         public List<ObjectItemToSellInBid> ObjectsInSale { get; private set; }
-        public List<BidUserCondition> UserCondition = null;
+        public List<BidUserCondition> UserCondition { get; private set; }
 
         // Events
         public event Action StartedBuying;
@@ -293,7 +293,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             if (cheapestItem == null)
                 return false;
 
-            List<BidExchangerObjectInfo> filteredItem = null;
+            List<BidExchangerObjectInfo> filteredItem = new List<BidExchangerObjectInfo>();
 
            // o.Effects[i] is ObjectEffectInteger oei
 
@@ -331,30 +331,14 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             }
 
             //Si on a recuperer des items 
-            if (filteredItem != null)
+            if (filteredItem.Count > 0)
             {
                 BidExchangerObjectInfo itemToBuy = null;
 
                 int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
                 uint price = 0;
-
-                //On recupere le moin chere qui correspond aux conditions
-                foreach(var itemSelected in filteredItem)
-                {
-                    if (price == 0)
-                    {
-                        price = itemSelected.Prices[index];
-                        itemToBuy = itemSelected;
-                    }
-                    else
-                    {
-                        if (price > itemSelected.Prices[index])
-                        {
-                            price = itemSelected.Prices[index];
-                            itemToBuy = itemSelected;
-                        } 
-                    }
-                }
+                itemToBuy = filteredItem.OrderBy(o => o.Prices[index]).First();
+            
 
                 // Not enough kamas
                 if (price > _account.Game.Character.Inventory.Kamas)
