@@ -279,6 +279,16 @@ bid = {
 				      	   coroutine.yield()
 				      end
 				  end,
+	extBuyItem = function(gid, lot,maxPrice)
+				      if api.Bid.ExtBuyItem(gid, lot, maxPrice) then
+				      	   coroutine.yield()
+				      end
+				  end,
+	addCondition = function(itemEffectId, itemCondition,itemEffectValue)
+				      if api.Bid.AddUserCondition(itemEffectId,itemCondition,itemEffectValue) then
+				      	   coroutine.yield()
+				      end
+				  end,
 	getItemPrice = api.Bid.GetItemPrice,
 	buyItem = function(gid, lot)
 			      if api.Bid.BuyItem(gid, lot) then

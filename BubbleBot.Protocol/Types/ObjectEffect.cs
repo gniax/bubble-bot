@@ -8,14 +8,14 @@ namespace BubbleBot.Protocol.Types
 
 		// Properties
 		public uint ActionId { get; set; }
-
-
+		public uint Value { get; set; }
 		// Constructors
 		public ObjectEffect() { }
 
-		public ObjectEffect(uint actionId = 0)
+		public ObjectEffect(uint actionId = 0, uint value = 0)
 		{
 			ActionId = actionId;
+			Value = value;
 		}
 
 	}

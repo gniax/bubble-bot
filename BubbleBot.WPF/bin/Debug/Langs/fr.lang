@@ -639,3 +639,4 @@
 644|IDENTIFIANT
 645|Identifiant
 646|Banni
+647|Le prix est supérieur au maximum souhaiter (gid: {0}, lot: {1}, prix: {2}).

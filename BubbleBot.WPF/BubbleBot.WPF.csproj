@@ -350,6 +350,7 @@
     <Compile Include="Core\Accounts\Network\NetworkManager.cs" />
     <Compile Include="Core\Accounts\Network\NetworkMessage.cs" />
     <Compile Include="Core\Accounts\Network\RegisteredMessage.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Bid\AddUserCondition.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\BuyItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\EditItemInSalePriceAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Bid\ExtendBuyItemAction.cs" />

@@ -35,6 +35,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         public BidGame(Account account)
         {
             _account = account;
+            UserCondition = new List<BidUserCondition>();
         }
 
 
@@ -198,7 +199,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         {
             if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return;
-
+        
             _itemDescriptionTcs?.SetResult(message.ItemTypeDescriptions);
         }
 
@@ -274,7 +275,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             {
                 _itemDescriptionTcs = new TaskCompletionSource<List<BidExchangerObjectInfo>>();
                 _account.Network.SendMessage(new ExchangeBidHouseSearchMessage((uint)item.TypeId, gid));
-
+                
                 _itemDescriptionTcs.Task.Wait();
                 _lastSearchedGID = gid;
             }
@@ -282,16 +283,17 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        public bool ExtendedBuyItem(uint gid, uint lot)
+        public bool ExtendedBuyItem(uint gid, uint lot,uint maxPrice)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
-
+            _account.Logger.LogDebug("TEST BID", "GETALLITEM");
             var cheapestItem = GetAllItemInSell(gid, lot);
 
             // In case the item wasn't found
-            if (cheapestItem == null)
+            if (cheapestItem.Count <= 0)
                 return false;
+            _account.Logger.LogError("TEST BID", "START FILTER ITEM");
 
             List<BidExchangerObjectInfo> filteredItem = new List<BidExchangerObjectInfo>();
 
@@ -299,15 +301,28 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
             foreach (var item in cheapestItem)  //Pour chaque item du type selectionner
             {
-                for(int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
+                _account.Logger.LogError("TEST BID", "ITEM CHANGE" );
+                bool isVerified = false;
+
+                for (int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
                 {
-                    bool isVerified = false;
-                    if (UserCondition != null)
+                    if (UserCondition.Count > 0)
                     {
+                        //_account.Logger.LogError("TEST BID", "NB CONDITION " + UserCondition.Count);
+                       // _account.Logger.LogError("TEST BID", "EFFECT " + item.Effects[effId].ActionId.ToString());
                         foreach (var condition in UserCondition)    //Pour chaque condition selectionner par l'utilisateur
                         {
-                            if (item.Effects[effId] is ObjectEffectInteger oei)  //Truc chelou qui converti la classe 
-                            {
+                            // ObjectItem verifeObj = new ObjectItem(63, 0, item.ObjectUID, 0, item.Effects);
+                            //ObjectEffectInteger oei = (ObjectEffectInteger)item.Effects[effId];
+                            //if (item.Effects[effId].ObjectValue)  //Truc chelou qui converti la classe 
+                            // {
+                            ObjectEffectInteger oei = new ObjectEffectInteger();
+                            oei.Value = item.Effects[effId].Value;
+                            oei.ActionId = item.Effects[effId].ActionId;
+                           // if (!(item.Effects[effId] is ObjectEffectInteger oei))
+                           //   continue;
+
+                            //_account.Logger.LogError("TEST BID", oei.Value.ToString());
                                 if (condition.ItemEffectsId == oei.ActionId) //Si la condition s'applique a l'effet selectionner
                                 {
                                     if (condition.BidConditionChecker((int)oei.Value)) //Verifie si la condition est valide 
@@ -318,28 +333,35 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                                     else
                                     {
                                         isVerified = false;
+                                        effId = item.Effects.Count + 5;
+                                        break;
                                     }
                                 }
-                            }
+                             
                         }
                     }
-                    if(isVerified == true)
-                    {
-                        filteredItem.Add(item);
-                    }
-                }      
+                }
+                if (isVerified == true)
+                {
+                    filteredItem.Add(item);
+                    _account.Logger.LogError("TEST BID", "ITEM CERTIFIED");
+                }
             }
 
             //Si on a recuperer des items 
             if (filteredItem.Count > 0)
             {
-                BidExchangerObjectInfo itemToBuy = null;
+                BidExchangerObjectInfo itemToBuy = new BidExchangerObjectInfo();
 
                 int index = lot == 1 ? 0 : lot == 10 ? 1 : 2;
                 uint price = 0;
                 itemToBuy = filteredItem.OrderBy(o => o.Prices[index]).First();
-            
-
+                price = itemToBuy.Prices[index];
+                if (price > maxPrice && maxPrice != 0)
+                {
+                    _account.Logger.LogWarning(LanguageManager.Translate("102"), LanguageManager.Translate("647", gid, lot, price));
+                    return false;
+                }
                 // Not enough kamas
                 if (price > _account.Game.Character.Inventory.Kamas)
                 {
@@ -347,11 +369,11 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                     return false;
                 }
 
-                if(itemToBuy != null)
+                if(itemToBuy.Prices[index] > 0)
                     _account.Network.SendMessage(new ExchangeBidHouseBuyMessage(itemToBuy.ObjectUID, lot, price));
+                return true;
             }
-
-            return true;
+            return false;
         }
 
         private List<BidExchangerObjectInfo> GetAllItemInSell(uint gid, uint lot)
@@ -371,9 +393,12 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return _itemDescriptionTcs.Task.Result;
         }
 
-        private void AddBuyItemCondition(int EffectsId, string conditionType , int EffectsValue)
+        public bool AddBuyItemCondition(int EffectsId, string conditionType , int EffectsValue)
         {
+            _account.Logger.LogDebug("TEST BID", "ADD CONDITION");
             UserCondition.Add(new BidUserCondition(EffectsId, conditionType, EffectsValue));
+            _account.Logger.LogDebug("TEST BID", "CONDITION added");
+            return true;
         }
 
         #region IDisposable Support
