@@ -11,6 +11,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         public int ItemEffectsId = 0;
         public string ItemCondition = "";
         public int ItemValue = 0;
+        public bool Checked = false;
 
         public BidUserCondition(int itemeffects,string itemcondition,int itemvalue)
         {
@@ -21,7 +22,8 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
         public bool BidConditionChecker(int ItemValueToCheck)
         {
-            if(ItemCondition != "")
+            Checked = true;
+            if (ItemCondition != "")
             {
                 if(ItemCondition == "=" || ItemCondition == "==")
                 {
@@ -46,7 +48,9 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 else if (ItemCondition == "<=")
                 {
                     if (ItemValueToCheck <= ItemValue)
+                    {
                         return true;
+                    }
                 }
                 else if (ItemCondition == "!=" || ItemCondition == "=!")
                 {
