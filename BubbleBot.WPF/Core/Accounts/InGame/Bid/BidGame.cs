@@ -303,10 +303,12 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             {
                 _account.Logger.LogError("TEST BID", "ITEM CHANGE" );
                 bool isVerified = false;
+                int conditionChecked = 0;
+                int nbConditionToCheck = UserCondition.Count;
 
                 for (int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
                 {
-                    if (UserCondition.Count > 0)
+                    if (nbConditionToCheck > 0)
                     {
                         //_account.Logger.LogError("TEST BID", "NB CONDITION " + UserCondition.Count);
                        // _account.Logger.LogError("TEST BID", "EFFECT " + item.Effects[effId].ActionId.ToString());
@@ -327,8 +329,9 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                                 {
                                     if (condition.BidConditionChecker((int)oei.Value)) //Verifie si la condition est valide 
                                     {
-                                        _account.Logger.LogInfo("BID_EXTENDED", oei.Value.ToString());
+                                        //_account.Logger.LogInfo("BID_EXTENDED", oei.Value.ToString());
                                         isVerified = true;
+                                        conditionChecked++;
                                     }
                                     else
                                     {
@@ -341,7 +344,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                         }
                     }
                 }
-                if (isVerified == true)
+                if (isVerified == true && conditionChecked == nbConditionToCheck)
                 {
                     filteredItem.Add(item);
                     _account.Logger.LogError("TEST BID", "ITEM CERTIFIED");
@@ -360,19 +363,27 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 if (price > maxPrice && maxPrice != 0)
                 {
                     _account.Logger.LogWarning(LanguageManager.Translate("102"), LanguageManager.Translate("647", gid, lot, price));
+                    UserCondition = new List<BidUserCondition>();
                     return false;
                 }
                 // Not enough kamas
                 if (price > _account.Game.Character.Inventory.Kamas)
                 {
                     _account.Logger.LogWarning(LanguageManager.Translate("102"), LanguageManager.Translate("103", gid, lot, price));
+                    UserCondition = new List<BidUserCondition>();
                     return false;
                 }
 
                 if(itemToBuy.Prices[index] > 0)
+                {
+                    _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("648", gid, lot, price));
                     _account.Network.SendMessage(new ExchangeBidHouseBuyMessage(itemToBuy.ObjectUID, lot, price));
-                return true;
+                    UserCondition = new List<BidUserCondition>();
+                    return true;
+                }
             }
+            _account.Logger.LogWarning(LanguageManager.Translate("102"), LanguageManager.Translate("649"));
+            UserCondition = new List<BidUserCondition>();
             return false;
         }
 

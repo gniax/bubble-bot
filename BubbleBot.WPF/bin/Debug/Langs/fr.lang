@@ -640,3 +640,5 @@
 645|Identifiant
 646|Banni
 647|Le prix est supérieur au maximum souhaiter (gid: {0}, lot: {1}, prix: {2}).
+648|Achat de l'item (gid: {0}, lot: {1}, prix: {2}).
+649|Aucun item n'a été trouver avec les conditions choisie.
