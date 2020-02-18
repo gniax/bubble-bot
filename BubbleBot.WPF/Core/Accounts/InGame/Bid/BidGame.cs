@@ -287,67 +287,69 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
-            _account.Logger.LogDebug("TEST BID", "GETALLITEM");
+
             var cheapestItem = GetAllItemInSell(gid, lot);
 
             // In case the item wasn't found
             if (cheapestItem.Count <= 0)
                 return false;
-            _account.Logger.LogError("TEST BID", "START FILTER ITEM");
 
             List<BidExchangerObjectInfo> filteredItem = new List<BidExchangerObjectInfo>();
 
-           // o.Effects[i] is ObjectEffectInteger oei
-
             foreach (var item in cheapestItem)  //Pour chaque item du type selectionner
             {
-                _account.Logger.LogError("TEST BID", "ITEM CHANGE" );
                 bool isVerified = false;
                 int conditionChecked = 0;
                 int nbConditionToCheck = UserCondition.Count;
+
+                foreach (var condition in UserCondition)
+                {
+                    condition.Checked = false;
+                }
 
                 for (int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
                 {
                     if (nbConditionToCheck > 0)
                     {
-                        //_account.Logger.LogError("TEST BID", "NB CONDITION " + UserCondition.Count);
-                       // _account.Logger.LogError("TEST BID", "EFFECT " + item.Effects[effId].ActionId.ToString());
                         foreach (var condition in UserCondition)    //Pour chaque condition selectionner par l'utilisateur
                         {
-                            // ObjectItem verifeObj = new ObjectItem(63, 0, item.ObjectUID, 0, item.Effects);
-                            //ObjectEffectInteger oei = (ObjectEffectInteger)item.Effects[effId];
-                            //if (item.Effects[effId].ObjectValue)  //Truc chelou qui converti la classe 
-                            // {
                             ObjectEffectInteger oei = new ObjectEffectInteger();
                             oei.Value = item.Effects[effId].Value;
                             oei.ActionId = item.Effects[effId].ActionId;
-                           // if (!(item.Effects[effId] is ObjectEffectInteger oei))
-                           //   continue;
-
-                            //_account.Logger.LogError("TEST BID", oei.Value.ToString());
-                                if (condition.ItemEffectsId == oei.ActionId) //Si la condition s'applique a l'effet selectionner
+                            if (condition.ItemEffectsId == oei.ActionId) //Si la condition s'applique a l'effet selectionner
+                            {
+                                if (condition.BidConditionChecker((int)oei.Value)) //Verifie si la condition est valide 
                                 {
-                                    if (condition.BidConditionChecker((int)oei.Value)) //Verifie si la condition est valide 
-                                    {
-                                        //_account.Logger.LogInfo("BID_EXTENDED", oei.Value.ToString());
-                                        isVerified = true;
-                                        conditionChecked++;
-                                    }
-                                    else
-                                    {
-                                        isVerified = false;
-                                        effId = item.Effects.Count + 5;
-                                        break;
-                                    }
+                                    isVerified = true;
+                                    conditionChecked++;
                                 }
+                                else
+                                {
+                                    isVerified = false;
+                                    effId = item.Effects.Count + 5;
+                                    break;
+                                }
+                            }
                              
                         }
                     }
                 }
-                if (isVerified == true && conditionChecked == nbConditionToCheck)
+                if (isVerified == true)
                 {
-                    filteredItem.Add(item);
-                    _account.Logger.LogError("TEST BID", "ITEM CERTIFIED");
+                    foreach (var condition in UserCondition)
+                    {
+                        if (condition.Checked == false)
+                        {
+                            if (condition.BidConditionChecker(0))
+                            {
+                                conditionChecked++;
+                            }
+                        }
+                    }
+                    if(conditionChecked == nbConditionToCheck)
+                    {
+                        filteredItem.Add(item);
+                    }
                 }
             }
 
@@ -406,9 +408,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
         public bool AddBuyItemCondition(int EffectsId, string conditionType , int EffectsValue)
         {
-            _account.Logger.LogDebug("TEST BID", "ADD CONDITION");
             UserCondition.Add(new BidUserCondition(EffectsId, conditionType, EffectsValue));
-            _account.Logger.LogDebug("TEST BID", "CONDITION added");
             return true;
         }
 

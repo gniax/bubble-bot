@@ -21,13 +21,13 @@ namespace BubbleBot
 {
     public static class Constants
     {
-        //public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address
-        //public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address 
-        //public static string ServerHost = "93.113.207.95"; // Server host
+        public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address
+       public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address 
+        public static string ServerHost = "93.113.207.95"; // Server host
 
-        public static string WebsiteIpAddress = "http://localhost:80"; // Website address
-        public static string ApiIpAddress = "http://localhost:5001"; // VPS address
-        public static string ServerHost = "localhost"; // Server host
+        //public static string WebsiteIpAddress = "http://localhost:80"; // Website address
+        //public static string ApiIpAddress = "http://localhost:5001"; // VPS address
+        //public static string ServerHost = "localhost"; // Server host
 
         public static int ServerService = 3000; // Server service : 3000
     }

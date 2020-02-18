@@ -46,7 +46,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             if (_account.State != Enums.AccountStates.BUYING)
                 return false;
-            _account.Logger.LogDebug("TEST BID", "START EXTENDBUY");
+
             _account.Scripts.ActionsManager.EnqueueAction(new ExtendBuyItemAction(gid, lot, maxPrice), true);
             return true;
         }
@@ -54,7 +54,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             if (_account.State != Enums.AccountStates.BUYING)
                 return false;
-            _account.Logger.LogDebug("TEST BID", "START");
+
             _account.Scripts.ActionsManager.EnqueueAction(new AddUserCondition(ItemEffetId, ItemCondition, ItemValue), true);
             return true;
         }
