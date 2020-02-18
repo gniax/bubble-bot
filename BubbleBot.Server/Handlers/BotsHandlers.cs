@@ -45,7 +45,6 @@ namespace BubbleBot.Server.Handlers
                 {
                     if (client.Accounts.TryGetValue(kvp.Key, out Account account))
                     {
-                        Console.WriteLine("test:" + kvp.Value.Script_Name);
                         account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition, 
                             kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
 

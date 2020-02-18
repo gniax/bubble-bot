@@ -57,7 +57,7 @@ namespace BubbleBot.Website.Controllers
         }
 
 
-        [HttpGet]
+        [Route("/Register")]
         public IActionResult Register()
         {
             return View();

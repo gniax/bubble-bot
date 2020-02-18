@@ -11,6 +11,34 @@ body {
     border-bottom: 1px solid #d4d4d4;
 }
 
+ul.dropdown-menu-custom {
+    display: none;
+    margin: 0px;
+    height: 100px; 
+}
+
+ul.dropdown-menu-custom-show {
+    display: contents;
+    margin: 0px;
+    height: 100px; 
+}
+
+.sidebar ul.nav a:hover {
+    transition-duration: 0.3s;
+}
+
+ul.dropdown-item-custom {
+
+}
+
+.fa-arrow-down {
+    font-size: medium;
+}
+
+.caretup {
+    transform: rotate(180deg);
+}
+
 #sidebar-collapse img {
     border: 1px solid #a0a0a0;
     border-radius: 9999px;
