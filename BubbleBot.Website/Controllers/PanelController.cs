@@ -173,6 +173,12 @@ namespace BubbleBot.Website.Controllers
         }
 
         [Authorize]
+        public IActionResult BotsStats()
+        {
+            return HandleAuthorizedAction();
+        }
+
+        [Authorize]
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync();

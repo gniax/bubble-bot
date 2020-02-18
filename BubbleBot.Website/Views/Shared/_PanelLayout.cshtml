@@ -45,15 +45,16 @@
             <li class="@(currentAction == "Downloads" ? "active" : "")">
                 <a class="nav-link" asp-action="Downloads" asp-controller="Panel"><span class="fa fa-download"></span> Téléchargements</a>
             </li>
-            <li class="dropdown @(currentAction == "Bots" ? "active" : "")">
-                <a class="nav-link" aria-haspopup="true" aria-expanded="false"><span class="caret fa fa-users"></span>Mes bots<span class="caret fa fa-arrow-down"></span></a>
+            <li class="dropdown">
+                <a class="nav-link" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret fa fa-bar-chart"></span> Statistiques<span class="caret fa fa-arrow-down fa-pull-right" style="line-height: 2em;"></span>
+                </a>
                 <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                    <li class="dropdown-item-custom"><a class="nav-link" href="#">Submenu 1-1</a></li>
-                    <li class="dropdown-item-custom"><a class="nav-link" href="#">Submenu 1-2</a></li>
-                    <li class="dropdown-item-custom"><a class="nav-link" href="#">Submenu 1-3</a></li>
+                    <li class="dropdown-item-custom @(currentAction == "Bots" ? "active" : "")"><a class="nav-link text-dark font-italic bg-light" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
+                    <li class="dropdown-item-custom @(currentAction == "Bots" ? "active" : "")"><a class="nav-link text-dark font-italic bg-light" href="#">Global</a></li>
+                    <li class="dropdown-item-custom @(currentAction == "Bots" ? "active" : "")"><a class="nav-link text-dark font-italic bg-light" href="#">Hôtel de Vente</a></li>
                 </ul>
             </li>
-            <!-- asp-action="Bots" asp-controller="Panel" -->
             <li>
                 <a class="nav-link" asp-action="LogOut" asp-controller="Panel"><span class="fa fa-sign-out"></span> Se déconnecter</a>
             </li>
