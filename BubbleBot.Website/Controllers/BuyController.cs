@@ -71,6 +71,7 @@ namespace BubbleBot.Website.Controllers
 
                 _panelDbContext.SubscriptionsBought.Add(new SubscriptionBought(plan.Id, user.Id, offer));
                 _panelDbContext.SaveChanges();
+                TempData["success"] = "Votre achat à bien été effectué !";
             }
 
             return RedirectToAction("Subscriptions", "Panel");
@@ -113,6 +114,7 @@ namespace BubbleBot.Website.Controllers
 
                 _panelDbContext.ExtensionsBought.Add(new ExtensionBought(extension.Id, user.Id, weeks));
                 _panelDbContext.SaveChanges();
+                TempData["success"] = "Votre achat à bien été effectué !";
             }
 
             return RedirectToAction("Extensions", "Panel");

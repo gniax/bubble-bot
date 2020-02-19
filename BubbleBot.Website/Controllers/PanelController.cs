@@ -118,6 +118,12 @@ namespace BubbleBot.Website.Controllers
         {
             ViewBag.PointsPlans = _panelDbContext.PointsPlans;
 
+            if (TempData["success"] != null)
+            {
+                ViewBag.Success = TempData["success"];
+                TempData.Remove("success");
+            }
+
             if (TempData["error"] != null)
             {
                 ViewBag.Error = TempData["error"];
@@ -143,6 +149,12 @@ namespace BubbleBot.Website.Controllers
                 TempData.Remove("error");
             }
 
+            if (TempData["success"] != null)
+            {
+                ViewBag.Success = TempData["success"];
+                TempData.Remove("success");
+            }
+
             return HandleAuthorizedAction();
         }
 
@@ -155,6 +167,12 @@ namespace BubbleBot.Website.Controllers
             {
                 ViewBag.Error = TempData["error"];
                 TempData.Remove("error");
+            }
+
+            if (TempData["success"] != null)
+            {
+                ViewBag.Success = TempData["success"];
+                TempData.Remove("success");
             }
 
             return HandleAuthorizedAction();
@@ -174,6 +192,12 @@ namespace BubbleBot.Website.Controllers
 
         [Authorize]
         public IActionResult BotsStats()
+        {
+            return HandleAuthorizedAction();
+        }
+
+        [Authorize]
+        public IActionResult User()
         {
             return HandleAuthorizedAction();
         }

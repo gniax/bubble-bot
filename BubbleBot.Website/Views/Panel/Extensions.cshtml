@@ -4,15 +4,25 @@
     ViewData["Title"] = "Extensions";
 }
 
+<script src="~/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
-        @ViewBag.Error
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.Error", 4, 'top', 'right');
+        });
+    </text>
 }
+@if (ViewBag.Success != null)
+{
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.Success", 2, 'top', 'right');
+        });
+    </text>
+}
+</script>
 
 <div class="alert alert-warning" role="alert">
     Les extensions sont utilisables et affichées que si vous êtes abonnés.
@@ -61,7 +71,7 @@
                                 <input type="hidden" name="id" value="@extension.Id" />
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-warning" @if (extension.Price > Model.Points) { @Html.Raw("disabled")   }><i class="fa fa-shopping-cart"></i> Acheter</button>
+                        <button type="submit" class="btn btn-warning" @if (extension.Price > Model.Points) { @Html.Raw("disabled") }><i class="fa fa-shopping-cart"></i> Acheter</button>
                     </form>
                 </td>
             </tr>

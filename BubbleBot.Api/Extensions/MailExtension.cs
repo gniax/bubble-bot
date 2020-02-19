@@ -45,8 +45,11 @@ namespace BubbleBot.Api.Extensions
                         {
                             LinkedResource inlineLogo = new LinkedResource(attachmentPath);
                             inlineLogo.ContentId = "Logo";
+                            inlineLogo.TransferEncoding = TransferEncoding.Base64;
+                            inlineLogo.ContentType.Name = inlineLogo.ContentId;
+                            inlineLogo.ContentLink = new Uri("cid:" + inlineLogo.ContentId);
                             string newBody = mail.Body.Replace("[LogoBubble]", string.Format(@"<img src='cid:{0}'/>", inlineLogo.ContentId));
-                            AlternateView view = AlternateView.CreateAlternateViewFromString(newBody, null, "text/html");
+                            AlternateView view = AlternateView.CreateAlternateViewFromString(newBody, Encoding.UTF8, MediaTypeNames.Text.Html);
                             view.LinkedResources.Add(inlineLogo);
                             mail.AlternateViews.Add(view);
                         }

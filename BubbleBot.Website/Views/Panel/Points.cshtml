@@ -4,15 +4,25 @@
     ViewData["Title"] = "Points";
 }
 
+<script src="~/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger alert-dismissible fixed-alert fade show" role="alert">
-        @ViewBag.Error
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.Error", 4, 'top', 'right');
+        });
+    </text>
 }
+@if (ViewBag.Success != null)
+{
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.Success", 2, 'top', 'right');
+        });
+    </text>
+}
+</script>
 
 <div class="alert alert-info" role="alert">
     Vous disposez actuellement de <b>@Model.Points</b> points, vous pouvez facilement créditer votre compte à tout moment.<br />
@@ -49,6 +59,6 @@
                     </div>
                 </form>
             </div>
-                                }
+        }
     </div>
 </div>
