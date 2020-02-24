@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using BubbleBot.Website.Extensions;
+using System.Text.RegularExpressions;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BubbleBot.Website.Controllers
 {
@@ -22,12 +26,13 @@ namespace BubbleBot.Website.Controllers
         // Fields
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly PanelDbContext _panelDbContext;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         // Constructor
-        public PanelController(PanelDbContext panelDbContext)
+        public PanelController(PanelDbContext panelDbContext, IWebHostEnvironment webHostEnvironment)
         {
             _panelDbContext = panelDbContext;
+            _webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -196,9 +201,151 @@ namespace BubbleBot.Website.Controllers
             return HandleAuthorizedAction();
         }
 
+        [HttpGet]
         [Authorize]
-        public IActionResult User()
+        public IActionResult UserProfile()
         {
+            if (TempData["error"] != null)
+            {
+                Console.WriteLine("help");
+                ViewBag.Error = TempData["error"];
+                TempData.Remove("error");
+            }
+
+            if (TempData["success"] != null)
+            {
+                ViewBag.Success = TempData["success"];
+                TempData.Remove("success");
+            }
+
+            return HandleAuthorizedAction();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult UserProfile(string FirstName, string Surname, string Discord, string Description, IFormFile Avatar)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+                return RedirectToAction("Index");
+
+            if (!CaptchaExtension.ReCaptchaPassed(Request.Form["reCaptcha"]))
+            {
+                ModelState.AddModelError(string.Empty, "Le CAPTCHA a été refusé.");
+                return HandleAuthorizedAction();
+            }
+
+            User user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return StatusCode(404);
+
+            if (FirstName != null)
+            if (FirstName.Length < 2 || FirstName.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
+            {
+                TempData["error"] += "La longueur du prénom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";     
+            }
+
+            if(Surname != null)
+            if (Surname.Length < 2 || Surname.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
+            {
+                TempData["error"] += "La longueur du nom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";
+            }
+
+            if (Discord != null)
+            if (Discord.Length < 2 || Surname.Length > 18)
+            {
+                TempData["error"] += "La longueur du discord doit être compris entre 2 et 18 caractères.<br/>";
+                }
+
+            if (Description != null)
+            if (Description.Length > 255)
+            {
+                TempData["error"] += "La longueur de la description doit être inférieur à 255 caractères.<br/>";
+            }
+
+            if(TempData["error"] != null)
+            {
+                return RedirectToAction("UserProfile");
+            }
+
+            bool userChange = false;
+            if(user.Surname != Surname)
+            {
+                user.Surname = Surname;
+                userChange = true;
+            }
+
+            if (user.FirstName != FirstName)
+            {
+                user.FirstName = FirstName;
+                userChange = true;
+            }
+
+            if (user.Discord != Discord)
+            {
+                user.Discord = Discord;
+                userChange = true;
+            }
+
+            if (user.Description != Description)
+            {
+                user.Description = Description;
+                userChange = true;
+            }
+
+            if(Avatar != null)
+            {
+                string fileExt = Path.GetExtension(Avatar.FileName).ToLower();
+                string fileName = Path.GetFileName(Avatar.FileName);
+                if (fileName != "")
+                {
+                    if (fileExt == ".jpg" || fileExt == ".gif" || fileExt == ".png")
+                    {
+                        if (Avatar.Length <= 2e+6)
+                        {
+                            if(user.Avatar != "default.jpg")
+                            {
+                                if(System.IO.File.Exists(_webHostEnvironment.WebRootPath + "/uploads/avatars/" + user.Avatar))
+                                    System.IO.File.Delete(_webHostEnvironment.WebRootPath + "/uploads/avatars/" + user.Avatar);
+                            }
+
+                            string newFileName = user.Username + fileExt;
+                            string filePath = _webHostEnvironment.WebRootPath + "/uploads/avatars/" + newFileName;
+
+                            FileStream stream;
+                            Avatar.CopyTo(stream = new FileStream(filePath, FileMode.Create));
+                            stream.Close();
+
+                            user.Avatar = newFileName;
+                            userChange = true;
+                        }
+                        else
+                        {
+                            TempData["error"] += "La taille de l'image doit être inférieur à 2 Mo.<br/>";
+                        }
+                    }
+                    else
+                    {
+                        TempData["error"] += "L'extension de l'image doit être .jpg, .gif ou .png.<br/>";
+                    }
+                }
+                else
+                {
+                    TempData["error"] += "Le nom de l'image ne peut pas être nul.<br/>";
+                }
+            }
+
+            if (TempData["error"] != null)
+            {
+                return RedirectToAction("UserProfile");
+            }
+
+            if(userChange)
+            {
+                _panelDbContext.Update(user);
+                _panelDbContext.SaveChanges();
+            }
+
             return HandleAuthorizedAction();
         }
 

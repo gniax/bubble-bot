@@ -13,6 +13,10 @@ namespace BubbleBot.Website.Models
         public int Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public string Description { get; set; }
+        public string Discord { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
         public string Avatar { get; set; }

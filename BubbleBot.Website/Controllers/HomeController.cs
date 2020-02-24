@@ -133,6 +133,13 @@ namespace BubbleBot.Website.Controllers
                 return View(lvm);
             }
 
+            List<string> blackList = new List<string> { "administrateur", "admin", "root", "default", "modo", "moderateur", "pute", "bite", "niquetamere", "chatte", "fdp" };
+            if(blackList.IndexOf(lvm.Username.ToLower()) != -1)
+            {
+                ViewBag.ErrorMessage = "Le nom d'utilisateur " + lvm.Username + " est interdit.";
+                return View(lvm);
+            }
+
             if (lvm.Password.Length < 5 || lvm.Username.Length > 20)
             {
                 ViewBag.ErrorMessage = "La longueur du mot de passe doit être compris entre 5 et 20 caractères.";
