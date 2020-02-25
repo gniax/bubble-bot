@@ -241,7 +241,7 @@ namespace BubbleBot.Server
                             kamas: account.Game.Character.Inventory.Kamas,
                             mapId: account.Game.Map.Id,
                             mapPosition: account.Game.Map.CurrentPosition,
-                            state: account.State.ToFriendlyString(),
+                            state: account.State.ToString(),
                             group_id: account.GroupId,
                             group_chief: account.Group_Chief,
                             script_name: account.Scripts.CurrentScriptName != null ? account.Scripts.CurrentScriptName : "-"

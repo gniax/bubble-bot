@@ -68,6 +68,7 @@ namespace BubbleBot.Website.Controllers
             return View();
         }
 
+        #region VerifyEmail
         [Route("/VerifyEmail")]
         [HttpGet]
         public async Task<IActionResult> VerifyEmail(EmailVerificationViewModel lvm)
@@ -108,7 +109,9 @@ namespace BubbleBot.Website.Controllers
             }
             return StatusCode(404);
         }
+        #endregion
 
+        #region RegisterController
         [Route("/Register")]
         [HttpPost]
         [AllowAnonymous]
@@ -191,5 +194,6 @@ namespace BubbleBot.Website.Controllers
 
             return View(lvm);
         }
+        #endregion Controller
     }
 }

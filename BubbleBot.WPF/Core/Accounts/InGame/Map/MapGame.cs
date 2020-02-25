@@ -286,7 +286,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                                     _account.Game.Character.Inventory.Kamas,
                                     _account.Game.Map.Id,
                                     _account.Game.Map.CurrentPosition,
-                                    _account.State.ToFriendlyString(),
+                                    _account.State.ToString(),
                                     _account.GroupId,
                                     _account.Group_Chief,
                                     _account.Scripts.CurrentScriptName != null ? _account.Scripts.CurrentScriptName : "-"

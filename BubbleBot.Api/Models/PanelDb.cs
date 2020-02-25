@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Website.Models
 {
@@ -70,7 +71,9 @@ namespace BubbleBot.Website.Models
             // 1 : username exists
             // 2 : email exists
             // 3 : both exists
-        } 
+        }
+        public async Task<int> GetUserId(string username)
+            => Users.FirstOrDefault(u => u.Username == username).Id;
 
         public SubscriptionPlan GetSubscriptionPlan(int id)
             => SubscriptionsPlans.FirstOrDefault(p => p.Id == id);
@@ -80,6 +83,5 @@ namespace BubbleBot.Website.Models
 
         public Extension GetExtension(int id)
             => Extensions.FirstOrDefault(e => e.Id == id);
-
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Api.Extensions;
 using BubbleBot.Website.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BubbleBot.Website.Services
 {
@@ -10,7 +13,6 @@ namespace BubbleBot.Website.Services
 
         // Fields
         private readonly PanelDb _panelDb;
-
 
         // Constructors
         public BotService() { }
@@ -80,6 +82,57 @@ namespace BubbleBot.Website.Services
 
             // Finally, save the panel's db
             _panelDb.SaveChanges();
+        }
+
+        public async Task<List<Character>> GetBotsInfos(string username)
+        {
+            if (_panelDb == null) return null;
+
+            var user = _panelDb.Users.Select(u => u.Username == username);
+            if (user == null)
+                return null;
+
+            int userid = await _panelDb.GetUserId(username);
+            if(userid == null)
+                return null;
+
+            _panelDb.SaveChanges();
+            List<Character> characters = new List<Character>();
+            IQueryable<Character> temp = _panelDb.Characters.Where(c => c.User_id == userid);
+            characters = temp.ToList();
+            
+            
+            if(characters.Count > 0)
+            {
+                return characters;
+            }
+
+            return null;
+        }
+        public async Task<List<ArchivedCharacter>> GetArchivedBotsInfos(string username)
+        {
+            if (_panelDb == null) return null;
+
+            var user = _panelDb.Users.Select(u => u.Username == username);
+            if (user == null)
+                return null;
+
+            int userid = await _panelDb.GetUserId(username);
+            if (userid == null)
+                return null;
+
+            _panelDb.SaveChanges();
+            List<ArchivedCharacter> arccharacters = new List<ArchivedCharacter>();
+            IQueryable<ArchivedCharacter> temp = _panelDb.ArchivedCharacters.Where(c => c.User_id == userid);
+            arccharacters = temp.ToList();
+         
+
+            if (arccharacters.Count > 0)
+            {
+                return arccharacters;
+            }
+
+            return null;
         }
     }
 }

@@ -197,12 +197,12 @@ body,
 }
 
 a {
-    color: #1DC7EA;
+    color: #05053a;
 }
 
 a:hover,
 a:focus {
-    color: #42d0ed;
+    color: #82289d;
     text-decoration: none;
 }
 
@@ -2022,7 +2022,7 @@ fieldset[disabled] .form-control {
 }
 
 .navbar .navbar-nav .nav-item .nav-link:hover {
-    color: #1DC7EA;
+    color: #82289d;
 }
 
 .navbar .navbar-nav .nav-item .dropdown-menu {

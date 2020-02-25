@@ -32,6 +32,9 @@ namespace BubbleBot.Server.Handlers
                 {
                     account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, 
                                                   message.MapId, message.MapPosition, message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
+
+                    account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition,
+                            message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
                 }
             });
 

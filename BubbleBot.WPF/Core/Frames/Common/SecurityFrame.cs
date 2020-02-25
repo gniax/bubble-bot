@@ -73,9 +73,9 @@ namespace BubbleBot.Core.Frames.Common
                     account.Game.Character.Inventory.Kamas,
                     account.Game.Map.Id,
                     account.Game.Map.CurrentPosition,
-                    account.State.ToFriendlyString(),
-                    account.GroupId,
-                    account.Group_Chief,
+                    account.State.ToString(),
+                    "-",
+                    0,
                     account.Scripts.CurrentScriptName != null ? account.Scripts.CurrentScriptName : "-"
                 ));
 

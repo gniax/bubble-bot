@@ -1,7 +1,109 @@
-﻿
+﻿@using  BubbleBot.Website.Models
+@using  BubbleBot.Website.Enums
 @{
+    List<Character> characters = ViewBag.Characters;
+    List<ArchivedCharacter> archivedcharacters = ViewBag.ArchivedCharacters;
+
+    List<Character> onlineBots = new List<Character>();
+    List<Character> offlineBots = new List<Character>();
+    List<Character> bannedBots = new List<Character>();
+    foreach (Character character in characters)
+    {
+        if (character.State != AccountStates.DISCONNECTED.ToString() && character.State != AccountStates.BANNED.ToString())
+        {
+            onlineBots.Add(character);
+        }
+        else if (character.State == AccountStates.DISCONNECTED.ToString())
+        {
+            offlineBots.Add(character);
+        }
+        else if (character.State == AccountStates.BANNED.ToString())
+        {
+            bannedBots.Add(character);
+        }
+    }
+
     ViewData["Title"] = "Bots";
 }
+<div class="custom-sidebar">
+    <ul class="nav" style="display: block; margin-top:15px;">
+        <li class="dropdown">
+            <a class="nav-link" style="color: darkgreen;">
+                <i class="fa fa-toggle-on"></i> En Ligne
+                @if (onlineBots.Count() <= 0)
+                {
+                    <text>(0)</text> }
+                else
+                {
+                    <text>(@onlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                }
+            </a>
+            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                <li class="nav-item"><a class="nav-link collapsed" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
+                <li class="nav-item"><a class="nav-link collapsed" href="#">Global</a></li>
+                <li class="nav-item"><a class="nav-link collapsed" href="#">Hôtel de Vente</a></li>
+            </ul>
+        </li>
+    </ul>
+    <hr />
+    <ul class="nav" style="display: block;color: darkgray;">
+        <li class="dropdown">
+            <a class="nav-link">
+                <i class="fa fa-toggle-off"></i> Hors Ligne
+                @if (offlineBots.Count() <= 0)
+                {
+                    <text>(0)</text> }
+                else
+                {
+                    <text>(@offlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                }
+            </a>
+            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
+            </ul>
+        </li>
+    </ul>
+    <hr />
+    <ul class="nav" style="display: block;color: darkred;">
+        <li class="dropdown">
+            <a class="nav-link">
+                <i class="fa fa-ban"></i> Bannis
+                @if (bannedBots.Count() <= 0)
+                {
+                    <text>(0)</text> }
+                else
+                {
+                    <text>(@bannedBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                }
+            </a>
+            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
+            </ul>
+        </li>
+        <hr />
+    </ul>
+</div>
 
-<h1>Bots</h1>
-
+<script src="~/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+@if (ViewBag.ErrorMessage != null)
+{
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.ErrorMessage", 4, 'top', 'right');
+        });
+    </text>
+}
+@if (ViewBag.Success != null)
+{
+    <text>
+        $(document).ready(function() {
+            site.showNotification("@ViewBag.Success", 2, 'top', 'right');
+        });
+    </text>
+}
+</script>

@@ -35,7 +35,7 @@ namespace BubbleBot.Website.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-
+        #region Login Manager
         [HttpGet]
         public IActionResult Login()
         {
@@ -55,6 +55,12 @@ namespace BubbleBot.Website.Controllers
 
             if (!ModelState.IsValid)
                 return View(lvm);
+
+            if (!CaptchaExtension.ReCaptchaPassed(Request.Form["reCaptcha"]))
+            {
+                ModelState.AddModelError(string.Empty, "Le CAPTCHA a été refusé.");
+                return View(lvm);
+            }
 
             try
             {
@@ -107,6 +113,7 @@ namespace BubbleBot.Website.Controllers
 
             return View(lvm);
         }
+        #endregion
 
         [Authorize]
         public IActionResult Index()
@@ -196,11 +203,65 @@ namespace BubbleBot.Website.Controllers
         }
 
         [Authorize]
-        public IActionResult BotsStats()
+        public async Task<IActionResult> BotsStats()
         {
-            return HandleAuthorizedAction();
+            try
+            {
+
+                var user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
+                if (user == null)
+                    return StatusCode(404);
+                var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/botsstats?username={user.Username}&token=1997");
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var json = JObject.Parse(content);
+                if (json.Value<bool>("success"))
+                {
+                    dynamic jo = JObject.Parse(content);
+                    var characters = jo.characters;
+                    List<Character> charactersList = new List<Character>();
+                    foreach (var character in characters)
+                    {
+                        JObject Jcharacter = character as JObject;
+                        Character charac = Jcharacter.ToObject<Character>();
+                        charactersList.Add(charac);
+                    }
+
+                    var archivedcharacters = jo.archivedcharacters;
+                    List<ArchivedCharacter> archivedCharactersList = new List<ArchivedCharacter>();
+                    foreach (var character in archivedcharacters)
+                    {
+                        JObject Jcharacter = character as JObject;
+                        ArchivedCharacter archived_character = Jcharacter.ToObject<ArchivedCharacter>();
+                        archivedCharactersList.Add(archived_character);
+                    }
+
+                    if (charactersList.Count() > 0 && archivedCharactersList.Count() > 0)
+                    {
+                        ViewBag.Characters = charactersList;
+                        ViewBag.ArchivedCharacters = archivedCharactersList;
+                        return View(user);
+                    }
+                }
+
+                switch (json.Value<byte>("errorId"))
+                {
+                    case 1:
+                        ViewBag.ErrorMessage = "Aucun personnage associé au compte trouvé.";
+                        break;
+                }
+
+                return View(user);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("EXCEPTION : " + ex);
+                return StatusCode(404);
+            }
         }
 
+        #region UserProfile Manager
         [HttpGet]
         [Authorize]
         public IActionResult UserProfile()
@@ -348,6 +409,7 @@ namespace BubbleBot.Website.Controllers
 
             return HandleAuthorizedAction();
         }
+        #endregion
 
         [Authorize]
         public async Task<IActionResult> LogOut()

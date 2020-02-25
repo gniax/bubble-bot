@@ -1,7 +1,10 @@
 ﻿using BubbleBot.Api.Extensions;
+using BubbleBot.Website.Models;
 using BubbleBot.Website.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Api.Controllers
 {
@@ -87,6 +90,25 @@ namespace BubbleBot.Api.Controllers
 
             // TODO : Check if infos are corrupted or are a threat
             _botService.UpdateOrAdd(user_id, character_id, account, name, server, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, group_id, group_chief, script_name, id);
+        }
+
+        [HttpGet("botsstats")]
+        public async Task<JsonResult> BotStatsRequest(string username, string token)
+        {
+            if (token != _token)
+                return Json(new { success = false, errorId = 0 });
+
+            List<Character> charactersList = await _botService.GetBotsInfos(username);
+            List<ArchivedCharacter> archivedCharactersList = await _botService.GetArchivedBotsInfos(username);
+            if (charactersList == null || archivedCharactersList == null)
+                return Json(new { success = false, errorId = 1 });
+
+            return Json(new
+            {
+                success = true,
+                characters = charactersList,
+                archivedcharacters = archivedCharactersList
+            });
         }
 
         [HttpPost("characters")]

@@ -14,9 +14,34 @@ ul.dropdown-menu-custom-show {
     height: 100px; 
 }
 
+.nav .nav-item .nav-link:hover, .nav .nav-item .nav-link:focus {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.collapsed {
+    padding: .1rem 1rem;
+}
+
+.content > .custom-sidebar {
+  margin-left: -15px;
+  margin-top: -30px;
+  border-left: 4px solid #060657;
+  position:absolute;
+  background: #dcdcdc;
+  width: 180px;
+  min-height: calc(100% - 123px);
+  background-size: cover;
+  background-position: center center;
+}
+
+.content > .custom-sidebar > .nav > .dropdown > .nav-link {
+  font-weight : 500;
+}
+
 .fa-arrow-down {
     font-size: medium;
     line-height: 2em;
+    transition-duration: 300ms;
 }
 
 .dropdown {
@@ -33,6 +58,7 @@ ul.dropdown-menu-custom-show {
 
 .caretup {
     transform: rotate(180deg);
+    transition-duration: 300ms;
 }
 
 .avatar-upload {

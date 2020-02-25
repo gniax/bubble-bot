@@ -23,7 +23,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true,
-      "applicationUrl": "http://93.113.207.95:80/"
+      "applicationUrl": "http://localhost:80/"
     }
   }
 }

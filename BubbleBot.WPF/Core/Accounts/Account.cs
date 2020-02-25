@@ -31,6 +31,7 @@ using CefSharp;
 using System.Runtime.CompilerServices;
 using BubbleBot.Server.Messages;
 using BubbleBot.Core.Extensions;
+using System.Collections.Specialized;
 
 namespace BubbleBot.Core.Accounts
 {
@@ -44,6 +45,7 @@ namespace BubbleBot.Core.Accounts
         private bool _wasScriptEnabled;
         private ChromiumWebBrowser browser;
         private string _apiKey = "";
+        private string _token = "";
         private bool _fightLimitReached = false;
 
         // Properties
@@ -142,9 +144,10 @@ namespace BubbleBot.Core.Accounts
                 await Network.ConnectToLoginServer();
             }
         }
-
-        private int returnApiKey(object sender, FrameLoadEndEventArgs e)
+        private int returnKey(short method, object sender, FrameLoadEndEventArgs e)
         {
+            // method : 1 => apikey
+            // method : 2 => token
             if (e.Url.Contains("haapi")) //Si c'est une FRAME demander l'apikey
             {
                 if (e.HttpStatusCode == 200) //Si la requète POST a fonctionné --> on continue 
@@ -157,15 +160,25 @@ namespace BubbleBot.Core.Accounts
                                                            //La réponse est en JSON, on en crée un dictionnaire
                             Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(html));
 
-                            if (dictionaryRes.ContainsKey("key")) //On récupère l'apikey
+                            if (method == 1 && dictionaryRes.ContainsKey("key")) 
                             {
                                 string apikey = (string)dictionaryRes["key"];
                                 _apiKey = apikey;
+                            }
+                            else if(method == 2 && dictionaryRes.ContainsKey("token"))
+                            {
+                                string token = (string)dictionaryRes["token"];
+                                _token = token;
                             }
                             return e.HttpStatusCode;
                         }
                         catch (Exception ex)
                         {
+                            if (method == 1)
+                                _apiKey = "failed";
+                            else if (method == 2)
+                                _token = "failed";
+
                             return e.HttpStatusCode;
                         }
                     });
@@ -179,42 +192,73 @@ namespace BubbleBot.Core.Accounts
                         Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(html));
                         Logger.LogError("", dictionaryRes["reason"].ToString() == "BAN" ? LanguageManager.Translate("478") : LanguageManager.Translate("552"));
                         if(dictionaryRes["reason"].ToString() == "BAN") this.State = Enums.AccountStates.BANNED;
-                        _apiKey = "failed";
+                        if (method == 1)
+                            _apiKey = "failed";
+                        else if (method == 2)
+                            _token = "failed";
                     });
                    
                 }
                 else //Si la requête a été interdite .. à traiter : (HttpStatusCode... = 403)
                 {
-                    _apiKey = "failed";
+                    if(method == 1)
+                        _apiKey = "failed";
+                    else if(method ==2)
+                        _token = "failed";
                     return e.HttpStatusCode;
                 }
             }
             return e.HttpStatusCode;
         }
 
+        async private Task SetProxy(ChromiumWebBrowser cwb, string Address)
+        {
+            await Cef.UIThreadTaskFactory.StartNew(delegate
+            {
+                var rc = cwb.GetBrowser().GetHost().RequestContext;
+                var v = new Dictionary<string, object>();
+                v["mode"] = "fixed_servers";
+                v["server"] = Address;
+                string error;
+                bool success = rc.SetPreference("proxy", v, out error);
+            });
+        }
         private async Task<bool> SetToken()
         {       
             Console.WriteLine("[1/3] - Retrieving API key");
             string username = AccountConfig.Username;
             string password = AccountConfig.Password;
 
-            byte[] bytes = Encoding.ASCII.GetBytes($"login={username}&password={password}&long_life_token=false");
 
             //On charge le navigateur vide
-            browser = new CefSharp.OffScreen.ChromiumWebBrowser("about:blank");
+            browser = new ChromiumWebBrowser("about:blank", null, new RequestContext());
+            if (AccountConfig.Proxy.IsValid)
+                await SetProxy(browser, (AccountConfig.Proxy.Ip + ':' + AccountConfig.Proxy.Port));
 
             //tant que le browser est pas initialisé on attend (tiemout 30sec)
             bool browserInit = System.Threading.SpinWait.SpinUntil(() => (browser.IsBrowserInitialized), TimeSpan.FromSeconds(30));
 
             if (!browserInit) return false; //si le browser a pas chargé on annule
 
-            browser.LoadUrlWithPostData("https://haapi.ankama.com/json/Ankama/v2/Api/CreateApiKey", bytes); //On envoie la trame
+            IFrame frame = browser.GetMainFrame();
+            IRequest request = frame.CreateRequest();
+
+            request.Url = "https://haapi.ankama.com/json/Ankama/v2/Api/CreateApiKey";
+            byte[] bytes = Encoding.ASCII.GetBytes($"login={username}&password={password}&long_life_token=false");
+            request.Method = "POST";
+
+            request.InitializePostData();
+            var element = request.PostData.CreatePostDataElement();
+            element.Bytes = bytes;
+            request.PostData.AddElement(element);
+            frame.LoadRequest(request);
+
             //Quand elle est finit on traite le résultat dans une autre fonction (FrameLoadEnd)
 
             int httpCode = 0; //on récupère l'httpcode à titre informatif quand on va afficher l'erreur
             browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e) 
             {
-                httpCode = returnApiKey(RuntimeHelpers.GetObjectValue(sender), e);
+                httpCode = returnKey(1, RuntimeHelpers.GetObjectValue(sender), e);
             };
 
             // tant que apikey a pas changé on attend
@@ -234,53 +278,56 @@ namespace BubbleBot.Core.Accounts
                 return false;
             }
 
-            if (browser != null)
-            {
-                if (!browser.IsDisposed)
-                {
-                    browser.Dispose();
-   
-                }
-            }
             Console.WriteLine("[2/3] - Retrieving account token");
 
             try
             {
                 // HttpClient creation (with proxy if available)
-                var httpClient = !AccountConfig.Proxy.IsValid ?
-                                 new HttpClient() :
-                                 new HttpClient(new HttpClientHandler
-                                 {
-                                     Proxy = new WebProxy(AccountConfig.Proxy.Url, false)
-                                     {
-                                         UseDefaultCredentials = false,
-                                         Credentials = new NetworkCredential(AccountConfig.Proxy.Username, AccountConfig.Proxy.Password)
-                                     },
-                                     PreAuthenticate = true,
-                                     UseDefaultCredentials = false
-                                 });
 
-                using (httpClient)
+                IFrame mainFrame = browser.GetMainFrame();
+                IRequest tokenRequest = mainFrame.CreateRequest(initializePostData: false);
+                tokenRequest.Url = "https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18";
+                tokenRequest.Method = "GET";
+                tokenRequest.SetHeaderByName("apikey", _apiKey, overwrite: true);
+                mainFrame.LoadRequest(tokenRequest);
+
+                httpCode = 0;
+                browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
                 {
-                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation("apiKey", _apiKey);
-                    HttpResponseMessage response = await httpClient.GetAsync("https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18");
+                    httpCode = returnKey(2, RuntimeHelpers.GetObjectValue(sender), e);
+                };
 
-                    if (response.IsSuccessStatusCode)
+
+                // tant que apikey a pas changé on attend
+                bool getToken = System.Threading.SpinWait.SpinUntil(() => (_token != ""), TimeSpan.FromSeconds(30));
+
+                if (getToken == false || _token == "failed") //si au bout de 30 secondes l'apikey a pas de changement on annule / ou erreur
+                {
+                    Logger.LogError("", LanguageManager.Translate("32", httpCode));
+                    if (browser != null)
                     {
-                        Token = (await response.Content.ReadAsJsonAsync()).Value<string>("token");
-                        Console.WriteLine("[3/3] - Authenticated");
-                        httpClient.Dispose();
-                        response.Dispose();
-                        _apiKey = "";
-                        return true;
+                        if (!browser.IsDisposed)
+                        {
+                            browser.Dispose();
+                        }
                     }
-
-                    httpClient.Dispose();
-                    response.Dispose();
-                    Logger.LogError("", LanguageManager.Translate("32", response.StatusCode));
+                    _token = "";
+                    _apiKey = "";
+                    return false;
                 }
+
+                Console.WriteLine("[3/3] - Authenticated");
                 _apiKey = "";
-                return false;
+                Token = _token;
+                _token = "";
+                if (browser != null)
+                {
+                    if (!browser.IsDisposed)
+                    {
+                        browser.Dispose();
+                    }
+                }
+                return true;
             }
             catch (Exception ex)
             {
@@ -408,9 +455,9 @@ namespace BubbleBot.Core.Accounts
                     Game.Character.Inventory.Kamas,
                     Game.Map.Id,
                     Game.Map.CurrentPosition,
-                    State.ToFriendlyString(),
-                    this.GroupId,
-                    this.Group_Chief,
+                    State.ToString(),
+                    "-",
+                    0,
                     Scripts.CurrentScriptName != null ? Scripts.CurrentScriptName : "-"
                 ));
 
@@ -534,6 +581,7 @@ namespace BubbleBot.Core.Accounts
 
                 _state = AccountStates.NONE;
                 _apiKey = "";
+                _token = "";
                 AccountConfig = null;
                 Configuration = null;
                 Token = null;
