@@ -84,6 +84,8 @@ namespace BubbleBot.Core.Accounts
         public bool IsBusy => State != AccountStates.NONE && State != AccountStates.REGENERATING;
         public Account Element => this;
         public bool HasGroup => Group != null;
+
+        public bool IsBan = false;
         public bool IsGroupChief => !HasGroup || Group.Chief == this;
         public bool FightLimitReached
         {
@@ -191,7 +193,12 @@ namespace BubbleBot.Core.Accounts
                         string html = taskHtml.Result;
                         Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(html));
                         Logger.LogError("", dictionaryRes["reason"].ToString() == "BAN" ? LanguageManager.Translate("478") : LanguageManager.Translate("552"));
-                        if(dictionaryRes["reason"].ToString() == "BAN") this.State = Enums.AccountStates.BANNED;
+                        if (dictionaryRes["reason"].ToString() == "BAN")
+                        {
+                            this.State = Enums.AccountStates.BANNED;
+                            IsBan = true;
+                        }
+                       
                         if (method == 1)
                             _apiKey = "failed";
                         else if (method == 2)
@@ -433,7 +440,8 @@ namespace BubbleBot.Core.Accounts
 
         private void Network_Disconnected(NetworkManager networkManager)
         {
-            State = AccountStates.DISCONNECTED;
+            if(State != AccountStates.BANNED)
+                State = AccountStates.DISCONNECTED;
             Logger.LogWarning("Network", LanguageManager.Translate("31"));
             
             if (browser != null)
@@ -465,7 +473,7 @@ namespace BubbleBot.Core.Accounts
                 Scripts.StopScript();
                 Extensions.Flood.Stop();
                 // In case the disconnection isnt intentional
-                if(!IsIntentionalDisconnection)
+                if(!IsIntentionalDisconnection && !IsBan && State != AccountStates.BANNED)
                 {
                     if (GlobalConfiguration.Instance.AutomaticReconnection)
                     {

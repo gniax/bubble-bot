@@ -20,11 +20,11 @@ namespace BubbleBot.Server
     {
         // Server Infos
         public const int Port = 3000;
-        public const string IP = "127.0.0.1"; // Server IP
-        public const string ApiIpAddress = "http://localhost:5001"; // API IP
-        
-        //public const string IP = "93.113.207.95"; // Server IP
-        //public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP 
+        //public const string IP = "127.0.0.1"; // Server IP
+        //public const string ApiIpAddress = "http://localhost:5001"; // API IP
+
+        public const string IP = "93.113.207.95"; // Server IP
+        public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP 
 
         // Dofus Touch
         public static string AppVersion { get; set; } = "0.0.0";
@@ -98,12 +98,12 @@ namespace BubbleBot.Server
             if (client == null)
                 return;
 
-            Clients.Remove(client);
             Console.WriteLine("[-] Client déconnecté : {0}, {1} restant(s)",  client.Informations.ToString(), Clients.Count);
 
             // Remove any accounts left
-            await client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username));
+            await client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username), client.Informations.Id);
 
+            Clients.Remove(client);
             // Dispose the client and send statistics
             client.Dispose();
             BroadcastStatistics();
@@ -133,7 +133,7 @@ namespace BubbleBot.Server
                 // Remove any accounts left
                 try
                 {
-                    client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username)).Wait();
+                    client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username), client.Informations.Id).Wait();
                 }
                 catch (Exception ex)
                 {

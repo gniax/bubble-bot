@@ -64,7 +64,7 @@ namespace BubbleBot.Server.Handlers
                 if (!client.LoggedIn)
                     return;
 
-                await client.RemoveAccounts(new[] { message.Username });
+                await client.RemoveAccounts(new[] { message.Username }, client.Informations.Id);
             });
 
         public static Task HandleRemoveAccountsRequestMessage(Client client, RemoveAccountsRequestMessage message)
@@ -73,7 +73,7 @@ namespace BubbleBot.Server.Handlers
                 if (!client.LoggedIn)
                     return;
 
-                await client.RemoveAccounts(message.Usernames);
+                await client.RemoveAccounts(message.Usernames, client.Informations.Id);
             });
 
         public static Task HandleConnectGroupRequestMessage(Client client, ConnectGroupRequestMessage message)

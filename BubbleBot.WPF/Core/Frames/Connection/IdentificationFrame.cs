@@ -47,7 +47,6 @@ namespace BubbleBot.Core.Frames.Connection
                 }
 
             });
-
         public static void ExecOnUiThread(this Application app, Action action)
         {
             var dispatcher = app.Dispatcher;
@@ -68,6 +67,12 @@ namespace BubbleBot.Core.Frames.Connection
                 //await account.Network.SendCallAsync(new CheckAssetsVersionMessage(DTConstants.AssetsVersion, DTConstants.StaticDataVersion));
                 //string data = "4{\"call\":\"login\",\"data\":{\"username\":\"" + account.AccountConfig.Username + "\",\"token\":\"" + account.Token + "\",\"salt\":\"" + account.FramesData.Salt + "\",\"key\":[" + account.FramesData.Key + "]}}";
                 //await account.Network.SendRawAsync(data);
+            });
+
+        public static Task HandleNicknameAcceptedMessage(Account account, NicknameAcceptedMessage message)
+            => Task.Run(async () =>
+            {
+                await account.Network.Disconnect("CLIENT_CLOSING", true);
             });
 
         public static Task HandleAssetsVersionCheckedMessage(Account account, AssetsVersionCheckedMessage message)
@@ -106,6 +111,8 @@ namespace BubbleBot.Core.Frames.Connection
             => Task.Run(() =>
             {
                 Console.WriteLine("HandleIdentificationFailedBannedMessage");
+                account.IsBan = true;
+                account.State = Enums.AccountStates.BANNED;
                 DateTime until = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(message.BanEndDate);
                 account.Logger.LogError("IdentificationFrame", $"{(IdentificationFailureReasonEnum)message.Reason} [{until.ToShortDateString()} {until.ToShortTimeString()}]");
             });

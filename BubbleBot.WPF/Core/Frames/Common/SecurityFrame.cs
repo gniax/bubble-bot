@@ -64,6 +64,7 @@ namespace BubbleBot.Core.Frames.Common
             => Task.Run(() =>
             {
                 account.State = Enums.AccountStates.BANNED;
+                account.IsBan = true;
                 var until = DateTime.Now.AddDays(message.Days).AddHours(message.Hours).AddMinutes(message.Minutes);
                 BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
                     account.AccountConfig.Username,
@@ -78,7 +79,6 @@ namespace BubbleBot.Core.Frames.Common
                     0,
                     account.Scripts.CurrentScriptName != null ? account.Scripts.CurrentScriptName : "-"
                 ));
-
                 account.Logger.LogError("", LanguageManager.Translate("559", until.ToString("G")));
             });
 

@@ -18,6 +18,9 @@ namespace BubbleBot.Converters.Enums
                 case AccountStates.DISCONNECTED:
                     color = "red";
                     break;
+                case AccountStates.BANNED:
+                    color = "purple";
+                    break;
                 case AccountStates.CONNECTING:
                     color = "orange";
                     break;

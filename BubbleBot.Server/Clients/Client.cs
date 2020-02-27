@@ -1,4 +1,5 @@
 ﻿using BubbleBot.Server.Clients.Accounts;
+using BubbleBot.Server.Enums;
 using BubbleBot.Server.Handlers;
 using BubbleBot.Server.Messages;
 using BubbleBot.Server.Network;
@@ -66,10 +67,8 @@ namespace BubbleBot.Server.Clients
             return result;
         }
 
-        public async Task RemoveAccounts(IEnumerable<string> usernames)
+        public async Task RemoveAccounts(IEnumerable<string> usernames, int clientid = 0)
         {
-            _semaphore.Wait();
-
             try
             {
                 bool botsCountChanged = false;
@@ -78,7 +77,17 @@ namespace BubbleBot.Server.Clients
                 {
                     if (Accounts.TryRemove(username, out Account temp) && temp.HasBot)
                     {
-                        await HttpClientUtility.DeleteAsync($"characters/{temp.BotId}?token=1997");
+                        if (clientid != 0 && temp.BotState != AccountStates.BANNED.ToString())
+                            temp.UpdateBotInformations(clientid, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
+                                                       AccountStates.DISCONNECTED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
+
+                        if (clientid != 0 && temp.BotState == AccountStates.BANNED.ToString())
+                            temp.UpdateBotInformations(clientid, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
+                                                       AccountStates.BANNED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
+
+                        if (clientid != 0)
+                            temp.ArchiveBotsInformations(clientid, temp.BotId, temp.BotName, temp.BotServer, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
+                                                       AccountStates.DISCONNECTED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
                         botsCountChanged = true;
                     }
                 }
@@ -92,8 +101,6 @@ namespace BubbleBot.Server.Clients
             {
                 Console.WriteLine("Erreur par rapport au client {0}, informations: {1}.", Informations.ToString(), ex.ToString());
             }
-
-            _semaphore.Release();
         }
 
         public void SendMessage(IServerMessage message, bool withoutMsg = false)
