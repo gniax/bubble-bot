@@ -440,7 +440,7 @@ namespace BubbleBot.Core.Accounts
 
         private void Network_Disconnected(NetworkManager networkManager)
         {
-            if(State != AccountStates.BANNED)
+            if(State != AccountStates.BANNED && !IsBan)
                 State = AccountStates.DISCONNECTED;
             Logger.LogWarning("Network", LanguageManager.Translate("31"));
             

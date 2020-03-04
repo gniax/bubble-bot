@@ -14,6 +14,56 @@ ul.dropdown-menu-custom-show {
     height: 100px; 
 }
 
+.classe_logo {
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.navcontent-description {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: black;
+    font-weight: 300;
+    text-align:center;
+    font-size: 14px;
+}
+
+.navcontent-infos {
+    color: black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+    text-align:center;
+    font-size: 15px;
+}
+
+.navcontent-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    color: indigo;
+    font-weight: 600;
+}
+
+.fa {
+    line-height: inherit !important;
+}
+.custom-div {
+    display: flex; 
+    border-left: 1px solid #00000059; 
+    border-radius: 12px / 125px;
+    font-size: 12px;
+}
+
+.dropdown-style {
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    -webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.125);   
+    border-radius: 10px;
+}
 .nav .nav-item .nav-link:hover, .nav .nav-item .nav-link:focus {
     background: rgba(255, 255, 255, 0.13);
 }
@@ -22,25 +72,134 @@ ul.dropdown-menu-custom-show {
     padding: .1rem 1rem;
 }
 
+.race {
+    overflow: hidden;
+}
+
+#navcontent {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: 0.2s;
+    opacity: 1;
+}
+
+#navcontent-right {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: 0.2s;
+    opacity: 1;
+}
+
+.custom-nav {
+    transition: 0.6s;
+    opacity: 1;
+    display: block;
+}
+
+.custom-nav-right {
+    transition: 0.5s;
+    opacity: 1;
+    display: block;
+}
+
 .content > .custom-sidebar {
-  margin-left: -15px;
-  margin-top: -30px;
-  border-left: 4px solid #060657;
-  position:absolute;
-  background: #dcdcdc;
-  width: 180px;
-  min-height: calc(100% - 123px);
-  background-size: cover;
-  background-position: center center;
+    transition: 0.5s;
+    margin-left: -15px;
+    display: inline-block;
+    margin-top: -30px;
+    border: 1px solid #aaaaaa;
+    position: relative;
+    border-left: 2px solid #a09f9f;
+    background: #ebeaec;
+    width: 250px;
+    min-height: auto;
+    background-size: cover;
+    border-bottom-right-radius: 10px;
+    background-position: center center;
+}
+
+.content > .custom-sidebar-right {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: 0.5s;
+    display: inline-block;
+    margin-left: 15px;
+    right: -15px;
+    margin-top: -30px;
+    border: 1px solid #aaaaaa;
+    position: relative;
+    float:right;
+    border-left: 2px solid #a09f9f;
+    background: #ebeaec;
+    width: 250px;
+    min-height: 250px;
+    background-size: cover;
+    border-bottom-left-radius: 10px;
+    background-position: center center;
+}
+
+.custom-nav-link:hover {
+    background-color: #eee !important;
+    border-radius: 5px;
+}
+
+.custom-sidebar > .hidebtn {
+    position: relative;
+    font-size: 22px;
+    float: right;
+    margin-right: 5px;
+}
+
+.custom-sidebar > .showbtn {
+    position: relative;
+    font-size: 22px;
+    float: right;
+    margin-right: 5px;
 }
 
 .content > .custom-sidebar > .nav > .dropdown > .nav-link {
   font-weight : 500;
 }
 
+.custom-sidebar-right > .hidebtn-right {
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 22px;
+    float: left;
+    margin-left: 5px;
+    left: 0%;
+}
+
+.anti-wrap {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.custom-sidebar-right > .showbtn-right {
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 22px;
+    float: left;
+    margin-left: 5px;
+    left: 0%;
+}
+
+.content > .custom-sidebar-right > .nav > .dropdown > .nav-link {
+  font-weight : 500;
+}
+
 .fa-arrow-down {
     font-size: medium;
-    line-height: 2em;
+    line-height: inherit;
+    transition-duration: 300ms;
+}
+
+.fa-lock {
+    font-size: medium;
+    line-height: inherit;
     transition-duration: 300ms;
 }
 

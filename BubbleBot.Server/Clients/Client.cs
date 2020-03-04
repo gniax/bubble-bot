@@ -39,8 +39,7 @@ namespace BubbleBot.Server.Clients
         public Client(ClientWrapper clientWrapper)
         {
             _clientWrapper = clientWrapper;
-            _semaphore = new SemaphoreSlim(1, 1);
-            _botsInformationsTimer = new Timer(BotsInformationsTimer_Callback, null, 600000, 600000); 
+            _semaphore = new SemaphoreSlim(1, 1); 
             _pingTimer = new Timer(Ping_Callback, null, 30000, 30000);
             _pingTimeoutTimer = new Timer(PingTimeout_Callback, null, Timeout.Infinite, Timeout.Infinite);
             Informations = new ClientInformations(this);
@@ -78,16 +77,20 @@ namespace BubbleBot.Server.Clients
                     if (Accounts.TryRemove(username, out Account temp) && temp.HasBot)
                     {
                         if (clientid != 0 && temp.BotState != AccountStates.BANNED.ToString())
+                        {
                             temp.UpdateBotInformations(clientid, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
-                                                       AccountStates.DISCONNECTED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
+                                                       AccountStates.DISCONNECTED.ToString(), "-", 0, temp.BotScriptName);
 
-                        if (clientid != 0 && temp.BotState == AccountStates.BANNED.ToString())
+                            temp.ArchiveBotsInformations(clientid, temp.BotId, temp.BotName, temp.BotServer, temp.BotBreed, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
+                                                       AccountStates.DISCONNECTED.ToString(), "-", 0, temp.BotScriptName);
+                        }
+                        else if (clientid != 0 && temp.BotState == AccountStates.BANNED.ToString())
+                        {
                             temp.UpdateBotInformations(clientid, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
-                                                       AccountStates.BANNED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
-
-                        if (clientid != 0)
-                            temp.ArchiveBotsInformations(clientid, temp.BotId, temp.BotName, temp.BotServer, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
-                                                       AccountStates.DISCONNECTED.ToString(), temp.BotGroupId, temp.BotGroupChief, temp.BotScriptName);
+                                                       AccountStates.BANNED.ToString(), "-", 0, temp.BotScriptName);
+                            temp.ArchiveBotsInformations(clientid, temp.BotId, temp.BotName, temp.BotServer, temp.BotBreed, temp.BotLevel, temp.BotEnergyPercent, temp.BotWeightPercent, temp.BotKamas, temp.BotMapId, temp.BotMapPosition,
+                                 AccountStates.BANNED.ToString(), "-", 0, temp.BotScriptName);
+                        }
                         botsCountChanged = true;
                     }
                 }
@@ -194,14 +197,6 @@ namespace BubbleBot.Server.Clients
             => _pingTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
         #endregion
-
-        private void BotsInformationsTimer_Callback(object state)
-        {
-            if (!LoggedIn || Accounts.Values.Count(a => a.HasBot) == 0)
-                return;
-
-            SendMessage(new BotsInformationsRequestMessage());
-        }
 
         #region Dispose
 

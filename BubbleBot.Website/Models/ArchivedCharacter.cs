@@ -16,6 +16,7 @@ namespace BubbleBot.Website.Models
         public string Account { get; set; }
         public string Name { get; set; }
         public string Server { get; set; }
+        public string Breed { get; set; }
         public byte Level { get; set; }
         public byte Percent_energy { get; set; }
         public byte Percent_pods { get; set; }
@@ -30,7 +31,7 @@ namespace BubbleBot.Website.Models
 
         public ArchivedCharacter() { }
 
-        public ArchivedCharacter(int user_id, int character_id, string account, string name, string server, byte level,
+        public ArchivedCharacter(int user_id, int character_id, string account, string name, string server, string breed, byte level,
                           byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, DateTime updated_at,
                           string group_id, byte group_chief, string script_name)
         {
@@ -39,6 +40,7 @@ namespace BubbleBot.Website.Models
             Account = account;
             Name = name;
             Server = server;
+            Breed = breed;
             Level = level;
             Percent_energy = percent_energy;
             Percent_pods = percent_pods;

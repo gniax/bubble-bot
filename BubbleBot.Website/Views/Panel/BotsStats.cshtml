@@ -2,108 +2,247 @@
 @using  BubbleBot.Website.Enums
 @{
     List<Character> characters = ViewBag.Characters;
-    List<ArchivedCharacter> archivedcharacters = ViewBag.ArchivedCharacters;
-
-    List<Character> onlineBots = new List<Character>();
-    List<Character> offlineBots = new List<Character>();
-    List<Character> bannedBots = new List<Character>();
-    foreach (Character character in characters)
-    {
-        if (character.State != AccountStates.DISCONNECTED.ToString() && character.State != AccountStates.BANNED.ToString())
-        {
-            onlineBots.Add(character);
-        }
-        else if (character.State == AccountStates.DISCONNECTED.ToString())
-        {
-            offlineBots.Add(character);
-        }
-        else if (character.State == AccountStates.BANNED.ToString())
-        {
-            bannedBots.Add(character);
-        }
-    }
+    List<Character> onlineBots = ViewBag.OnlineBots;
+    List<Character> offlineBots = ViewBag.OfflineBots;
+    List<Character> bannedBots = ViewBag.BannedBots;
+    Dictionary<string, List<Character>> everyGroup = ViewBag.EveryGroup;
+    Dictionary<string, string> groupsColors = ViewBag.GroupsColors;
 
     ViewData["Title"] = "Bots";
 }
-<div class="custom-sidebar">
-    <ul class="nav" style="display: block; margin-top:15px;">
-        <li class="dropdown">
-            <a class="nav-link" style="color: darkgreen;">
-                <i class="fa fa-toggle-on"></i> En Ligne
-                @if (onlineBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
-                else
-                {
+
+@* Module à gauche *@
+<div class="custom-sidebar" id="custom-sidebar">
+    <a href="javascript:void(0)" class="hidebtn" id="togglebtn"><span class="fa fa-minus-square" id="toggle-icon"></span></a>
+    <br/><hr/>
+    <div id="navcontent">
+        @*Liste des personnages en ligne (module à gauche) *@
+        <ul class="nav custom-nav" style="margin-top:15px;">
+            <li class="dropdown dropdown-style" @if (onlineBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                <a class="nav-link" style="height: 42px; color: #26b706;">
+                    <i class="fa fa-toggle-on"></i> En Ligne
+                    @if (onlineBots.Count() <= 0)
+                    {
+                        <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                    @:</a>
+                    }
+                    else
+                    {
                     <text>(@onlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
-                }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link collapsed" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link collapsed" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link collapsed" href="#">Hôtel de Vente</a></li>
-            </ul>
-        </li>
-    </ul>
-    <hr />
-    <ul class="nav" style="display: block;color: darkgray;">
-        <li class="dropdown">
-            <a class="nav-link">
-                <i class="fa fa-toggle-off"></i> Hors Ligne
-                @if (offlineBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
-                else
-                {
+                    @:</a>
+                    <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                        @foreach (Character bot in onlineBots)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link collapsed custom-nav-link" onclick="botInformationRequest('@bot.Account', '@bot.Name')">
+                                    <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                        <div class="col-md-6 pr-1" style="display: flex;">
+                                            @bot.Account
+                                        </div>
+                                        <div class="col-md-6 pr-1 custom-div"
+                                             style="@if (bot.Group_Id != null && bot.Group_Id != "-" && groupsColors.ContainsKey(bot.Group_Id)) { <text>color: @groupsColors.GetValueOrDefault(bot.Group_Id);</text>}">
+                                            <span class="fa
+                                                @if (bot.Group_Chief == 1 && bot.Group_Id != "-")
+                                                {
+                                                    <text>fa-star</text>
+                                                }
+                                                else if (bot.Group_Id != null && bot.Group_Id != "-")
+                                                {
+                                                    <text>fa-user</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>fa-robot</text>
+                                                }
+                                                " style="line-height: inherit;"></span> @bot.Name
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    }
+            </li>
+        </ul>
+        <br />
+        @*Liste des personnages déconnectés (module à gauche) *@
+        <ul class="nav custom-nav">
+            <li class="dropdown dropdown-style" @if (offlineBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                <a class="nav-link" style="height: 42px;color: #4f4b4b;">
+                    <i class="fa fa-toggle-off"></i> Hors Ligne
+                    @if (offlineBots.Count() <= 0)
+                    {
+                        <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                    @:</a>
+                    }
+                    else
+                    {
                     <text>(@offlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
-                }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
-            </ul>
-        </li>
-    </ul>
-    <hr />
-    <ul class="nav" style="display: block;color: darkred;">
-        <li class="dropdown">
-            <a class="nav-link">
-                <i class="fa fa-ban"></i> Bannis
-                @if (bannedBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
-                else
-                {
+                    @:</a>
+                    <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                        @foreach (Character bot in offlineBots)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link collapsed custom-nav-link">
+                                    <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                        <div class="col-md-6 pr-1" style="display: flex;">
+                                            @bot.Account
+                                        </div>
+                                        <div class="col-md-6 pr-1 custom-div">
+                                            <span class="fa fa-robot" style="line-height: inherit;"></span>  @bot.Name
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    }
+            </li>
+        </ul>
+        <br />
+        @*Liste des personnages bannis (module à gauche) *@
+        <ul class="nav custom-nav">
+            <li class="dropdown dropdown-style" @if (bannedBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                <a class="nav-link" style="height: 42px;color: #bf1414;">
+                    <i class="fa fa-ban"></i> Bannis
+                    @if (bannedBots.Count() <= 0)
+                    {
+                        <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                    @:</a>
+                    }
+                    else
+                    {
                     <text>(@bannedBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
-                }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
-            </ul>
-        </li>
-        <hr />
-    </ul>
+                    @:</a>
+
+                    <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                        @foreach (Character bot in bannedBots)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link collapsed custom-nav-link">
+                                    <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                        <div class="col-md-6 pr-1" style="display: flex;">
+                                            @bot.Account
+                                        </div>
+                                        <div class="col-md-6 pr-1 custom-div">
+                                            <span class="fa fa-robot" style="line-height: inherit;"></span>  @bot.Name
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    }
+            </li>
+        </ul>
+        <hr/>
+    </div>
 </div>
 
-<script src="~/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-@if (ViewBag.ErrorMessage != null)
-{
-    <text>
-        $(document).ready(function() {
-            site.showNotification("@ViewBag.ErrorMessage", 4, 'top', 'right');
-        });
-    </text>
-}
-@if (ViewBag.Success != null)
-{
-    <text>
-        $(document).ready(function() {
-            site.showNotification("@ViewBag.Success", 2, 'top', 'right');
-        });
-    </text>
+@*Zone des données du personnage en cours (module à droite) *@
+
+<div class="custom-sidebar-right" id="custom-sidebar-right" style="display:none;">
+        <a href="javascript:void(0)" class="hidebtn-right" id="togglebtn-right"><span class="fa fa-minus-square" id="toggle-icon-right"></span></a>
+        <div class="race text-center">
+            <img class="classe_logo" id="classe_logo" alt="breed_img" width="46" height="46" />
+        </div>
+
+        <hr style="margin-top:3px;" />
+
+        <div id="navcontent-right">
+            <div>
+                <div>
+                    <h5 id="navcontent-title" class="navcontent-title"></h5>
+                    <p class="description navcontent-infos" id="navcontent-infos">
+                    </p>
+                </div>
+                <hr style="margin: 5px 15px;">
+                <div class="description navcontent-description">
+                    Statut : <p class="d-inline-block" style="line-height: 0.5;margin-top: 10px;font-size: 14px;" id="bot_state"></p>
+                    <br>Position : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_map"></p>
+                    <br>Script : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_script"></p>
+                    <br>ID : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_id"></p>
+                </div>
+            </div>
+            @* Zone de groupe => Note : Tous les groupes sont affichés au préalable... *@
+            <div id="groupModal" style="display:none;">
+                <hr style="margin: 5px 15px;">
+                <div class="container">
+                    @foreach (String key in everyGroup.Keys)
+                    {
+                    <div id="group_@key" style="display:none;">
+                        @{ List<Character> group = everyGroup.FirstOrDefault(g => g.Key == key).Value; }
+                        @foreach (Character member in group)
+                        {
+                        <div class="row align-items-center justify-content-center w-100" style="height: 24px;">
+                                @if (member.Group_Chief == 1 && member.Group_Id != "-")
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                else if (member.Group_Id != null && member.Group_Id != "-")
+                                {
+                                    <span class="fa fa-user"></span>
+                                }
+                                <p style="font-size:12px;margin: 0;">@member.Account : @member.Name</p>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            @* Zone du bas *@
+            <hr style="margin: 0px;">
+            <div class="row" style="margin-left: 0px;margin-right:0px;display: -webkit-box;flex-wrap:unset;">
+                <div class="col-xs-6 col-sm-4">
+                    <p class="d-inline-block" id="bot_kamas" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/kamas.png" width="16" height="16" />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                    <p class="d-inline-block" id="bot_energy" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/energy.png" width="16" height="16" />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                    <p class="d-inline-block" id="bot_pods" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/pods.png" width="16" height="16" />
+                </div>
+            </div>
+        </div>
+</div>
+
+<script>
+function botInformationRequest(account, botname) {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("BotDataRequest", "Panel")',
+        data: {
+            Account: account,
+            BotName: botname
+        },
+        dataType: 'json',
+        success: function (result) {
+                if (result.success) {
+                    document.getElementById("custom-sidebar-right").style.display = "inline-block";
+                    document.getElementById("navcontent-title").innerHTML = result.account + " : " + result.botname;
+                    document.getElementById("navcontent-infos").innerHTML = result.botserver + " | Niveau " + result.botlevel;
+                    document.getElementById("bot_state").innerHTML = result.botstate;
+                    document.getElementById("bot_map").innerHTML = '[' + result.botmappos + "] (" + result.botmapid + ")";
+                    document.getElementById("bot_id").innerHTML = result.botid;
+                    document.getElementById("bot_script").innerHTML = result.botscript;
+                    document.getElementById("bot_kamas").innerHTML = result.botkamas;
+                    document.getElementById("bot_energy").innerHTML = result.botenergy + "%";
+                    document.getElementById("bot_pods").innerHTML = result.botpods + "%";
+                    document.getElementById("classe_logo").src =  result.breedURL;
+                    var groupid = result.botgroupid;
+                    if (groupid != "-" && groupid != null)
+                    {
+                        document.getElementById("groupModal").style.display = "block";
+                        var id = "group_" + groupid;
+                        document.getElementById(id).style.display = "block";
+                    }
+
+                }
+                else if (result.error != null)
+                {
+                    site.showNotification((result.error + "<br/>"), 4, 'top', 'right');
+                }
+            }
+        })
 }
 </script>

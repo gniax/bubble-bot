@@ -15,17 +15,19 @@ namespace BubbleBot.Server.Messages
         public int Id { get; private set; }
         public string Name { get; private set; }
         public string Server { get; private set; }
+        public string Breed { get; private set; }
         public byte Level { get; private set; }
 
 
         // Constructor
         public BotSelectedSuccesMessage() { }
 
-        public BotSelectedSuccesMessage(string account, int id, string name, string server, byte level)
+        public BotSelectedSuccesMessage(string account, int id, string name, string server, string breed, byte level)
         {
             Account = account;
             Id = id;
             Name = name;
+            Breed = breed;
             Server = server;
             Level = level;
         }
@@ -37,6 +39,7 @@ namespace BubbleBot.Server.Messages
             writer.Write(Id);
             writer.Write(Name);
             writer.Write(Server);
+            writer.Write(Breed);
             writer.Write(Level);
         }
 
@@ -46,6 +49,7 @@ namespace BubbleBot.Server.Messages
             Id = reader.ReadInt32();
             Name = reader.ReadString();
             Server = reader.ReadString();
+            Breed = reader.ReadString();
             Level = reader.ReadByte();
         }
 

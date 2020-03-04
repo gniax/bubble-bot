@@ -13,6 +13,7 @@ namespace BubbleBot.Server.Clients.Accounts
         public int BotId { get; private set; }
         public string BotName { get; private set; }
         public string BotServer { get; private set; }
+        public string BotBreed { get; private set; }
         public byte BotLevel { get; private set; }
         public byte BotEnergyPercent { get; private set; }
         public byte BotWeightPercent { get; private set; }
@@ -33,11 +34,12 @@ namespace BubbleBot.Server.Clients.Accounts
         }
 
 
-        public async void SetInitialBotInformations(int clientId, int botId, string botName, string botServer, byte botLevel)
+        public async void SetInitialBotInformations(int clientId, int botId, string botName, string botServer, string botBreed, byte botLevel)
         {
             BotId = botId;
             BotName = botName;
             BotServer = botServer;
+            BotBreed = botBreed;
             BotLevel = botLevel;
             BotMapPosition = "-";
             BotState = "-";
@@ -62,12 +64,13 @@ namespace BubbleBot.Server.Clients.Accounts
             await HttpClientUtility.PatchAsync($"characters/{BotId}", GeneratePostContent(clientId));
         }
 
-        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, byte botLevel, byte botEnergyPercent, 
+        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, string botBreed, byte botLevel, byte botEnergyPercent, 
                                                   byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState, string botGroupId, byte botGroupChief, string botScriptName)
         {
             BotId = botId;
             BotName = botName;
             BotServer = botServer;
+            BotBreed = botBreed;
             BotLevel = botLevel;
             BotEnergyPercent = botEnergyPercent;
             BotWeightPercent = botWeightPercent;
@@ -91,6 +94,7 @@ namespace BubbleBot.Server.Clients.Accounts
                    new KeyValuePair<string, string>("account", Username),
                    new KeyValuePair<string, string>("name", BotName),
                    new KeyValuePair<string, string>("server", BotServer),
+                   new KeyValuePair<string, string>("breed", BotBreed),
                    new KeyValuePair<string, string>("level", BotLevel.ToString()),
                    new KeyValuePair<string, string>("percent_energy", BotEnergyPercent.ToString()),
                    new KeyValuePair<string, string>("percent_pods", BotWeightPercent.ToString()),

@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using BubbleBot.Website.Enums;
 
 namespace BubbleBot.Website.Controllers
 {
@@ -27,6 +28,7 @@ namespace BubbleBot.Website.Controllers
         private static readonly HttpClient _httpClient = new HttpClient();
         private readonly PanelDbContext _panelDbContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private static List<Character> _userBots = new List<Character>();
 
         // Constructor
         public PanelController(PanelDbContext panelDbContext, IWebHostEnvironment webHostEnvironment)
@@ -202,25 +204,94 @@ namespace BubbleBot.Website.Controllers
             return HandleAuthorizedAction();
         }
 
+        #region Statistics Manager
+        [Authorize]
+        [HttpPost]
+        public async Task<JsonResult> BotDataRequest(string Account, string BotName)
+        {
+            string errorMessage = "Erreur inconnue...";
+            User user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return Json(new { success = false, error = "Contexte utilisateur introuvable..." });
+
+            // Retrieve infos from api
+            var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/botinformations?username={user.Username}&account={Account}&botname={BotName}&token=1997");
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(content);
+            if (json.Value<bool>("success"))
+            {
+                dynamic jo = JObject.Parse(content);
+                var archivedcharacter = jo.archivedcharacter;
+                List<ArchivedCharacter> archivedCharacterList = new List<ArchivedCharacter>();
+                foreach (var character in archivedcharacter)
+                {
+                    JObject Jcharacter = character as JObject;
+                    ArchivedCharacter archived_character = Jcharacter.ToObject<ArchivedCharacter>();
+                    archivedCharacterList.Add(archived_character);
+                }
+
+                if (archivedCharacterList.Count() > 0)
+                {
+                    if(_userBots != null)
+                    {
+                        Character selectedBot = _userBots.Where(c => c.Account == Account && c.Name == BotName).FirstOrDefault();
+                        if(selectedBot == null)
+                        {
+                            errorMessage = "Le personnage sélectionné est introuvable....";
+                            return Json(new { success = false, error = errorMessage });
+                        }
+
+                        string breedUrl = Program.Constants.WebsiteIpAddress + $"/images/breeds/default.png";
+                        if (selectedBot.Breed != null && selectedBot.Breed != "NULL" && selectedBot.Breed != "-" && selectedBot.Breed != "UNDEFINED")
+                            breedUrl = Program.Constants.WebsiteIpAddress + $"/images/breeds/" + selectedBot.Breed + ".png";
+
+                        return Json(new { success = true , account = Account, botname = BotName, breedURL = breedUrl, botserver = selectedBot.Server, 
+                                          botlevel = selectedBot.Level, botstate = selectedBot.State, botmappos = selectedBot.Map_pos, botmapid = selectedBot.Map_id,
+                                          botid = selectedBot.Character_id , botscript = selectedBot.Script_Name, botkamas = selectedBot.Kamas, botenergy = selectedBot.Percent_energy,
+                                          botpods = selectedBot.Percent_pods, botgroupid = selectedBot.Group_Id });
+                    }
+                }
+                errorMessage = "Aucun historique associé au compte trouvé.";
+            }
+            else
+            {
+                switch (json.Value<byte>("errorId"))
+                {
+                    case 0:
+                        errorMessage = "Erreur de jeton de communication ...";
+                        break;
+                    case 1:
+                        errorMessage = "Aucun historique associé au compte trouvé.";
+                        break;
+                }
+            }
+            return Json(new { success = false, error = errorMessage });
+        }
+
         [Authorize]
         public async Task<IActionResult> BotsStats()
         {
             try
             {
-
+                // Verification 
                 var user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
                 if (user == null)
                     return StatusCode(404);
+
+                // Retrieve infos from api
                 var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/botsstats?username={user.Username}&token=1997");
                 response.EnsureSuccessStatusCode();
-
                 var content = await response.Content.ReadAsStringAsync();
                 var json = JObject.Parse(content);
+
                 if (json.Value<bool>("success"))
                 {
                     dynamic jo = JObject.Parse(content);
                     var characters = jo.characters;
                     List<Character> charactersList = new List<Character>();
+
+                    // Retrieves characters
                     foreach (var character in characters)
                     {
                         JObject Jcharacter = character as JObject;
@@ -228,19 +299,117 @@ namespace BubbleBot.Website.Controllers
                         charactersList.Add(charac);
                     }
 
-                    var archivedcharacters = jo.archivedcharacters;
-                    List<ArchivedCharacter> archivedCharactersList = new List<ArchivedCharacter>();
-                    foreach (var character in archivedcharacters)
+                    // If there are no errors
+                    if (charactersList.Count() > 0)
                     {
-                        JObject Jcharacter = character as JObject;
-                        ArchivedCharacter archived_character = Jcharacter.ToObject<ArchivedCharacter>();
-                        archivedCharactersList.Add(archived_character);
-                    }
+                        // Here we reorganize and sort every bots in order to display them
+                        List<Character> onlineBots = new List<Character>();
+                        List<Character> offlineBots = new List<Character>();
+                        List<Character> bannedBots = new List<Character>();
+                        Dictionary<string, List<Character>> onlineAccounts = new Dictionary<string, List<Character>>();
+                        Dictionary<string, List<Character>> offlineAccounts = new Dictionary<string, List<Character>>();
+                        Dictionary<string, List<Character>> bannedAccounts = new Dictionary<string, List<Character>>();
 
-                    if (charactersList.Count() > 0 && archivedCharactersList.Count() > 0)
-                    {
+                        foreach (Character character in charactersList)
+                        {
+                            if (character.State != AccountStates.DISCONNECTED.ToString() && character.State != AccountStates.BANNED.ToString())
+                            {
+                                onlineBots.Add(character);
+
+                                List<Character> existing;
+                                if (onlineAccounts.TryGetValue(character.Account, out existing))
+                                    existing.Add(character);
+                                else
+                                {
+                                    existing = new List<Character>();
+                                    existing.Add(character);
+                                }
+                                onlineAccounts.Add(character.Account, existing);
+                            }
+                            else if (character.State == AccountStates.DISCONNECTED.ToString())
+                            {
+                                offlineBots.Add(character);
+
+                                List<Character> existing;
+                                if (offlineAccounts.TryGetValue(character.Account, out existing))
+                                    existing.Add(character);
+                                else
+                                {
+                                    existing = new List<Character>();
+                                    existing.Add(character);
+                                }
+                                offlineAccounts.Add(character.Account, existing);
+                            }
+                            else if (character.State == AccountStates.BANNED.ToString())
+                            {
+                                bannedBots.Add(character);
+
+                                List<Character> existing;
+                                if (bannedAccounts.TryGetValue(character.Account, out existing))
+                                    existing.Add(character);
+                                else
+                                {
+                                    existing = new List<Character>();
+                                    existing.Add(character);
+                                }
+                                bannedAccounts.Add(character.Account, existing);
+                            }
+                        }
+
+                        // Here we have to sort every bot => by group (with a chief) then alone bots
+                        onlineBots = onlineBots.OrderByDescending(x => x.Group_Id).ThenByDescending(x => x.Group_Chief).ThenBy(x => x.Account).ThenBy(x => x.Name).ToList();
+                        offlineBots = offlineBots.OrderBy(x => x.Account).ThenBy(x => x.Name).ToList();
+                        bannedBots = bannedBots.OrderBy(x => x.Account).ThenBy(x => x.Name).ToList();
+
+                        // Here we have every group in online bots in a dictionnary with group_id as key
+                        Dictionary<string, List<Character>> everyGroup = new Dictionary<string, List<Character>>();
+
+                        foreach (Character bot in onlineBots)
+                        {
+                            if (bot.Group_Id != null && bot.Group_Id != "-" && !everyGroup.ContainsKey(bot.Group_Id)) // If the bot has a group
+                            {
+                                List<Character> group = new List<Character>();
+                                group.Add(bot);
+                                foreach (Character lookingForMember in onlineBots)
+                                {
+                                    if (lookingForMember.Group_Id == bot.Group_Id && lookingForMember != bot)
+                                    {
+                                        group.Add(lookingForMember);
+                                    }
+                                }
+
+                                if (group.Count() > 1 && !everyGroup.ContainsKey(bot.Group_Id))
+                                {
+                                    everyGroup.Add(bot.Group_Id, group);
+                                }
+                            }
+                        }
+
+                        // Associating colors with groups
+                        Dictionary<string, string> groupsColors = new Dictionary<string, string>();
+                        List<string> availableColors = new List<string>() { "blueviolet" , "brown" , "cadetblue" , "coral" , "cornflowerblue" , "hotpink" , "red" , "palevioletred" , "darkkhaki" ,
+                                                        "darkgoldenrod" , "darkgrey" , "darkmagenta" , "darkorange", "fuchsia", "turquoise", "springgreen" , "olivedrap" ,
+                                                        "forestgreen" , "moccassin" };
+
+                        // EveryGroup get a color in groupsColors dictionnary , if all colors are taken, it starts again at 0
+                        int i = 0;
+                        foreach (string key in everyGroup.Keys)
+                        {
+                            groupsColors.Add(key, availableColors[i]);
+                            if (i++ > availableColors.Count() - 1)
+                                i = 0;
+                            else
+                                i++;
+                        }
+
                         ViewBag.Characters = charactersList;
-                        ViewBag.ArchivedCharacters = archivedCharactersList;
+                        ViewBag.OnlineBots = onlineBots;
+                        ViewBag.OfflineBots = offlineBots;
+                        ViewBag.BannedBots = bannedBots;
+                        ViewBag.EveryGroup = everyGroup;
+                        ViewBag.GroupsColors = groupsColors;
+                        _userBots = charactersList;
+
                         return View(user);
                     }
                 }
@@ -260,6 +429,7 @@ namespace BubbleBot.Website.Controllers
                 return StatusCode(404);
             }
         }
+        #endregion
 
         #region UserProfile Manager
         [HttpGet]

@@ -23,7 +23,7 @@ namespace BubbleBot.Server
         public static double GetInterval()
         {
             DateTime now = DateTime.Now;
-            return ((60 - now.Second) * 1000 - now.Millisecond);
+            return ((180 - now.Second) * 1000 - now.Millisecond);
         }
 
         public static void dynamicTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
