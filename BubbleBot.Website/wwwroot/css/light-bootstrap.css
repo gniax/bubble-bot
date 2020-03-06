@@ -931,6 +931,10 @@ fieldset[disabled] .btn.active {
     box-shadow: none;
 }
 
+.btn.btn-sm.btn-outline-dark.active {
+    background-color: #dadada;
+}
+
 .btn:active,
 .btn.active,
 .open>.btn.dropdown-toggle {
@@ -2761,6 +2765,7 @@ Copyright (c) 2015 Daniel Eden
 }
 
 .card {
+    margin-left: 10px;
     border-radius: 4px;
     background-color: #FFFFFF;
     margin-bottom: 30px;

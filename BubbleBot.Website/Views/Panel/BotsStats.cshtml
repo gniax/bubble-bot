@@ -139,42 +139,119 @@
     </div>
 </div>
 
+@* Affichage des graphes *@
+
+<div class="container-fluid" id="charts_div" style="display:none;">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 class="card-title">Statut du bot</h4>
+                    <p class="card-category">Temps passé par état</p>
+                </div>
+                <div class="card-body ">
+                    <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
+                    <div class="legend">
+                        <i class="fa fa-circle text-success"></i> Inactif
+                        <i class="fa fa-circle text-warning"></i> Déplacement
+                        <i class="fa fa-circle text-danger"></i> Combat
+                        <br/><i class="fa fa-circle text-dark"></i> Captcha
+                        <i class="fa fa-circle" style="color:gold;"></i> HDV
+                        <i class="fa fa-circle" style="color:darkslategray;"></i> Récoltes
+                    </div>
+                    <hr>
+                    <div class="stats text-center">
+                        <button class="btn btn-sm btn-outline-dark" role="button" aria-pressed="true"><i class="fa fa-clock-o"></i> Jour</button>
+                        <button class="btn btn-sm btn-outline-dark" role="button" aria-pressed="false"><i class="fa fa-clock-o"></i> Semaine</button>
+                        <button class="btn btn-sm btn-outline-dark" role="button" aria-pressed="false"><i class="fa fa-clock-o"></i> Mois</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8" style="margin-left: -10px;">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 class="card-title">Users Behavior</h4>
+                    <p class="card-category">24 Hours performance</p>
+                </div>
+                <div class="card-body ">
+                    <div id="chartHours" class="ct-chart"></div>
+                </div>
+                <div class="card-footer ">
+                    <div class="legend">
+                        <i class="fa fa-circle text-info"></i> Open
+                        <i class="fa fa-circle text-danger"></i> Click
+                        <i class="fa fa-circle text-warning"></i> Click Second Time
+                    </div>
+                    <hr>
+                    <div class="stats">
+                        <i class="fa fa-history"></i> Updated 3 minutes ago
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 class="card-title">2017 Sales</h4>
+                    <p class="card-category">All products including Taxes</p>
+                </div>
+                <div class="card-body ">
+                    <div id="chartActivity" class="ct-chart"></div>
+                </div>
+                <div class="card-footer ">
+                    <div class="legend">
+                        <i class="fa fa-circle text-info"></i> Tesla Model S
+                        <i class="fa fa-circle text-danger"></i> BMW 5 Series
+                    </div>
+                    <hr>
+                    <div class="stats">
+                        <i class="fa fa-check"></i> Data information certified
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @*Zone des données du personnage en cours (module à droite) *@
 
 <div class="custom-sidebar-right" id="custom-sidebar-right" style="display:none;">
-        <a href="javascript:void(0)" class="hidebtn-right" id="togglebtn-right"><span class="fa fa-minus-square" id="toggle-icon-right"></span></a>
-        <div class="race text-center">
-            <img class="classe_logo" id="classe_logo" alt="breed_img" width="46" height="46" />
-        </div>
+    <a href="javascript:void(0)" class="hidebtn-right" id="togglebtn-right"><span class="fa fa-minus-square" id="toggle-icon-right"></span></a>
+    <div class="race text-center">
+        <img class="classe_logo" id="classe_logo" alt="breed_img" width="46" height="46" />
+    </div>
 
-        <hr style="margin-top:3px;" />
+    <hr style="margin-top:3px;" />
 
-        <div id="navcontent-right">
+    <div id="navcontent-right">
+        <div>
             <div>
-                <div>
-                    <h5 id="navcontent-title" class="navcontent-title"></h5>
-                    <p class="description navcontent-infos" id="navcontent-infos">
-                    </p>
-                </div>
-                <hr style="margin: 5px 15px;">
-                <div class="description navcontent-description">
-                    Statut : <p class="d-inline-block" style="line-height: 0.5;margin-top: 10px;font-size: 14px;" id="bot_state"></p>
-                    <br>Position : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_map"></p>
-                    <br>Script : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_script"></p>
-                    <br>ID : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_id"></p>
-                </div>
+                <h5 id="navcontent-title" class="navcontent-title"></h5>
+                <p class="description navcontent-infos" id="navcontent-infos">
+                </p>
             </div>
-            @* Zone de groupe => Note : Tous les groupes sont affichés au préalable... *@
-            <div id="groupModal" style="display:none;">
-                <hr style="margin: 5px 15px;">
-                <div class="container">
-                    @foreach (String key in everyGroup.Keys)
-                    {
+            <hr style="margin: 5px 15px;">
+            <div class="description navcontent-description">
+                Statut : <p class="d-inline-block" style="line-height: 0.5;margin-top: 10px;font-size: 14px;" id="bot_state"></p>
+                <br>Position : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_map"></p>
+                <br>Script : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_script"></p>
+                <br>ID : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_id"></p>
+            </div>
+        </div>
+        @* Zone de groupe => Note : Tous les groupes sont affichés au préalable... *@
+        <div id="groupModal" style="display:none;">
+            <hr style="margin: 5px 15px;">
+            <div class="container">
+                @foreach (String key in everyGroup.Keys)
+                {
                     <div id="group_@key" style="display:none;">
                         @{ List<Character> group = everyGroup.FirstOrDefault(g => g.Key == key).Value; }
                         @foreach (Character member in group)
                         {
-                        <div class="row align-items-center justify-content-center w-100" style="height: 24px;">
+                            <div class="row align-items-center justify-content-center w-100" style="height: 24px;">
                                 @if (member.Group_Chief == 1 && member.Group_Id != "-")
                                 {
                                     <span class="fa fa-star"></span>
@@ -184,26 +261,26 @@
                                     <span class="fa fa-user"></span>
                                 }
                                 <p style="font-size:12px;margin: 0;">@member.Account : @member.Name</p>
-                        </div>
+                            </div>
                         }
                     </div>
-                    }
-                </div>
-            </div>
-            @* Zone du bas *@
-            <hr style="margin: 0px;">
-            <div class="row" style="margin-left: 0px;margin-right:0px;display: -webkit-box;flex-wrap:unset;">
-                <div class="col-xs-6 col-sm-4">
-                    <p class="d-inline-block" id="bot_kamas" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/kamas.png" width="16" height="16" />
-                </div>
-                <div class="col-xs-6 col-sm-4">
-                    <p class="d-inline-block" id="bot_energy" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/energy.png" width="16" height="16" />
-                </div>
-                <div class="col-xs-6 col-sm-4">
-                    <p class="d-inline-block" id="bot_pods" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/pods.png" width="16" height="16" />
-                </div>
+                }
             </div>
         </div>
+        @* Zone du bas *@
+        <hr style="margin: 0px;">
+        <div class="row" style="margin-left: 0px;margin-right:0px;display: -webkit-box;flex-wrap:unset;">
+            <div class="col-xs-6 col-sm-4">
+                <p class="d-inline-block" id="bot_kamas" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/kamas.png" width="16" height="16" />
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                <p class="d-inline-block" id="bot_energy" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/energy.png" width="16" height="16" />
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                <p class="d-inline-block" id="bot_pods" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/pods.png" width="16" height="16" />
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -230,19 +307,220 @@ function botInformationRequest(account, botname) {
                     document.getElementById("bot_pods").innerHTML = result.botpods + "%";
                     document.getElementById("classe_logo").src =  result.breedURL;
                     var groupid = result.botgroupid;
-                    if (groupid != "-" && groupid != null)
+                    if (groupid != '-' && groupid != null)
                     {
                         document.getElementById("groupModal").style.display = "block";
                         var id = "group_" + groupid;
                         document.getElementById(id).style.display = "block";
                     }
+                    document.getElementById("charts_div").style.display = "block";
 
+                /* -------------- CHARTS DRAWING ZONE -------------- */
+                    if (result.stategraph == true)
+                    {
+                        var data_day = result.stategraph_data_day
+                        var data_week = result.stategraph_data_week
+                        var data_month = result.stategraph_data_month
+
+                        var array = [];      
+                        for (var value in data_day)
+                        {
+                            if (data_month.hasOwnProperty(value)) 
+                            {
+                                array.push([value, data_month[value]]);
+                            }
+                        }
+
+                        console.log(array);
+
+                        var dataPreferences = {
+                            series: [
+                                [25, 30, 20, 25]
+                            ]
+                        };
+
+                        var optionsPreferences = {
+                            donut: true,
+                            donutWidth: 40,
+                            startAngle: 0,
+                            total: 100,
+                            showLabel: false,
+                            axisX: {
+                                showGrid: false
+                            }
+                        };
+
+                        Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
+
+                        Chartist.Pie('#chartPreferences', {
+                            labels: ['53%', '36%', '11%'],
+                            series: [53, 36, 11]
+                        });
+                    }
+
+
+                    var dataSales = {
+                        labels: ['9:00AM', '12:00AM', '3:00PM', '6:00PM', '9:00PM', '12:00PM', '3:00AM', '6:00AM'],
+                        series: [
+                            [287, 385, 490, 492, 554, 586, 698, 695, 752, 788, 846, 944],
+                            [67, 152, 143, 240, 287, 335, 435, 437, 539, 542, 544, 647],
+                            [23, 113, 67, 108, 190, 239, 307, 308, 439, 410, 410, 509]
+                        ]
+                    };
+
+                    var optionsSales = {
+                      lineSmooth: false,
+                      low: 0,
+                      high: 800,
+                       chartPadding: 0,
+                      showArea: true,
+                      height: "245px",
+                      axisX: {
+                        showGrid: false,
+                      },
+                      axisY: {
+                        showGrid: false,
+                      },
+                      lineSmooth: Chartist.Interpolation.simple({
+                        divisor: 6
+                      }),
+                      showLine: false,
+                      showPoint: true,
+                      fullWidth: true
+                    };
+                    var optionsSales = {
+                        lineSmooth: false,
+                        low: 0,
+                        high: 800,
+                        showArea: true,
+                        height: "245px",
+                        axisX: {
+                            showGrid: false,
+                        },
+                        lineSmooth: Chartist.Interpolation.simple({
+                            divisor: 3
+                        }),
+                        showLine: false,
+                        showPoint: false,
+                        fullWidth: false
+                    };
+
+                    var responsiveSales = [
+                        ['screen and (max-width: 640px)', {
+                            axisX: {
+                                labelInterpolationFnc: function(value) {
+                                    return value[0];
+                                }
+                            }
+                        }]
+                    ];
+
+                    var chartHours = Chartist.Line('#chartHours', dataSales, optionsSales, responsiveSales);
+
+                    var data = {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        series: [
+                            [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895],
+                            [412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636, 695]
+                        ]
+                    };
+
+                    var options = {
+                        seriesBarDistance: 10,
+                        axisX: {
+                            showGrid: false
+                        },
+                        height: "245px"
+                    };
+
+                    var responsiveOptions = [
+                        ['screen and (max-width: 640px)', {
+                            seriesBarDistance: 5,
+                            axisX: {
+                                labelInterpolationFnc: function(value) {
+                                    return value[0];
+                                }
+                            }
+                        }]
+                    ];
+
+                    var chartActivity = Chartist.Bar('#chartActivity', data, options, responsiveOptions);
+
+                    /* ----------==========     Daily Sales Chart initialization    ==========---------- */
+                    //
+                    dataDailySalesChart = {
+                        labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                        series: [
+                            [12, 17, 7, 17, 23, 18, 38]
+                        ]
+                    };
+                    //
+                    optionsDailySalesChart = {
+                        lineSmooth: Chartist.Interpolation.cardinal({
+                            tension: 0
+                        }),
+                        low: 0,
+                        high: 50, //creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                        chartPadding: { top: 0, right: 0, bottom: 0, left: 0},
+                    }
+                    //
+                    var dailySalesChart = Chartist.Line('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
+                    /* ----------==========     Completed Tasks Chart initialization    ==========---------- */
+                    //
+                    dataCompletedTasksChart = {
+                        labels: ['12am', '3pm', '6pm', '9pm', '12pm', '3am', '6am', '9am'],
+                        series: [
+                            [230, 750, 450, 300, 280, 240, 200, 190]
+                        ]
+                    };
+                    //
+                    optionsCompletedTasksChart = {
+                        lineSmooth: Chartist.Interpolation.cardinal({
+                            tension: 0
+                        }),
+                        low: 0,
+                        high: 1000, //creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                        chartPadding: { top: 0, right: 0, bottom: 0, left: 0}
+                    }
+                    //
+                    var completedTasksChart = new Chartist.Line('#completedTasksChart', dataCompletedTasksChart, optionsCompletedTasksChart);
+                    //
+                    //
+                    /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
+                    //
+                    var dataEmailsSubscriptionChart = {
+                      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                      series: [
+                        [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]
+                    //
+                      ]
+                    };
+                    var optionsEmailsSubscriptionChart = {
+                        axisX: {
+                            showGrid: false
+                        },
+                        low: 0,
+                        high: 1000,
+                        chartPadding: { top: 0, right: 5, bottom: 0, left: 0}
+                    };
+                    var responsiveOptions = [
+                      ['screen and (max-width: 640px)', {
+                        seriesBarDistance: 5,
+                        axisX: {
+                          labelInterpolationFnc: function (value) {
+                            return value[0];
+                          }
+                        }
+                      }]
+                    ];
+                    var emailsSubscriptionChart = Chartist.Bar('#emailsSubscriptionChart', dataEmailsSubscriptionChart, optionsEmailsSubscriptionChart, responsiveOptions);
                 }
                 else if (result.error != null)
                 {
                     site.showNotification((result.error + "<br/>"), 4, 'top', 'right');
                 }
             }
-        })
+    })
+
 }
 </script>

@@ -223,7 +223,7 @@ namespace BubbleBot.Website.Controllers
             {
                 dynamic jo = JObject.Parse(content);
                 var archivedcharacter = jo.archivedcharacter;
-                List<ArchivedCharacter> archivedCharacterList = new List<ArchivedCharacter>();
+                List<ArchivedCharacter> archivedCharacterList = new List<ArchivedCharacter>(); // Character archived data
                 foreach (var character in archivedcharacter)
                 {
                     JObject Jcharacter = character as JObject;
@@ -246,10 +246,102 @@ namespace BubbleBot.Website.Controllers
                         if (selectedBot.Breed != null && selectedBot.Breed != "NULL" && selectedBot.Breed != "-" && selectedBot.Breed != "UNDEFINED")
                             breedUrl = Program.Constants.WebsiteIpAddress + $"/images/breeds/" + selectedBot.Breed + ".png";
 
-                        return Json(new { success = true , account = Account, botname = BotName, breedURL = breedUrl, botserver = selectedBot.Server, 
-                                          botlevel = selectedBot.Level, botstate = selectedBot.State, botmappos = selectedBot.Map_pos, botmapid = selectedBot.Map_id,
-                                          botid = selectedBot.Character_id , botscript = selectedBot.Script_Name, botkamas = selectedBot.Kamas, botenergy = selectedBot.Percent_energy,
-                                          botpods = selectedBot.Percent_pods, botgroupid = selectedBot.Group_Id });
+                        // Constants var
+                        DateTime now = DateTime.Now,
+                                 yesterday = DateTime.Now.AddDays(-1),
+                                 aWeekAgo = DateTime.Now.AddDays(-7),
+                                 aMonthAgo = DateTime.Now.AddDays(-30);
+
+
+                        List<Tuple<string, DateTime>> stateCharacter = archivedCharacterList.Select(c => new Tuple<string, DateTime>(c.State, c.Updated_at))
+                                                                                            .OrderBy(c => c.Item2)
+                                                                                            .ToList();
+
+                        Dictionary<string, int> statesDay = new Dictionary<string, int>();
+                        Dictionary<string, int> statesWeek = new Dictionary<string, int>();
+                        Dictionary<string, int> statesMonth = new Dictionary<string, int>();
+
+                        foreach (Tuple<string, DateTime> kvp in stateCharacter)
+                        {
+                            AccountStates state = (AccountStates)System.Enum.Parse(typeof(AccountStates), kvp.Item1);
+                            DateTime updatedat = kvp.Item2;
+                            string s_state = null;
+
+                            switch (state)
+                            {
+                                case AccountStates.NONE: s_state = "Inactif";
+                                    break;
+                                case AccountStates.MOVING: s_state = "Déplacement";
+                                    break;
+                                case AccountStates.FIGHTING: s_state = "Combat";
+                                    break;
+                                case AccountStates.RECAPTCHA: s_state = "Captcha";
+                                    break;
+                                case AccountStates.REGENERATING: s_state = "Regénération";
+                                    break;
+                                case AccountStates.BUYING: s_state = "HDV";
+                                    break;
+                                case AccountStates.SELLING: s_state = "HDV";
+                                    break;
+                                case AccountStates.GATHERING: s_state = "Récolte";
+                                    break;
+                            }
+                            if(s_state != null)
+                            {
+                                // Note : to get all the data (for instance: in a week) we have to do the sum of the day data + week data
+                                if (updatedat > yesterday)
+                                {
+                                    statesDay.TryGetValue(s_state, out int currentCount);
+                                    statesDay[s_state] = currentCount + 1;
+
+                                    statesWeek.TryGetValue(s_state, out var secondCount);
+                                    statesWeek[s_state] = secondCount + 1;
+
+                                    statesMonth.TryGetValue(s_state, out var thirdCount);
+                                    statesMonth[s_state] = thirdCount + 1;
+                                }
+                                else if (updatedat > aWeekAgo)
+                                {
+                                    statesWeek.TryGetValue(s_state, out var currentCount);
+                                    statesWeek[s_state] = currentCount + 1;
+
+                                    statesMonth.TryGetValue(s_state, out var secondCount);
+                                    statesMonth[s_state] = secondCount + 1;
+                                }
+
+                                else if (updatedat > aMonthAgo)
+                                {
+                                    statesMonth.TryGetValue(s_state, out var thirdCount);
+                                    statesMonth[s_state] = thirdCount + 1;
+                                }
+                            }
+                        }
+
+                        Console.WriteLine(statesMonth);
+
+                        return Json(new
+                        {
+                            success = true,
+                            account = Account,
+                            botname = BotName,
+                            breedURL = breedUrl,
+                            botserver = selectedBot.Server,
+                            botlevel = selectedBot.Level,
+                            botstate = selectedBot.State,
+                            botmappos = selectedBot.Map_pos,
+                            botmapid = selectedBot.Map_id,
+                            botid = selectedBot.Character_id,
+                            botscript = selectedBot.Script_Name,
+                            botkamas = selectedBot.Kamas,
+                            botenergy = selectedBot.Percent_energy,
+                            botpods = selectedBot.Percent_pods,
+                            botgroupid = selectedBot.Group_Id,
+                            // state infos
+                            stategraph = true,
+                            stategraph_data_day = statesDay,
+                            stategraph_data_week = statesWeek,
+                            stategraph_data_month = statesMonth
+                        });
                     }
                 }
                 errorMessage = "Aucun historique associé au compte trouvé.";
@@ -318,13 +410,16 @@ namespace BubbleBot.Website.Controllers
 
                                 List<Character> existing;
                                 if (onlineAccounts.TryGetValue(character.Account, out existing))
+                                {
                                     existing.Add(character);
+                                    onlineAccounts[character.Account] = existing;
+                                }
                                 else
                                 {
                                     existing = new List<Character>();
                                     existing.Add(character);
+                                    onlineAccounts.Add(character.Account, existing);
                                 }
-                                onlineAccounts.Add(character.Account, existing);
                             }
                             else if (character.State == AccountStates.DISCONNECTED.ToString())
                             {
@@ -332,13 +427,16 @@ namespace BubbleBot.Website.Controllers
 
                                 List<Character> existing;
                                 if (offlineAccounts.TryGetValue(character.Account, out existing))
+                                { 
                                     existing.Add(character);
+                                    offlineAccounts[character.Account] = existing;
+                                }
                                 else
                                 {
                                     existing = new List<Character>();
                                     existing.Add(character);
+                                    offlineAccounts.Add(character.Account, existing);
                                 }
-                                offlineAccounts.Add(character.Account, existing);
                             }
                             else if (character.State == AccountStates.BANNED.ToString())
                             {
@@ -346,13 +444,16 @@ namespace BubbleBot.Website.Controllers
 
                                 List<Character> existing;
                                 if (bannedAccounts.TryGetValue(character.Account, out existing))
+                                {
                                     existing.Add(character);
+                                    bannedAccounts[character.Account] = existing;
+                                }
                                 else
                                 {
                                     existing = new List<Character>();
                                     existing.Add(character);
+                                    bannedAccounts.Add(character.Account, existing);
                                 }
-                                bannedAccounts.Add(character.Account, existing);
                             }
                         }
 

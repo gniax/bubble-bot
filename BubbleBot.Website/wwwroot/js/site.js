@@ -1,4 +1,5 @@
-﻿type = ['primary', 'info', 'success', 'warning', 'danger'];
+﻿
+type = ['primary', 'info', 'success', 'warning', 'danger'];
 icone = ['nc-icon nc-app', 'fa fa-info', 'fa fa-check', 'fa fa-exclamation-circle', 'fa fa-exclamation-triangle'];
 
 site = {

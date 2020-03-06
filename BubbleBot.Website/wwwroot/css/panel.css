@@ -109,7 +109,8 @@ ul.dropdown-menu-custom-show {
     display: inline-block;
     margin-top: -30px;
     border: 1px solid #aaaaaa;
-    position: relative;
+    position: absolute;
+    z-index: 300;
     border-left: 2px solid #a09f9f;
     background: #ebeaec;
     width: 250px;
@@ -125,10 +126,12 @@ ul.dropdown-menu-custom-show {
     transition: 0.5s;
     display: inline-block;
     margin-left: 15px;
-    right: -15px;
-    margin-top: -30px;
+    right: 0;
+    top:0;
     border: 1px solid #aaaaaa;
-    position: relative;
+    position: absolute;
+    margin-top: 60px;
+    z-index: 1500;
     float:right;
     border-left: 2px solid #a09f9f;
     background: #ebeaec;
