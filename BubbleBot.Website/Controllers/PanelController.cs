@@ -264,6 +264,7 @@ namespace BubbleBot.Website.Controllers
                         foreach (Tuple<string, DateTime> kvp in stateCharacter)
                         {
                             AccountStates state = (AccountStates)System.Enum.Parse(typeof(AccountStates), kvp.Item1);
+                            Console.WriteLine(state);
                             DateTime updatedat = kvp.Item2;
                             string s_state = null;
 
@@ -277,7 +278,7 @@ namespace BubbleBot.Website.Controllers
                                     break;
                                 case AccountStates.RECAPTCHA: s_state = "Captcha";
                                     break;
-                                case AccountStates.REGENERATING: s_state = "Regénération";
+                                case AccountStates.REGENERATING: s_state = "Regénération"; 
                                     break;
                                 case AccountStates.BUYING: s_state = "HDV";
                                     break;
@@ -317,7 +318,9 @@ namespace BubbleBot.Website.Controllers
                             }
                         }
 
-                        Console.WriteLine(statesMonth);
+                        statesDay.OrderByDescending(v => v.Value);
+                        statesWeek.OrderByDescending(v => v.Value);
+                        statesMonth.OrderByDescending(v => v.Value);
 
                         return Json(new
                         {

@@ -932,7 +932,11 @@ fieldset[disabled] .btn.active {
 }
 
 .btn.btn-sm.btn-outline-dark.active {
-    background-color: #dadada;
+    background-color: #000000;
+}
+
+.btn-outline-dark:hover:disabled{
+    cursor: not-allowed;
 }
 
 .btn:active,
