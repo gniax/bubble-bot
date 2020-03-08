@@ -17,7 +17,7 @@ namespace BubbleBot.Server.Handlers
 
                 if (client.Accounts.TryGetValue(message.Account, out Account account))
                 {
-                    account.SetInitialBotInformations(client.Informations.Id, message.Id, message.Name, message.Server, message.Level);
+                    account.SetInitialBotInformations(client.Informations.Id, message.Id, message.Name, message.Server, message.Breed, message.Level);
                     ServerMain.BroadcastStatistics();
                 }
             });
@@ -33,7 +33,7 @@ namespace BubbleBot.Server.Handlers
                     account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, 
                                                   message.MapId, message.MapPosition, message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
 
-                    account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition,
+                    account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, account.BotBreed, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition,
                             message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
                 }
             });
@@ -51,7 +51,7 @@ namespace BubbleBot.Server.Handlers
                         account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition, 
                             kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
 
-                        account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,
+                        account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, account.BotBreed, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,
                             kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
                     }
                 }

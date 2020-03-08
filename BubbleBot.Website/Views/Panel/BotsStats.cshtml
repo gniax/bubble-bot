@@ -2,108 +2,829 @@
 @using  BubbleBot.Website.Enums
 @{
     List<Character> characters = ViewBag.Characters;
-    List<ArchivedCharacter> archivedcharacters = ViewBag.ArchivedCharacters;
-
-    List<Character> onlineBots = new List<Character>();
-    List<Character> offlineBots = new List<Character>();
-    List<Character> bannedBots = new List<Character>();
-    foreach (Character character in characters)
-    {
-        if (character.State != AccountStates.DISCONNECTED.ToString() && character.State != AccountStates.BANNED.ToString())
-        {
-            onlineBots.Add(character);
-        }
-        else if (character.State == AccountStates.DISCONNECTED.ToString())
-        {
-            offlineBots.Add(character);
-        }
-        else if (character.State == AccountStates.BANNED.ToString())
-        {
-            bannedBots.Add(character);
-        }
-    }
+    List<Character> onlineBots = ViewBag.OnlineBots;
+    List<Character> offlineBots = ViewBag.OfflineBots;
+    List<Character> bannedBots = ViewBag.BannedBots;
+    Dictionary<string, List<Character>> everyGroup = ViewBag.EveryGroup;
+    Dictionary<string, string> groupsColors = ViewBag.GroupsColors;
 
     ViewData["Title"] = "Bots";
 }
-<div class="custom-sidebar">
-    <ul class="nav" style="display: block; margin-top:15px;">
-        <li class="dropdown">
-            <a class="nav-link" style="color: darkgreen;">
-                <i class="fa fa-toggle-on"></i> En Ligne
-                @if (onlineBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
+
+@* Module à gauche *@
+<div class="custom-sidebar" id="custom-sidebar">
+    <a href="javascript:void(0)" class="hidebtn" id="togglebtn"><span class="fa fa-minus-square" id="toggle-icon"></span></a>
+    <br /><hr />
+    <div id="navcontent">
+        @*Liste des personnages en ligne (module à gauche) *@
+        <ul class="nav custom-nav" style="margin-top:15px;">
+            <li class="dropdown dropdown-style" @if (onlineBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                <a class="nav-link" style="height: 42px; color: #26b706;">
+                    <i class="fa fa-toggle-on"></i> En Ligne
+                    @if (onlineBots.Count() <= 0)
+                    {
+                        <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                    @:</a>
+                }
                 else
                 {
                     <text>(@onlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                    @:</a>
+                    <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                        @foreach (Character bot in onlineBots)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link collapsed custom-nav-link" onclick="botInformationRequest('@bot.Account', '@bot.Name')">
+                                    <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                        <div class="col-md-6 pr-1" style="display: flex;">
+                                            @bot.Account
+                                        </div>
+                                        <div class="col-md-6 pr-1 custom-div"
+                                             style="@if (bot.Group_Id != null && bot.Group_Id != "-" && groupsColors.ContainsKey(bot.Group_Id)) { <text>color: @groupsColors.GetValueOrDefault(bot.Group_Id);</text>}">
+                                            <span class="fa
+                                                @if (bot.Group_Chief == 1 && bot.Group_Id != "-")
+                                                {
+                                                    <text>fa-star</text>
+                                                }
+                                                else if (bot.Group_Id != null && bot.Group_Id != "-")
+                                                {
+                                                    <text>fa-user</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>fa-robot</text>
+                                                }
+                                                " style="line-height: inherit;"></span> @bot.Name
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                    </ul>
                 }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link collapsed" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link collapsed" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link collapsed" href="#">Hôtel de Vente</a></li>
+                </li>
             </ul>
-        </li>
-    </ul>
-    <hr />
-    <ul class="nav" style="display: block;color: darkgray;">
-        <li class="dropdown">
-            <a class="nav-link">
-                <i class="fa fa-toggle-off"></i> Hors Ligne
-                @if (offlineBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
-                else
-                {
-                    <text>(@offlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
-                }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
-            </ul>
-        </li>
-    </ul>
-    <hr />
-    <ul class="nav" style="display: block;color: darkred;">
-        <li class="dropdown">
-            <a class="nav-link">
-                <i class="fa fa-ban"></i> Bannis
-                @if (bannedBots.Count() <= 0)
-                {
-                    <text>(0)</text> }
-                else
-                {
-                    <text>(@bannedBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
-                }
-            </a>
-            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
-                <li class="nav-item"><a class="nav-link" asp-action="BotsStats" asp-controller="Panel">Bots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Global</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Hôtel de Vente</a></li>
-            </ul>
-        </li>
-        <hr />
-    </ul>
-</div>
+            <br />
+            @*Liste des personnages déconnectés (module à gauche) *@
+            <ul class="nav custom-nav">
+                <li class="dropdown dropdown-style" @if (offlineBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                    <a class="nav-link" style="height: 42px;color: #4f4b4b;">
+                        <i class="fa fa-toggle-off"></i> Hors Ligne
+                        @if (offlineBots.Count() <= 0)
+                        {
+                            <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                        @:</a>
+                    }
+                    else
+                    {
+                        <text>(@offlineBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                        @:</a>
+                        <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                            @foreach (Character bot in offlineBots)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link collapsed custom-nav-link" onclick="botInformationRequest('@bot.Account', '@bot.Name')">
+                                        <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                            <div class="col-md-6 pr-1" style="display: flex;">
+                                                @bot.Account
+                                            </div>
+                                            <div class="col-md-6 pr-1 custom-div">
+                                                <span class="fa fa-robot" style="line-height: inherit;"></span>  @bot.Name
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    </li>
+                </ul>
+                <br />
+                @*Liste des personnages bannis (module à gauche) *@
+                <ul class="nav custom-nav">
+                    <li class="dropdown dropdown-style" @if (bannedBots.Count() <= 0) { <text> style="cursor:not-allowed;" </text> }>
+                        <a class="nav-link" style="height: 42px;color: #bf1414;">
+                            <i class="fa fa-ban"></i> Bannis
+                            @if (bannedBots.Count() <= 0)
+                            {
+                                <text>(0)<span class="fa fa-lock fa-pull-right"></span></text>
+                            @:</a>
+                        }
+                        else
+                        {
+                            <text>(@bannedBots.Count())<span class="fa fa-arrow-down fa-pull-right"></span></text>
+                            @:</a>
 
-<script src="~/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-@if (ViewBag.ErrorMessage != null)
-{
-    <text>
-        $(document).ready(function() {
-            site.showNotification("@ViewBag.ErrorMessage", 4, 'top', 'right');
-        });
-    </text>
-}
-@if (ViewBag.Success != null)
-{
-    <text>
-        $(document).ready(function() {
-            site.showNotification("@ViewBag.Success", 2, 'top', 'right');
-        });
-    </text>
-}
+                            <ul id="dropdown-menu-custom" class="dropdown-menu-custom">
+                                @foreach (Character bot in bannedBots)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link collapsed custom-nav-link" onclick="botInformationRequest('@bot.Account', '@bot.Name')">
+                                            <div class="row" style="font-size: smaller;margin-bottom: 2px;">
+                                                <div class="col-md-6 pr-1" style="display: flex;">
+                                                    @bot.Account
+                                                </div>
+                                                <div class="col-md-6 pr-1 custom-div">
+                                                    <span class="fa fa-robot" style="line-height: inherit;"></span>  @bot.Name
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        </li>
+                    </ul>
+                    <hr />
+                </div>
+            </div>
+
+            @* Affichage des graphes *@
+
+            <div class="container-fluid" id="charts_div" style="display:none;">
+                <div class="row">
+                    @* Graphique des états (state graph) *@
+                    <div class="col-md-4" id="div_chart_pie">
+                        <div class="card ">
+                            <div class="card-header">
+                                <h4 class="card-title">Statut du bot</h4>
+                                <p class="card-category">Temps passé par état</p>
+                            </div>
+                            <div class="card-body ">
+                                <div id="chartPie" class="ct-chart ct-perfect-fourth" style="height: 100%; width:100%; margin-bottom: 65px;"></div>
+                                <hr />
+                                <div class="stats text-center">
+                                    <button id="btn_pie_day" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawPie(this.id)" data-toggle="tooltip" title="Aucune informations pour aujourd'hui..."><i class="fa fa-clock-o"></i> Jour</button>
+                                    <button id="btn_pie_week" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawPie(this.id)" data-toggle="tooltip" title="Aucune informations pour la semaine..."><i class="fa fa-clock-o"></i> Semaine</button>
+                                    <button id="btn_pie_month" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawPie(this.id)"><i class="fa fa-clock-o"></i> Mois</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Graphique des niveaux/kamas *@
+                    <div class="col-md-8" id="div_chart_line" style="margin-left: -10px;">
+                        <div class="card" style="height: 490px;">
+                            <div class="card-header row d-inline-block" style="margin: 0;">
+                                <div class="custom-card-header">
+                                    <h4 class="card-title" id="line_title">Évolution des kamas du bot</h4>
+                                    <p class="card-category">Rapport en fonction du temps</p>
+                                </div>
+                                <div class="dropdown-menu visible float-lg-right">
+                                    <a class="dropdown-item active" id="a_line_kamas" onclick="redrawLine(this.id, true)">Kamas</a>
+                                    <a class="dropdown-item" id="a_line_level" onclick="redrawLine(this.id, true)">Niveau</a>
+                                    <a class="dropdown-item" id="a_line_energy" onclick="redrawLine(this.id, true)">Energie</a>
+                                    <a class="dropdown-item" id="a_line_pods" onclick="redrawLine(this.id, true)">Pods</a>
+                                </div>
+                            </div>
+                            <div class="card-body ">
+                                <div id="chartLine" class="ct-chart"></div>
+                                <hr />
+                                <div class="stats text-center">
+                                    <button id="btn_line_day" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)" data-toggle="tooltip" title="Aucune informations pour aujourd'hui..."><i class="fa fa-clock-o"></i> Jour</button>
+                                    <button id="btn_line_week" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)" data-toggle="tooltip" title="Aucune informations pour la semaine..."><i class="fa fa-clock-o"></i> Semaine</button>
+                                    <button id="btn_line_month" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)"><i class="fa fa-clock-o"></i> Mois</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">2017 Sales</h4>
+                                <p class="card-category">All products including Taxes</p>
+                            </div>
+                            <div class="card-body ">
+                                <div id="chartActivity" class="ct-chart"></div>
+                            </div>
+                            <div class="card-footer ">
+                                <div class="legend">
+                                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                                    <i class="fa fa-circle text-danger"></i> BMW 5 Series
+                                </div>
+                                <hr>
+                                <div class="stats">
+                                    <i class="fa fa-check"></i> Data information certified
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Zone des données du personnage en cours (module à droite) *@
+
+            <div class="custom-sidebar-right" id="custom-sidebar-right" style="display:none;">
+                <a href="javascript:void(0)" class="hidebtn-right" id="togglebtn-right"><span class="fa fa-minus-square" id="toggle-icon-right"></span></a>
+                <div class="race text-center">
+                    <img class="classe_logo" id="classe_logo" alt="breed_img" width="46" height="46" />
+                </div>
+
+                <hr style="margin-top:3px;" />
+
+                <div id="navcontent-right">
+                    <div>
+                        <div>
+                            <h5 id="navcontent-title" class="navcontent-title"></h5>
+                            <p class="description navcontent-infos" id="navcontent-infos">
+                            </p>
+                        </div>
+                        <hr style="margin: 5px 15px;">
+                        <div class="description navcontent-description">
+                            Statut : <p class="d-inline-block" style="line-height: 0.5;margin-top: 10px;font-size: 14px;" id="bot_state"></p>
+                            <br>Position : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_map"></p>
+                            <br>Script : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_script"></p>
+                            <br>ID : <p class="d-inline-block" style="line-height: 0.5;font-size: 14px;" id="bot_id"></p>
+                        </div>
+                    </div>
+                    @* Zone de groupe => Note : Tous les groupes sont affichés au préalable... *@
+                    <div id="groupModal" style="display:none;">
+                        <hr style="margin: 5px 15px;">
+                        <div class="container">
+                            @foreach (String key in everyGroup.Keys)
+                            {
+                                <div id="group_@key" style="display:none;">
+                                    @{ List<Character> group = everyGroup.FirstOrDefault(g => g.Key == key).Value; }
+                                    @foreach (Character member in group)
+                                    {
+                                        <div class="row align-items-center justify-content-center w-100" style="height: 24px;">
+                                            @if (member.Group_Chief == 1 && member.Group_Id != "-")
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                            else if (member.Group_Id != null && member.Group_Id != "-")
+                                            {
+                                                <span class="fa fa-user"></span>
+                                            }
+                                            <p style="font-size:12px;margin: 0;">@member.Account : @member.Name</p>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @* Zone du bas *@
+                    <hr style="margin: 0px;">
+                    <div class="row" style="margin-left: 0px;margin-right:0px;display: -webkit-box;flex-wrap:unset;">
+                        <div class="col-xs-6 col-sm-4">
+                            <p class="d-inline-block" id="bot_kamas" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/kamas.png" width="16" height="16" />
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <p class="d-inline-block" id="bot_energy" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/energy.png" width="16" height="16" />
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <p class="d-inline-block" id="bot_pods" style="font-size: 13px;"></p> <img class="anti-wrap" src="../images/pods.png" width="16" height="16" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+window.ChartLib = {}; // Initialize window variables storage
+google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
+
+    // Determines if an array var is empty
+    function isEmpty(obj) {
+      return Object.keys(obj).length === 0;
+    }
+
+    // Called on date btn change or dropdown
+    function redrawLine(id, dropdown) {
+        if (ChartLib.linegraph_type != null) {
+            let result = "a_line_" + ChartLib.linegraph_type;
+            if (result == id)
+                return;
+        }
+
+        var a_line_kamas = document.getElementById("a_line_kamas");
+        var a_line_level = document.getElementById("a_line_level");
+        var a_line_energy = document.getElementById("a_line_energy");
+        var a_line_pods = document.getElementById("a_line_pods");
+        var line_title = document.getElementById("line_title");
+
+        if (id == "a_line_kamas") ChartLib.linegraph_type = "kamas";
+        else if (id == "a_line_level") ChartLib.linegraph_type = "level";
+        else if (id == "a_line_energy") ChartLib.linegraph_type = "energy";
+        else if (id == "a_line_pods") ChartLib.linegraph_type = "pods";
+
+        var btn_line_day = document.getElementById("btn_line_day");
+        var btn_line_week = document.getElementById("btn_line_week");
+        var btn_line_month = document.getElementById("btn_line_month");
+
+        var selected = document.getElementById(id);
+
+        if (dropdown && ChartLib.linegraph_minDate != null) { // change type of graph...
+
+            if (a_line_kamas.classList.contains('active'))
+                a_line_kamas.classList.remove('active');
+
+            if (a_line_level.classList.contains('active'))
+                a_line_level.classList.remove('active');
+
+            if (a_line_energy.classList.contains('active'))
+                a_line_energy.classList.remove('active');
+
+            if (a_line_pods.classList.contains('active'))
+                a_line_pods.classList.remove('active');
+
+            selected.classList.add('active');
+
+            if (btn_line_day.classList.contains('active'))
+                btn_line_day.classList.remove('active');
+
+            if (btn_line_week.classList.contains('active'))
+                btn_line_week.classList.remove('active');
+
+            if (btn_line_month.classList.contains('active'))
+                btn_line_month.classList.remove('active');
+
+            switch (ChartLib.linegraph_minDate)
+            {
+                case "day":
+                    btn_line_day.classList.add('active');
+                        switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_day, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_day, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_day, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_day, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+                case "week":
+                    btn_line_week.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_week, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_week, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_week, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_week, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+                case "month":
+                    btn_line_month.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_month, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_month, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_month, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_month, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+            }
+        }
+        else // Date selected
+        {
+            if (btn_line_day.classList.contains('active'))
+                btn_line_day.classList.remove('active');
+
+            if (btn_line_week.classList.contains('active'))
+                btn_line_week.classList.remove('active');
+
+            if (btn_line_month.classList.contains('active'))
+                btn_line_month.classList.remove('active');
+
+            selected.classList.add('active');
+
+            switch (id)
+            {
+                case "btn_line_day":
+                    btn_line_day.classList.add('active');
+                        switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_day, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_day, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_day, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_day, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+                case "btn_line_week":
+                    btn_line_week.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_week, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_week, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_week, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_week, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+                case "btn_line_month":
+                    btn_line_month.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "kamas":
+                                drawLineChart(ChartLib.linegraph_kamas_month, "Kamas");
+                                line_title.innerHTML = "Évolution des kamas du bot";
+                                break;
+                            case "level":
+                                drawLineChart(ChartLib.linegraph_level_month, "Level");
+                                line_title.innerHTML = "Évolution des niveaux du bot";
+                                break;
+                            case "energy":
+                                drawLineChart(ChartLib.linegraph_energy_month, "Energy");
+                                line_title.innerHTML = "Évolution de l'énergie du bot";
+                                break;
+                            case "pods":
+                                drawLineChart(ChartLib.linegraph_pods_month, "Pods");
+                                line_title.innerHTML = "Évolution des pods du bot";
+                                break;
+                        }
+                    break;
+            }
+            
+        }
+    }
+    // Called on date btn change
+    function redrawPie(id) {
+        var btn_pie_day = document.getElementById("btn_pie_day");
+        var btn_pie_week = document.getElementById("btn_pie_week");
+        var btn_pie_month = document.getElementById("btn_pie_month");
+        var btn_pie_selected = document.getElementById(id);
+
+        if (btn_pie_day.classList.contains('active'))
+            btn_pie_day.classList.remove('active');
+
+        if (btn_pie_week.classList.contains('active'))
+            btn_pie_week.classList.remove('active');
+
+        if (btn_pie_month.classList.contains('active'))
+            btn_pie_month.classList.remove('active');
+
+        btn_pie_selected.classList.add('active');
+
+        if (id == "btn_pie_day" && !isEmpty(ChartLib.data_day)) {
+            drawPieChart(ChartLib.data_day);
+        }
+        else if (id == "btn_pie_week" && !isEmpty(ChartLib.data_week)) {
+            drawPieChart(ChartLib.data_week);
+        }
+        else if (id == "btn_pie_month" && !isEmpty(ChartLib.data_month)) {
+            drawPieChart(ChartLib.data_month);
+        }
+    }
+
+
+    // Draw a pie chart with array as an argument
+    function drawPieChart(array) {
+        if (!isEmpty(array)) {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'État');
+        data.addColumn('number', 'Total');
+        data.addRows(array);
+
+        // Set chart options
+        var options = {
+            pieHole: 0.4, width: '100%', height: '100%',
+            legend: { position: 'bottom' },
+            chartArea: { width: "100%", height: "85%" },
+            animation:{
+                duration: 1000,
+                easing: 'linear',
+                startup: true
+            },
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chartPie'));
+        chart.draw(data, options);
+        }
+    }
+
+    // Draw an area chart with array as an argument
+    function drawLineChart(array, attribut) {
+        if (!isEmpty(array)) {
+            var newArray = [];
+            array.forEach(function (item) {
+                Object.keys(item).forEach(function (key) {
+                    if (typeof item[key] === 'object')
+                        newArray.push(item[key]);
+                });
+            });
+
+            var convertedArray = [];
+            for (var line in newArray) {
+                var innerObj = [new Date(newArray[line]['key']), newArray[line]['value']];
+                convertedArray.push(innerObj);
+            }
+
+            if (!isEmpty(convertedArray)) {
+
+                // Set chart options
+                var options = {
+                    width: '100%', height: '100%',
+                    legend: { position: 'bottom' },
+                    chartArea: { width: "85%", height: "85%" },
+                    animation:{
+                      duration: 1000,
+                      easing: 'linear',
+                      startup: true
+                    },
+                    vAxis: { format: '0' },
+                };
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date');
+                if (attribut == "Kamas") {
+                    data.addColumn('number', 'Kamas');
+                    options.colors = ['blue'];
+                }
+                else if (attribut == "Level") {
+                    data.addColumn('number', 'Level');
+                    options.colors = ['red'];
+
+                }
+                else if (attribut == "Energy") {
+                    data.addColumn('number', 'Energy');
+                    options.colors = ['green'];
+
+                }
+                else if (attribut == "Pods") {
+                    data.addColumn('number', 'Pods');
+                    options.colors = ['yellow'];
+
+                }
+                data.addRows(convertedArray);
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.LineChart(document.getElementById('chartLine'));
+                chart.draw(data, options);
+            }
+        }
+    }
+
+
+    // Note: this function is called when a bot is selected
+    function botInformationRequest(account, botname) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("BotDataRequest", "Panel")',
+            data: {
+                Account: account,
+                BotName: botname
+            },
+            dataType: 'json',
+            success: function (result) {
+                    if (result.success) {
+                        document.getElementById("custom-sidebar-right").style.display = "inline-block";
+                        document.getElementById("navcontent-title").innerHTML = result.account + " : " + result.botname;
+                        document.getElementById("navcontent-infos").innerHTML = result.botserver + " | Niveau " + result.botlevel;
+                        document.getElementById("bot_state").innerHTML = result.botstate;
+                        document.getElementById("bot_map").innerHTML = '[' + result.botmappos + "] (" + result.botmapid + ")";
+                        document.getElementById("bot_id").innerHTML = result.botid;
+                        document.getElementById("bot_script").innerHTML = result.botscript;
+                        document.getElementById("bot_kamas").innerHTML = result.botkamas;
+                        document.getElementById("bot_energy").innerHTML = result.botenergy + "%";
+                        document.getElementById("bot_pods").innerHTML = result.botpods + "%";
+                        document.getElementById("classe_logo").src =  result.breedURL;
+                        var groupid = result.botgroupid;
+                        if (groupid != '-' && groupid != null)
+                        {
+                            document.getElementById("groupModal").style.display = "block";
+                            var id = "group_" + groupid;
+                            document.getElementById(id).style.display = "block";
+                        }
+                        document.getElementById("charts_div").style.display = "block";
+
+                    /* -------------- CHARTS DRAWING ZONE -------------- */
+
+                        /* -------------- PIE GRAPH (1st) -------------- */
+
+                        if (result.stategraph == true)
+                        {
+
+                            ChartLib.pie_data_day = Object.entries(result.stategraph_data_day);
+                            ChartLib.pie_data_week = Object.entries(result.stategraph_data_week);
+                            ChartLib.pie_data_month = Object.entries(result.stategraph_data_month);
+
+                            if (isEmpty(result.stategraph_data_month)) {
+                                document.getElementById("div_chart_pie").style.display = "none";
+                            }
+                            else
+                            {
+                                var array = []; // will be fill with proper data
+
+                                document.getElementById("div_chart_pie").style.display = "block";
+                                var btn_pie_day = document.getElementById("btn_pie_day");
+                                var btn_pie_week = document.getElementById("btn_pie_week");
+                                var btn_pie_month = document.getElementById("btn_pie_month");
+
+                                if (isEmpty(result.stategraph_data_week)) {
+                                    btn_pie_day.disabled = true;
+                                    btn_pie_week.disabled = true;
+                                    $('#btn_pie_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    $('#btn_pie_week').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    btn_pie_month.classList.add('active');
+
+                                    if (btn_pie_day.classList.contains('active'))
+                                        btn_pie_day.classList.remove('active');
+
+                                    if (btn_pie_week.classList.contains('active'))
+                                        btn_pie_week.classList.remove('active');
+
+                                    array = ChartLib.pie_data_month;
+                                }
+                                else if (isEmpty(result.stategraph_data_day)) // week & month but not day
+                                {
+                                    btn_pie_day.disabled = true;
+                                    btn_pie_week.disabled = false;
+                                    $('#btn_pie_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    $('#btn_pie_week').tooltip('dispose');
+                                    btn_pie_week.classList.add('active');
+
+                                    if (btn_pie_day.classList.contains('active'))
+                                        btn_pie_day.classList.remove('active');
+
+                                    if (btn_pie_month.classList.contains('active'))
+                                        btn_pie_month.classList.remove('active');
+
+                                    array = ChartLib.pie_data_week;
+                                }
+                                else // none empty
+                                {
+                                    btn_pie_day.disabled = false;
+                                    btn_pie_week.disabled = false;
+                                    $('#btn_pie_day').tooltip('dispose');
+                                    $('#btn_pie_week').tooltip('dispose');
+                                    btn_pie_day.classList.add('active');
+
+                                    if (btn_pie_week.classList.contains('active'))
+                                        btn_pie_week.classList.remove('active');
+
+                                    if (btn_pie_month.classList.contains('active'))
+                                        btn_pie_month.classList.remove('active');
+
+                                    array = ChartLib.pie_data_day;
+                                }
+                                drawPieChart(array);
+                            }
+                        }
+
+                        /* -------------- LEVEL/KAMAS GRAPH (2nde) -------------- */
+
+                        if (result.linegraph == true)
+                        {
+                            ChartLib.linegraph_kamas_day = Object.entries(result.linegraph_kamas_day);
+                            ChartLib.linegraph_kamas_week = Object.entries(result.linegraph_kamas_week);
+                            ChartLib.linegraph_kamas_month = Object.entries(result.linegraph_kamas_month);
+                            ChartLib.linegraph_level_day = Object.entries(result.linegraph_level_day);
+                            ChartLib.linegraph_level_week = Object.entries(result.linegraph_level_week);
+                            ChartLib.linegraph_level_month = Object.entries(result.linegraph_level_month);
+                            ChartLib.linegraph_energy_day = Object.entries(result.linegraph_energy_day);
+                            ChartLib.linegraph_energy_week = Object.entries(result.linegraph_energy_week);
+                            ChartLib.linegraph_energy_month = Object.entries(result.linegraph_energy_month);
+                            ChartLib.linegraph_pods_day = Object.entries(result.linegraph_pods_day);
+                            ChartLib.linegraph_pods_week = Object.entries(result.linegraph_pods_week);
+                            ChartLib.linegraph_pods_month = Object.entries(result.linegraph_pods_month);
+
+                            if (isEmpty(result.linegraph_kamas_month) || isEmpty(result.linegraph_level_month)) {
+                                document.getElementById("div_chart_line").style.display = "none";
+                            }
+                            else
+                            {
+                                var array = []; // will be fill with proper data
+
+                                document.getElementById("div_chart_line").style.display = "block";
+                                var btn_line_day = document.getElementById("btn_line_day");
+                                var btn_line_week = document.getElementById("btn_line_week");
+                                var btn_line_month = document.getElementById("btn_line_month");
+                                ChartLib.linegraph_type = "kamas";
+                                line_title.innerHTML = "Évolution des kamas du bot";
+
+                                if (a_line_kamas.classList.contains('active'))
+                                a_line_kamas.classList.remove('active');
+
+                                if (a_line_level.classList.contains('active'))
+                                    a_line_level.classList.remove('active');
+
+                                if (a_line_energy.classList.contains('active'))
+                                    a_line_energy.classList.remove('active');
+
+                                if (a_line_pods.classList.contains('active'))
+                                    a_line_pods.classList.remove('active');
+
+                                a_line_kamas.classList.add('active');
+
+                                if (isEmpty(result.linegraph_kamas_week)) {
+                                    btn_line_day.disabled = true;
+                                    btn_line_week.disabled = true;
+                                    $('#btn_line_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    $('#btn_line_week').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    btn_line_month.classList.add('active');
+
+                                    if (btn_line_day.classList.contains('active'))
+                                        btn_line_day.classList.remove('active');
+
+                                    if (btn_line_week.classList.contains('active'))
+                                        btn_line_week.classList.remove('active');
+
+                                    array = ChartLib.linegraph_kamas_month;
+                                    ChartLib.linegraph_minDate = "month";
+                                }
+                                else if (isEmpty(result.linegraph_kamas_day)) // week & month but not day
+                                {
+                                    btn_line_day.disabled = true;
+                                    btn_line_week.disabled = false;
+                                    $('#btn_line_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                                    $('#btn_line_week').tooltip('dispose');
+                                    btn_line_week.classList.add('active');
+
+                                    if (btn_line_day.classList.contains('active'))
+                                        btn_line_day.classList.remove('active');
+
+                                    if (btn_line_month.classList.contains('active'))
+                                        btn_line_month.classList.remove('active');
+
+                                    ChartLib.linegraph_minDate = "week";
+                                    array = ChartLib.linegraph_kamas_week;
+                                }
+                                else // none empty
+                                {
+                                    btn_line_day.disabled = false;
+                                    btn_line_week.disabled = false;
+                                    $('#btn_line_day').tooltip('dispose');
+                                    $('#btn_line_week').tooltip('dispose');
+                                    btn_line_day.classList.add('active');
+
+                                    if (btn_line_week.classList.contains('active'))
+                                        btn_line_week.classList.remove('active');
+
+                                    if (btn_line_month.classList.contains('active'))
+                                        btn_line_month.classList.remove('active');
+
+                                    ChartLib.linegraph_minDate = "day";
+                                    array = ChartLib.linegraph_kamas_day;
+                                }
+                                drawLineChart(array, "Kamas");
+                            }
+                        }
+                    }
+                    else if (result.error != null)
+                    {
+                        site.showNotification((result.error + "<br/>"), 4, 'top', 'right');
+                    }
+                }
+        })
+    }
 </script>

@@ -71,7 +71,7 @@ namespace BubbleBot.Core.Frames.Connection
                 await account.Network.SendMessageAsync(new GameContextCreateRequestMessage());
 
                 BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccesMessage(account.AccountConfig.Username, (int)account.Game.Character.Id, account.Game.Character.Name, 
-                    account.Game.Server.Name, account.Game.Character.Level));
+                    account.Game.Server.Name, account.Game.Character.Breed.ToString(), account.Game.Character.Level));
             });
 
         public static Task HandleGameContextCreateMessage(Account account, GameContextCreateMessage message)
