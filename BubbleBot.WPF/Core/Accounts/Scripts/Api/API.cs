@@ -32,6 +32,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         public ExchangeAPI Exchange { get; private set; }
         [Obfuscation(Exclude = false, Feature = "-rename")]
         public BidAPI Bid { get; private set; }
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public ExtendScriptAPI ExtendScript { get; private set; }
 
 
         // Constructor
@@ -48,6 +50,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             Storage = new StorageAPI(account);
             Exchange = new ExchangeAPI(account);
             Bid = new BidAPI(account);
+            ExtendScript = new ExtendScriptAPI(account);
         }
 
         #region IDisposable Support
@@ -71,6 +74,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                     Storage.Dispose();
                     Exchange.Dispose();
                     Bid.Dispose();
+                    ExtendScript.Dispose();
                 }
 
                 Character = null;
@@ -84,6 +88,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                 Storage = null;
                 Exchange = null;
                 Bid = null;
+                ExtendScript = null;
 
                 _disposedValue = true;
             }

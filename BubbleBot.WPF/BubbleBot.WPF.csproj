@@ -319,6 +319,7 @@
     <Compile Include="Core\Accounts\InGame\Character\SpellEntry.cs" />
     <Compile Include="Core\Accounts\InGame\Chat\ChatGame.cs" />
     <Compile Include="Core\Accounts\InGame\Exchange\ExchangeGame.cs" />
+    <Compile Include="Core\Accounts\InGame\ExtendScript\ExtendScriptGame.cs" />
     <Compile Include="Core\Accounts\InGame\Fights\Fighters\FighterEntry.cs" />
     <Compile Include="Core\Accounts\InGame\Fights\Fighters\FightMonsterEntry.cs" />
     <Compile Include="Core\Accounts\InGame\Fights\Fighters\FightPlayerEntry.cs" />
@@ -366,6 +367,11 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\CreateFileAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteFileAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\GetValueAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\LoadFileAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
@@ -410,6 +416,7 @@
     <Compile Include="Core\Accounts\Scripts\Api\BidAPI.cs" />
     <Compile Include="Core\Accounts\Scripts\Api\CharacterAPI.cs" />
     <Compile Include="Core\Accounts\Scripts\Api\ExchangeAPI.cs" />
+    <Compile Include="Core\Accounts\Scripts\Api\ExtendScriptAPI.cs" />
     <Compile Include="Core\Accounts\Scripts\Api\FightAPI.cs" />
     <Compile Include="Core\Accounts\Scripts\Api\GatherAPI.cs" />
     <Compile Include="Core\Accounts\Scripts\Api\InventoryAPI.cs" />
