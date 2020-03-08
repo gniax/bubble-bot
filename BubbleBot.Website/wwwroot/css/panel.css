@@ -14,53 +14,22 @@ ul.dropdown-menu-custom-show {
     height: 100px; 
 }
 
-.ct-legend {
-     padding: 0;
-     font-family: sans-serif;
+.custom-card-header {
+    width: 50%;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
 }
- .ct-legend li {
-     position: relative;
-     padding-left: 1.3em;
-     margin-bottom: 0.3em;
-     list-style-type: none;
-}
- .ct-legend li::before {
-     height: 1em;
-     width: 1em;
-     position: absolute;
-     top: 0.1em;
-     left: 0;
-     content: '';
-     border-radius: 1em;
-}
- .ct-legend .ct-series-0::before {
-     background-color: #1DC7EA;
-}
- .ct-legend .ct-series-1::before {
-     background-color: #FB404B;
-}
- .ct-legend .ct-series-2::before {
-     background-color: #FFA534;
-}
- .ct-legend .ct-series-3::before {
-     background-color: #9368E9;
-}
- .ct-legend .ct-series-4::before {
-     background-color: #87CB16;
-}
- .ct-legend .ct-series-5::before {
-     background-color: #5e5e5e;
-}
- .ct-legend .ct-series-6::before {
-     background-color: #dd4b39;
-}
- .ct-legend .ct-series-7::before {
-     background-color: #35465c;
-}
- .ct-legend .ct-series-7::before {
-     background-color: #e52d27;
-}
- 
+
+ .visible {
+    opacity : 1;
+    visibility: visible;
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    border: none;
+    z-index: 300;
+ }
 
 .classe_logo {
     position: relative;
@@ -93,6 +62,10 @@ ul.dropdown-menu-custom-show {
     text-align: center;
     color: indigo;
     font-weight: 600;
+}
+
+.dropdown-item {
+    cursor:pointer;
 }
 
 .fa {
@@ -960,6 +933,22 @@ ul.dropdown-menu-custom-show {
         margin-top: 0;
         font-size: 60px;
         width: 270px;
+    }
+    .custom-card-header {
+        width: 100%;
+    }
+    .visible {
+        top: 25%;
+        display: block !important;
+        text-align: center;
+        left: 20%;
+        overflow: hidden;
+        opacity : 1;
+        visibility: visible;
+        position: relative;
+        display: inline-flex;
+        z-index: 300;
+        border: none;
     }
 }
 

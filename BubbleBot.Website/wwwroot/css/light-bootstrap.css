@@ -932,6 +932,7 @@ fieldset[disabled] .btn.active {
 }
 
 .btn.btn-sm.btn-outline-dark.active {
+    cursor: pointer;
     background-color: #000000;
 }
 

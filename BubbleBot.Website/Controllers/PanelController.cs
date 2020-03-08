@@ -257,9 +257,41 @@ namespace BubbleBot.Website.Controllers
                                                                                             .OrderBy(c => c.Item2)
                                                                                             .ToList();
 
+                        List<KeyValuePair<DateTime, int>> kamasCharacter = archivedCharacterList.Select(c => new KeyValuePair<DateTime, int>(c.Updated_at, c.Kamas))
+                                                                                            .OrderBy(c => c.Key)
+                                                                                            .ToList();
+
+                        List<KeyValuePair<DateTime, byte>> levelCharacter = archivedCharacterList.Select(c => new KeyValuePair<DateTime, byte>(c.Updated_at, c.Level))
+                                                                                            .OrderBy(c => c.Key)
+                                                                                            .ToList();
+
+                        List<KeyValuePair<DateTime, byte>> energyCharacter = archivedCharacterList.Select(c => new KeyValuePair<DateTime, byte>(c.Updated_at, c.Percent_energy))
+                                                                                            .OrderBy(c => c.Key)
+                                                                                            .ToList();
+
+                        List<KeyValuePair<DateTime, byte>> podsCharacter = archivedCharacterList.Select(c => new KeyValuePair<DateTime, byte>(c.Updated_at, c.Percent_pods))
+                                                                                            .OrderBy(c => c.Key)
+                                                                                            .ToList();
+
                         Dictionary<string, int> statesDay = new Dictionary<string, int>();
                         Dictionary<string, int> statesWeek = new Dictionary<string, int>();
                         Dictionary<string, int> statesMonth = new Dictionary<string, int>();
+
+                        List<KeyValuePair<DateTime, int>> kamasDay = kamasCharacter.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, int>> kamasWeek = kamasCharacter.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, int>> kamasMonth = kamasCharacter.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+                        List<KeyValuePair<DateTime, byte>> levelDay = levelCharacter.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> levelWeek = levelCharacter.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> levelMonth = levelCharacter.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+                        List<KeyValuePair<DateTime, byte>> energyDay = energyCharacter.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> energyWeek = energyCharacter.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> energyMonth = energyCharacter.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+                        List<KeyValuePair<DateTime, byte>> podsDay = podsCharacter.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> podsWeek = podsCharacter.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                        List<KeyValuePair<DateTime, byte>> podsMonth = podsCharacter.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
 
                         foreach (Tuple<string, DateTime> kvp in stateCharacter)
                         {
@@ -317,7 +349,7 @@ namespace BubbleBot.Website.Controllers
                                 }
                             }
                         }
-
+                       
                         statesDay.OrderByDescending(v => v.Value);
                         statesWeek.OrderByDescending(v => v.Value);
                         statesMonth.OrderByDescending(v => v.Value);
@@ -343,7 +375,21 @@ namespace BubbleBot.Website.Controllers
                             stategraph = true,
                             stategraph_data_day = statesDay,
                             stategraph_data_week = statesWeek,
-                            stategraph_data_month = statesMonth
+                            stategraph_data_month = statesMonth,
+                            // line infos
+                            linegraph = true,
+                            linegraph_kamas_day = kamasDay,
+                            linegraph_kamas_week = kamasWeek,
+                            linegraph_kamas_month = kamasMonth,
+                            linegraph_level_day = levelDay,
+                            linegraph_level_week = levelWeek,
+                            linegraph_level_month = levelMonth,
+                            linegraph_energy_day = energyDay,
+                            linegraph_energy_week = energyWeek,
+                            linegraph_energy_month = energyMonth,
+                            linegraph_pods_day = podsDay,
+                            linegraph_pods_week = podsWeek,
+                            linegraph_pods_month = podsMonth
                         });
                     }
                 }
