@@ -9,6 +9,7 @@ using BubbleBot.Core.Accounts.InGame.Storage;
 using System;
 using BubbleBot.Core.Accounts.InGame.Exchange;
 using BubbleBot.Core.Accounts.InGame.Bid;
+using BubbleBot.Core.Accounts.InGame.ExtendScript;
 
 namespace BubbleBot.Core.Accounts.InGame
 {
@@ -26,6 +27,7 @@ namespace BubbleBot.Core.Accounts.InGame
         public StorageGame Storage { get; private set; }
         public ExchangeGame Exchange { get; private set; }
         public BidGame Bid { get; private set; }
+        public ExtendScriptGame ExtendScript { get; private set; }
 
         public double bakRate = 0;
         public int shopBuyInfo = 0;
@@ -43,6 +45,7 @@ namespace BubbleBot.Core.Accounts.InGame
             Storage = new StorageGame(account);
             Exchange = new ExchangeGame(account);
             Bid = new BidGame(account);
+            ExtendScript = new ExtendScriptGame(account);
         }
 
 
@@ -53,6 +56,7 @@ namespace BubbleBot.Core.Accounts.InGame
             Fight.Clear();
             Managers.Clear();
             Bid.Clear();
+            ExtendScript.Clear();
         }
 
 
@@ -76,6 +80,7 @@ namespace BubbleBot.Core.Accounts.InGame
                     Storage.Dispose();
                     Exchange.Dispose();
                     Bid.Dispose();
+                    ExtendScript.Dispose();
                 }
 
                 Server = null;
@@ -88,6 +93,7 @@ namespace BubbleBot.Core.Accounts.InGame
                 Storage = null;
                 Exchange = null;
                 Bid = null;
+                ExtendScript = null;
 
                 disposedValue = true;
             }

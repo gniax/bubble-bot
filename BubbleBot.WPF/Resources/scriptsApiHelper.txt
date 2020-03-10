@@ -318,3 +318,28 @@ bid = {
 					          end
 					      end
 }
+
+-- ExtendScript
+extscript = {
+	createFile = function(filename)
+				      if api.ExtendScript.CreateFile(filename) then
+				      	   coroutine.yield()
+				      end
+				  end,
+	deleteFile = function(filename)
+				      if api.ExtendScript.DeleteFile(filename) then
+				      	   coroutine.yield()
+				      end
+				  end,
+    loadFile = function(filename)
+				      if api.ExtendScript.LoadFile(filename) then
+				      	   coroutine.yield()
+				      end
+				  end,
+	editValue = function(filename,name,value)
+					if api.ExtendScript.EditValue(filename,name,value) then
+				      	   coroutine.yield()
+				      end
+				  end,
+	getValue = api.ExtendScript.GetValue
+}

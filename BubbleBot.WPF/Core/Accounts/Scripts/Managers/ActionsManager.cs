@@ -190,6 +190,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             {
                 case ScriptActionResults.DONE:
                     //_account.Logger.LogDebug("ActionsManager", $"{type} DONE.");
+                    if (_account.Game.ExtendScript.ExtScriptMode == true)
+                    {
+                        while (_account.Game.ExtendScript.FinishExtScriptMode != true)
+                        {
+                            await Task.Delay(1000);
+                        }
+                        _account.Game.ExtendScript.FinishExtScriptMode = false;
+                        _account.Game.ExtendScript.ExtScriptMode = false;
+                    }
                     DequeueActions(100);
                     break;
                 case ScriptActionResults.FAILED:

@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
         {
             if (account.Game.Bid.AddBuyItemCondition(ItemEffectsId, ItemCondition, ItemValue))
             {
-                await Task.Delay(1);
+                await Task.Delay(500);
             }
 
             return ScriptActionResults.DONE;

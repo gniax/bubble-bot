@@ -355,8 +355,9 @@ namespace BubbleBot.Core.Accounts
             try
             {
                 Stopwatch sw = Stopwatch.StartNew();
+                RecaptchaHandler ByPassCaptcha = new RecaptchaHandler();
                 Logger.LogDebug("reCaptcha", "Getting response..");
-                string response = RecaptchaHandler.GetResponse(sitekey);
+                string response = ByPassCaptcha.GetResponse(sitekey);
                 Logger.LogDebug("reCaptcha", "Got response.");
 
                 // If the response is null, its because the user didn't enter an anti-captcha key
