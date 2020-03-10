@@ -189,24 +189,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
+                @* Graphique des niveaux moyens *@
+                    <div class="col-md-6" id="div_chart_bar" >
                         <div class="card ">
                             <div class="card-header ">
-                                <h4 class="card-title">2017 Sales</h4>
-                                <p class="card-category">All products including Taxes</p>
+                                <h4 class="card-title">Moyenne des niveaux par heure</h4>
+                                <p class="card-category">Rapport en fonction des 5 derniers scripts</p>
                             </div>
                             <div class="card-body ">
-                                <div id="chartActivity" class="ct-chart"></div>
-                            </div>
-                            <div class="card-footer ">
-                                <div class="legend">
-                                    <i class="fa fa-circle text-info"></i> Tesla Model S
-                                    <i class="fa fa-circle text-danger"></i> BMW 5 Series
-                                </div>
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-check"></i> Data information certified
-                                </div>
+                                <div id="chartBar" class="ct-chart"></div>
                             </div>
                         </div>
                     </div>
@@ -283,7 +274,7 @@
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
             <script type="text/javascript">
 window.ChartLib = {}; // Initialize window variables storage
-google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
+google.load('visualization', { 'packages': ['corechart', 'bar'], 'language': 'fr' });
 
     // Determines if an array var is empty
     function isEmpty(obj) {
@@ -313,6 +304,7 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
         var btn_line_week = document.getElementById("btn_line_week");
         var btn_line_month = document.getElementById("btn_line_month");
 
+
         var selected = document.getElementById(id);
 
         if (dropdown && ChartLib.linegraph_minDate != null) { // change type of graph...
@@ -331,14 +323,20 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
 
             selected.classList.add('active');
 
-            if (btn_line_day.classList.contains('active'))
+            if (btn_line_day.classList.contains('active')) {
                 btn_line_day.classList.remove('active');
+                ChartLib.linegraph_minDate = "day";
+            }
 
-            if (btn_line_week.classList.contains('active'))
+            if (btn_line_week.classList.contains('active')) {
                 btn_line_week.classList.remove('active');
+                ChartLib.linegraph_minDate = "week";
+            }
 
-            if (btn_line_month.classList.contains('active'))
+            if (btn_line_month.classList.contains('active')) {
                 btn_line_month.classList.remove('active');
+                ChartLib.linegraph_minDate = "month";
+            }
 
             switch (ChartLib.linegraph_minDate)
             {
@@ -351,11 +349,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_day, "Level");
+                                drawLineChart(ChartLib.linegraph_level_day, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_day, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_day, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -373,11 +371,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_week, "Level");
+                                drawLineChart(ChartLib.linegraph_level_week, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_week, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_week, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -395,11 +393,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_month, "Level");
+                                drawLineChart(ChartLib.linegraph_level_month, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_month, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_month, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -434,11 +432,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_day, "Level");
+                                drawLineChart(ChartLib.linegraph_level_day, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_day, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_day, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -456,11 +454,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_week, "Level");
+                                drawLineChart(ChartLib.linegraph_level_week, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_week, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_week, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -478,11 +476,11 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                 line_title.innerHTML = "Évolution des kamas du bot";
                                 break;
                             case "level":
-                                drawLineChart(ChartLib.linegraph_level_month, "Level");
+                                drawLineChart(ChartLib.linegraph_level_month, "Niveau");
                                 line_title.innerHTML = "Évolution des niveaux du bot";
                                 break;
                             case "energy":
-                                drawLineChart(ChartLib.linegraph_energy_month, "Energy");
+                                drawLineChart(ChartLib.linegraph_energy_month, "Energie");
                                 line_title.innerHTML = "Évolution de l'énergie du bot";
                                 break;
                             case "pods":
@@ -513,14 +511,14 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
 
         btn_pie_selected.classList.add('active');
 
-        if (id == "btn_pie_day" && !isEmpty(ChartLib.data_day)) {
-            drawPieChart(ChartLib.data_day);
+        if (id == "btn_pie_day" && !isEmpty(ChartLib.pie_data_day)) {
+            drawPieChart(ChartLib.pie_data_day);
         }
-        else if (id == "btn_pie_week" && !isEmpty(ChartLib.data_week)) {
-            drawPieChart(ChartLib.data_week);
+        else if (id == "btn_pie_week" && !isEmpty(ChartLib.pie_data_week)) {
+            drawPieChart(ChartLib.pie_data_week);
         }
-        else if (id == "btn_pie_month" && !isEmpty(ChartLib.data_month)) {
-            drawPieChart(ChartLib.data_month);
+        else if (id == "btn_pie_month" && !isEmpty(ChartLib.pie_data_month)) {
+            drawPieChart(ChartLib.pie_data_month);
         }
     }
 
@@ -576,6 +574,12 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                     width: '100%', height: '100%',
                     legend: { position: 'bottom' },
                     chartArea: { width: "85%", height: "85%" },
+                    explorer: {
+                        actions: ['dragToZoom', 'rightClickToReset'],
+                        axis: 'horizontal',
+                        keepInBounds: true,
+                        maxZoomIn: 0
+                    },
                     animation:{
                       duration: 1000,
                       easing: 'linear',
@@ -590,13 +594,13 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                     data.addColumn('number', 'Kamas');
                     options.colors = ['blue'];
                 }
-                else if (attribut == "Level") {
-                    data.addColumn('number', 'Level');
+                else if (attribut == "Niveau") {
+                    data.addColumn('number', 'Niveau');
                     options.colors = ['red'];
 
                 }
-                else if (attribut == "Energy") {
-                    data.addColumn('number', 'Energy');
+                else if (attribut == "Energie") {
+                    data.addColumn('number', 'Energie');
                     options.colors = ['green'];
 
                 }
@@ -610,10 +614,52 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                 // Instantiate and draw our chart, passing in some options.
                 var chart = new google.visualization.LineChart(document.getElementById('chartLine'));
                 chart.draw(data, options);
+
             }
         }
     }
 
+                    // Draw a pie chart with array as an argument
+    function drawBarChart(array) {
+        if (!isEmpty(array)) {
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('string', 'Scripts');
+        data.addColumn('number', 'Niveaux par Heure');
+        data.addColumn('number', 'Total d\'Heures');
+        data.addColumn('number', 'Total Gain Niveaux');
+
+            for (var iterator in array) {
+            let scriptName = array[iterator][0];
+            let avg = parseFloat((array[iterator][1][0]).replace(",", "."));
+            let totalHour = parseFloat(array[iterator][1][1]);
+            let totalLvl = parseFloat(array[iterator][1][2]);
+            let newArray = [scriptName, avg, totalHour, totalLvl];
+
+            if (avg != 0 && totalHour != 0 && totalLvl != 0 && scriptName != null) {
+                data.addRow(newArray);
+            }
+        }
+
+
+        // Set chart options
+        var options = {
+            seriesType: 'bars',
+            bars: 'horizontal',
+            legend: { position: 'bottom' },
+            chartArea: { width: "75%", height: "80%" },
+            animation:{
+                duration: 1000,
+                easing: 'linear',
+                startup: true
+            },
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.BarChart(document.getElementById('chartBar'));
+        chart.draw(data, options);
+        }
+    }
 
     // Note: this function is called when a bot is selected
     function botInformationRequest(account, botname) {
@@ -817,6 +863,21 @@ google.load('visualization', { 'packages': ['corechart'], 'language': 'fr' });
                                     array = ChartLib.linegraph_kamas_day;
                                 }
                                 drawLineChart(array, "Kamas");
+                            }
+                        }
+
+                        /* -------------- BAR GRAPH (3rd) -------------- */
+
+                        if (result.bargraph == true)
+                        {
+
+                            var bargraph_lvl_average = Object.entries(result.bargraph_lvl_average);
+                            if (!isEmpty(result.bargraph_lvl_average)) {
+                                drawBarChart(bargraph_lvl_average);
+                            }
+                            else
+                            {
+                                document.getElementById("div_chart_bar").style.display = "none";
                             }
                         }
                     }

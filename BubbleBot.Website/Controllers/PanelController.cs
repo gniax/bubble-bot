@@ -257,6 +257,52 @@ namespace BubbleBot.Website.Controllers
                                                                                             .OrderBy(c => c.Item2)
                                                                                             .ToList();
 
+                        ILookup<string, (byte, DateTime)> lvlList = archivedCharacterList.Select(i => new { i.Level, i.Updated_at, i.Script_Name })
+                                                                                         .OrderBy(g => g.Updated_at)                                                                                           
+                                                                                         .ToLookup(c => c.Script_Name, c => (c.Level, c.Updated_at));
+                        
+                        Dictionary<string, string[]> lvlAverageList = new Dictionary<string, string[]>();
+                        int counter = 0;
+                        foreach (var line in lvlList)
+                        {
+                            if(line.Key != null)
+                            {
+
+                                if(counter < 5)
+                                {
+                                    bool first = true;
+
+                                    DateTime beforeDate = line.First().Item2;
+                                    byte beforeLevel = line.First().Item1;
+
+                                    TimeSpan dateSum = (default);
+                                    int levelSum = 0;
+
+                                    foreach ((byte, DateTime) items in line)
+                                    {
+                                        if(!(items.Item2 > beforeDate.AddHours(1)) && !first)
+                                        {
+                                            dateSum += items.Item2 - beforeDate;
+                                            levelSum += (int)items.Item1 - beforeLevel;
+                                        }
+                                        first = false;
+                                        beforeDate = items.Item2;
+                                        beforeLevel = items.Item1;
+                                    }
+
+                                    double lvlAverage = Math.Round((levelSum / dateSum.TotalHours), 2);
+                                    double hourSum = Math.Round((dateSum.TotalHours), 0);
+                                    string[] data = { lvlAverage.ToString(), hourSum.ToString(), levelSum.ToString() }; 
+                                   
+                                    if(lvlAverage != 0 && hourSum != 0)
+                                    {
+                                        lvlAverageList.Add(line.Key, data);
+                                        counter++;
+                                    }
+                                }
+                            }
+                        }
+
                         List<KeyValuePair<DateTime, int>> kamasCharacter = archivedCharacterList.Select(c => new KeyValuePair<DateTime, int>(c.Updated_at, c.Kamas))
                                                                                             .OrderBy(c => c.Key)
                                                                                             .ToList();
@@ -296,7 +342,6 @@ namespace BubbleBot.Website.Controllers
                         foreach (Tuple<string, DateTime> kvp in stateCharacter)
                         {
                             AccountStates state = (AccountStates)System.Enum.Parse(typeof(AccountStates), kvp.Item1);
-                            Console.WriteLine(state);
                             DateTime updatedat = kvp.Item2;
                             string s_state = null;
 
@@ -389,7 +434,10 @@ namespace BubbleBot.Website.Controllers
                             linegraph_energy_month = energyMonth,
                             linegraph_pods_day = podsDay,
                             linegraph_pods_week = podsWeek,
-                            linegraph_pods_month = podsMonth
+                            linegraph_pods_month = podsMonth,
+                            // bar infos
+                            bargraph = true,
+                            bargraph_lvl_average = lvlAverageList
                         });
                     }
                 }

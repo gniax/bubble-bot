@@ -22,6 +22,7 @@ ul.dropdown-menu-custom-show {
 }
 
  .visible {
+    top: 25%;
     opacity : 1;
     visibility: visible;
     position: relative;
@@ -938,7 +939,6 @@ ul.dropdown-menu-custom-show {
         width: 100%;
     }
     .visible {
-        top: 25%;
         display: block !important;
         text-align: center;
         left: 20%;
