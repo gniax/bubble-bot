@@ -27,8 +27,8 @@ namespace BubbleBot.Server.Messages
             Account = account;
             Id = id;
             Name = name;
-            Breed = breed;
             Server = server;
+            Breed = breed;
             Level = level;
         }
 

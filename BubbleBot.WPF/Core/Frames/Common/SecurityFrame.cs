@@ -6,6 +6,7 @@ using BubbleBot.Configurations.Language;
 using MoonSharp.Interpreter.Debugging;
 using BubbleBot.Server.Messages;
 using BubbleBot.Core.Extensions;
+using BubbleBot.Configurations;
 
 namespace BubbleBot.Core.Frames.Common
 {
@@ -65,6 +66,8 @@ namespace BubbleBot.Core.Frames.Common
             {
                 account.State = Enums.AccountStates.BANNED;
                 account.IsBan = true;
+                account.AccountConfig.IsBan = true;
+                GlobalConfiguration.Instance.Save();
                 var until = DateTime.Now.AddDays(message.Days).AddHours(message.Hours).AddMinutes(message.Minutes);
                 BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
                     account.AccountConfig.Username,

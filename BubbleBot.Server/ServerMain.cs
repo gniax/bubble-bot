@@ -20,6 +20,7 @@ namespace BubbleBot.Server
     {
         // Server Infos
         public const int Port = 3000;
+
         public const string IP = "127.0.0.1"; // Server IP
         public const string ApiIpAddress = "http://localhost:5001"; // API IP
 

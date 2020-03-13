@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using BubbleBot.Utility.Security;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 
 namespace BubbleBot.Configurations
 {
@@ -20,6 +21,7 @@ namespace BubbleBot.Configurations
         public string Character { get; set;}
         public string Nickname { get; set;}
         public string Identifiant { get; set;}
+        public bool IsBan { get; set; }
 
         public ProxyConfiguration Proxy { get; private set; }
         public CharacterCreation CharacterCreation { get; set; }
@@ -32,11 +34,12 @@ namespace BubbleBot.Configurations
                 GlobalConfiguration.Instance.Save();
             }
         }
+        public SolidColorBrush UsernameColor => IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
         public ObservableCollection<bool> Planification { get; }
 
 
         // Constructor
-        public AccountConfiguration(string username, string password, string server, string character, string nickname,string identifiant)
+        public AccountConfiguration(string username, string password, string server, string character, string nickname, string identifiant, bool isban)
         {
             Username = username;
             Password = password;
@@ -44,6 +47,7 @@ namespace BubbleBot.Configurations
             Character = character;
             Nickname = nickname;
             Identifiant = identifiant;
+            IsBan = isban;
             Proxy = new ProxyConfiguration();
             CharacterCreation = new CharacterCreation();
             Planification = new ObservableCollection<bool>(Enumerable.Repeat(true, 24));
@@ -63,11 +67,12 @@ namespace BubbleBot.Configurations
         public void Save(BinaryWriter bw)
         {
             bw.Write(Username);
-            bw.Write(AESEncryption.Encrypt(Password, "M€rcy$Bôt"));
+            bw.Write(AESEncryption.Encrypt(Password, "Bûbbl€Bôt"));
             bw.Write(Server);
             bw.Write(Character);
             bw.Write(Nickname);
             bw.Write(Identifiant);
+            bw.Write(IsBan);
 
             bw.Write(Proxy.Ip);
             bw.Write(Proxy.Port);
@@ -81,7 +86,7 @@ namespace BubbleBot.Configurations
         {
             try
             {
-                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "M€rcy$Bôt"), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString());
+                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "Bûbbl€Bôt"), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadBoolean());
 
                 acc.Proxy = new ProxyConfiguration
                 {

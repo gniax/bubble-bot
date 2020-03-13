@@ -481,43 +481,71 @@ namespace BubbleBot.Core.Accounts
                         var task = Task.Run(() =>
                         {
                             Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                            Connect();
-                            SpinWait.SpinUntil(() => (Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
-                            if (Network.Phase == NetworkPhases.GAME)
+                            Connect().ConfigureAwait(false);
+                            if(Network != null)
                             {
-                                //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
-                                Thread.Sleep(1500);
-                                if (IsFighting())
+                                SpinWait.SpinUntil(() => (Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
+                                if (Network.Phase == NetworkPhases.GAME)
                                 {
-                                    Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                    SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
+                                    //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
+                                    SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
                                     Thread.Sleep(1500);
+                                    int retries = 3;
+                                    if (IsFighting())
+                                    {
+                                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
+                                        SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
+                                        Thread.Sleep(1500);
+                                        if (HasGroup && IsGroupChief)
+                                        {
+                                            Group.Chief.Scripts.StartScript();
+                                            while(!Scripts.Running && retries >= 0)
+                                            {
+                                                Group.Chief.Scripts.StartScript();
+                                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                                retries--;
+                                            }
+                                        }
+                                        else if (!HasGroup)
+                                        {
+                                            Scripts.StartScript();
+                                            while (!Scripts.Running && retries >= 0)
+                                            {
+                                                Scripts.StartScript();
+                                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                                retries--;
+                                            }
+                                        }
+                                    }
                                     if (HasGroup && IsGroupChief)
+                                    {
                                         Group.Chief.Scripts.StartScript();
+                                        while (!Scripts.Running && retries >= 0)
+                                        {
+                                            Group.Chief.Scripts.StartScript();
+                                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                            retries--;
+                                        }
+                                    }
                                     else if (!HasGroup)
+                                    {
                                         Scripts.StartScript();
+                                        while (!Scripts.Running && retries >= 0)
+                                        {
+                                            Scripts.StartScript();
+                                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                            retries--;
+                                        }
+                                    }
                                 }
-                                if (HasGroup && IsGroupChief)
+                                else
                                 {
-                                    SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                                    Thread.Sleep(1500);
-                                    Group.Chief.Scripts.StartScript();
+                                    Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
+                                    IsIntentionalDisconnection = false;
+                                    Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
+                                    Network_Disconnected(networkManager);
+                                    return;
                                 }
-                                else if (!HasGroup)
-                                {
-                                    SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                                    Thread.Sleep(1500);
-                                    Scripts.StartScript();
-                                }
-                            }
-                            else
-                            {
-                                Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
-                                IsIntentionalDisconnection = false;
-                                Network.Disconnect("CLIENT_CLOSING", true);
-                                Network_Disconnected(networkManager);
-                                return;
                             }
                         });
                     }
