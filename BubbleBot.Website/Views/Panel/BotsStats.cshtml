@@ -11,6 +11,9 @@
     ViewData["Title"] = "Bots";
 }
 
+
+@if (onlineBots != null && offlineBots != null && bannedBots != null && everyGroup != null && groupsColors != null) {
+
 @* Module à gauche *@
 <div class="custom-sidebar" id="custom-sidebar">
     <a href="javascript:void(0)" class="hidebtn" id="togglebtn"><span class="fa fa-minus-square" id="toggle-icon"></span></a>
@@ -889,3 +892,5 @@ google.load('visualization', { 'packages': ['corechart', 'bar'], 'language': 'fr
         })
     }
 </script>
+
+}

@@ -642,3 +642,5 @@
 647|Le prix est supérieur au maximum souhaité (gid: {0}, lot: {1}, prix: {2}).
 648|Achat de l'item (gid: {0}, lot: {1}, prix: {2}).
 649|Aucun item n'a été trouvé avec les conditions choisies.
+650|Génération du pseudo échouée : réessayez
+651|STATUT

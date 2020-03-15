@@ -32,7 +32,7 @@ namespace BubbleBot.Configurations
         #endregion
 
         // Fields
-        private readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.bbot");
+        public readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.bbot");
         private bool _loaded;
         private string _antiCaptchaKey;
         private bool _showDebugMessages;
@@ -211,9 +211,9 @@ namespace BubbleBot.Configurations
             _semaphore.Release();
         }
 
-        public void AddAccountAndSave(string username, string password, string server, string character, string nickname,string identifiant)
+        public void AddAccountAndSave(string username, string password, string server, string character, string nickname, string identifiant, bool isban)
         {
-            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant));
+            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant, isban));
             RaisePropertyChanged("AccountsList");
 
             Save();

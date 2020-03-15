@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows;
 using BubbleBot.Configurations;
 using BubbleBot.Utility;
+using System.IO;
 
 namespace BubbleBot.Core.Frames.Connection
 {
@@ -64,15 +65,24 @@ namespace BubbleBot.Core.Frames.Connection
                 account.FramesData.Salt = message.Salt;
 
                 await account.Network.SendCallAsync(new LoginMessage(account.FramesData.Salt, account.AccountConfig.Username, account.Token, account.FramesData.Key));
-                //await account.Network.SendCallAsync(new CheckAssetsVersionMessage(DTConstants.AssetsVersion, DTConstants.StaticDataVersion));
-                //string data = "4{\"call\":\"login\",\"data\":{\"username\":\"" + account.AccountConfig.Username + "\",\"token\":\"" + account.Token + "\",\"salt\":\"" + account.FramesData.Salt + "\",\"key\":[" + account.FramesData.Key + "]}}";
-                //await account.Network.SendRawAsync(data);
             });
 
         public static Task HandleNicknameAcceptedMessage(Account account, NicknameAcceptedMessage message)
             => Task.Run(async () =>
             {
                 await account.Network.Disconnect("CLIENT_CLOSING", true);
+            });
+
+        public static Task HandleNicknameRefusedMessage(Account account, NicknameRefusedMessage message)
+            => Task.Run(async () =>
+            {
+                if(GlobalConfiguration.Instance.AutomaticReconnection)
+                    await account.Network.Disconnect("CLIENT_CLOSING", true);
+                else
+                    await account.Network.Disconnect("CLIENT_CLOSING", false);
+
+                account.Logger.LogError(LanguageManager.Translate("85"), LanguageManager.Translate("650"));
+
             });
 
         public static Task HandleAssetsVersionCheckedMessage(Account account, AssetsVersionCheckedMessage message)
@@ -112,6 +122,8 @@ namespace BubbleBot.Core.Frames.Connection
             {
                 Console.WriteLine("HandleIdentificationFailedBannedMessage");
                 account.IsBan = true;
+                account.AccountConfig.IsBan = true;
+                GlobalConfiguration.Instance.Save();
                 account.State = Enums.AccountStates.BANNED;
                 DateTime until = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(message.BanEndDate);
                 account.Logger.LogError("IdentificationFrame", $"{(IdentificationFailureReasonEnum)message.Reason} [{until.ToShortDateString()} {until.ToShortTimeString()}]");

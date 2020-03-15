@@ -105,10 +105,15 @@
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Width="160" DisplayMemberBinding="{Binding Username}">
+                            <GridViewColumn Width="160">
                                 <Border BorderThickness="0 0 0 1" BorderBrush="White" >
                                     <TextBlock FontSize="11" Width="140" Text="{_:Lang 240}"/>
                                 </Border>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Username}" Foreground="{Binding UsernameColor }" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Width="110" DisplayMemberBinding="{Binding Server}">
                                 <Border BorderThickness="0 0 0 1" BorderBrush="White" >
