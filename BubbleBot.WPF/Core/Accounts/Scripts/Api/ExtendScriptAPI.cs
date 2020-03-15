@@ -21,19 +21,17 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public void CreateFile(string filename)
         {
-            _account.Game.ExtendScript.ExtScriptMode = true;
-            _account.Scripts.ActionsManager.EnqueueAction(new CreateFileAction((string)filename), true);
-            
+            _account.Scripts.ActionsManager.EnqueueAction(new CreateFileAction((string)filename), false);
         }
 
         public void DeleteFile(string filename)
-            => _account.Scripts.ActionsManager.EnqueueAction(new DeleteFileAction((string)filename), true);
+            => _account.Scripts.ActionsManager.EnqueueAction(new DeleteFileAction((string)filename), false);
 
         public void LoadFile(string filename)
-             => _account.Scripts.ActionsManager.EnqueueAction(new LoadFileAction((string)filename), true);
+             => _account.Scripts.ActionsManager.EnqueueAction(new LoadFileAction((string)filename), false);
 
         public void EditValue(string filename,string name, int value)
-            => _account.Scripts.ActionsManager.EnqueueAction(new EditValueAction(filename, name, value), true);
+            => _account.Scripts.ActionsManager.EnqueueAction(new EditValueAction(filename, name, value), false);
 
         public int GetValue(string name)
             => _account.Game.ExtendScript.GetValue(name);

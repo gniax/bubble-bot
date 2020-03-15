@@ -12,6 +12,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Threading;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Messages.Messages;
@@ -37,8 +38,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
         // Properties
         public int FightsOnThisMap { get; private set; }
         public int MonstersGroupToAttack { get; set; }
-
-
+        public bool WaitActionBeforeCoroutine { get; set; }
+        public bool ActionFinishedBeforeCoroutine { get; set; }
+        
         // Events
         public event Action<Account, bool> ActionsFinished;
         public event Action<Account, bool> CustomHandled;
@@ -67,6 +69,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             _account.Game.Bid.StartedSelling += Bid_StartedSelling;
             _account.Game.Bid.BidLeft += Bid_BidLeft;
             _account.Game.Managers.Teleportables.UseFinished += Teleportables_UseFinished;
+            WaitActionBeforeCoroutine = false;
+            ActionFinishedBeforeCoroutine = false; 
         }
 
 
@@ -152,7 +156,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 _account.Logger.LogDebug(caller, $"Waited {delay}ms.");
 
                 // If the queue still has actions
-                if (_actionsQueue.Count > 0)
+                if (_actionsQueue.Count > 0) 
                 {
                     if (_actionsQueue.TryDequeue(out ScriptAction action))
                     {
@@ -168,6 +172,12 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                     // Otherwise tell the scripts manager that we're done
                     if (_currentCoroutine != null)
                     {
+                        //if (WaitActionBeforeCoroutine == true)
+                        //{
+                        //    while(ActionFinishedBeforeCoroutine == false)
+                        //}
+                        //TimeSpan.FromSeconds(30)
+                        //if(WaitActionBeforeCoroutine = false)
                         ProcessCoroutine();
                     }
                     else
@@ -190,15 +200,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             {
                 case ScriptActionResults.DONE:
                     //_account.Logger.LogDebug("ActionsManager", $"{type} DONE.");
-                    if (_account.Game.ExtendScript.ExtScriptMode == true)
-                    {
-                        while (_account.Game.ExtendScript.FinishExtScriptMode != true)
-                        {
-                            await Task.Delay(1000);
-                        }
-                        _account.Game.ExtendScript.FinishExtScriptMode = false;
-                        _account.Game.ExtendScript.ExtScriptMode = false;
-                    }
                     DequeueActions(100);
                     break;
                 case ScriptActionResults.FAILED:

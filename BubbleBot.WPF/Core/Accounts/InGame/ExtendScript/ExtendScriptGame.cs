@@ -20,8 +20,6 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         public string FilePath = "";
         public Dictionary<string, int> FileData { get; set; }
 
-        public bool ExtScriptMode = false;
-        public bool FinishExtScriptMode = false;
 
         // Constructor
         public ExtendScriptGame(Account account)
@@ -34,7 +32,6 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
             if (string.IsNullOrEmpty(filename))
             {
-                FinishExtScriptMode = true;
                 return false;
             }
 
@@ -46,14 +43,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
                 _FileSemaphore.Release();
-                FinishExtScriptMode = true;
                 return false;
             }
             else
             {
                 File.Create(configurationsPath + filename + FileExtension);
                 _FileSemaphore.Release();
-                FinishExtScriptMode = true;
                 return true;
             }
         }
@@ -61,7 +56,6 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
             if (string.IsNullOrEmpty(filename))
             {
-                FinishExtScriptMode = true;
                 return false;
             }
 
@@ -74,13 +68,11 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             {
                 File.Delete(configurationsPath + filename + FileExtension);
                 _FileSemaphore.Release();
-                FinishExtScriptMode = true;
                 return true;
             }
             else
             {
                 _FileSemaphore.Release();
-                FinishExtScriptMode = true;
                 return false;
             }
         }
@@ -88,7 +80,6 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
             if (string.IsNullOrEmpty(filename))
             {
-                FinishExtScriptMode = true;
                 return false;
             }
                
@@ -156,14 +147,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 }
             }
             _FileSemaphore.Release();
-            FinishExtScriptMode = true;
             return true;
         }
         public bool LoadFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
             {
-                FinishExtScriptMode = true;
                 return false;
             }
                 
@@ -199,12 +188,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             else
             {
                 _FileSemaphore.Release();
-                FinishExtScriptMode = true;
+               // ActionFinished();
                 return false;
             }
 
             _FileSemaphore.Release();
-            FinishExtScriptMode = true;
+            //ActionFinished();
             return true;
         }
        public int GetValue(string name)
@@ -218,7 +207,10 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
            }
             return 0;
        }
-
+        private void ActionFinished()
+        {
+            _account.Scripts.ActionsManager.ActionFinishedBeforeCoroutine = true;
+        }
         public void Clear()
         {
 
