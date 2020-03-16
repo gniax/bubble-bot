@@ -137,7 +137,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("hasReachFightLimit", (Func<bool>)_account.isFightLimitReached);
             ScriptManager.SetGlobal("getSubscriptionPrice", new Func<double>(() => { return Math.Ceiling(_account.Game.bakRate * 800); } ));
             ScriptManager.SetGlobal("reconnectFunc", new Action<int, bool>((s, restartscript) => ActionsManager.EnqueueAction(new ReconnectAction(s, restartscript), true)));
-            ScriptManager.SetGlobal("disconnectFunc", new Action(() => _account.Network.Disconnect("CLIENT_CLOSING")));
+            ScriptManager.SetGlobal("disconnectFunc", new Action(() => _account.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false)));
             ScriptManager.SetGlobal("leaveDialogFunc", new Func<bool>(() =>
             {
                 if (_account.IsInDialog())
@@ -300,7 +300,8 @@ namespace BubbleBot.Core.Accounts.Scripts
                     }
 
                     // In case no entry was found in this map
-                    StopScript(LanguageManager.Translate("144") + " 0");
+                    if(!_account.Extensions.CharacterCreation.IsDoingTutorial)
+                        StopScript(LanguageManager.Translate("144") + " 0");
                 }
                 catch (Exception ex)
                 {

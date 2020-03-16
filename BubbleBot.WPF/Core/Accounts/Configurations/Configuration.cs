@@ -27,6 +27,8 @@ namespace BubbleBot.Core.Accounts.Configurations
         private bool _ignoreNonAuthorizedTrades;
         private bool _disconnectUponFightsLimit;
         private bool _speedHack;
+        private bool _disconnectOnBan;
+        private int _banReconnectionDelay;
         private bool _autoMount;
 
 
@@ -150,6 +152,24 @@ namespace BubbleBot.Core.Accounts.Configurations
                 Save();
             }
         }
+        public int BanReconnectionDelay
+        {
+            get => _banReconnectionDelay;
+            set
+            {
+                Set(ref _banReconnectionDelay, value);
+                Save();
+            }
+        }
+        public bool DisconnectOnBan
+        {
+            get => _disconnectOnBan;
+            set
+            {
+                Set(ref _disconnectOnBan, value);
+                Save();
+            }
+        }
         public bool AutoMount
         {
             get => _autoMount;
@@ -182,6 +202,8 @@ namespace BubbleBot.Core.Accounts.Configurations
             AuthorizedTradesFrom = new ObservableCollection<int>();
             IgnoreNonAuthorizedTrades = false;
             DisconnectUponFightsLimit = false;
+            DisconnectOnBan = false;
+            BanReconnectionDelay = 0;
             SpeedHack = false;
             AutoMount = true;
         }
@@ -228,6 +250,8 @@ namespace BubbleBot.Core.Accounts.Configurations
                         IgnoreNonAuthorizedTrades = br.ReadBoolean();
                         DisconnectUponFightsLimit = br.ReadBoolean();
                         SpeedHack = br.ReadBoolean();
+                        DisconnectOnBan = br.ReadBoolean();
+                        BanReconnectionDelay = br.ReadInt32();
                         AutoMount = br.ReadBoolean();
                     }
                 }
@@ -278,6 +302,8 @@ namespace BubbleBot.Core.Accounts.Configurations
                     bw.Write(IgnoreNonAuthorizedTrades);
                     bw.Write(DisconnectUponFightsLimit);
                     bw.Write(SpeedHack);
+                    bw.Write(DisconnectOnBan);
+                    bw.Write(BanReconnectionDelay);
                     bw.Write(AutoMount);
                 }
             }

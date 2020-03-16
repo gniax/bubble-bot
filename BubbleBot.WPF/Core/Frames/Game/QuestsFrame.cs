@@ -11,7 +11,8 @@ namespace BubbleBot.Core.Frames.Game
             => Task.Run(() => account.Extensions.CharacterCreation.Update(message));
 
         public static Task HandleQuestStepInfoMessage(Account account, QuestStepInfoMessage message)
-            => Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
+            => Task.Run(() => account.Extensions.CharacterCreation.Update(message));
+            //=> Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
 
         public static Task HandleQuestStepValidatedMessage(Account account, QuestStepValidatedMessage message)
             => Task.Run(() => account.Extensions.CharacterCreation.Update(message));

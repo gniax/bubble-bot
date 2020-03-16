@@ -275,7 +275,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                     if(_oneTime && _account.Game.Map.CurrentPosition != "0,0")
                     {
                             bool result = SpinWait.SpinUntil(() => (_account.Game.Map.Data.Id != 0), TimeSpan.FromSeconds(10));
-                            if(result)
+                            if(result && _account != null)
                             {                      
                                 Thread.Sleep(2000);
                                 BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
@@ -401,7 +401,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 else
                 {
                     _account.Logger.LogWarning("", "Same map.");
-                   // _account.Scripts.StartScript(); //Tentative de debug de l arret du bot apres deco en combat
                 }
                 _running = false;
             }

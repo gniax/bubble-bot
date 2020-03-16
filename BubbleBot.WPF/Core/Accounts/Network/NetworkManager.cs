@@ -106,7 +106,7 @@ namespace BubbleBot.Core.Accounts.Network
             if (!Connected)
                 return;
 
-            // Info var here is just for intentionnaldisconnection to force not intentionaldiscconection
+            // If info is set to true, it simulates an non-intentional disconnection
             if(!info)
             Account.IsIntentionalDisconnection = true;
             await _webSocket.CloseAsync(reason).ConfigureAwait(false);

@@ -68,6 +68,32 @@ namespace BubbleBot.Core.Frames.Common
                 account.IsBan = true;
                 account.AccountConfig.IsBan = true;
                 GlobalConfiguration.Instance.Save();
+
+                // Here we have to disconnect every bot which has set his auto disconnection
+                if(account.Game.Character != null)
+                {
+                    foreach (Account acc in BubbleBotMain.Instance.ConnectedAccounts)
+                    {
+                        if(acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc.AccountConfig.Username != account.AccountConfig.Username)
+                        {
+                            if(acc.Configuration.BanReconnectionDelay > 0)
+                            {
+                                acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
+                                acc.Reconnect(acc.Configuration.BanReconnectionDelay);
+                            }
+                            else
+                            {
+                                acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
+                                acc.Network.Disconnect("CLIENT_CLOSING", false).ConfigureAwait(false);
+                            }
+                        }
+                        else if(acc.AccountConfig.Username != account.AccountConfig.Username)
+                        {
+                            acc.Logger.LogWarning(LanguageManager.Translate("655"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
+                        }
+                    }
+                }
+
                 var until = DateTime.Now.AddDays(message.Days).AddHours(message.Hours).AddMinutes(message.Minutes);
                 BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
                     account.AccountConfig.Username,

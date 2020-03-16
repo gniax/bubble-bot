@@ -170,6 +170,15 @@
                     <CheckBox Content="{_:Lang 626}" 
                               IsChecked="{Binding Configuration.SpeedHack}"
                               Margin="4" />
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <CheckBox Content="{_:Lang 651}" 
+                              IsChecked="{Binding Configuration.DisconnectOnBan}" HorizontalAlignment="Left" />
+                        <Controls:NumericUpDown Name="DisconnectTimer" 
+                                            Minimum="0" 
+                                            Value="{Binding Configuration.BanReconnectionDelay}" 
+                                            HideUpDownButtons="True" />
+                        <TextBlock Margin="4" Text="{_:Lang 652}"/>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
 
