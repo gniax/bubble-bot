@@ -628,14 +628,11 @@
 633|Editer Pseudo
 634|Nouveau pseudo
 635|Valider
-636|Editer compte
-637|Nom de compte
-638|Mot de passe
-639|Serveur 
+636|Editer compte {0}
 640|Personnage
 641|Groupe
 642|Identifiant
-643|Information compte:
+643|Chaque champ est facultatif ! 
 644|IDENTIFIANT
 645|Identifiant
 646|Banni
