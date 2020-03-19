@@ -102,6 +102,9 @@ namespace BubbleBot.Core.Accounts.Network
 
         public async Task Disconnect(string reason, bool info = false)
         {
+            try
+            {
+
             Account.FightLimitReached = false;
             if (!Connected)
                 return;
@@ -110,6 +113,11 @@ namespace BubbleBot.Core.Accounts.Network
             if(!info)
             Account.IsIntentionalDisconnection = true;
             await _webSocket.CloseAsync(reason).ConfigureAwait(false);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Disconnection exception: {0}", ex.Message);
+            }
         }
 
         #region Send Messages

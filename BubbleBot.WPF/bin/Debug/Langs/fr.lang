@@ -649,3 +649,5 @@
 654|Security
 655|Attention: Le bot {0} du serveur {1} à été banni !
 656|Echec de la complétion du tutoriel ... Nouvelle tentative avec la création d'un nouveau personnage...
+657| Retrait invendu au bout de {0} secondes.
+658|Le délais de remise en vente doit être supérieur ou égale à 0.
