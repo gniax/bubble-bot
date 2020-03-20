@@ -367,11 +367,10 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueIntAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\CreateFileAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteFileAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\GetValueAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\LoadFileAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueStringAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
@@ -511,10 +510,10 @@
     <Compile Include="ViewModel\MapViewer\MapViewerCellViewModel.cs" />
     <Compile Include="ViewModel\MapViewer\MapViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="Views\AccountsEditor.xaml.cs">
+    <Compile Include="Views\Accounts\AccountsEditor.xaml.cs">
       <DependentUpon>AccountsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AccountsEditPseudo.xaml.cs">
+    <Compile Include="Views\Accounts\AccountsEditPseudo.xaml.cs">
       <DependentUpon>AccountsEditPseudo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AccountsManagerWindow.xaml.cs">
@@ -572,11 +571,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AccountsEditor.xaml">
+    <Page Include="Views\Accounts\AccountsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AccountsEditPseudo.xaml">
+    <Page Include="Views\Accounts\AccountsEditPseudo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -38,8 +38,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
         // Properties
         public int FightsOnThisMap { get; private set; }
         public int MonstersGroupToAttack { get; set; }
-        public bool WaitActionBeforeCoroutine { get; set; }
-        public bool ActionFinishedBeforeCoroutine { get; set; }
         
         // Events
         public event Action<Account, bool> ActionsFinished;
@@ -69,8 +67,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             _account.Game.Bid.StartedSelling += Bid_StartedSelling;
             _account.Game.Bid.BidLeft += Bid_BidLeft;
             _account.Game.Managers.Teleportables.UseFinished += Teleportables_UseFinished;
-            WaitActionBeforeCoroutine = false;
-            ActionFinishedBeforeCoroutine = false; 
         }
 
 
@@ -172,12 +168,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                     // Otherwise tell the scripts manager that we're done
                     if (_currentCoroutine != null)
                     {
-                        //if (WaitActionBeforeCoroutine == true)
-                        //{
-                        //    while(ActionFinishedBeforeCoroutine == false)
-                        //}
-                        //TimeSpan.FromSeconds(30)
-                        //if(WaitActionBeforeCoroutine = false)
+
                         ProcessCoroutine();
                     }
                     else

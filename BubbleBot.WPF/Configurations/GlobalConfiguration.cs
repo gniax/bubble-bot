@@ -236,10 +236,10 @@ namespace BubbleBot.Configurations
             RaisePropertyChanged("AccountsList");
         }
 
-        public void TriAccountPseudo(List<AccountConfiguration> accounttotrie)
+        public void SortAccountPseudo(List<AccountConfiguration> accounttosort)
         {
             ObservableCollection<AccountConfiguration> tempAccountChecker = Accounts;
-            ObservableCollection<AccountConfiguration> newAccountTrier = new ObservableCollection<AccountConfiguration>();
+            ObservableCollection<AccountConfiguration> newAccountsSorter = new ObservableCollection<AccountConfiguration>();
             List<string> allPseudo = new List<string>();
             List<string> allPseudoClean = new List<string>();
 
@@ -252,32 +252,32 @@ namespace BubbleBot.Configurations
             //Delete les doublons 
             foreach (string Pseudo in allPseudo)
             {
-                bool chcecked = false;
+                bool check = false;
                 foreach (string PseudoD in allPseudoClean)
                 {
                     if (Pseudo == PseudoD)
                     {
-                        chcecked = true;
+                        check = true;
                     }
                 }
-                if (chcecked == false)
+                if (check == false)
                 {
                     allPseudoClean.Add(Pseudo);
                 }
             }
 
             //Trier les compte par groupe 
-            foreach (string ActualGroupe in allPseudoClean)
+            foreach (string actualGroup in allPseudoClean)
             {
-                foreach (var AccountSelected in tempAccountChecker)
+                foreach (var selectedAccount in tempAccountChecker)
                 {
-                    if (ActualGroupe == AccountSelected.Nickname)
+                    if (actualGroup == selectedAccount.Nickname)
                     {
-                        newAccountTrier.Add(AccountSelected);
+                        newAccountsSorter.Add(selectedAccount);
                     }
                 }
             }
-            Accounts = newAccountTrier;
+            Accounts = newAccountsSorter;
 
             RaisePropertyChanged("AccountsList");
 

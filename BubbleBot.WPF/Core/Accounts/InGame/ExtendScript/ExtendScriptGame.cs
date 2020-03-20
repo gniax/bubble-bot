@@ -16,50 +16,36 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         private const string configurationsPath = @"Parameters\ExtendScript\";
         private const string configurationsFolder = @"Parameters\ExtendScript";
         private const string FileExtension = ".EScript";
-        public static SemaphoreSlim _FileSemaphore = new SemaphoreSlim(1, 1);
         public string FilePath = "";
-        public Dictionary<string, int> FileData { get; set; }
-
 
         // Constructor
         public ExtendScriptGame(Account account)
         {
             _account = account;
-            FileData = new Dictionary<string, int>();
         }
 
         public bool CreateFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
-            {
                 return false;
-            }
-
-            _FileSemaphore.Wait();
 
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(configurationsFolder);
 
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
-                _FileSemaphore.Release();
                 return false;
             }
             else
             {
                 File.Create(configurationsPath + filename + FileExtension);
-                _FileSemaphore.Release();
                 return true;
             }
         }
         public bool DeleteFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
-            {
                 return false;
-            }
-
-            _FileSemaphore.Wait();
 
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(configurationsFolder);
@@ -67,150 +53,327 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
                 File.Delete(configurationsPath + filename + FileExtension);
-                _FileSemaphore.Release();
                 return true;
             }
             else
             {
-                _FileSemaphore.Release();
                 return false;
             }
         }
-        public bool EditValue(string filename, string name,int value)
+        public bool EditValueInt(string filename, string name, int value)
         {
             if (string.IsNullOrEmpty(filename))
-            {
                 return false;
-            }
-               
-            //_account.Logger.LogError("AI", "On entre dans la fonction." + configurationsPath + filename + FileExtension + name + value.ToString());
-            _FileSemaphore.Wait();
 
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
                 //Ditcionary contenant toute les variables et valeurs 
-                Dictionary<string, int> AllValue = new Dictionary<string, int>();
-                int nbvariables = 0;
-                //Recupère les infos dans le fichier 
-                //_account.Logger.LogError("AI", "Lecture du fichier.");
-                
+                Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
+                Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+
+                int nbvariablesint = 0;
+                int nbvariablesstring = 0;
+
                 using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
-                   // _account.Logger.LogError("AI", "File open , cherche nbvar.");
+                    //Search the amount of var int
                     try
                     {
-                        nbvariables = br.ReadInt32();
+                        nbvariablesint = br.ReadInt32();
                     }
-                    catch (Exception e)
+                    catch
                     {
-                       // _account.Logger.LogError("AI", "File open , Erreur lors de la recherche du nombre de variables.");
+                        nbvariablesint = 0;
                     }
-                    //_account.Logger.LogError("AI", "File open , nbvar." + nbvariables.ToString());
-                    if (nbvariables > 0)
+                    //Search the amount of var string
+                    try
+                    {
+                        nbvariablesstring = br.ReadInt32();
+                    }
+                    catch
+                    {
+                        nbvariablesstring = 0;
+                    }
+
+                    //for each var , take the value 
+                    if (nbvariablesint > 0)
                     {
                         //byte c = br.ReadByte();
-                        for (int i = 0; i < nbvariables; i++)
+                        for (int i = 0; i < nbvariablesint; i++)
                         {
                             string tmpVar = br.ReadString();
                             int tmpValue = br.ReadInt32();
-
-                            AllValue.Add(tmpVar, tmpValue);
+                            AllValueInt.Add(tmpVar, tmpValue);
+                        }
+                    }
+                    if (nbvariablesstring > 0)
+                    {
+                        //byte c = br.ReadByte();
+                        for (int i = 0; i < nbvariablesstring; i++)
+                        {
+                            string tmpVar = br.ReadString();
+                            string tmpValue = br.ReadString();
+                            AllValueString.Add(tmpVar, tmpValue);
                         }
                     }
                     br.Close();
                 }
-               // _account.Logger.LogError("AI", "Add value to dictionary.");
-                if (!AllValue.ContainsKey(name))
+
+                // If does'nt exist add the variable 
+                if (!AllValueInt.ContainsKey(name))
                 {
-                    AllValue.Add(name, value);
-                    nbvariables++;
+                    AllValueInt.Add(name, value);
+                    nbvariablesint++;
                 }
-               // _account.Logger.LogError("AI", "Ecriture du fichier.");
+
+                // _account.Logger.LogError("AI", "Ecriture du fichier.");
                 using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
                 {
-                    bw.Write(nbvariables);
+                    bw.Write(nbvariablesint);
+                    bw.Write(nbvariablesstring);
 
-                        foreach(var obj  in AllValue)
+                    foreach (var obj in AllValueInt)
+                    {
+                        if (obj.Key == name)    //if the variable already exist just change value 
                         {
-                            if (obj.Key == name)
-                            {
-                                bw.Write(name);
-                                bw.Write(value);
-                            }
-                            else
-                            {
-                                bw.Write(obj.Key);
-                                bw.Write(obj.Value);
-                            }
+                            bw.Write(name);
+                            bw.Write(value);
                         }
+                        else
+                        {
+                            bw.Write(obj.Key);
+                            bw.Write(obj.Value);
+                        }
+                    }
+
+                    //write the list of var 
+                    foreach (var obj in AllValueString)
+                    {
+                        bw.Write(obj.Key);
+                        bw.Write(obj.Value);
+                    }
+
                     bw.Close();
                 }
             }
-            _FileSemaphore.Release();
             return true;
         }
-        public bool LoadFile(string filename)
+        public bool EditValueString(string filename, string name, string value)
         {
             if (string.IsNullOrEmpty(filename))
-            {
                 return false;
-            }
-                
-
-            _FileSemaphore.Wait();
 
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
-                int nbvariables = 0;
-                FileData = new Dictionary<string, int>();
+                //Ditcionary contenant toute les variables et valeurs 
+                Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
+                Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+
+                int nbvariablesint = 0;
+                int nbvariablesstring = 0;
 
                 using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
+
+                    //Search the amount of var
                     try
                     {
-                        nbvariables = br.ReadInt32();
+                        nbvariablesint = br.ReadInt32();
                     }
                     catch (Exception e)
                     {
-                        // _account.Logger.LogError("EScript", "Not var found.");
+                        nbvariablesint = 0;
                     }
-                    if (nbvariables > 0)
+                    try
                     {
-                        FileData.Add("NB_VARIABLE", nbvariables);
-                        for (int i = 0; i < nbvariables; i++)
+                        nbvariablesstring = br.ReadInt32();
+                    }
+                    catch (Exception e)
+                    {
+                        nbvariablesstring = 0;
+                    }
+
+                    //for each var , take the value 
+                    if (nbvariablesint > 0)
+                    {
+                        //byte c = br.ReadByte();
+                        for (int i = 0; i < nbvariablesint; i++)
                         {
-                            FileData.Add(br.ReadString(), br.ReadInt32());
+                            string tmpVar = br.ReadString();
+                            int tmpValue = br.ReadInt32();
+                            AllValueInt.Add(tmpVar, tmpValue);
+                        }
+                    }
+
+                    if (nbvariablesstring > 0)
+                    {
+                        //byte c = br.ReadByte();
+                        for (int i = 0; i < nbvariablesstring; i++)
+                        {
+                            string tmpVar = br.ReadString();
+                            string tmpValue = br.ReadString();
+                            AllValueString.Add(tmpVar, tmpValue);
                         }
                     }
                     br.Close();
                 }
+
+                // If does'nt exist add the variable 
+                if (!AllValueString.ContainsKey(name))
+                {
+                    AllValueString.Add(name, value);
+                    nbvariablesstring++;
+                }
+
+                // _account.Logger.LogError("AI", "Ecriture du fichier.");
+                using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                {
+                    bw.Write(nbvariablesint);
+                    bw.Write(nbvariablesstring);
+
+                    foreach (var obj in AllValueInt) 
+                    {
+                        bw.Write(obj.Key);
+                        bw.Write(obj.Value);
+                    }
+
+                    //write the list of var 
+                    foreach (var obj in AllValueString)
+                    {
+                        if (obj.Key == name)    //if the variable already exist just change value 
+                        {
+                            bw.Write(name);
+                            bw.Write(value);
+                        }
+                        else
+                        {
+                            bw.Write(obj.Key);
+                            bw.Write(obj.Value);
+                        }
+                    }
+                    bw.Close();
+                }
+            }
+            return true;
+        }
+
+        public int GetValueInt(string filename , string name)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return 0;
+
+            if (File.Exists(configurationsPath + filename + FileExtension))
+            {
+                int nbvariablesint = 0;
+                int nbvariablesstring = 0;
+
+                using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                {
+                    //Get nb int var 
+                    try
+                    {
+                        nbvariablesint = br.ReadInt32();
+                    }
+                    catch 
+                    {
+                         nbvariablesint = 0;
+                    }
+                    //Get nb string var 
+                    try
+                    {
+                        nbvariablesstring = br.ReadInt32();
+                    }
+                    catch
+                    {
+                        nbvariablesstring = 0;
+                    }
+
+                    if (nbvariablesint > 0)
+                    {
+                        for (int i = 0; i < nbvariablesint; i++)
+                        {
+                            string tmpvalname = br.ReadString();
+                            int tmpval = br.ReadInt32();
+                            if (tmpvalname == name)
+                            {
+                                br.Close();
+                                return tmpval;
+                            }
+                        }
+                    }
+                    br.Close();
+                }
+                return 0;
             }
             else
             {
-                _FileSemaphore.Release();
-               // ActionFinished();
-                return false;
+                return 0;
             }
-
-            _FileSemaphore.Release();
-            //ActionFinished();
-            return true;
-        }
-       public int GetValue(string name)
-       {
-           foreach (var obj in FileData)
-           {
-               if (name == obj.Key)
-               {
-                    return obj.Value;
-               }
-           }
-            return 0;
        }
-        private void ActionFinished()
+
+        public string GetValueString(string filename, string name)
         {
-            _account.Scripts.ActionsManager.ActionFinishedBeforeCoroutine = true;
+            if (string.IsNullOrEmpty(filename))
+                return "";
+
+            if (File.Exists(configurationsPath + filename + FileExtension))
+            {
+                int nbvariablesint = 0;
+                int nbvariablesstring = 0;
+
+                using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                {
+                    //Get nb int var 
+                    try
+                    {
+                        nbvariablesint = br.ReadInt32();
+                    }
+                    catch
+                    {
+                        nbvariablesint = 0;
+                    }
+                    //Get nb string var 
+                    try
+                    {
+                        nbvariablesstring = br.ReadInt32();
+                    }
+                    catch
+                    {
+                        nbvariablesstring = 0;
+                    }
+
+                    if (nbvariablesint > 0)
+                    {
+                        for (int i = 0; i < nbvariablesint; i++)
+                        {
+                            br.ReadString();
+                            br.ReadInt32();
+                        }
+                    }
+
+                    if (nbvariablesstring > 0)
+                    {
+                        for (int i = 0; i < nbvariablesstring; i++)
+                        {
+                            string tmpvalname = br.ReadString();
+                            string tmpval = br.ReadString();
+                            if (tmpvalname == name)
+                            {
+                                br.Close();
+                                return tmpval;
+                            }
+                        }
+                    }
+                    br.Close();
+                }
+                return "";
+            }
+            else
+            {
+                return "";
+            }
         }
+
         public void Clear()
         {
 
@@ -230,6 +393,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 }
 
                 _account = null;
+               // _FileSemaphore = null;
 
                 disposedValue = true;
             }

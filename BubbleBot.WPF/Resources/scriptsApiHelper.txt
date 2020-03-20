@@ -331,15 +331,16 @@ extscript = {
 				      	   coroutine.yield()
 				      end
 				  end,
-    loadFile = function(filename)
-				      if api.ExtendScript.LoadFile(filename) then
+	editValueInt = function(filename,name,value)
+					if api.ExtendScript.EditValueInt(filename,name,value) then
 				      	   coroutine.yield()
 				      end
 				  end,
-	editValue = function(filename,name,value)
-					if api.ExtendScript.EditValue(filename,name,value) then
+	editValueString = function(filename,name,value)
+					if api.ExtendScript.EditValueString(filename,name,value) then
 				      	   coroutine.yield()
 				      end
 				  end,
-	getValue = api.ExtendScript.GetValue
+	getValueInt = api.ExtendScript.GetValueInt,
+	getValueString = api.ExtendScript.GetValueString
 }

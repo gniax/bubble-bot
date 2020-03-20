@@ -59,7 +59,16 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             if (cheapestItem == null)
                 return 0;
 
-            return cheapestItem.Prices[lot == 1 ? 0 : lot == 10 ? 1 : 2];
+            uint minPriceTake = cheapestItem.Prices[lot == 1 ? 0 : lot == 10 ? 1 : 2];
+
+            if(minPriceTake >= 1 )
+            {
+                return minPriceTake;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public uint[] GetItemPrices(uint gid)

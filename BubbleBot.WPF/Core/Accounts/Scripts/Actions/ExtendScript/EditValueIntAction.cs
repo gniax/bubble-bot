@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
 {
-    class EditValueAction : ScriptAction
+    class EditValueIntAction : ScriptAction
     {
         // Properties
         public string FileName { get; private set; }
@@ -14,7 +14,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         public int Value { get; private set; }
 
         // Constructor
-        public EditValueAction(string filename,string name,int value)
+        public EditValueIntAction(string filename,string name,int value)
         {
             FileName = filename;
             Name = name;
@@ -22,12 +22,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         }
 
 
-        internal override Task<ScriptActionResults> Process(Account account)
+        internal override async Task<ScriptActionResults> Process(Account account)
         {
 
-            account.Game.ExtendScript.EditValue(FileName, Name, Value);
+            if (account.Game.ExtendScript.EditValueInt(FileName, Name, Value))
+            {
+                await Task.Delay(1);
+            }
 
-            return DoneResult;
+            return ScriptActionResults.DONE;
         }
     }
 }
