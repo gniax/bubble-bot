@@ -42,7 +42,7 @@ namespace BubbleBot.Views
             });
         }
 
-        private async void BtnConnect_Click(object sender, RoutedEventArgs e)
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
             SetAlert("", Visibility.Hidden);
             nickname = txtNickname.Text;

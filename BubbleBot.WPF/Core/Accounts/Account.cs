@@ -197,6 +197,7 @@ namespace BubbleBot.Core.Accounts
                         {
                             this.State = Enums.AccountStates.BANNED;
                             IsBan = true;
+                            AccountConfig.IsBan = true;
                         }
                        
                         if (method == 1)
@@ -441,65 +442,90 @@ namespace BubbleBot.Core.Accounts
 
         private void Network_Disconnected(NetworkManager networkManager)
         {
-            if(State != AccountStates.BANNED && !IsBan)
-                State = AccountStates.DISCONNECTED;
-            Logger.LogWarning("Network", LanguageManager.Translate("31"));
+            try
+            {
+                if(State != AccountStates.BANNED && !IsBan)
+                    State = AccountStates.DISCONNECTED;
+                Logger.LogWarning("Network", LanguageManager.Translate("31"));
             
-            if (browser != null)
-            {
-                if (!browser.IsDisposed)
+                if (browser != null)
                 {
-                    browser.Dispose();
-                }
-            }
-
-            // In case there was a script enabled
-            if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
-            {
-                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
-                    AccountConfig.Username,
-                    Game.Character.Level,
-                    (byte)Game.Character.Stats.EnergyPercent,
-                    (byte)Game.Character.Inventory.WeightPercent,
-                    Game.Character.Inventory.Kamas,
-                    Game.Map.Id,
-                    Game.Map.CurrentPosition,
-                    State.ToString(),
-                    "-",
-                    0,
-                    Scripts.CurrentScriptName != null ? Scripts.CurrentScriptName : "-"
-                ));
-
-                _wasScriptEnabled = Scripts.Enabled;
-                Scripts.StopScript();
-                Extensions.Flood.Stop();
-                // In case the disconnection isnt intentional
-                if(!IsIntentionalDisconnection && !IsBan && State != AccountStates.BANNED)
-                {
-                    if (GlobalConfiguration.Instance.AutomaticReconnection)
+                    if (!browser.IsDisposed)
                     {
-                        var task = Task.Run(() =>
+                        browser.Dispose();
+                    }
+                }
+
+                // In case there was a script enabled
+                if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
+                {
+                    BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                        AccountConfig.Username,
+                        Game.Character.Level,
+                        (byte)Game.Character.Stats.EnergyPercent,
+                        (byte)Game.Character.Inventory.WeightPercent,
+                        Game.Character.Inventory.Kamas,
+                        Game.Map.Id,
+                        Game.Map.CurrentPosition,
+                        State.ToString(),
+                        "-",
+                        0,
+                        Scripts.CurrentScriptName != null ? Scripts.CurrentScriptName : "-"
+                    ));
+
+                    _wasScriptEnabled = Scripts.Enabled;
+                    Scripts.StopScript();
+                    Extensions.Flood.Stop();
+                    // In case the disconnection isnt intentional
+                    if(!IsIntentionalDisconnection && !IsBan && State != AccountStates.BANNED)
+                    {
+                        if (GlobalConfiguration.Instance.AutomaticReconnection)
                         {
-                            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                            Connect().ConfigureAwait(false);
-                            if(Network != null)
+                            var task = Task.Run(() =>
                             {
-                                SpinWait.SpinUntil(() => (Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
-                                if (Network.Phase == NetworkPhases.GAME)
+                                Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
+                                Connect().ConfigureAwait(false);
+                                if(Network != null)
                                 {
-                                    //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                    SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
-                                    Thread.Sleep(1500);
-                                    int retries = 3;
-                                    if (IsFighting())
+                                    SpinWait.SpinUntil(() => (Network != null && Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
+                                    if (Network == null) return;
+
+                                    else if (Network.Phase == NetworkPhases.GAME)
                                     {
-                                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                        SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
+                                        //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
+                                        SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
                                         Thread.Sleep(1500);
+                                        int retries = 3;
+                                        if (IsFighting())
+                                        {
+                                            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
+                                            SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
+                                            Thread.Sleep(1500);
+                                            if (HasGroup && IsGroupChief)
+                                            {
+                                                Group.Chief.Scripts.StartScript();
+                                                while(!Scripts.Running && retries >= 0)
+                                                {
+                                                    Group.Chief.Scripts.StartScript();
+                                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                                    retries--;
+                                                }
+                                            }
+                                            else if (!HasGroup)
+                                            {
+                                                Scripts.StartScript();
+                                                while (!Scripts.Running && retries >= 0)
+                                                {
+                                                    Scripts.StartScript();
+                                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                                    retries--;
+                                                }
+                                            }
+                                        }
                                         if (HasGroup && IsGroupChief)
                                         {
                                             Group.Chief.Scripts.StartScript();
-                                            while(!Scripts.Running && retries >= 0)
+                                            while (!Scripts.Running && retries >= 0)
                                             {
                                                 Group.Chief.Scripts.StartScript();
                                                 SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
@@ -517,41 +543,24 @@ namespace BubbleBot.Core.Accounts
                                             }
                                         }
                                     }
-                                    if (HasGroup && IsGroupChief)
+                                    else
                                     {
-                                        Group.Chief.Scripts.StartScript();
-                                        while (!Scripts.Running && retries >= 0)
-                                        {
-                                            Group.Chief.Scripts.StartScript();
-                                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                            retries--;
-                                        }
-                                    }
-                                    else if (!HasGroup)
-                                    {
-                                        Scripts.StartScript();
-                                        while (!Scripts.Running && retries >= 0)
-                                        {
-                                            Scripts.StartScript();
-                                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                            retries--;
-                                        }
+                                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
+                                        IsIntentionalDisconnection = false;
+                                        Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
+                                        Network_Disconnected(networkManager);
+                                        return;
                                     }
                                 }
-                                else
-                                {
-                                    Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
-                                    IsIntentionalDisconnection = false;
-                                    Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
-                                    Network_Disconnected(networkManager);
-                                    return;
-                                }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
+                IsIntentionalDisconnection = false;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Exception ex: {0}", ex.Message);
             }
-            IsIntentionalDisconnection = false;
         }
 
 

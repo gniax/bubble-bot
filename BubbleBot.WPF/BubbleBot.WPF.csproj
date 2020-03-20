@@ -510,10 +510,10 @@
     <Compile Include="ViewModel\MapViewer\MapViewerCellViewModel.cs" />
     <Compile Include="ViewModel\MapViewer\MapViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="Views\AccountsEditor.xaml.cs">
+    <Compile Include="Views\Accounts\AccountsEditor.xaml.cs">
       <DependentUpon>AccountsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AccountsEditPseudo.xaml.cs">
+    <Compile Include="Views\Accounts\AccountsEditPseudo.xaml.cs">
       <DependentUpon>AccountsEditPseudo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AccountsManagerWindow.xaml.cs">
@@ -571,11 +571,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AccountsEditor.xaml">
+    <Page Include="Views\Accounts\AccountsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AccountsEditPseudo.xaml">
+    <Page Include="Views\Accounts\AccountsEditPseudo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

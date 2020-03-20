@@ -77,12 +77,15 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ArrowLeftBoldCircle" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Trier Pseudo" Click="BtnTrierPseudo">
+                            <MenuItem Header="Trier">
+                                <MenuItem.Items>
+                                    <MenuItem Header="par Pseudo"  Click="BtnSortByPseudo" />
+                                </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Editer">
                                 <MenuItem.Items>
-                                    <MenuItem Header="Changer Pseudo"  Click="BtnChangeAccountPseudo" />
-                                    <MenuItem Header="Modifier Compte" Click="BtnEditerCompte"/>
+                                    <MenuItem Header="Pseudo"  Click="BtnEditPseudo" />
+                                    <MenuItem Header="Compte" Click="BtnEditAccount"/>
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Connecter au serveur">

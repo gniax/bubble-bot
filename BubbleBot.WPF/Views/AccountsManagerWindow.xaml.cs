@@ -20,6 +20,7 @@ using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Utility.DofusTouch;
 using Microsoft.Win32;
+using BubbleBot.Views.Accounts;
 
 namespace BubbleBot.Views
 {
@@ -135,7 +136,7 @@ namespace BubbleBot.Views
             TxtUsername.Clear();
             TxtPassword.Clear();
             TxtCharacter.Clear();
-            TxtNickname.Clear();
+            TxtIdentifiant.Clear();
             TxtNickname.Clear();
         }
 
@@ -441,8 +442,8 @@ namespace BubbleBot.Views
 
         #endregion
 
-        #region Accounts editor
-        private void BtnTrierPseudo(object sender, RoutedEventArgs e)
+        #region Accounts edit/sort
+        private void BtnSortByPseudo(object sender, RoutedEventArgs e)
         {
             List<AccountConfiguration> selectAcc = new List<AccountConfiguration>();
             for (int i = LvAccounts.SelectedItems.Count - 1; i >= 0; i--)
@@ -450,11 +451,11 @@ namespace BubbleBot.Views
                 selectAcc.Add(LvAccounts.SelectedItems[i] as AccountConfiguration);
             }
 
-            GlobalConfiguration.Instance.TriAccountPseudo(selectAcc);
+            GlobalConfiguration.Instance.SortAccountPseudo(selectAcc);
             GlobalConfiguration.Instance.Save();
         }
 
-        private void BtnChangeAccountPseudo(object sender, RoutedEventArgs e)
+        private void BtnEditPseudo(object sender, RoutedEventArgs e)
         {
             var choiceInterface = new AccountsEditPseudo();
             choiceInterface.ShowDialog();
@@ -470,11 +471,15 @@ namespace BubbleBot.Views
                 GlobalConfiguration.Instance.Save();
             }
         }
-        private void BtnEditerCompte(object sender, RoutedEventArgs e)
+        private void BtnEditAccount(object sender, RoutedEventArgs e)
         {
-            var comtpeInterface = new AccountsEditor();
-            comtpeInterface.ShowDialog();
+            if (LvAccounts.SelectedItem == null)
+                return;
 
+            AccountConfiguration selectedAccount = LvAccounts.SelectedItem as AccountConfiguration;
+            AccountsEditor accountInterface = new AccountsEditor(selectedAccount);
+            accountInterface.ShowDialog();
+            
         }
         #endregion
 
