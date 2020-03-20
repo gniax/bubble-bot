@@ -32,6 +32,8 @@ using System.Runtime.CompilerServices;
 using BubbleBot.Server.Messages;
 using BubbleBot.Core.Extensions;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Globalization;
 
 namespace BubbleBot.Core.Accounts
 {
@@ -195,9 +197,35 @@ namespace BubbleBot.Core.Accounts
                         Logger.LogError("", dictionaryRes["reason"].ToString() == "BAN" ? LanguageManager.Translate("478") : LanguageManager.Translate("552"));
                         if (dictionaryRes["reason"].ToString() == "BAN")
                         {
+                            // Auto reconnection
+                            if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection)
+                            {
+                                // Here we have to disconnect every bot which has set his auto disconnection
+                                foreach (Account acc in BubbleBotMain.Instance.ConnectedAccounts)
+                                {
+                                    if (acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc != this)
+                                    {
+                                        if (acc.Configuration.BanReconnectionDelay > 0)
+                                        {
+                                            acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", this.Game.Character.Name, this.Game.Server.Name));
+                                            acc.Reconnect(acc.Configuration.BanReconnectionDelay);
+                                        }
+                                        else
+                                        {
+                                            acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", this.Game.Character.Name, this.Game.Server.Name));
+                                            acc.Network.Disconnect("CLIENT_CLOSING", false).ConfigureAwait(false);
+                                        }
+                                    }
+                                    else if(acc != this)
+                                    {
+                                        acc.Logger.LogWarning(LanguageManager.Translate("655"), LanguageManager.Translate("653", this.Game.Character.Name, this.Game.Server.Name));
+                                    }
+                                }
+                            }
                             this.State = Enums.AccountStates.BANNED;
                             IsBan = true;
                             AccountConfig.IsBan = true;
+                            GlobalConfiguration.Instance.Save();
                         }
                        
                         if (method == 1)
@@ -290,8 +318,6 @@ namespace BubbleBot.Core.Accounts
 
             try
             {
-                // HttpClient creation (with proxy if available)
-
                 IFrame mainFrame = browser.GetMainFrame();
                 IRequest tokenRequest = mainFrame.CreateRequest(initializePostData: false);
                 tokenRequest.Url = "https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18";
@@ -563,6 +589,193 @@ namespace BubbleBot.Core.Accounts
             }
         }
 
+        #region Reconnection
+        public async void Reconnect(int Seconds)
+        {
+            DateTime localDate = DateTime.Now;
+            DateTime newDate = localDate.AddSeconds(Seconds);
+
+            string newDateToDay = newDate.Day.ToString() + " " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month);
+            string newDateToTime = newDate.ToString("HH:mm:ss");
+
+            Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("612", newDateToDay, newDateToTime, "automatique"));
+            await Network.Disconnect("CLIENT_CLOSING");
+            await Task.Delay(400);
+
+            // Note: Here we'll log informations about current timer before reconnection
+            // More the longer the time, and more will be display informations about situation
+            // Ex: For 30 seconds reconnection -> 1 display at the half (show 15 seconds remaining)
+            // For 86440s (1 day) -> a display each hour
+            for (int i = 0; i < Seconds; i++)
+            {
+                int factor = 0;
+
+                if (Seconds > 30 && Seconds <= 300)
+                {
+                    factor = 2;
+                }
+                else if (Seconds > 300 && Seconds <= 1800)
+                {
+                    factor = 3;
+                }
+                else if (Seconds > 1800 && Seconds <= 7200)
+                {
+                    factor = 5;
+                }
+                else if (Seconds > 7200 && Seconds <= 43200)
+                {
+                    factor = 8;
+                }
+                else
+                {
+                    factor = 12;
+                }
+
+                if (i == Seconds - 60 || Enumerable.Range(1, factor - 1).Any(n => i == (Seconds / factor * n)))
+                {
+                    TimeSpan time = TimeSpan.FromSeconds(Seconds - i);
+
+                    string format = @"hh\:mm\:ss";
+
+                    if ((Seconds - i) < 60)
+                        format = @"ss";
+                    else if ((Seconds - i) < 3600)
+                        format = @"mm\:ss";
+
+                    string timeDisplay = time.ToString(format);
+                    Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("614", timeDisplay));
+                }
+
+                // Here set the delay to 1sec
+                // Note: We get for 22 hours delay, 22h20 real delay 
+                // it means the 1s function delay is longer than the right 1 sec -> we needs a coefficient to settle the timer 
+                // 22h20 = 80400s && 22h = 79200s => 80400/79200 ~= 1.015 // 1000 / 1.015 ~= 985 
+                // TODO -- check if this theorical calculation is suitable
+                // update: there's a +4 secs offset every 1h20 => unable to fix it => 984 is not enough
+                await Task.Delay(985);
+            }
+
+            if (Network.Connected)
+                return;
+
+            await Connect();
+
+            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
+            await Task.Delay(20000);
+            if (Network.Phase == NetworkPhases.GAME)
+            {
+                if(Scripts.CurrentScriptName != null)
+                {
+
+                    int retries = 3;
+                    if (HasGroup && IsGroupChief)
+                    {
+                        Group.Chief.Scripts.StartScript();
+                        while (!Scripts.Running && retries >= 0)
+                        {
+                            Group.Chief.Scripts.StartScript();
+                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                            retries--;
+                        }
+                    }
+                    else if (!HasGroup)
+                    {
+                        SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
+                        await Task.Delay(1500);
+                        Scripts.StartScript();
+                        while (!Scripts.Running && retries >= 0)
+                        {
+                            Scripts.StartScript();
+                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                            retries--;
+                        }
+
+                    }
+                return;
+                }
+            }
+            else // If the reconnection failed ? server busy ? bann ? => Retry
+            {
+                await Connect();
+                Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
+                await Task.Delay(20000);
+                if (Network.Connected)
+                {
+                    if (Scripts.CurrentScriptName != null)
+                    {
+                        int retries = 3;
+                        if (HasGroup && IsGroupChief)
+                        {
+                            Group.Chief.Scripts.StartScript();
+                            while (!Scripts.Running && retries >= 0)
+                            {
+                                Group.Chief.Scripts.StartScript();
+                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                retries--;
+                            }
+                        }
+                        else if (!HasGroup)
+                        {
+                            SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
+                            await Task.Delay(1500);
+                            Scripts.StartScript();
+                            while (!Scripts.Running && retries >= 0)
+                            {
+                                Scripts.StartScript();
+                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                retries--;
+                            }
+
+                        }
+                    }
+
+                    return;
+                }
+
+                // If it takes a long time to reconnect, we will try a second time
+                if (Seconds > 1800)
+                {
+                    Logger.LogMessage(LanguageManager.Translate("617"), LanguageManager.Translate("613"));
+                    await Task.Delay(300 * 1000);
+                    await Connect();
+                    if (Network.Connected)
+                    {
+                        if (Scripts.CurrentScriptName != null)
+                        {
+                            int retries = 3;
+                            if (HasGroup && IsGroupChief)
+                            {
+                                Group.Chief.Scripts.StartScript();
+                                while (!Scripts.Running && retries >= 0)
+                                {
+                                    Group.Chief.Scripts.StartScript();
+                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                    retries--;
+                                }
+                            }
+                            else if (!HasGroup)
+                            {
+                                SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
+                                await Task.Delay(1500);
+                                Scripts.StartScript();
+                                while (!Scripts.Running && retries >= 0)
+                                {
+                                    Scripts.StartScript();
+                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
+                                    retries--;
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                }
+
+                await Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
+                return;
+            }
+        }
+        #endregion
 
         private async void Planification_Callback(object state)
         {

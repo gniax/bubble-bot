@@ -44,6 +44,7 @@ namespace BubbleBot.Server.Handlers
                     {
                         client.LoggedIn = true;
                         client.SendMessage(new LoginAcceptedMessage(client.Informations.Name, response["user"].Value<string>("avatar")));
+                        //Console.WriteLine("AppV: {0} BuildV: {1}, AssetsV: {2}, StaticDataV: {3}", Constants.AppVersion, Constants.BuildVersion, Constants.AssetsVersion, Constants.StaticDataVersion);
                         client.SendMessage(new DTVersionsMessage(Constants.AppVersion, Constants.BuildVersion, Constants.AssetsVersion, Constants.StaticDataVersion));
 
                         // Send a statistics message
@@ -52,6 +53,7 @@ namespace BubbleBot.Server.Handlers
                         // Only send this if the user is subscribed
                         if (client.Informations.IsSubscribedToTouch)
                         {
+                            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                             client.SendMessage(new SubscriptionInformationsMessage(client.Informations.TouchEndDate, client.Informations.Extensions));
                         }
 

@@ -475,7 +475,7 @@
 475|Privé
 476|{0} comptes connectés, {1} bots connectés
 477|Changement de map échoué
-478|Votre compte est bannis.
+478|Votre compte est banni.
 479|Lancé.
 480|Arrêté.
 481|Tous les captchas ont été résolus, relancement du script.
@@ -640,4 +640,11 @@
 648|Achat de l'item (gid: {0}, lot: {1}, prix: {2}).
 649|Aucun item n'a été trouvé avec les conditions choisies.
 650|Génération du pseudo échouée : réessayez
-651|STATUT
+651|Déconnecter le bot lorsqu'un autre est banni >>> Reconnexion après :
+652|secondes (laissez 0 pour ne pas activer la reconnexion)
+653|Le bot {0} du serveur {1} à été banni. Déconnexion du compte...
+654|Security
+655|Attention: Le bot {0} du serveur {1} à été banni !
+656|Echec de la complétion du tutoriel ... Nouvelle tentative avec la création d'un nouveau personnage...
+657| Retrait invendu au bout de {0} secondes.
+658|Le délais de remise en vente doit être supérieur ou égale à 0.

@@ -92,6 +92,7 @@ namespace BubbleBot.Server.Network
             catch (Exception ex)
             {
                 ErrorOccured?.Invoke(this, ex);
+                
             }
         }
 
