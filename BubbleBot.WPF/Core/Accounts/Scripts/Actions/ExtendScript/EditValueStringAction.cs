@@ -6,24 +6,28 @@ using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
 {
-    class DeleteFileAction : ScriptAction
+    class EditValueStringAction : ScriptAction
     {
         // Properties
         public string FileName { get; private set; }
-
+        public string Name { get; private set; }
+        public string Value { get; private set; }
 
         // Constructor
-        public DeleteFileAction(string filename)
+        public EditValueStringAction(string filename, string name, string value)
         {
             FileName = filename;
+            Name = name;
+            Value = value;
         }
 
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.ExtendScript.DeleteFile(FileName))
+
+            if (account.Game.ExtendScript.EditValueString(FileName, Name, Value))
             {
-                await Task.Delay(700);
+                await Task.Delay(1);
             }
 
             return ScriptActionResults.DONE;

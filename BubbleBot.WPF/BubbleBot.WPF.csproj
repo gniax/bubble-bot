@@ -367,11 +367,10 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueIntAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\CreateFileAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteFileAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\GetValueAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\LoadFileAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueStringAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />

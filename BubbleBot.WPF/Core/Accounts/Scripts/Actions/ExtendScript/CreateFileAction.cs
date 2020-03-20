@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         {
             if (account.Game.ExtendScript.CreateFile(FileName))
             {
-                await Task.Delay(500);
+                await Task.Delay(700);
             }
 
             return ScriptActionResults.DONE;
