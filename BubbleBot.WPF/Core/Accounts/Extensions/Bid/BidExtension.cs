@@ -150,6 +150,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
         private async void Bid_StartedSelling()
         {
+            // Here we have to save every objects in sale into a binary file in order to get them back
+
+
             // Process sales session
             await ProcessSalesSession();
         }

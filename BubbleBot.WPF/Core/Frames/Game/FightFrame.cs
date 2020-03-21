@@ -61,6 +61,7 @@ namespace BubbleBot.Core.Frames.Game
         public static Task HandleGameFightTurnReadyRequestMessage(Account account, GameFightTurnReadyRequestMessage message)
            => Task.Run(async () =>
            {
+           Console.WriteLine("VALEUR DU FIGHTSPEED: " + (int)account.Extensions.Fights.Configuration.FightsSpeed);
                await Task.Delay(message.Id == account.Game.Character.Id ? 200 : 400 * (int)account.Extensions.Fights.Configuration.FightsSpeed);
                await account.Network.SendMessageAsync(new GameFightTurnReadyMessage(true));
            });

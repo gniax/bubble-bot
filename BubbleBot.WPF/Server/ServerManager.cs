@@ -219,6 +219,7 @@ namespace BubbleBot.Server
 
         private void HandleSubscriptionInformationsMessage(SubscriptionInformationsMessage message)
         {
+            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             TouchEndDate = message.TouchEndDate;
             Extensions = message.Extensions;
         }

@@ -89,7 +89,7 @@ namespace BubbleBot.Server
         private static void Server_ClientConnected(ClientWrapper client)
         {
             Clients.Add(new Client(client));
-            Console.WriteLine("[+] Client connecté : {0}", client._ip);
+            Console.WriteLine("[+][{0}] Client connecté : {1}", DateTime.Now.ToString("HH:mm::ss"), client._ip);
         }
 
         private static async void Server_ClientDisconnected(ClientWrapper handler)
@@ -99,7 +99,7 @@ namespace BubbleBot.Server
             if (client == null)
                 return;
 
-            Console.WriteLine("[-] Client déconnecté : {0}, {1} restant(s)",  client.Informations.ToString(), Clients.Count);
+            Console.WriteLine("[-][{0}]  Client déconnecté : {1}, {2} restant(s)", DateTime.Now.ToString("HH:mm::ss"), client.Informations.ToString(), Clients.Count);
 
             // Remove any accounts left
             await client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username), client.Informations.Id);

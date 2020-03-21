@@ -102,15 +102,28 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             {
                 if (RestartScript == true)
                 {
+                    int retries = 3;
                     if (account.HasGroup && account.IsGroupChief)
                     {
                         account.Group.Chief.Scripts.StartScript();
+                        while (!account.Scripts.Running && retries >= 0)
+                        {
+                            account.Group.Chief.Scripts.StartScript();
+                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                            retries--;
+                        }
                     }
-                    else if(!account.HasGroup)
+                    else if (!account.HasGroup)
                     {
                         SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
                         await Task.Delay(1500);
                         account.Scripts.StartScript();
+                        while (!account.Scripts.Running && retries >= 0)
+                        {
+                            account.Scripts.StartScript();
+                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                            retries--;
+                        }
 
                     }
                 }
@@ -126,15 +139,28 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                 {
                     if (RestartScript == true)
                     {
+                        int retries = 3;
                         if (account.HasGroup && account.IsGroupChief)
                         {
                             account.Group.Chief.Scripts.StartScript();
+                            while (!account.Scripts.Running && retries >= 0)
+                            {
+                                account.Group.Chief.Scripts.StartScript();
+                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                                retries--;
+                            }
                         }
                         else if (!account.HasGroup)
                         {
                             SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
                             await Task.Delay(1500);
                             account.Scripts.StartScript();
+                            while (!account.Scripts.Running && retries >= 0)
+                            {
+                                account.Scripts.StartScript();
+                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                                retries--;
+                            }
 
                         }
                     }
@@ -152,16 +178,28 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     {
                         if (RestartScript == true)
                         {
+                            int retries = 3;
                             if (account.HasGroup && account.IsGroupChief)
                             {
                                 account.Group.Chief.Scripts.StartScript();
+                                while (!account.Scripts.Running && retries >= 0)
+                                {
+                                    account.Group.Chief.Scripts.StartScript();
+                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                                    retries--;
+                                }
                             }
                             else if (!account.HasGroup)
                             {
                                 SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
                                 await Task.Delay(1500);
                                 account.Scripts.StartScript();
-
+                                while (!account.Scripts.Running && retries >= 0)
+                                {
+                                    account.Scripts.StartScript();
+                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
+                                    retries--;
+                                }
                             }
                         }
 
@@ -169,7 +207,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     }
                 }
 
-                account.Network.Disconnect("CLIENT_CLOSING", true);
+                await account.Network.Disconnect("CLIENT_CLOSING", true);
                 return ScriptActionResults.FAILED;
             }
         }

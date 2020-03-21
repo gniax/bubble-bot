@@ -184,6 +184,7 @@ namespace BubbleBot.Server.Clients
             if (Running)
             {
                 Console.WriteLine("Client {0} timed out.", Informations);
+                StopPingTimeoutTimer();
                 Network.Close();
             }
             else

@@ -124,7 +124,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        public bool SellItem(uint gid, uint lot, uint price)
+        public bool SellItem(uint gid, uint lot, uint price, int unsoldDelay = 0)
         {
             if (_account.State != AccountStates.SELLING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
@@ -137,8 +137,15 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 return false;
             }
 
+            if(unsoldDelay == 0)
+                _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("105", lot, item.Name, price));
+            else if(unsoldDelay > 0)
+                _account.Logger.LogInfo(LanguageManager.Translate("102"), (LanguageManager.Translate("105", lot, item.Name, price) + LanguageManager.Translate("657", unsoldDelay)));
+            else
+                _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("658"));
+
             _account.Network.SendMessage(new ExchangeObjectMovePricedMessage(item.UID, (int)lot, (int)price));
-            _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("105", lot, item.Name, price));
+            // si on reçoit le message bien mit en vente...
             return true;
         }
 
