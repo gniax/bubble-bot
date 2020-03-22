@@ -95,6 +95,7 @@ namespace BubbleBot.Core.Accounts
             set => Set(ref _fightLimitReached, value);
         }
         public bool IsIntentionalDisconnection = false;
+        public bool PreventPlanificationReconnection = false;
         // Events
         public event Action StateChanged;
         public event Action<Account> RecaptchaReceived;
@@ -208,11 +209,13 @@ namespace BubbleBot.Core.Accounts
                                         if (acc.Configuration.BanReconnectionDelay > 0)
                                         {
                                             acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", this.Game.Character.Name, this.Game.Server.Name));
+                                            acc.PreventPlanificationReconnection = true;
                                             acc.Reconnect(acc.Configuration.BanReconnectionDelay);
                                         }
                                         else
                                         {
                                             acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", this.Game.Character.Name, this.Game.Server.Name));
+                                            acc.PreventPlanificationReconnection = true;
                                             acc.Network.Disconnect("CLIENT_CLOSING", false).ConfigureAwait(false);
                                         }
                                     }
@@ -222,6 +225,7 @@ namespace BubbleBot.Core.Accounts
                                     }
                                 }
                             }
+                            PreventPlanificationReconnection = true;
                             this.State = Enums.AccountStates.BANNED;
                             IsBan = true;
                             AccountConfig.IsBan = true;
@@ -787,11 +791,13 @@ namespace BubbleBot.Core.Accounts
             // If the bot is connected and the hour is red
             if (Network.Connected && AccountConfig.Planification[hour] == false && State != AccountStates.FIGHTING)
             {
+
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("584"));
+                PreventPlanificationReconnection = false;
                 await Network.Disconnect("CLIENT_CLOSING");
             }
             // If the bot is disconnected and the hour is green
-            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour])
+            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && PreventPlanificationReconnection == false)
             {
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("585"));
                 try
@@ -857,6 +863,7 @@ namespace BubbleBot.Core.Accounts
 
                 _fightLimitReached = false;
                 IsIntentionalDisconnection = false;
+                PreventPlanificationReconnection = false;
                 _disposedValue = true;
             }
         }

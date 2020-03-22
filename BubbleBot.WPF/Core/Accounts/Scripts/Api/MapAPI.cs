@@ -157,9 +157,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public string CurrentMapId()
             => _account.Game.Map.Id.ToString();
-        public long TimeStamp()
-            => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
 
         public string Area()
             => _account.Game.Map.Area;

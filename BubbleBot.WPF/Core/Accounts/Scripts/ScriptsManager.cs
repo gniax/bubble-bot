@@ -130,14 +130,19 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("printError", new Action<string>((msg) => _account.Logger.LogError(LanguageManager.Translate("165"), msg)));
             ScriptManager.SetGlobal("stopScript", new Action(() => StopScript()));
             ScriptManager.SetGlobal("delayFunc", new Action<int>((ms) => ActionsManager.EnqueueAction(new DelayAction(ms), true)));
+            ScriptManager.SetGlobal("getTimestamp", new Func<long>(() => DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             ScriptManager.SetGlobal("isSubscribed", (Func<bool>)_account.IsSubscribed);
             ScriptManager.SetGlobal("isFighting", (Func<bool>)_account.IsFighting);
             ScriptManager.SetGlobal("isGathering", (Func<bool>)_account.IsGathering);
             ScriptManager.SetGlobal("isInDialog", (Func<bool>)_account.IsInDialog);
             ScriptManager.SetGlobal("hasReachFightLimit", (Func<bool>)_account.isFightLimitReached);
-            ScriptManager.SetGlobal("getSubscriptionPrice", new Func<double>(() => { return Math.Ceiling(_account.Game.bakRate * 800); } ));
+            ScriptManager.SetGlobal("getSubscriptionPrice", new Func<double>(() => { return Math.Ceiling(_account.Game.bakRate * 800); }));
             ScriptManager.SetGlobal("reconnectFunc", new Action<int, bool>((s, restartscript) => ActionsManager.EnqueueAction(new ReconnectAction(s, restartscript), true)));
-            ScriptManager.SetGlobal("disconnectFunc", new Action(() => _account.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false)));
+            ScriptManager.SetGlobal("disconnectFunc", new Action<bool>((preventPlan) => {
+                if(preventPlan)
+                    _account.PreventPlanificationReconnection = true;
+                _account.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false);
+            }));
             ScriptManager.SetGlobal("leaveDialogFunc", new Func<bool>(() =>
             {
                 if (_account.IsInDialog())
@@ -147,6 +152,21 @@ namespace BubbleBot.Core.Accounts.Scripts
                 }
 
                 return false;
+            }));
+            ScriptManager.SetGlobal("planificationEndTimestamp", new Func<long>(()
+            => {
+                if (!_account.AccountConfig.PlanificationActivated)
+                    return 0;
+
+                int hour = DateTime.Now.Hour;
+                for (int i = 0; i < 24; i++)
+                {
+                    if (hour < i && !_account.AccountConfig.Planification[i])
+                    {
+                        return DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (60 * 60 * (i - hour) - (DateTimeOffset.UtcNow.Minute * 60 + DateTimeOffset.UtcNow.Second));
+                    }
+                }
+                return 0;
             }));
 
             // Inject api script

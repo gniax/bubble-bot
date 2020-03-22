@@ -69,6 +69,7 @@ namespace BubbleBot.Core.Frames.Common
                     account.State = Enums.AccountStates.BANNED;
                     account.IsBan = true;
                     account.AccountConfig.IsBan = true;
+                    account.PreventPlanificationReconnection = true;
                     GlobalConfiguration.Instance.Save();
 
                     // Here we have to disconnect every bot which has set his auto disconnection
@@ -81,11 +82,13 @@ namespace BubbleBot.Core.Frames.Common
                                 if(acc.Configuration.BanReconnectionDelay > 0)
                                 {
                                     acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
+                                    acc.PreventPlanificationReconnection = true;
                                     acc.Reconnect(acc.Configuration.BanReconnectionDelay);
                                 }
                                 else
                                 {
                                     acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
+                                    acc.PreventPlanificationReconnection = true;
                                     acc.Network.Disconnect("CLIENT_CLOSING", false).ConfigureAwait(false);
                                 }
                             }
