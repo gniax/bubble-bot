@@ -100,19 +100,19 @@ namespace BubbleBot.Core.Accounts.Network
             await Disconnect("SWITCHING_TO_GAME").ConfigureAwait(false);
         }
 
-        public async Task Disconnect(string reason, bool info = false)
+        public async Task Disconnect(string reason, bool intentional = false)
         {
             try
             {
+                Account.FightLimitReached = false;
+                if (!Connected)
+                    return;
 
-            Account.FightLimitReached = false;
-            if (!Connected)
-                return;
+                // If it is set to true, it simulates an non-intentional disconnection
+                if(!intentional)
+                    Account.IsIntentionalDisconnection = true;
 
-            // If info is set to true, it simulates an non-intentional disconnection
-            if(!info)
-            Account.IsIntentionalDisconnection = true;
-            await _webSocket.CloseAsync(reason).ConfigureAwait(false);
+                await _webSocket.CloseAsync(reason).ConfigureAwait(false);
             }
             catch(Exception ex)
             {

@@ -36,6 +36,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return false;
         }
 
+        public uint FightsCount()
+        => _account.Statistics.FightsCount;
+
         #region IDisposable Support
 
         private bool disposedValue = false;

@@ -5,6 +5,7 @@ function fight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, m
 		coroutine.yield()
 	end	
 end
+fightsCount = api.Fight.FightsCount
 
 -- Gather
 canGather = api.Gather.CanGather
@@ -27,8 +28,8 @@ function loadConfiguration(msg)
 	loadConfigurationFunc(msg)
 	coroutine.yield()
 end
-function disconnect()
-	disconnectFunc()
+function disconnect(preventPlannif)
+	disconnectFunc(preventPlannif)
 	coroutine.yield()
 end
 function reconnect(s, restartscript)
@@ -145,7 +146,6 @@ onCell = api.Map.OnCell
 onMap = api.Map.OnMap
 currentPos = api.Map.CurrentPos
 currentMapId = api.Map.currentMapId
-getTimeStamp = api.Map.TimeStamp
 area = api.Map.Area
 subArea = api.Map.SubArea
 
