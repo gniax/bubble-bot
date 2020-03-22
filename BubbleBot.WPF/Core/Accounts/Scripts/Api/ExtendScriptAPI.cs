@@ -39,7 +39,10 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account.Scripts.ActionsManager.EnqueueAction(new EditValueStringAction(filename, name, value), false);
         }
-
+        public void DeleteVariable(string filename, string name)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new DeleteVariable(filename, name), false);
+        }
         public int GetValueInt(string filename, string name)
         {
             return _account.Game.ExtendScript.GetValueInt(filename,name);

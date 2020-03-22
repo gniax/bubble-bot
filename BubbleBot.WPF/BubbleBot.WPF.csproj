@@ -367,6 +367,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteVariable.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueIntAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\CreateFileAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteFileAction.cs" />

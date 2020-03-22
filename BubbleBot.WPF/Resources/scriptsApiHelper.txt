@@ -341,6 +341,11 @@ extscript = {
 				      	   coroutine.yield()
 				      end
 				  end,
+    deleteVar = function(filename,name)
+					if api.ExtendScript.DeleteVariable(filename,name) then
+				      	   coroutine.yield()
+				      end
+				  end,
 	getValueInt = api.ExtendScript.GetValueInt,
 	getValueString = api.ExtendScript.GetValueString
 }

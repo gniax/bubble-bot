@@ -285,8 +285,120 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             }
         return true;
         }
+        public bool DeleteVariable(string filename, string name)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return false;
+            int nbtry = 0;
+            int maxNbtry = 200;
 
-        public int GetValueInt(string filename , string name)
+            while (nbtry < maxNbtry)
+            {
+                try
+                {
+                    if (File.Exists(configurationsPath + filename + FileExtension))
+                    {
+                        //Ditcionary contenant toute les variables et valeurs 
+                        Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
+                        Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+
+                        int nbvariablesint = 0;
+                        int nbvariablesstring = 0;
+
+                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        {
+
+                            //Search the amount of var
+                            try
+                            {
+                                nbvariablesint = br.ReadInt32();
+                            }
+                            catch (Exception e)
+                            {
+                                nbvariablesint = 0;
+                            }
+                            try
+                            {
+                                nbvariablesstring = br.ReadInt32();
+                            }
+                            catch (Exception e)
+                            {
+                                nbvariablesstring = 0;
+                            }
+
+                            //for each var , take the value 
+                            if (nbvariablesint > 0)
+                            {
+                                //byte c = br.ReadByte();
+                                for (int i = 0; i < nbvariablesint; i++)
+                                {
+                                    string tmpVar = br.ReadString();
+                                    int tmpValue = br.ReadInt32();
+                                    if (tmpVar != name)
+                                    {
+                                        AllValueInt.Add(tmpVar, tmpValue);
+                                    }
+                                    else
+                                    {
+                                        nbvariablesint--;
+                                    }
+                                }
+                            }
+
+                            if (nbvariablesstring > 0)
+                            {
+                                //byte c = br.ReadByte();
+                                for (int i = 0; i < nbvariablesstring; i++)
+                                {
+                                    string tmpVar = br.ReadString();
+                                    string tmpValue = br.ReadString();
+                                    if (tmpVar != name)
+                                    {
+                                         AllValueString.Add(tmpVar, tmpValue);
+                                    }
+                                    else
+                                    {
+                                        nbvariablesstring--;
+                                    }
+                                }
+                            }
+                            br.Close();
+                        }
+
+                        // _account.Logger.LogError("AI", "Ecriture du fichier.");
+                        using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                        {
+                            bw.Write(nbvariablesint);
+                            bw.Write(nbvariablesstring);
+
+                            foreach (var obj in AllValueInt)
+                            {
+                                bw.Write(obj.Key);
+                                bw.Write(obj.Value);
+                            }
+
+                            //write the list of var 
+                            foreach (var obj in AllValueString)
+                            {
+                                bw.Write(obj.Key);
+                                bw.Write(obj.Value);
+                            }
+
+                            bw.Close();
+                        }
+                        return true;
+                    }
+                }
+                catch
+                {
+                    Task.Delay(500);
+                    nbtry++;
+                }
+            }
+            return true;
+        }
+
+         public int GetValueInt(string filename , string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return 0;
