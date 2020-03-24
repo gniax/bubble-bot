@@ -35,6 +35,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             string newDateToTime= newDate.ToString("HH:mm:ss");
 
             account.Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("612", newDateToDay, newDateToTime, RestartScript.ToString()));
+            account.PreventPlanificationReconnection = true;
             await account.Network.Disconnect("CLIENT_CLOSING");
             await Task.Delay(400);
             

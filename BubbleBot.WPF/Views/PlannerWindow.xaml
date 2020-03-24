@@ -25,10 +25,17 @@
 
         <GroupBox Header="{_:Lang 587}">
             <StackPanel>
-                
+
+                <StackPanel Orientation="Horizontal">
+                   
                 <CheckBox Margin="4 4 4 8" Content="Activé"
                           IsChecked="{Binding ElementName=LbAccounts,
                                               Path=SelectedItem.PlanificationActivated}"/>
+
+                <CheckBox Margin="16 4 4 8" Content="Démarrer directement le script"
+                          IsChecked="{Binding ElementName=LbAccounts,
+                                              Path=SelectedItem.ForceStartScript}"/>
+                </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
                     <TextBlock Text="00" Margin="7 0 0 0" />

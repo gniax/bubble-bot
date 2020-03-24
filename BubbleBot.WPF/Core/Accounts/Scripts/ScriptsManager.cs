@@ -138,8 +138,8 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("hasReachFightLimit", (Func<bool>)_account.isFightLimitReached);
             ScriptManager.SetGlobal("getSubscriptionPrice", new Func<double>(() => { return Math.Ceiling(_account.Game.bakRate * 800); }));
             ScriptManager.SetGlobal("reconnectFunc", new Action<int, bool>((s, restartscript) => ActionsManager.EnqueueAction(new ReconnectAction(s, restartscript), true)));
-            ScriptManager.SetGlobal("disconnectFunc", new Action<bool>((preventPlan) => {
-                if(preventPlan)
+            ScriptManager.SetGlobal("disconnectFunc", new Action<bool>((preventPlanif) => {
+                if(preventPlanif)
                     _account.PreventPlanificationReconnection = true;
                 _account.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false);
             }));

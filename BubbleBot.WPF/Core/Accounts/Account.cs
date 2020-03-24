@@ -86,16 +86,19 @@ namespace BubbleBot.Core.Accounts
         public bool IsBusy => State != AccountStates.NONE && State != AccountStates.REGENERATING;
         public Account Element => this;
         public bool HasGroup => Group != null;
-
-        public bool IsBan = false;
         public bool IsGroupChief => !HasGroup || Group.Chief == this;
         public bool FightLimitReached
         {
             get => _fightLimitReached;
             set => Set(ref _fightLimitReached, value);
         }
+        // This variable is used for auto-reconnection
         public bool IsIntentionalDisconnection = false;
+        // This variable is used to prevent planfication reconnection (ex: when a bot is ban and others are disconnected or with function reconnect/disconnect)
         public bool PreventPlanificationReconnection = false;
+        // Used to prevent auto-reconnection when it is impossible
+        public bool PreventAutoReconnection = false;
+
         // Events
         public event Action StateChanged;
         public event Action<Account> RecaptchaReceived;
@@ -137,6 +140,7 @@ namespace BubbleBot.Core.Accounts
             if (!PlanificationTimer.Enabled)
                 PlanificationTimer.Start();
 
+            PreventAutoReconnection = false;
             FramesData.Clear();
             Network.Clear();
             Game.Clear();
@@ -199,7 +203,7 @@ namespace BubbleBot.Core.Accounts
                         if (dictionaryRes["reason"].ToString() == "BAN")
                         {
                             // Auto reconnection
-                            if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection)
+                            if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection && !PreventAutoReconnection)
                             {
                                 // Here we have to disconnect every bot which has set his auto disconnection
                                 foreach (Account acc in BubbleBotMain.Instance.ConnectedAccounts)
@@ -227,7 +231,6 @@ namespace BubbleBot.Core.Accounts
                             }
                             PreventPlanificationReconnection = true;
                             this.State = Enums.AccountStates.BANNED;
-                            IsBan = true;
                             AccountConfig.IsBan = true;
                             GlobalConfiguration.Instance.Save();
                         }
@@ -474,7 +477,7 @@ namespace BubbleBot.Core.Accounts
         {
             try
             {
-                if(State != AccountStates.BANNED && !IsBan)
+                if(State != AccountStates.BANNED && !AccountConfig.IsBan)
                     State = AccountStates.DISCONNECTED;
                 Logger.LogWarning("Network", LanguageManager.Translate("31"));
             
@@ -507,7 +510,7 @@ namespace BubbleBot.Core.Accounts
                     Scripts.StopScript();
                     Extensions.Flood.Stop();
                     // In case the disconnection isnt intentional
-                    if(!IsIntentionalDisconnection && !IsBan && State != AccountStates.BANNED)
+                    if(!IsIntentionalDisconnection && !AccountConfig.IsBan && State != AccountStates.BANNED && !PreventAutoReconnection)
                     {
                         if (GlobalConfiguration.Instance.AutomaticReconnection)
                         {
@@ -791,13 +794,13 @@ namespace BubbleBot.Core.Accounts
             // If the bot is connected and the hour is red
             if (Network.Connected && AccountConfig.Planification[hour] == false && State != AccountStates.FIGHTING)
             {
-
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("584"));
+                PreventAutoReconnection = false;
                 PreventPlanificationReconnection = false;
                 await Network.Disconnect("CLIENT_CLOSING");
             }
             // If the bot is disconnected and the hour is green
-            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && PreventPlanificationReconnection == false)
+            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && !PreventPlanificationReconnection)
             {
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("585"));
                 try
@@ -813,11 +816,14 @@ namespace BubbleBot.Core.Accounts
 
         private async void Map_MapLoaded()
         {
-            if (!AccountConfig.PlanificationActivated || !_wasScriptEnabled)
+
+            if (Scripts.Running || !AccountConfig.PlanificationActivated || (!_wasScriptEnabled && !AccountConfig.ForceStartScript))
                 return;
             await Task.Delay(1500);
             Logger.LogInfo("Planificateur", LanguageManager.Translate("583"));
+            
             Scripts.StartScript();
+            
         }
 
         #region IDisposable Support
@@ -864,6 +870,7 @@ namespace BubbleBot.Core.Accounts
                 _fightLimitReached = false;
                 IsIntentionalDisconnection = false;
                 PreventPlanificationReconnection = false;
+                PreventAutoReconnection = false;
                 _disposedValue = true;
             }
         }

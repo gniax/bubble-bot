@@ -163,6 +163,7 @@ namespace BubbleBot.Configurations
                                     Accounts[i].Planification[j] = br.ReadBoolean();
 
                                 Accounts[i].PlanificationActivated = br.ReadBoolean();
+                                Accounts[i].ForceStartScript = br.ReadBoolean();
                             }
                         }
                     }
@@ -205,6 +206,7 @@ namespace BubbleBot.Configurations
                         bw.Write(Accounts[i].Planification[j]);
 
                     bw.Write(Accounts[i].PlanificationActivated);
+                    bw.Write(Accounts[i].ForceStartScript);
                 }
             }
 
@@ -215,7 +217,6 @@ namespace BubbleBot.Configurations
         {
             Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant, isban));
             RaisePropertyChanged("AccountsList");
-
             Save();
         }
 

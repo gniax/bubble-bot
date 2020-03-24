@@ -110,7 +110,9 @@ namespace BubbleBot.Core.Accounts.Network
 
                 // If it is set to true, it simulates an non-intentional disconnection
                 if(!intentional)
+                {
                     Account.IsIntentionalDisconnection = true;
+                }
 
                 await _webSocket.CloseAsync(reason).ConfigureAwait(false);
             }

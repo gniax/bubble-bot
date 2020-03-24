@@ -115,13 +115,17 @@ namespace BubbleBot.Core.Frames.Connection
                 Console.WriteLine("HandleIdentificationFailedMessage");
                 IdentificationFailureReasonEnum reason = (IdentificationFailureReasonEnum)message.Reason;
                 account.Logger.LogError("IdentificationFrame", LanguageManager.Translate("86", reason));
+                if (reason != IdentificationFailureReasonEnum.TIME_OUT && reason != IdentificationFailureReasonEnum.KICKED && reason != IdentificationFailureReasonEnum.OTP_TIMEOUT)
+                {
+                    account.PreventAutoReconnection = true;
+                    account.PreventPlanificationReconnection = true;
+                }
             });
 
         public static Task HandleIdentificationFailedBannedMessage(Account account, IdentificationFailedBannedMessage message)
             => Task.Run(() =>
             {
                 Console.WriteLine("HandleIdentificationFailedBannedMessage");
-                account.IsBan = true;
                 account.AccountConfig.IsBan = true;
                 GlobalConfiguration.Instance.Save();
                 account.State = Enums.AccountStates.BANNED;

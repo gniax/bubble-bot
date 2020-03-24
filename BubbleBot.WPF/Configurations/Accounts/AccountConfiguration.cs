@@ -12,6 +12,7 @@ namespace BubbleBot.Configurations
 
         // Fields
         private bool _planificationActivated;
+        private bool _forceStartScript;
 
 
         // Properties
@@ -31,6 +32,15 @@ namespace BubbleBot.Configurations
             set
             {
                 Set(ref _planificationActivated, value);
+                GlobalConfiguration.Instance.Save();
+            }
+        }
+        public bool ForceStartScript
+        {
+            get => _forceStartScript;
+            set
+            {
+                Set(ref _forceStartScript, value);
                 GlobalConfiguration.Instance.Save();
             }
         }

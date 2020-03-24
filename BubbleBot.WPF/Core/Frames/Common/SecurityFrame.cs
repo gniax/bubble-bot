@@ -52,7 +52,6 @@ namespace BubbleBot.Core.Frames.Common
                     {
                         await account.Network.Disconnect("CLIENT_CLOSING");
                     }
-
                 }
                 else
                 {
@@ -67,7 +66,6 @@ namespace BubbleBot.Core.Frames.Common
                 try
                 {
                     account.State = Enums.AccountStates.BANNED;
-                    account.IsBan = true;
                     account.AccountConfig.IsBan = true;
                     account.PreventPlanificationReconnection = true;
                     GlobalConfiguration.Instance.Save();
