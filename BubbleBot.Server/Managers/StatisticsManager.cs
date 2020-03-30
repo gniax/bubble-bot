@@ -1,4 +1,5 @@
 ﻿using BubbleBot.Server.Clients;
+using BubbleBot.Server.Clients.Accounts;
 using BubbleBot.Server.Messages;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace BubbleBot.Server
         public static double GetInterval()
         {
             DateTime now = DateTime.Now;
-            return ((180 - now.Second) * 1000 - now.Millisecond);
+            return ((300 - now.Second) * 1000 - now.Millisecond);
         }
 
         public static void dynamicTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -33,8 +34,10 @@ namespace BubbleBot.Server
             {
                 foreach(Client client in Clients)
                 {
-                    if(client.Accounts.Count() > 0)
-                    client.SendMessage(new BotsInformationsRequestMessage());
+                    if(client != null && client.Running && client.Network != null && client.Accounts.Count() > 0)
+                    {
+                        client.SendMessage(new BotsInformationsRequestMessage());
+                    }
                 }
             }
             dynamicTimer.Start();

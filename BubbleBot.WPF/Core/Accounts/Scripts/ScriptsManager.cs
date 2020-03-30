@@ -23,6 +23,7 @@ using BubbleBot.Configurations.Language;
 using BubbleBot.Utility.Extensions;
 using BubbleBot.Core.Enums;
 using MoonSharp.Interpreter.Debugging;
+using System.Threading;
 
 namespace BubbleBot.Core.Accounts.Scripts
 {
@@ -179,15 +180,22 @@ namespace BubbleBot.Core.Accounts.Scripts
             if (string.IsNullOrEmpty(CurrentScriptName))
                 return;
 
-            if (Enabled || _account.IsBusy)
+            if (Enabled || (_account.IsBusy && _account.State != AccountStates.RECAPTCHA))
                 return;
 
-                if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch && _account.Game.Character.Level >= 9)
+            if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch && _account.Game.Character.Level >= 9)
             {
                 _account.Logger.LogError(LanguageManager.Translate("165"), LanguageManager.Translate("413"));
                 return;
             }
 
+            if (_account.State == AccountStates.RECAPTCHA)
+            {
+                _account.Logger.LogInfo("Script", LanguageManager.Translate("659"));
+                bool waitForCaptchaEnd = SpinWait.SpinUntil(() => _account.State != AccountStates.RECAPTCHA, 300);
+                if (_account.IsBusy || Enabled)
+                    return;
+            }
             // If this account is a group chief, do some checkings
             if (_account.HasGroup && _account.IsGroupChief)
             {

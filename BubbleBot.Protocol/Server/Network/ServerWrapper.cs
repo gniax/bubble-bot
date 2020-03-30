@@ -11,8 +11,7 @@ namespace BubbleBot.Server.Network
     {
 
         // Fields
-        //public TcpListener _tcpListener; //On peut écouter toutes les requêtes du serveur en le mettant public
-        private readonly TcpListener _tcpListener; //A FAIRE SI ON FAIT UN SERVEUR PUBLIC
+        private readonly TcpListener _tcpListener; 
 
 
         // Properties

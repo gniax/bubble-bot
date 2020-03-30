@@ -58,6 +58,22 @@ namespace BubbleBot.Server.Handlers
                 client.SendMessage(new InvalidOperationMessage(InvalidOperations.MAX_ACCOUNTS_REACHED));
             });
 
+        public static Task HandleConnectedAccountMessage(Client client, ConnectedAccountMessage message)
+            => Task.Run(() =>
+            {
+                if (!client.LoggedIn)
+                    return;
+
+                // Check if the user can actually connect one more account
+                if (ServerMain.GetClientBotsCount(client.Informations.Name) >= client.Informations.MaxAccounts)
+                {
+                    client.SendMessage(new InvalidOperationMessage(InvalidOperations.MAX_ACCOUNTS_REACHED));
+                    return;
+                }
+
+                client.AddAccounts(new[] { message.Username });
+            });
+
         public static Task HandleRemoveAccountRequestMessage(Client client, RemoveAccountRequestMessage message)
             => Task.Run(async () =>
             {

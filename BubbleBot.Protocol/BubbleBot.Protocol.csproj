@@ -1195,6 +1195,7 @@
     <Compile Include="Server\Messages\ConnectAccountRequestMessage.cs" />
     <Compile Include="Server\Messages\ConnectAccountsMessage.cs" />
     <Compile Include="Server\Messages\ConnectAccountsRequestMessage.cs" />
+    <Compile Include="Server\Messages\ConnectedAccountMessage.cs" />
     <Compile Include="Server\Messages\ConnectGroupMessage.cs" />
     <Compile Include="Server\Messages\ConnectGroupRequestMessage.cs" />
     <Compile Include="Server\Messages\DTVersionsMessage.cs" />
@@ -1212,6 +1213,8 @@
     <Compile Include="Server\Messages\PongMessage.cs" />
     <Compile Include="Server\Messages\QuickActionMessage.cs" />
     <Compile Include="Server\Messages\QuickActionRequestMessage.cs" />
+    <Compile Include="Server\Messages\ReconnectRequestMessage.cs" />
+    <Compile Include="Server\Messages\ReconnectSuccessMessage.cs" />
     <Compile Include="Server\Messages\RemoveAccountRequestMessage.cs" />
     <Compile Include="Server\Messages\RemoveAccountsRequestMessage.cs" />
     <Compile Include="Server\Messages\ServerStatisticsMessage.cs" />

@@ -191,6 +191,7 @@ namespace BubbleBot.Server.Clients
             {
                 Console.WriteLine("Client {0} timed out and already disconnected.", Informations);
                 ServerMain.RemoveClient(Informations.Id);
+
             }
         }
 

@@ -16,7 +16,7 @@ namespace BubbleBot.WPF
     {
 
         public static CultureInfo Culture;
-        //private static Mutex _mutex;
+        private static Mutex _mutex;
 
 
         protected override void OnStartup(StartupEventArgs e)
@@ -25,12 +25,12 @@ namespace BubbleBot.WPF
 
             InitializeCefSharp();
             // Singleton application
-            //_mutex = new Mutex(true, "Bubble Bot", out bool createdNew);
-            //if (!createdNew)
-            //{
-            //    Current.Shutdown();
-            //    return;
-            //}
+            _mutex = new Mutex(true, "Bubble Bot", out bool createdNew);
+            if (!createdNew)
+            {
+                Current.Shutdown();
+                return;
+            }
 
             GlobalConfiguration.Instance.Load();
             if (!LanguageManager.Initialize())
@@ -42,10 +42,10 @@ namespace BubbleBot.WPF
 
             BubbleBotMain.Instance.Server.Start();
 
-            //Culture = new CultureInfo(GlobalConfiguration.Instance.Lang);
-            //CultureInfo.CurrentCulture = Culture;
-            //CultureInfo.CurrentUICulture = Culture;
-            //CultureInfo.DefaultThreadCurrentCulture = Culture;
+            Culture = new CultureInfo(GlobalConfiguration.Instance.Lang);
+            CultureInfo.CurrentCulture = Culture;
+            CultureInfo.CurrentUICulture = Culture;
+            CultureInfo.DefaultThreadCurrentCulture = Culture;
 
             base.OnStartup(e);
         }

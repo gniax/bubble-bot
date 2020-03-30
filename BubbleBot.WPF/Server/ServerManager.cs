@@ -19,6 +19,7 @@ using BubbleBot.Configurations.Language;
 using BubbleBot.Utility.DofusTouch;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BubbleBot.Server
 {
@@ -26,7 +27,7 @@ namespace BubbleBot.Server
     {
 
         // Fields
-        private readonly ClientWrapper _client;
+        private ClientWrapper _client;
         private string _name;
         private string _avatarUrl;
         private ServerConnectionStates _state;
@@ -69,6 +70,7 @@ namespace BubbleBot.Server
 
         // Events
         public event Action LoginAccepted;
+        public event Action<ClientWrapper> ReconnectionSuccess;
 
 
         // Constructor
@@ -80,6 +82,7 @@ namespace BubbleBot.Server
             Statistics = new ServerStatistics(this);
             Extensions = new Dictionary<ExtensionsEnum, DateTime>();
 
+            this.ReconnectionSuccess += Client_Reconnected;
             _client.Connected += Client_Connected;
             _client.DataReceived += Client_DataReceived;
             _client.ErrorOccured += Client_ErrorOccured;
@@ -90,6 +93,7 @@ namespace BubbleBot.Server
             RegisterMessage<BotsInformationsRequestMessage>(HandleBotsInformationsRequestMessage);
             RegisterMessage<DTVersionsMessage>(HandleDTVersionsMessage);
             RegisterMessage<PingMessage>(HandlePingMessage);
+            RegisterMessage<ReconnectSuccessMessage>(HandleReconnectSuccessMessage);
         }
 
 
@@ -98,7 +102,7 @@ namespace BubbleBot.Server
             if (_client.Running)
                 return;
 
-            Task.Delay(2000);
+            Task.Delay(3000);
             _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService); 
             FunctionalitiesManager.Initialize();
         }
@@ -199,15 +203,62 @@ namespace BubbleBot.Server
             }
         }
 
+        private void Client_Reconnected(ClientWrapper client)
+        {
+            Task.Run(() =>
+            {
+                BubbleBotMain.Instance.Server._client = client;
+                FunctionalitiesManager.Initialize();
+                Task.Delay(2000).Wait();
+                BubbleBotMain.Instance.Server.SendMessage(new ReconnectRequestMessage(_lastLrm.Username, _lastLrm.Password));
+            }).ConfigureAwait(false);
+        }
+
         private void Client_Disconnected(ClientWrapper client)
         {
             State = ServerConnectionStates.DISCONNECTED;
+            while (true)
+            {
+                _client.Close();
+                _client.Dispose();
+                Task.Delay(2000);
+                _client = new ClientWrapper();
+
+                State = ServerConnectionStates.DISCONNECTED;
+                Extensions = new Dictionary<ExtensionsEnum, DateTime>();
+
+                _client.Connected += Client_Connected;
+                _client.DataReceived += Client_DataReceived;
+                _client.ErrorOccured += Client_ErrorOccured;
+                _client.Disconnected += Client_Disconnected;
+
+                _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService);
+                bool result = SpinWait.SpinUntil(() => State == ServerConnectionStates.CONNECTED, 10000);
+                if(result)
+                {
+                    ReconnectionSuccess?.Invoke(_client);
+                    break;                  
+                }
+            }
         }
 
         #endregion
 
         #region Server messages
 
+        private static void HandleReconnectSuccessMessage(ReconnectSuccessMessage message)
+        {
+            Console.WriteLine("test");
+            foreach(Account account in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                BubbleBotMain.Instance.Server.SendMessage(new ConnectedAccountMessage(account.AccountConfig.Username));
+                if (account.Game.Character.IsSelected)
+                {
+                    BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccesMessage(account.AccountConfig.Username, (int)account.Game.Character.Id, account.Game.Character.Name,
+                            account.Game.Server.Name, account.Game.Character.Breed.ToString(), account.Game.Character.Level));
+                }
+            }
+        }
         private void HandleLoginAcceptedMessage(LoginAcceptedMessage message)
         {
             Name = message.Name;
@@ -219,7 +270,6 @@ namespace BubbleBot.Server
 
         private void HandleSubscriptionInformationsMessage(SubscriptionInformationsMessage message)
         {
-            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             TouchEndDate = message.TouchEndDate;
             Extensions = message.Extensions;
         }
@@ -232,7 +282,7 @@ namespace BubbleBot.Server
 
                 try
                 {
-                    if (account.Game.Character.IsSelected)
+                    if (account.Game.Character.IsSelected && account.State != Core.Enums.AccountStates.DISCONNECTED && account.State != Core.Enums.AccountStates.BANNED)
                     {
                         bot = new Bot
                         (

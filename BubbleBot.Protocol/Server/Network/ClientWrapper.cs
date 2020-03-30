@@ -36,7 +36,10 @@ namespace BubbleBot.Server.Network
 
         public ClientWrapper() : this(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) { }
 
-
+        public void ForceClose()
+        {
+            _socket.Close();
+        }
         public void Connect(string host, int port)
         {
             if (Running || _socket.Connected)

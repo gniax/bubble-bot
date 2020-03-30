@@ -32,7 +32,6 @@ namespace BubbleBot.Views
 
             BubbleBotMain.Instance.Server.LoginAccepted += Server_LoginAccepted;
             BubbleBotMain.Instance.Server.RegisterMessage<LoginRefusedMessage>(HandleLoginRefusedMessage);
-            //Server_LoginAccepted();
         }
 
 
