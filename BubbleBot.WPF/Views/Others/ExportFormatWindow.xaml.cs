@@ -69,7 +69,7 @@ namespace BubbleBot.Views
                                 line += account.Proxy.Ip + ':';
                                 break;
                             case "port":
-                                line += account.Proxy.Port + ':';
+                                line += account.Proxy.Port.ToString() + ':';
                                 break;
                             case "pxy-user":
                                 line += account.Proxy.Username + ':';
@@ -78,7 +78,7 @@ namespace BubbleBot.Views
                                 line += account.Proxy.Password + ':';
                                 break;
                             case "id":
-                                line += account.Proxy.Ip + ':';
+                                line += account.Nickname + ':';
                                 break;
                             default:
                                 error++;
