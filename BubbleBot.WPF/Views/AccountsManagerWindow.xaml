@@ -77,18 +77,10 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ArrowLeftBoldCircle" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Trier">
-                                <MenuItem.Items>
-                                    <MenuItem Header="par Pseudo"  Click="BtnSortByPseudo" />
-                                </MenuItem.Items>
-                            </MenuItem>
-                            <MenuItem Header="Editer">
-                                <MenuItem.Items>
-                                    <MenuItem Header="Pseudo"  Click="BtnEditPseudo" />
-                                    <MenuItem Header="Compte" Click="BtnEditAccount"/>
-                                </MenuItem.Items>
-                            </MenuItem>
                             <MenuItem Header="Connecter au serveur">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="CastConnected" />
+                                </MenuItem.Icon>
                                 <MenuItem.Items>
                                     <MenuItem Header="-" />
                                     <MenuItem Header="Terra Cogita" />
@@ -97,6 +89,31 @@
                                     <MenuItem Header="Dodge" />
                                     <MenuItem Header="Brutas" />
                                     <MenuItem Header="Grandapan" />
+                                </MenuItem.Items>
+                            </MenuItem>
+                            <MenuItem Header="Trier">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Sort" />
+                                </MenuItem.Icon>
+                                <MenuItem.Items>
+                                    <MenuItem Header="par Pseudo"  Click="BtnSortByPseudo" />
+                                </MenuItem.Items>
+                            </MenuItem>
+                            <MenuItem Header="Editer">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="AccountEdit" />
+                                </MenuItem.Icon>
+                                <MenuItem.Items>
+                                    <MenuItem Header="Pseudo"  Click="BtnEditPseudo" />
+                                    <MenuItem Header="Compte" Click="BtnEditAccount"/>
+                                </MenuItem.Items>
+                            </MenuItem>
+                            <MenuItem Header="Exporter">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Export" />
+                                </MenuItem.Icon>
+                                <MenuItem.Items>
+                                    <MenuItem Header=".txt"  Click="ExportAccountTxt_Click" />
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="{_:Lang 239}" Click="BtnDeleteAccounts_Click">

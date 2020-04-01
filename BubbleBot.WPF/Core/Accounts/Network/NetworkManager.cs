@@ -100,16 +100,17 @@ namespace BubbleBot.Core.Accounts.Network
             await Disconnect("SWITCHING_TO_GAME").ConfigureAwait(false);
         }
 
-        public async Task Disconnect(string reason, bool intentional = false)
+        public async Task Disconnect(string reason, bool unintentional = false)
         {
             try
             {
                 Account.FightLimitReached = false;
+
                 if (!Connected)
                     return;
 
-                // If it is set to true, it simulates an non-intentional disconnection
-                if(!intentional)
+                // If it is set to true, it simulates an unintentional disconnection
+                if (unintentional == false)
                 {
                     Account.IsIntentionalDisconnection = true;
                 }
@@ -261,7 +262,7 @@ namespace BubbleBot.Core.Accounts.Network
                 Console.WriteLine($"Message not found: {messageType}");
                 return;
             }
-            Console.WriteLine("message recu: " + message); //123456
+            //Console.WriteLine("message recu: " + message); //123456
 
             // Register all messages except these ones
             if (!MessagesToIgnore.Contains(messageType))
@@ -287,7 +288,7 @@ namespace BubbleBot.Core.Accounts.Network
             }
             }
             catch (Exception ex)
-            { }
+            { Console.WriteLine("Exception : {0}", ex.Message);  }
         }
 
         private async void WebSocket_Closed(PrimusWebSocket ws)
@@ -300,7 +301,11 @@ namespace BubbleBot.Core.Accounts.Network
                 if (Phase == NetworkPhases.SWITCHING_TO_GAME && _access != null && Account != null)
                 {
                     // Connecting to the game server
-                    await _webSocket.OpenAsync(_access, Account.AccountConfig.Proxy.Url, Account.AccountConfig.Proxy.Username, Account.AccountConfig.Proxy.Password);
+                    if(Account.AccountConfig.Proxy.IsValid)
+                        await _webSocket.OpenAsync(_access, Account.AccountConfig.Proxy.Url, Account.AccountConfig.Proxy.Username, Account.AccountConfig.Proxy.Password);
+                    else
+                        await _webSocket.OpenAsync();
+
                     Account.State = AccountStates.CONNECTING;
                 }
                 else

@@ -10,6 +10,8 @@ using CefSharp;
 using CefSharp.OffScreen;
 using System.Runtime.CompilerServices;
 
+#pragma warning disable MSB3270
+
 namespace BubbleBot.WPF
 {
     public partial class App
@@ -50,10 +52,21 @@ namespace BubbleBot.WPF
             base.OnStartup(e);
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            BubbleBotMain.Instance.Cleanup();
+            GlobalConfiguration.Instance.Cleanup();
+            Cef.Shutdown();
+            base.OnExit(e);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void InitializeCefSharp()
         {
+            //Cef.EnableHighDPISupport();
+
             var settings = new CefSettings();
+            settings.CachePath = "cache";
 
             settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
                                                    Environment.Is64BitProcess ? "x64" : "x86",

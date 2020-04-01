@@ -184,7 +184,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                         inventoryItemPods += (int)item.WeightBoost;
                     }
                 }
-                MaxWeight = (short)(1000 + (5 * _account.Game.Character.Jobs.Jobs.Sum(j => j.Level)) + (1000 * _account.Game.Character.Jobs.Jobs.Count(j => j.Level == 100)) +
+
+                if (_account.Game.Character.Stats.Strength != null)
+                    MaxWeight = (short)(1000 + (5 * _account.Game.Character.Jobs.Jobs.Sum(j => j.Level)) + (1000 * _account.Game.Character.Jobs.Jobs.Count(j => j.Level == 100)) +
                                     (5 * _account.Game.Character.Stats.Strength.Total) + inventoryItemPods); 
             }
             catch

@@ -180,7 +180,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             if (string.IsNullOrEmpty(CurrentScriptName))
                 return;
 
-            if (Enabled || (_account.IsBusy && _account.State != AccountStates.RECAPTCHA))
+            if (Enabled || _account.IsBusy)
                 return;
 
             if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch && _account.Game.Character.Level >= 9)
@@ -189,13 +189,6 @@ namespace BubbleBot.Core.Accounts.Scripts
                 return;
             }
 
-            if (_account.State == AccountStates.RECAPTCHA)
-            {
-                _account.Logger.LogInfo("Script", LanguageManager.Translate("659"));
-                bool waitForCaptchaEnd = SpinWait.SpinUntil(() => _account.State != AccountStates.RECAPTCHA, 300);
-                if (_account.IsBusy || Enabled)
-                    return;
-            }
             // If this account is a group chief, do some checkings
             if (_account.HasGroup && _account.IsGroupChief)
             {

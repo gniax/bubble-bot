@@ -356,7 +356,7 @@
 356|Le proxy ne semble pas être fonctionnel.
 357|Succès
 358|Adresse IP: 
-359|p. ex: 127.0.0.1
+359|ex: 127.0.0.1
 360|Port: 
 361|Tester le proxy
 362|Sauvegarder
@@ -608,7 +608,7 @@
 613|Puisque "reconnect()" est > 30 minutes => Tentative de reconnexion dans 5 minutes...
 614|Reconnexion dans {0}s.
 615|Génération du pseudo du compte : {0}
-616|Attente de {0} secondes pour la reconnexion et le relancement du script...
+616|Tentative de reconnexion et relancement du script si activé...
 617|Erreur de reconnexion
 618|Achat réussi, pensez à reconnecter le compte pour activer l'abonnement ...
 619|Erreur lors de l'achat de l'abonnement : sûrement dû au réseau, réessayez ...
@@ -649,3 +649,12 @@
 657| Retrait invendu au bout de {0} secondes.
 658|Le délais de remise en vente doit être supérieur ou égale à 0.
 659|Démarrage du script lorsque le Captcha est terminé ! (Timeout: 5 minutes)
+660|Format d'exportation
+661|Balises disponibles:
+662|username:password
+663|Erreur: {0} balise(s) introuvable... Vérifiez le séparateur ou l'orthographe...
+664|Erreur lors du traitement des données d'un compte...
+665|Exportation de Compte en Texte
+666|Séparateur disponible: 
+667|username ; password ; ip ; port ; id ; pxy-user ; pxy-pass 
+668|:

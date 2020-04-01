@@ -45,11 +45,11 @@ namespace BubbleBot.Core.Accounts
         private bool _wasScriptRunning;
         private DateTime? _subscriptionEndDate;
         private bool _wasScriptEnabled;
-        private ChromiumWebBrowser browser;
         private string _apiKey = "";
         private string _token = "";
         private bool _fightLimitReached = false;
 
+        public ChromiumWebBrowser browser;
         // Properties
         public static List<uint> AuthorizeByDefautTrade = new List<uint>();
         public static readonly SemaphoreSlim _AddSemaphore = new SemaphoreSlim(1,1);
@@ -98,6 +98,8 @@ namespace BubbleBot.Core.Accounts
         public bool PreventPlanificationReconnection = false;
         // Used to prevent auto-reconnection when it is impossible
         public bool PreventAutoReconnection = false;
+        // Used to force restart script after captcha or a fight...
+        public bool WaitForRestartScript = false;
 
         // Events
         public event Action StateChanged;
@@ -134,7 +136,6 @@ namespace BubbleBot.Core.Accounts
             Game.Map.MapLoaded += Map_MapLoaded;
         }
 
-
         public async Task Connect()
         {
             if (!PlanificationTimer.Enabled)
@@ -146,11 +147,29 @@ namespace BubbleBot.Core.Accounts
             Game.Clear();
             Extensions.Clear();
             Logger.LogInfo("", LanguageManager.Translate("10"));
+
             if (await SetToken())
             {
                 State = AccountStates.CONNECTING;
                 Logger.LogInfo("", LanguageManager.Translate("11"));
                 await Network.ConnectToLoginServer();
+            }
+        }
+        private void CloseBrowser()
+        {
+            if(browser != null)
+            {
+                if (browser.IsDisposed)
+                {
+                    browser = null;
+                    return;
+                }
+                else if(browser.IsBrowserInitialized && browser.IsLoading)
+                    browser.Stop();
+
+                browser.RequestContext.Dispose();
+                browser.Dispose();
+                browser = null;
             }
         }
         private int returnKey(short method, object sender, FrameLoadEndEventArgs e)
@@ -183,6 +202,7 @@ namespace BubbleBot.Core.Accounts
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("Exception : {0}", ex.Message);
                             if (method == 1)
                                 _apiKey = "failed";
                             else if (method == 2)
@@ -256,32 +276,41 @@ namespace BubbleBot.Core.Accounts
 
         async private Task SetProxy(ChromiumWebBrowser cwb, string Address)
         {
-            await Cef.UIThreadTaskFactory.StartNew(delegate
-            {
-                var rc = cwb.GetBrowser().GetHost().RequestContext;
-                var v = new Dictionary<string, object>();
-                v["mode"] = "fixed_servers";
-                v["server"] = Address;
-                string error;
-                bool success = rc.SetPreference("proxy", v, out error);
-            });
+            if (browser != null && browser.IsBrowserInitialized)
+            { 
+                await Cef.UIThreadTaskFactory.StartNew(delegate
+                {
+                    var rc = cwb.GetBrowser().GetHost().RequestContext;
+                    var v = new Dictionary<string, object>();
+                    v["mode"] = "fixed_servers";
+                    v["server"] = Address;
+                    string error;
+                    bool success = rc.SetPreference("proxy", v, out error);
+                });
+            }
         }
         private async Task<bool> SetToken()
-        {       
+        {
             Console.WriteLine("[1/3] - Retrieving API key");
             string username = AccountConfig.Username;
             string password = AccountConfig.Password;
 
+            CloseBrowser();
 
             //On charge le navigateur vide
             browser = new ChromiumWebBrowser("about:blank", null, new RequestContext());
+
             if (AccountConfig.Proxy.IsValid)
                 await SetProxy(browser, (AccountConfig.Proxy.Ip + ':' + AccountConfig.Proxy.Port));
 
             //tant que le browser est pas initialisé on attend (tiemout 30sec)
-            bool browserInit = System.Threading.SpinWait.SpinUntil(() => (browser.IsBrowserInitialized), TimeSpan.FromSeconds(30));
+            bool browserInit = System.Threading.SpinWait.SpinUntil(() => (browser.IsBrowserInitialized), TimeSpan.FromSeconds(20));
 
-            if (!browserInit) return false; //si le browser a pas chargé on annule
+            if (!browserInit)
+            {
+                CloseBrowser();
+                return false; //si le browser a pas chargé on annule
+            }
 
             IFrame frame = browser.GetMainFrame();
             IRequest request = frame.CreateRequest();
@@ -299,24 +328,18 @@ namespace BubbleBot.Core.Accounts
             //Quand elle est finit on traite le résultat dans une autre fonction (FrameLoadEnd)
 
             int httpCode = 0; //on récupère l'httpcode à titre informatif quand on va afficher l'erreur
-            browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e) 
+            browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
             {
                 httpCode = returnKey(1, RuntimeHelpers.GetObjectValue(sender), e);
             };
 
             // tant que apikey a pas changé on attend
-            bool boolGetApiKey = System.Threading.SpinWait.SpinUntil(() => (_apiKey != ""), TimeSpan.FromSeconds(30)); 
+            bool boolGetApiKey = System.Threading.SpinWait.SpinUntil(() => (_apiKey != ""), TimeSpan.FromSeconds(20));
 
             if (boolGetApiKey == false || _apiKey == "failed") //si au bout de 30 secondes l'apikey a pas de changement on annule / ou erreur
             {
                 Logger.LogError("", LanguageManager.Translate("32", httpCode));
-                if (browser != null)
-                {
-                    if (!browser.IsDisposed)
-                    {
-                        browser.Dispose();
-                    }
-                }
+                CloseBrowser();
                 _apiKey = "";
                 return false;
             }
@@ -340,18 +363,12 @@ namespace BubbleBot.Core.Accounts
 
 
                 // tant que apikey a pas changé on attend
-                bool getToken = System.Threading.SpinWait.SpinUntil(() => (_token != ""), TimeSpan.FromSeconds(30));
+                bool getToken = System.Threading.SpinWait.SpinUntil(() => (_token != ""), TimeSpan.FromSeconds(20));
 
                 if (getToken == false || _token == "failed") //si au bout de 30 secondes l'apikey a pas de changement on annule / ou erreur
                 {
                     Logger.LogError("", LanguageManager.Translate("32", httpCode));
-                    if (browser != null)
-                    {
-                        if (!browser.IsDisposed)
-                        {
-                            browser.Dispose();
-                        }
-                    }
+                    CloseBrowser();
                     _token = "";
                     _apiKey = "";
                     return false;
@@ -361,20 +378,14 @@ namespace BubbleBot.Core.Accounts
                 _apiKey = "";
                 Token = _token;
                 _token = "";
-                if (browser != null)
-                {
-                    if (!browser.IsDisposed)
-                    {
-                        browser.Dispose();
-                    }
-                }
+                CloseBrowser();
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Erreur {0}", ex);
             }
-
+            CloseBrowser();
             return false;
         }
 
@@ -421,7 +432,7 @@ namespace BubbleBot.Core.Accounts
 
                     // Resume script if this is a solo account
                     // Sometimes this will fail if we receive more than one captcha
-                    if (!HasGroup && _wasScriptRunning)
+                    if (!HasGroup && (_wasScriptRunning || WaitForRestartScript))
                     {
                         await Task.Delay(2000);
                         Logger.LogDebug(LanguageManager.Translate("71"), LanguageManager.Translate("76"));
@@ -430,7 +441,10 @@ namespace BubbleBot.Core.Accounts
                         // Only set reset _wasScriptRunning if the script was actually started
                         // Because if the bot received another recaptcha, StartScript will just return because IsBusy will be True
                         if (Scripts.Enabled)
+                        {
+                            WaitForRestartScript = false;
                             _wasScriptRunning = false;
+                        }
                     }
                     // Otherwise if this is a group member, trigger RecaptchaResolved
                     else if (HasGroup)
@@ -480,18 +494,14 @@ namespace BubbleBot.Core.Accounts
                 if(State != AccountStates.BANNED && !AccountConfig.IsBan)
                     State = AccountStates.DISCONNECTED;
                 Logger.LogWarning("Network", LanguageManager.Translate("31"));
-            
-                if (browser != null)
-                {
-                    if (!browser.IsDisposed)
-                    {
-                        browser.Dispose();
-                    }
-                }
+
+                CloseBrowser();
 
                 // In case there was a script enabled
                 if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
                 {
+                    WaitForRestartScript = false;
+
                     BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
                         AccountConfig.Username,
                         Game.Character.Level,
@@ -510,88 +520,34 @@ namespace BubbleBot.Core.Accounts
                     Scripts.StopScript();
                     Extensions.Flood.Stop();
                     // In case the disconnection isnt intentional
-                    if(!IsIntentionalDisconnection && !AccountConfig.IsBan && State != AccountStates.BANNED && !PreventAutoReconnection)
+                    if(!IsIntentionalDisconnection && !AccountConfig.IsBan && State != AccountStates.BANNED && !PreventAutoReconnection && GlobalConfiguration.Instance.AutomaticReconnection)
                     {
-                        if (GlobalConfiguration.Instance.AutomaticReconnection)
+                        var task = Task.Run(async() =>
                         {
-                            var task = Task.Run(() =>
+                            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616"));
+                            await Connect().ConfigureAwait(true);
+                            if(Network != null)
                             {
-                                Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                                Connect().ConfigureAwait(false);
-                                if(Network != null)
+                                if (Network.Connected)
                                 {
-                                    SpinWait.SpinUntil(() => (Network != null && Network.Phase == NetworkPhases.GAME), TimeSpan.FromSeconds(20));
-                                    if (Network == null) return;
-
-                                    else if (Network.Phase == NetworkPhases.GAME)
-                                    {
-                                        //Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                        SpinWait.SpinUntil(() => (Game.Map.CurrentPosition != "0,0"), TimeSpan.FromSeconds(20));
-                                        Thread.Sleep(1500);
-                                        int retries = 3;
-                                        if (IsFighting())
-                                        {
-                                            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("625", 180));
-                                            SpinWait.SpinUntil(() => (IsFighting() == false), TimeSpan.FromSeconds(180));
-                                            Thread.Sleep(1500);
-                                            if (HasGroup && IsGroupChief)
-                                            {
-                                                Group.Chief.Scripts.StartScript();
-                                                while(!Scripts.Running && retries >= 0)
-                                                {
-                                                    Group.Chief.Scripts.StartScript();
-                                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                                    retries--;
-                                                }
-                                            }
-                                            else if (!HasGroup)
-                                            {
-                                                Scripts.StartScript();
-                                                while (!Scripts.Running && retries >= 0)
-                                                {
-                                                    Scripts.StartScript();
-                                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                                    retries--;
-                                                }
-                                            }
-                                        }
-                                        if (HasGroup && IsGroupChief)
-                                        {
-                                            Group.Chief.Scripts.StartScript();
-                                            while (!Scripts.Running && retries >= 0)
-                                            {
-                                                Group.Chief.Scripts.StartScript();
-                                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                                retries--;
-                                            }
-                                        }
-                                        else if (!HasGroup)
-                                        {
-                                            Scripts.StartScript();
-                                            while (!Scripts.Running && retries >= 0)
-                                            {
-                                                Scripts.StartScript();
-                                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                                retries--;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
-                                        IsIntentionalDisconnection = false;
-                                        Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
-                                        Network_Disconnected(networkManager);
-                                        return;
-                                    }
+                                    WaitForRestartScript = true;
                                 }
-                            });
-                        }
+                                else
+                                {
+                                    Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("630"));
+                                    IsIntentionalDisconnection = false;
+                                    await Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(true);
+                                    Network_Disconnected(networkManager);
+                                    return;
+                                }                           
+                            }
+                        });
                     }
                 }
                 IsIntentionalDisconnection = false;
             } catch (Exception ex)
             {
+                IsIntentionalDisconnection = false;
                 Console.WriteLine("Exception ex: {0}", ex.Message);
             }
         }
@@ -665,165 +621,85 @@ namespace BubbleBot.Core.Accounts
             if (Network.Connected)
                 return;
 
-            await Connect();
+            await Connect().ConfigureAwait(true);
 
-            Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-            await Task.Delay(20000);
-            if (Network.Phase == NetworkPhases.GAME)
-            {
-                if(Scripts.CurrentScriptName != null)
-                {
+            if(Network.Connected)
+                WaitForRestartScript = true;             
 
-                    int retries = 3;
-                    if (HasGroup && IsGroupChief)
-                    {
-                        Group.Chief.Scripts.StartScript();
-                        while (!Scripts.Running && retries >= 0)
-                        {
-                            Group.Chief.Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-                    }
-                    else if (!HasGroup)
-                    {
-                        SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                        await Task.Delay(1500);
-                        Scripts.StartScript();
-                        while (!Scripts.Running && retries >= 0)
-                        {
-                            Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-
-                    }
-                return;
-                }
-            }
-            else // If the reconnection failed ? server busy ? bann ? => Retry
-            {
-                await Connect();
-                Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                await Task.Delay(20000);
-                if (Network.Connected)
-                {
-                    if (Scripts.CurrentScriptName != null)
-                    {
-                        int retries = 3;
-                        if (HasGroup && IsGroupChief)
-                        {
-                            Group.Chief.Scripts.StartScript();
-                            while (!Scripts.Running && retries >= 0)
-                            {
-                                Group.Chief.Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
-                        }
-                        else if (!HasGroup)
-                        {
-                            SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                            await Task.Delay(1500);
-                            Scripts.StartScript();
-                            while (!Scripts.Running && retries >= 0)
-                            {
-                                Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
-
-                        }
-                    }
-
-                    return;
-                }
-
-                // If it takes a long time to reconnect, we will try a second time
-                if (Seconds > 1800)
-                {
-                    Logger.LogMessage(LanguageManager.Translate("617"), LanguageManager.Translate("613"));
-                    await Task.Delay(300 * 1000);
-                    await Connect();
-                    if (Network.Connected)
-                    {
-                        if (Scripts.CurrentScriptName != null)
-                        {
-                            int retries = 3;
-                            if (HasGroup && IsGroupChief)
-                            {
-                                Group.Chief.Scripts.StartScript();
-                                while (!Scripts.Running && retries >= 0)
-                                {
-                                    Group.Chief.Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                            else if (!HasGroup)
-                            {
-                                SpinWait.SpinUntil(() => (!IsBusy), TimeSpan.FromSeconds(10));
-                                await Task.Delay(1500);
-                                Scripts.StartScript();
-                                while (!Scripts.Running && retries >= 0)
-                                {
-                                    Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                        }
-
-                        return;
-                    }
-                }
-
-                await Network.Disconnect("CLIENT_CLOSING", true).ConfigureAwait(false);
-                return;
-            }
+            return;
         }
         #endregion
 
+        // Note: this function is now used even if the planification is not activated.. read next comments
         private async void Planification_Callback(object state)
         {
-            if (!AccountConfig.PlanificationActivated)
-                return;
-
             int hour = DateTime.Now.Hour;
-
-            // If the bot is connected and the hour is red
-            if (Network.Connected && AccountConfig.Planification[hour] == false && State != AccountStates.FIGHTING)
+            // [Planification Activated]
+            // If the bot is connected and the hour is red 
+            if (Network.Connected && AccountConfig.Planification[hour] == false && State != AccountStates.FIGHTING && AccountConfig.PlanificationActivated)
             {
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("584"));
                 PreventAutoReconnection = false;
                 PreventPlanificationReconnection = false;
                 await Network.Disconnect("CLIENT_CLOSING");
             }
+            // [Planification Activated]
             // If the bot is disconnected and the hour is green
-            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && !PreventPlanificationReconnection)
+            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && !PreventPlanificationReconnection && AccountConfig.PlanificationActivated)
             {
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("585"));
                 try
                 {
                     await Connect();
+                    if(AccountConfig.ForceStartScript)
+                        WaitForRestartScript = true;
                 }
                 catch (Exception ex)
                 {
                     Logger?.LogError("", ex.ToString());
                 }
             }
+            // [Either Planification Actived or Deactivated]
+            // If the bot is connected and the script is not running as we want 
+            else if(Network.Connected && !Scripts.Running && WaitForRestartScript && !IsBusy)
+            {
+                if ((HasGroup && IsGroupChief) || !HasGroup)
+                    Scripts.StartScript();
+
+                await Task.Delay(1500);
+
+                if (Scripts.Enabled && Scripts.Running)
+                    WaitForRestartScript = false;
+            }
         }
 
         private async void Map_MapLoaded()
         {
+            if(WaitForRestartScript)
+            {
+                // If this account is a group chief or solo, restart script
+                if ((HasGroup && IsGroupChief) || !HasGroup)
+                    Scripts.StartScript();
+
+                await Task.Delay(1500);
+
+                if(Scripts.Enabled && Scripts.Running)
+                { 
+                    WaitForRestartScript = false;
+                }
+                return;
+            }
 
             if (Scripts.Running || !AccountConfig.PlanificationActivated || (!_wasScriptEnabled && !AccountConfig.ForceStartScript))
                 return;
+
             await Task.Delay(1500);
-            Logger.LogInfo("Planificateur", LanguageManager.Translate("583"));
-            
-            Scripts.StartScript();
-            
+
+            if(Scripts.CurrentScriptName != null)
+                Logger.LogInfo("Planificateur", LanguageManager.Translate("583"));
+
+            if ((HasGroup && IsGroupChief) || !HasGroup)
+                Scripts.StartScript();
         }
 
         #region IDisposable Support
@@ -832,6 +708,7 @@ namespace BubbleBot.Core.Accounts
 
         protected virtual void Dispose(bool disposing)
         {
+            CloseBrowser();
             if (!_disposedValue)
             {
                 if (disposing)
@@ -845,11 +722,12 @@ namespace BubbleBot.Core.Accounts
                     Statistics.Dispose();
                     Commands.Dispose();
                     PlanificationTimer.Dispose();
-                    if (browser != null)
-                        if (!browser.IsDisposed)
-                            browser.Dispose();
+                    if(browser != null && !browser.IsDisposed)
+                    browser.Dispose();
+
                 }
 
+                browser = null;
                 _state = AccountStates.NONE;
                 _apiKey = "";
                 _token = "";
@@ -868,6 +746,7 @@ namespace BubbleBot.Core.Accounts
                 PlanificationTimer = null;
 
                 _fightLimitReached = false;
+                WaitForRestartScript = false;
                 IsIntentionalDisconnection = false;
                 PreventPlanificationReconnection = false;
                 PreventAutoReconnection = false;

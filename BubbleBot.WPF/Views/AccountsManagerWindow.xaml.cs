@@ -442,7 +442,7 @@ namespace BubbleBot.Views
 
         #endregion
 
-        #region Accounts edit/sort
+        #region Accounts edit/sort/export
         private void BtnSortByPseudo(object sender, RoutedEventArgs e)
         {
             List<AccountConfiguration> selectAcc = new List<AccountConfiguration>();
@@ -480,6 +480,20 @@ namespace BubbleBot.Views
             AccountsEditor accountInterface = new AccountsEditor(selectedAccount);
             accountInterface.ShowDialog();
             
+        }
+        private void ExportAccountTxt_Click(object sender, RoutedEventArgs e)
+        {
+            List<AccountConfiguration> selectAcc = new List<AccountConfiguration>();
+            for (int i = LvAccounts.SelectedItems.Count - 1; i >= 0; i--)
+            {
+                selectAcc.Add(LvAccounts.SelectedItems[i] as AccountConfiguration);
+            }
+
+            if (selectAcc.Count == 0)
+                return;
+
+            var exportInterface = new ExportFormatWindow(selectAcc);
+            exportInterface.ShowDialog();
         }
         #endregion
 
@@ -526,6 +540,5 @@ namespace BubbleBot.Views
             CmbFightsConfigurations.SelectedIndex = 0;
             CmbFightsConfigurationsCopier.SelectedIndex = 0;
         }
-
     }
 }

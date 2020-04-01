@@ -95,122 +95,26 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             if (account.Network.Connected)
                 return ScriptActionResults.FAILED;
 
-            await account.Connect();
+            await account.Connect().ConfigureAwait(true);
 
-            account.Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-            await Task.Delay(20000);
-            if (account.Network.Phase == NetworkPhases.GAME)
+            await Task.Delay(3000);
+
+            if (account.Network.Connected && RestartScript)
             {
-                if (RestartScript == true)
-                {
-                    int retries = 3;
-                    if (account.HasGroup && account.IsGroupChief)
-                    {
-                        account.Group.Chief.Scripts.StartScript();
-                        while (!account.Scripts.Running && retries >= 0)
-                        {
-                            account.Group.Chief.Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-                    }
-                    else if (!account.HasGroup)
-                    {
-                        SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                        await Task.Delay(1500);
-                        account.Scripts.StartScript();
-                        while (!account.Scripts.Running && retries >= 0)
-                        {
-                            account.Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-
-                    }
-                }
-                        
+                account.WaitForRestartScript = true;
                 return ScriptActionResults.DONE;
             }
-            else // If the reconnection failed ? server busy ? bann ? => Retry
+            else if (account.Network.Connected && !RestartScript)
             {
-                await account.Connect();
-                account.Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                await Task.Delay(20000);
-                if (account.Network.Connected)
-                {
-                    if (RestartScript == true)
-                    {
-                        int retries = 3;
-                        if (account.HasGroup && account.IsGroupChief)
-                        {
-                            account.Group.Chief.Scripts.StartScript();
-                            while (!account.Scripts.Running && retries >= 0)
-                            {
-                                account.Group.Chief.Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
-                        }
-                        else if (!account.HasGroup)
-                        {
-                            SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                            await Task.Delay(1500);
-                            account.Scripts.StartScript();
-                            while (!account.Scripts.Running && retries >= 0)
-                            {
-                                account.Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
-
-                        }
-                    }
-
-                    return ScriptActionResults.DONE;
-                }
-
-                // If it takes a long time to reconnect, we will try a second time
-                if (Seconds > 1800)
-                {
-                    account.Logger.LogMessage(LanguageManager.Translate("617"), LanguageManager.Translate("613"));
-                    await Task.Delay(300 * 1000);
-                    await account.Connect();
-                    if (account.Network.Connected)
-                    {
-                        if (RestartScript == true)
-                        {
-                            int retries = 3;
-                            if (account.HasGroup && account.IsGroupChief)
-                            {
-                                account.Group.Chief.Scripts.StartScript();
-                                while (!account.Scripts.Running && retries >= 0)
-                                {
-                                    account.Group.Chief.Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                            else if (!account.HasGroup)
-                            {
-                                SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                                await Task.Delay(1500);
-                                account.Scripts.StartScript();
-                                while (!account.Scripts.Running && retries >= 0)
-                                {
-                                    account.Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                        }
-
-                        return ScriptActionResults.DONE;
-                    }
-                }
-
-                await account.Network.Disconnect("CLIENT_CLOSING", true);
+                return ScriptActionResults.DONE;
+            }
+            else if(!account.Network.Connected)
+            {
                 return ScriptActionResults.FAILED;
             }
+
+            return ScriptActionResults.FAILED;
+            
         }
 
     }

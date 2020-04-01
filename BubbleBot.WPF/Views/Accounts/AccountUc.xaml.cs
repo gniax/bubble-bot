@@ -52,7 +52,7 @@ namespace BubbleBot.Views.Accounts
                 if (Account.Network.Connected)
                 {
                     await Account.Network.Disconnect("CLIENT_CLOSING");
-                    Account.PlanificationTimer.Stop();
+                    //Account.PlanificationTimer.Stop();
                 }
                 // Otherwise connect it
                 else if (Account.State == AccountStates.DISCONNECTED)

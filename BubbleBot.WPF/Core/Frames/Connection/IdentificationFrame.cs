@@ -91,10 +91,17 @@ namespace BubbleBot.Core.Frames.Connection
             return Task.Run(async () => await account.Network.SendCallAsync(new LoginMessage(account.FramesData.Salt, account.AccountConfig.Username, account.Token, account.FramesData.Key)));
         }
         public static Task HandleConnectionFailedMessage(Account account, ConnectionFailedMessage message)
+        => Task.Run(() =>
         {
             Console.WriteLine("HandleConnectionFailedMessage");
-            return Task.Run(() => account.Logger.LogError("IdentificationFrame", LanguageManager.Translate("82", message.Reason)));
-        }
+            account.Logger.LogError("IdentificationFrame", LanguageManager.Translate("82", message.Reason));
+            if (message.Reason != "TIME_OUT" && message.Reason != "KICKED" && message.Reason != "OPT_TIMEOUT")
+            {
+                account.PreventAutoReconnection = true;
+                account.PreventPlanificationReconnection = true;
+            }
+
+        });
 
         public static Task HandleIdentificationSuccessMessage(Account account, IdentificationSuccessMessage message)
             => Task.Run(() =>
