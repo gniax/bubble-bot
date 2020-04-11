@@ -19,6 +19,9 @@ namespace BubbleBot.Utility.DofusTouch
             Breeds = DataManager.GetList<Breeds>(Enumerable.Range(1, 15)).OrderBy(b => b.Id).ToList();
         }
 
+        public static IEnumerable<string> GetBreedHeads(int breedId, int sex)
+            => Enumerable.Range(1, 8).Select(o => $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/cosmetics/{breedId}{sex}_{o}.png");
+
         public static Color[] GetBreedBaseColors(Breeds breed, int sex)
             => (sex == 0
                 ? breed.MaleColors.Select(ParseIndexedColor)

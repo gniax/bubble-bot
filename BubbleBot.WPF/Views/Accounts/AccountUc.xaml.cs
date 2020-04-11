@@ -99,17 +99,14 @@ namespace BubbleBot.Views.Accounts
             }
         }
 
+        static bool removing = false;
         private async void Remove_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (!removing)
             {
-                if(BubbleBotMain.Instance.SelectedAccount != null)
-                await BubbleBotMain.Instance.RemoveSelectedAccount();
-
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Erreur double click fermeture");
+                if (BubbleBotMain.Instance.SelectedAccount != null && tcMain.SelectedIndex != null || tcMain.SelectedIndex <= -1)
+                    await BubbleBotMain.Instance.RemoveSelectedAccount();
+                removing = false;
             }
         }
 

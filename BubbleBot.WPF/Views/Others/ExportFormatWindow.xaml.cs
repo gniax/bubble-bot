@@ -66,19 +66,24 @@ namespace BubbleBot.Views
                                 line += account.Password + ':';
                                 break;
                             case "ip":
-                                line += account.Proxy.Ip + ':';
+                                if(account.Proxy.Ip != "")
+                                    line += account.Proxy.Ip + ':';
                                 break;
                             case "port":
-                                line += account.Proxy.Port.ToString() + ':';
+                                if (account.Proxy.Port != 0)
+                                    line += account.Proxy.Port.ToString() + ':';
                                 break;
                             case "pxy-user":
-                                line += account.Proxy.Username + ':';
+                                if (account.Proxy.Username != "")
+                                    line += account.Proxy.Username + ':';
                                 break;
                             case "pxy-pass":
-                                line += account.Proxy.Password + ':';
+                                if (account.Proxy.Password != "")
+                                    line += account.Proxy.Password + ':';
                                 break;
                             case "id":
-                                line += account.Nickname + ':';
+                                if (account.Nickname != null)
+                                    line += account.Nickname + ':';
                                 break;
                             default:
                                 error++;

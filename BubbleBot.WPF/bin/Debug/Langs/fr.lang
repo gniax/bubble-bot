@@ -587,7 +587,7 @@
 587|Planification	
 588|Connecter	
 589|Déconnecter
-590|Cliquez sur les heures pour les configurer. Si vous déconnectez le compte manuellement (depuis le bot), le planificateur est désactivé. Si le compte se déconnecte inopinément (heure verte), le planificateur va le reconnecter en relançant le script (si le script était lancé avant la déconnexion).
+590|Cliquez sur les heures pour les configurer. Si vous déconnectez le compte manuellement (depuis le bot), le planificateur est désactivé. Si le compte se déconnecte inopinément (heure verte), le planificateur va le reconnecter en relançant le script (si le script était lancé avant la déconnexion). Si vous sélectionnez plusieurs comptes, pensez à appuyer sur le bouton de validation.
 591|Vitesse de combat
 592|Suicidaire
 593|Rapide
@@ -640,7 +640,7 @@
 648|Achat de l'item (gid: {0}, lot: {1}, prix: {2}).
 649|Aucun item n'a été trouvé avec les conditions choisies.
 650|Génération du pseudo échouée : réessayez
-651|Déconnecter le bot lorsqu'un autre est banni >>> Reconnexion après :
+651|Déconnecter le bot lorsqu'un autre est banni >> Reconnexion après :
 652|secondes (laissez 0 pour ne pas activer la reconnexion)
 653|Le bot {0} du serveur {1} à été banni. Déconnexion du compte...
 654|Security
@@ -658,3 +658,6 @@
 666|Séparateur disponible: 
 667|username ; password ; ip ; port ; id ; pxy-user ; pxy-pass 
 668|:
+669|Appliquer aux comptes sélectionnés
+670|Cloudflare a banni temporairement votre IP (TOO_MANY_REQUESTS) ! 
+671|Reconnectez-vous dans {0} secondes...

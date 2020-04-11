@@ -450,7 +450,19 @@
                                 <CheckBox Name="CbRandomHead" 
                                           Content="{_:Lang 507}"
                                           Margin="4 0 0 0"
-                                          DockPanel.Dock="Right" IsEnabled="False" IsChecked="True"/>
+                                          DockPanel.Dock="Right"/>
+                                <ComboBox Name="CmbHead" VerticalContentAlignment="Center">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Image Width="40"
+                                                   HorizontalAlignment="Center"
+                                                   Source="{Binding Path=., 
+                                                                Mode=OneWay,
+                                                                IsAsync=True, 
+                                                                Converter={StaticResource NullImageConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                             </DockPanel>
 
                             <!-- Colors -->
@@ -470,6 +482,13 @@
                                 <Rectangle Name="RectColor3" Margin="0 4 4 4"
                                            Width="32" Height="32"
                                            MouseLeftButtonUp="ColorRects_OnMouseLeftButtonUp" />
+                                <Button Name="BtnRandomColors" 
+                                        BorderThickness="0"
+                                        Background="Transparent"
+                                        Click="BtnRandomColors_OnClick"
+                                        ToolTip="Générer des couleurs aléatoirement">
+                                    <iconPacks:PackIconMaterial Width="12" Height="12" Kind="DiceMultipleOutline" />
+                                </Button>
                                 <Button Name="BtnRefreshColors" 
                                         BorderThickness="0"
                                         Background="Transparent"

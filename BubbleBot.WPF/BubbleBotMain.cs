@@ -124,7 +124,7 @@ namespace BubbleBot
 
         public async Task RemoveSelectedAccount()
         {
-            if (SelectedAccount == null)
+            if (SelectedAccount == null || _selectedAccount == null)
                 return;
 
 
@@ -172,6 +172,7 @@ namespace BubbleBot
 
             // Send the RemoveAccountRequestMessage and dispose the removed account
             Server.SendMessage(new RemoveAccountRequestMessage(account.AccountConfig.Username));
+
             account.Dispose();
         }
 

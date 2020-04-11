@@ -248,7 +248,6 @@ namespace BubbleBot.Server
 
         private static void HandleReconnectSuccessMessage(ReconnectSuccessMessage message)
         {
-            Console.WriteLine("test");
             foreach(Account account in BubbleBotMain.Instance.ConnectedAccounts)
             {
                 BubbleBotMain.Instance.Server.SendMessage(new ConnectedAccountMessage(account.AccountConfig.Username));

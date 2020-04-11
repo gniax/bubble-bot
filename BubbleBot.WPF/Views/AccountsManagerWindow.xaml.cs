@@ -275,6 +275,19 @@ namespace BubbleBot.Views
                 rect.Fill = new SolidColorBrush(color);
             }
         }
+        private void BtnRandomColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            var breed = CmbRace.SelectedItem as Breeds;
+
+            if (breed == null)
+                return;
+
+            RectColor1.Fill = new SolidColorBrush(GetRandomColor());
+            RectColor2.Fill = new SolidColorBrush(GetRandomColor());
+            RectColor3.Fill = new SolidColorBrush(GetRandomColor());
+            RectColor4.Fill = new SolidColorBrush(GetRandomColor());
+            RectColor5.Fill = new SolidColorBrush(GetRandomColor());
+        }
 
         private void BtnRefreshColors_OnClick(object sender, RoutedEventArgs e)
         {
@@ -285,6 +298,7 @@ namespace BubbleBot.Views
 
             SetBreedBaseColors(breed);
         }
+
 
         private void BtnSave_OnClick(object sender, RoutedEventArgs e)
         {
@@ -321,7 +335,7 @@ namespace BubbleBot.Views
                 Server = CmbServerCC.Text,
                 Breed = CbRandomBreed.IsChecked.Value ? -1 : (CmbRace.SelectedItem as Breeds).Id,
                 Sex = CbRandomSex.IsChecked.Value ? -1 : CmbSex.SelectedIndex,
-                Head = CbRandomHead.IsChecked.Value ? -1 : -1,
+                Head = CbRandomHead.IsChecked.Value ? -1 : CmbHead.SelectedIndex,
                 Colors = new List<int>(5)
                 {
                     BreedsUtility.GetIndexedColor(1, (RectColor1.Fill as SolidColorBrush).Color),
@@ -343,6 +357,10 @@ namespace BubbleBot.Views
             if (breed == null)
                 return;
 
+            // Heads
+            CmbHead.ItemsSource = BreedsUtility.GetBreedHeads(breed.Id, CmbSex.SelectedIndex);
+            CmbHead.SelectedIndex = 0;
+
             // Colors
             SetBreedBaseColors(breed);
         }
@@ -355,6 +373,12 @@ namespace BubbleBot.Views
             RectColor3.Fill = new SolidColorBrush(baseColors[2]);
             RectColor4.Fill = new SolidColorBrush(baseColors[3]);
             RectColor5.Fill = new SolidColorBrush(baseColors[4]);
+        }
+
+        private static readonly Random random = new Random();
+        private static Color GetRandomColor()
+        {
+            return Color.FromRgb((byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256));
         }
 
         private async void CmbCompleteTutorial_OnChecked(object sender, RoutedEventArgs e)

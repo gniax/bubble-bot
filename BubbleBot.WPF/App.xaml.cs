@@ -26,6 +26,7 @@ namespace BubbleBot.WPF
             AppDomain.CurrentDomain.AssemblyResolve += Resolver;
 
             InitializeCefSharp();
+
             // Singleton application
             _mutex = new Mutex(true, "Bubble Bot", out bool createdNew);
             if (!createdNew)
@@ -63,15 +64,22 @@ namespace BubbleBot.WPF
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void InitializeCefSharp()
         {
-            //Cef.EnableHighDPISupport();
-
             var settings = new CefSettings();
-            settings.CachePath = "cache";
+            settings.SetOffScreenRenderingBestPerformanceArgs();
+
+            settings.IgnoreCertificateErrors = true;
+            settings.PersistSessionCookies = false;
+            settings.PersistUserPreferences = false;
+            settings.WindowlessRenderingEnabled = true;
 
             settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
                                                    Environment.Is64BitProcess ? "x64" : "x86",
                                                    "CefSharp.BrowserSubprocess.exe");
 
+            settings.CefCommandLineArgs.Add("disable-gpu-vsync", "1");
+            settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache", "1");
+
+            CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
             Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
         }
         private static Assembly Resolver(object sender, ResolveEventArgs args)

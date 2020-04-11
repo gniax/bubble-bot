@@ -12,6 +12,9 @@ namespace BubbleBot.Core.Frames.Game
         public static Task HandleCurrentMapMessage(Account account, CurrentMapMessage message)
             => Task.Run(async () =>
             {
+                if (account.Network.connectTimeout != null)
+                    account.Network.connectTimeout.Dispose();
+
                 if (account.State != AccountStates.RECAPTCHA)
                 {
                     account.State = AccountStates.NONE;

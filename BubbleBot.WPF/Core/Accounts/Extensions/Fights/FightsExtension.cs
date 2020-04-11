@@ -283,7 +283,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         public async Task Update(GameFightPlacementPossiblePositionsMessage message)
         {
             // TODO: Find a better way
-            // Wait a little to make sure all the ennemis are in the fight
+            // Wait a little to make sure all the ennemies are in the fight
             await Task.Delay(1000);
 
             // Check if we should lock the fight
