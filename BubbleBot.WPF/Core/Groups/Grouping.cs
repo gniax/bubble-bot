@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Groups
 {

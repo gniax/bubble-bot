@@ -1,9 +1,18 @@
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Configurations;
+using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Server.Messages;
+using BubbleBot.Utility.DofusTouch;
+using BubbleBot.Views.Accounts;
+using ColorPickerWPF;
+using ColorPickerWPF.Code;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Server.Messages;
-using BubbleBot.Configurations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,15 +21,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using ColorPickerWPF;
-using ColorPickerWPF.Code;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.Configurations;
-using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
-using BubbleBot.Protocol.Data;
-using BubbleBot.Utility.DofusTouch;
-using Microsoft.Win32;
-using BubbleBot.Views.Accounts;
 
 namespace BubbleBot.Views
 {
@@ -169,22 +169,14 @@ namespace BubbleBot.Views
                     accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "", "", false));
 
                 if (nbparameters == 3)
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2],"", false));
+                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
 
                 if (nbparameters == 5)
                 {
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2],"", false));
-                    try
-                    {
-                        ushort paramport = 0;
-                        accounts.ElementAt(i).Proxy.Ip = infos[3];
-                        ushort.TryParse(infos[4], out paramport);
-                        accounts.ElementAt(i).Proxy.Port = paramport;
-                    }
-                    catch (Exception ml)
-                    {
-
-                    }
+                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
+                    accounts.ElementAt(i).Proxy.Ip = infos[3];
+                    ushort.TryParse(infos[4], out ushort paramport);
+                    accounts.ElementAt(i).Proxy.Port = paramport;
                 }
             }
 
@@ -503,7 +495,7 @@ namespace BubbleBot.Views
             AccountConfiguration selectedAccount = LvAccounts.SelectedItem as AccountConfiguration;
             AccountsEditor accountInterface = new AccountsEditor(selectedAccount);
             accountInterface.ShowDialog();
-            
+
         }
         private void ExportAccountTxt_Click(object sender, RoutedEventArgs e)
         {

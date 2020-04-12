@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BubbleBot.Api.Extensions;
+﻿using BubbleBot.Api.Extensions;
 using BubbleBot.Website.Models;
 
 namespace BubbleBot.Website.Services
@@ -18,7 +17,7 @@ namespace BubbleBot.Website.Services
         {
             _panelDb = panelDb;
         }
-        
+
 
         public User LoginUser(string username, string password, out int error)
         {

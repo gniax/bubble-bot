@@ -1,4 +1,3 @@
-using BubbleBot.Core.Accounts.Scripts.Api;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;

@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterLevelUpInformationMessage : CharacterLevelUpMessage
-	{
+    public class CharacterLevelUpInformationMessage : CharacterLevelUpMessage
+    {
 
-		// Properties
-		public string Name { get; set; }
-		public uint Id { get; set; }
+        // Properties
+        public string Name { get; set; }
+        public uint Id { get; set; }
 
 
-		// Constructors
-		public CharacterLevelUpInformationMessage() { }
+        // Constructors
+        public CharacterLevelUpInformationMessage() { }
 
-		public CharacterLevelUpInformationMessage(uint newLevel = 0, string name = "", uint id = 0)
-		{
-			NewLevel = newLevel;
-			Name = name;
-			Id = id;
-		}
+        public CharacterLevelUpInformationMessage(uint newLevel = 0, string name = "", uint id = 0)
+        {
+            NewLevel = newLevel;
+            Name = name;
+            Id = id;
+        }
 
-	}
+    }
 }

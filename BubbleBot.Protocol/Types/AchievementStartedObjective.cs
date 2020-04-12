@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class AchievementStartedObjective : AchievementObjective
-	{
+    public class AchievementStartedObjective : AchievementObjective
+    {
 
-		// Properties
-		public uint Value { get; set; }
+        // Properties
+        public uint Value { get; set; }
 
 
-		// Constructors
-		public AchievementStartedObjective() { }
+        // Constructors
+        public AchievementStartedObjective() { }
 
-		public AchievementStartedObjective(uint id = 0, uint maxValue = 0, uint value = 0)
-		{
-			Id = id;
-			MaxValue = maxValue;
-			Value = value;
-		}
+        public AchievementStartedObjective(uint id = 0, uint maxValue = 0, uint value = 0)
+        {
+            Id = id;
+            MaxValue = maxValue;
+            Value = value;
+        }
 
-	}
+    }
 }

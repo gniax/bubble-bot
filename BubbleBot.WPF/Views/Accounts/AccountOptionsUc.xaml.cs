@@ -1,15 +1,12 @@
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Configurations;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Server.Messages;
-using System;
+using MahApps.Metro.Controls.Dialogs;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -67,7 +64,7 @@ namespace BubbleBot.Views.Accounts
 
         private async void BtnAddAuthorizedTradeFrom_Click(object sender, RoutedEventArgs e)
         {
-            int characterId = (int) nudCharacterId.Value;
+            int characterId = (int)nudCharacterId.Value;
 
             if (Account.Configuration.AuthorizedTradesFrom.Contains(characterId))
             {

@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildModificationEmblemValidMessage : Message
-	{
+    public class GuildModificationEmblemValidMessage : Message
+    {
 
-		// Properties
-		public GuildEmblem GuildEmblem { get; set; }
+        // Properties
+        public GuildEmblem GuildEmblem { get; set; }
 
 
-		// Constructors
-		public GuildModificationEmblemValidMessage() { }
+        // Constructors
+        public GuildModificationEmblemValidMessage() { }
 
-		public GuildModificationEmblemValidMessage(GuildEmblem guildEmblem = null)
-		{
-			GuildEmblem = guildEmblem;
-		}
+        public GuildModificationEmblemValidMessage(GuildEmblem guildEmblem = null)
+        {
+            GuildEmblem = guildEmblem;
+        }
 
-	}
+    }
 }

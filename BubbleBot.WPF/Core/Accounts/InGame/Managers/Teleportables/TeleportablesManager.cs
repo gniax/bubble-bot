@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Interactives;
 using BubbleBot.Core.Accounts.InGame.Map;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility.Extensions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
 {

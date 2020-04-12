@@ -38,7 +38,7 @@ namespace BubbleBot.Core.Commands
                         // Ensure it exists
                         if (!_commandsHandlers.ContainsKey(cmdAttribute.Command))
                             _commandsHandlers.Add(cmdAttribute.Command, new List<MethodInfo>());
-                        
+
                         _commandsHandlers[cmdAttribute.Command].Add(method);
                     }
                 }

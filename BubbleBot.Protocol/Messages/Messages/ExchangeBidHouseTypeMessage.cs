@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeBidHouseTypeMessage : Message
-	{
+    public class ExchangeBidHouseTypeMessage : Message
+    {
 
-		// Properties
-		public uint Type { get; set; }
+        // Properties
+        public uint Type { get; set; }
 
 
-		// Constructors
-		public ExchangeBidHouseTypeMessage() { }
+        // Constructors
+        public ExchangeBidHouseTypeMessage() { }
 
-		public ExchangeBidHouseTypeMessage(uint type = 0)
-		{
-			Type = type;
-		}
+        public ExchangeBidHouseTypeMessage(uint type = 0)
+        {
+            Type = type;
+        }
 
-	}
+    }
 }

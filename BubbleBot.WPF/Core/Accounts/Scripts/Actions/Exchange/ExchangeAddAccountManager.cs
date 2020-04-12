@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using BubbleBot.Configurations.Language;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
@@ -10,8 +7,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
     {
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            Account.addAutorizedPlayer(account.Game.Character.Id);
-            account.Logger.LogInfo("Exchange", "Ajout de l'id à la liste des autorisations.");
+            await Task.Delay(1);
+            account.Game.Exchange.AddPlayerAuthorization(account.Game.Character.Id);
+            account.Logger.LogInfo("Exchange", LanguageManager.Translate("674"));
             return ScriptActionResults.DONE;
         }
 

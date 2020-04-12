@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismInfoJoinLeaveRequestMessage : Message
-	{
+    public class PrismInfoJoinLeaveRequestMessage : Message
+    {
 
-		// Properties
-		public bool Join { get; set; }
+        // Properties
+        public bool Join { get; set; }
 
 
-		// Constructors
-		public PrismInfoJoinLeaveRequestMessage() { }
+        // Constructors
+        public PrismInfoJoinLeaveRequestMessage() { }
 
-		public PrismInfoJoinLeaveRequestMessage(bool join = false)
-		{
-			Join = join;
-		}
+        public PrismInfoJoinLeaveRequestMessage(bool join = false)
+        {
+            Join = join;
+        }
 
-	}
+    }
 }

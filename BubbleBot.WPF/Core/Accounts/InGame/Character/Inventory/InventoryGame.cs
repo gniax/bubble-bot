@@ -1,12 +1,12 @@
-using GalaSoft.MvvmLight;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 {
@@ -177,9 +177,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             try
             {
                 int inventoryItemPods = 0;
-                foreach(var item in _account.Game.Character.Inventory.Equipements)
+                foreach (var item in _account.Game.Character.Inventory.Equipements)
                 {
-                    if(item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                    if (item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                     {
                         inventoryItemPods += (int)item.WeightBoost;
                     }
@@ -187,7 +187,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
                 if (_account.Game.Character.Stats.Strength != null)
                     MaxWeight = (short)(1000 + (5 * _account.Game.Character.Jobs.Jobs.Sum(j => j.Level)) + (1000 * _account.Game.Character.Jobs.Jobs.Count(j => j.Level == 100)) +
-                                    (5 * _account.Game.Character.Stats.Strength.Total) + inventoryItemPods); 
+                                    (5 * _account.Game.Character.Stats.Strength.Total) + inventoryItemPods);
             }
             catch
             {

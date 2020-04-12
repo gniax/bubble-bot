@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayPlayerFightFriendlyRequestedMessage : Message
-	{
+    public class GameRolePlayPlayerFightFriendlyRequestedMessage : Message
+    {
 
-		// Properties
-		public uint FightId { get; set; }
-		public uint SourceId { get; set; }
-		public uint TargetId { get; set; }
+        // Properties
+        public uint FightId { get; set; }
+        public uint SourceId { get; set; }
+        public uint TargetId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayPlayerFightFriendlyRequestedMessage() { }
+        // Constructors
+        public GameRolePlayPlayerFightFriendlyRequestedMessage() { }
 
-		public GameRolePlayPlayerFightFriendlyRequestedMessage(uint fightId = 0, uint sourceId = 0, uint targetId = 0)
-		{
-			FightId = fightId;
-			SourceId = sourceId;
-			TargetId = targetId;
-		}
+        public GameRolePlayPlayerFightFriendlyRequestedMessage(uint fightId = 0, uint sourceId = 0, uint targetId = 0)
+        {
+            FightId = fightId;
+            SourceId = sourceId;
+            TargetId = targetId;
+        }
 
-	}
+    }
 }

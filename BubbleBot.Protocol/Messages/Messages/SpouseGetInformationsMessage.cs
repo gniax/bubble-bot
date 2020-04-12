@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SpouseGetInformationsMessage : Message
-	{
+    public class SpouseGetInformationsMessage : Message
+    {
 
-		// Constructors
-		public SpouseGetInformationsMessage() { }
+        // Constructors
+        public SpouseGetInformationsMessage() { }
 
 
-	}
+    }
 }

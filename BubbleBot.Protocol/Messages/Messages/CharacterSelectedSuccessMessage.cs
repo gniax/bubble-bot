@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterSelectedSuccessMessage : Message
-	{
+    public class CharacterSelectedSuccessMessage : Message
+    {
 
-		// Properties
-		public CharacterBaseInformations Infos { get; set; }
+        // Properties
+        public CharacterBaseInformations Infos { get; set; }
 
 
-		// Constructors
-		public CharacterSelectedSuccessMessage() { }
+        // Constructors
+        public CharacterSelectedSuccessMessage() { }
 
-		public CharacterSelectedSuccessMessage(CharacterBaseInformations infos = null)
-		{
-			Infos = infos;
-		}
+        public CharacterSelectedSuccessMessage(CharacterBaseInformations infos = null)
+        {
+            Infos = infos;
+        }
 
-	}
+    }
 }

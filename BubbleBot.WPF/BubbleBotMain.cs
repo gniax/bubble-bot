@@ -1,21 +1,19 @@
-using BubbleBot.Core.Accounts;
-using BubbleBot.Server;
 using BubbleBot.Configurations;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
-using System.Windows;
-using MahApps.Metro.Controls.Dialogs;
-using GalaSoft.MvvmLight;
-using BubbleBot.Core;
-using BubbleBot.Core.Groups;
-using BubbleBot.Server.Messages;
-using System.Linq;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Core;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Groups;
+using BubbleBot.Server;
+using BubbleBot.Server.Messages;
 using BubbleBot.WPF.Views;
-using BubbleBot.Server.Network;
-using System.Net;
+using GalaSoft.MvvmLight;
+using MahApps.Metro.Controls.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace BubbleBot
 {
@@ -72,7 +70,7 @@ namespace BubbleBot
         });
         // Constructor
         public BubbleBotMain()
-        {         
+        {
             Server = new ServerManager();
             Entities = new ObservableCollection<IEntity>();
 
@@ -167,13 +165,14 @@ namespace BubbleBot
                 }
             }
 
+            account.Cleanup();
+            account.Dispose();
             // Set another account as a SelectedAccount
             RefreshSelectedAccount(index);
 
             // Send the RemoveAccountRequestMessage and dispose the removed account
             Server.SendMessage(new RemoveAccountRequestMessage(account.AccountConfig.Username));
 
-            account.Dispose();
         }
 
         private async Task RemoveGroup(Group group, int index)

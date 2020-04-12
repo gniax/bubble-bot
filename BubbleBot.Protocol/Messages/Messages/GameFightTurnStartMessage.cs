@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightTurnStartMessage : Message
-	{
+    public class GameFightTurnStartMessage : Message
+    {
 
-		// Properties
-		public int Id { get; set; }
-		public uint WaitTime { get; set; }
+        // Properties
+        public int Id { get; set; }
+        public uint WaitTime { get; set; }
 
 
-		// Constructors
-		public GameFightTurnStartMessage() { }
+        // Constructors
+        public GameFightTurnStartMessage() { }
 
-		public GameFightTurnStartMessage(int id = 0, uint waitTime = 0)
-		{
-			Id = id;
-			WaitTime = waitTime;
-		}
+        public GameFightTurnStartMessage(int id = 0, uint waitTime = 0)
+        {
+            Id = id;
+            WaitTime = waitTime;
+        }
 
-	}
+    }
 }

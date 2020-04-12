@@ -1,29 +1,28 @@
 using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Core.Accounts.InGame.Map.Interactives;
+using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Data.Maps;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
-using BubbleBot.Core.Enums;
-using System.Threading;
 using BubbleBot.Server.Messages;
-using BubbleBot.Core.Extensions;
+using GalaSoft.MvvmLight;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
     public class MapGame : ViewModelBase, IClearable, IDisposable
     {
         // Fields
-        private static readonly List<int> DoorsSkillIds = new List<int>(new[] {184, 183, 187, 198, 114, 84});
+        private static readonly List<int> DoorsSkillIds = new List<int>(new[] { 184, 183, 187, 198, 114, 84 });
 
-        private static readonly List<int> DoorsTypeIds = new List<int>(new[] {-1, 128, 168, 16});
+        private static readonly List<int> DoorsTypeIds = new List<int>(new[] { -1, 128, 168, 16 });
         private Account _account;
         private ConcurrentDictionary<int, PlayerEntry> _players;
         private ConcurrentDictionary<int, NpcEntry> _npcs;
@@ -232,7 +231,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public async Task Update(MapComplementaryInformationsDataMessage message)
         {
-            Console.WriteLine("MapComplementary acc: " + _account.Game.Character.Name);
+            //Console.WriteLine("MapComplementary acc: " + _account.Game.Character.Name);
             if (!_running)
             {
                 _running = true;
@@ -271,31 +270,32 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 BlacklistedMonsters.Clear();
                 Zaap = null;
 
-                await Task.Run(() => {
-                    if(_oneTime && _account.Game.Map.CurrentPosition != "0,0")
+                await Task.Run(() =>
+                {
+                    if (_oneTime && _account.Game.Map.CurrentPosition != "0,0")
                     {
-                            bool result = SpinWait.SpinUntil(() => (_account.Game.Map.Data.Id != 0), TimeSpan.FromSeconds(10));
-                            if(result && _account != null)
-                            {                      
-                                Task.Delay(2000);
-                                if( _account != null)
-                                {
-                                    BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
-                                        _account.AccountConfig.Username,
-                                        _account.Game.Character.Level,
-                                        (byte)_account.Game.Character.Stats.EnergyPercent,
-                                        (byte)_account.Game.Character.Inventory.WeightPercent,
-                                        _account.Game.Character.Inventory.Kamas,
-                                        _account.Game.Map.Id,
-                                        _account.Game.Map.CurrentPosition,
-                                        _account.State.ToString(),
-                                        _account.GroupId,
-                                        _account.Group_Chief,
-                                        _account.Scripts.CurrentScriptName != null ? _account.Scripts.CurrentScriptName : "-"
-                                    ));
-                                    _oneTime = false;
-                                }
-                            } 
+                        bool result = SpinWait.SpinUntil(() => (_account.Game.Map.Data.Id != 0), TimeSpan.FromSeconds(10));
+                        if (result && _account != null)
+                        {
+                            Task.Delay(2000);
+                            if (_account != null)
+                            {
+                                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                                    _account.AccountConfig.Username,
+                                    _account.Game.Character.Level,
+                                    (byte)_account.Game.Character.Stats.EnergyPercent,
+                                    (byte)_account.Game.Character.Inventory.WeightPercent,
+                                    _account.Game.Character.Inventory.Kamas,
+                                    _account.Game.Map.Id,
+                                    _account.Game.Map.CurrentPosition,
+                                    _account.State.ToString(),
+                                    _account.GroupId,
+                                    _account.Group_Chief,
+                                    _account.Scripts.CurrentScriptName != null ? _account.Scripts.CurrentScriptName : "-"
+                                ));
+                                _oneTime = false;
+                            }
+                        }
                     }
                 }).ConfigureAwait(false);
 
@@ -451,7 +451,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
                 if (player == PlayedCharacter)
                 {
-                    PlayedCharacterMoving?.Invoke(message.KeyMovements.Select(c => (short) c).ToList());
+                    PlayedCharacterMoving?.Invoke(message.KeyMovements.Select(c => (short)c).ToList());
                 }
                 else
                 {
@@ -467,8 +467,8 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public void Update(InteractiveElementUpdatedMessage message)
         {
-            _interactives.TryRemove((int) message.InteractiveElement.ElementId, out InteractiveElementEntry value);
-            _interactives.TryAdd((int) message.InteractiveElement.ElementId, new InteractiveElementEntry(message.InteractiveElement));
+            _interactives.TryRemove((int)message.InteractiveElement.ElementId, out InteractiveElementEntry value);
+            _interactives.TryAdd((int)message.InteractiveElement.ElementId, new InteractiveElementEntry(message.InteractiveElement));
 
             InteractivesUpdated?.Invoke();
         }
@@ -479,7 +479,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
             for (int i = 0; i < message.InteractiveElements.Count; i++)
             {
-                _interactives.TryAdd((int) message.InteractiveElements[i].ElementId, new InteractiveElementEntry(message.InteractiveElements[i]));
+                _interactives.TryAdd((int)message.InteractiveElements[i].ElementId, new InteractiveElementEntry(message.InteractiveElements[i]));
             }
 
             InteractivesUpdated?.Invoke();
@@ -487,8 +487,8 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public void Update(StatedElementUpdatedMessage message)
         {
-            _statedElements.TryRemove((int) message.StatedElement.ElementId, out StatedElementEntry value);
-            _statedElements.TryAdd((int) message.StatedElement.ElementId, new StatedElementEntry(message.StatedElement));
+            _statedElements.TryRemove((int)message.StatedElement.ElementId, out StatedElementEntry value);
+            _statedElements.TryAdd((int)message.StatedElement.ElementId, new StatedElementEntry(message.StatedElement));
 
             InteractivesUpdated?.Invoke();
         }
@@ -499,7 +499,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
             for (int i = 0; i < message.StatedElements.Count; i++)
             {
-                _statedElements.TryAdd((int) message.StatedElements[i].ElementId, new StatedElementEntry(message.StatedElements[i]));
+                _statedElements.TryAdd((int)message.StatedElements[i].ElementId, new StatedElementEntry(message.StatedElements[i]));
             }
 
             InteractivesUpdated?.Invoke();

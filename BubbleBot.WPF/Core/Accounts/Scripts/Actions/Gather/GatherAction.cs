@@ -1,6 +1,6 @@
+using BubbleBot.Configurations.Language;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Gather
 {

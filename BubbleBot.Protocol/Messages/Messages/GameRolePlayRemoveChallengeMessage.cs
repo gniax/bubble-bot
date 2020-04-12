@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayRemoveChallengeMessage : Message
-	{
+    public class GameRolePlayRemoveChallengeMessage : Message
+    {
 
-		// Properties
-		public int FightId { get; set; }
+        // Properties
+        public int FightId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayRemoveChallengeMessage() { }
+        // Constructors
+        public GameRolePlayRemoveChallengeMessage() { }
 
-		public GameRolePlayRemoveChallengeMessage(int fightId = 0)
-		{
-			FightId = fightId;
-		}
+        public GameRolePlayRemoveChallengeMessage(int fightId = 0)
+        {
+            FightId = fightId;
+        }
 
-	}
+    }
 }

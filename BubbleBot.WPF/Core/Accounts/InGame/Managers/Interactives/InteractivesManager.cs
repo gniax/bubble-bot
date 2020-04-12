@@ -1,10 +1,10 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using BubbleBot.Core.Accounts.InGame.Map.Interactives;
 using BubbleBot.Protocol.Messages;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
 {

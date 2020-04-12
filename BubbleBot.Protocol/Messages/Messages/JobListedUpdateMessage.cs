@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobListedUpdateMessage : Message
-	{
+    public class JobListedUpdateMessage : Message
+    {
 
-		// Properties
-		public bool AddedOrDeleted { get; set; }
-		public uint JobId { get; set; }
+        // Properties
+        public bool AddedOrDeleted { get; set; }
+        public uint JobId { get; set; }
 
 
-		// Constructors
-		public JobListedUpdateMessage() { }
+        // Constructors
+        public JobListedUpdateMessage() { }
 
-		public JobListedUpdateMessage(bool addedOrDeleted = false, uint jobId = 0)
-		{
-			AddedOrDeleted = addedOrDeleted;
-			JobId = jobId;
-		}
+        public JobListedUpdateMessage(bool addedOrDeleted = false, uint jobId = 0)
+        {
+            AddedOrDeleted = addedOrDeleted;
+            JobId = jobId;
+        }
 
-	}
+    }
 }

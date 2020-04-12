@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectGroundListAddedMessage : Message
-	{
+    public class ObjectGroundListAddedMessage : Message
+    {
 
-		// Properties
-		public List<uint> Cells { get; set; }
-		public List<uint> ReferenceIds { get; set; }
+        // Properties
+        public List<uint> Cells { get; set; }
+        public List<uint> ReferenceIds { get; set; }
 
 
-		// Constructors
-		public ObjectGroundListAddedMessage() { }
+        // Constructors
+        public ObjectGroundListAddedMessage() { }
 
-		public ObjectGroundListAddedMessage(List<uint> cells = null, List<uint> referenceIds = null)
-		{
-			Cells = cells;
-			ReferenceIds = referenceIds;
-		}
+        public ObjectGroundListAddedMessage(List<uint> cells = null, List<uint> referenceIds = null)
+        {
+            Cells = cells;
+            ReferenceIds = referenceIds;
+        }
 
-	}
+    }
 }

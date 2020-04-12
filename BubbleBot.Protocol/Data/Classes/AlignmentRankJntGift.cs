@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class AlignmentRankJntGift : IData
-	{
+    public class AlignmentRankJntGift : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
-		[JsonProperty("gifts")]
-		public List<int> Gifts { get; set; }
-		[JsonProperty("parameters")]
-		public List<int> Parameters { get; set; }
-		[JsonProperty("levels")]
-		public List<int> Levels { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("gifts")]
+        public List<int> Gifts { get; set; }
+        [JsonProperty("parameters")]
+        public List<int> Parameters { get; set; }
+        [JsonProperty("levels")]
+        public List<int> Levels { get; set; }
 
 
-		//Constructor
-		internal AlignmentRankJntGift() {}
+        //Constructor
+        internal AlignmentRankJntGift() { }
 
-	}
+    }
 }

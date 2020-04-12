@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class InteractiveUseEndedMessage : Message
-	{
+    public class InteractiveUseEndedMessage : Message
+    {
 
-		// Properties
-		public uint ElemId { get; set; }
-		public uint SkillId { get; set; }
+        // Properties
+        public uint ElemId { get; set; }
+        public uint SkillId { get; set; }
 
 
-		// Constructors
-		public InteractiveUseEndedMessage() { }
+        // Constructors
+        public InteractiveUseEndedMessage() { }
 
-		public InteractiveUseEndedMessage(uint elemId = 0, uint skillId = 0)
-		{
-			ElemId = elemId;
-			SkillId = skillId;
-		}
+        public InteractiveUseEndedMessage(uint elemId = 0, uint skillId = 0)
+        {
+            ElemId = elemId;
+            SkillId = skillId;
+        }
 
-	}
+    }
 }

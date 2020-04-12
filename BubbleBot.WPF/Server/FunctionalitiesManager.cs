@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Groups;
 using BubbleBot.Server.Enums;
 using BubbleBot.Server.Messages;
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
 using BubbleBot.WPF.Views;
+using MahApps.Metro.Controls.Dialogs;
 using MoonSharp.Interpreter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 
 namespace BubbleBot.Server
 {

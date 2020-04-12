@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class GuildInAllianceVersatileInformations : GuildVersatileInformations
-	{
+    public class GuildInAllianceVersatileInformations : GuildVersatileInformations
+    {
 
-		// Properties
-		public uint AllianceId { get; set; }
+        // Properties
+        public uint AllianceId { get; set; }
 
 
-		// Constructors
-		public GuildInAllianceVersatileInformations() { }
+        // Constructors
+        public GuildInAllianceVersatileInformations() { }
 
-		public GuildInAllianceVersatileInformations(uint guildId = 0, uint leaderId = 0, uint guildLevel = 0, uint nbMembers = 0, uint allianceId = 0)
-		{
-			GuildId = guildId;
-			LeaderId = leaderId;
-			GuildLevel = guildLevel;
-			NbMembers = nbMembers;
-			AllianceId = allianceId;
-		}
+        public GuildInAllianceVersatileInformations(uint guildId = 0, uint leaderId = 0, uint guildLevel = 0, uint nbMembers = 0, uint allianceId = 0)
+        {
+            GuildId = guildId;
+            LeaderId = leaderId;
+            GuildLevel = guildLevel;
+            NbMembers = nbMembers;
+            AllianceId = allianceId;
+        }
 
-	}
+    }
 }

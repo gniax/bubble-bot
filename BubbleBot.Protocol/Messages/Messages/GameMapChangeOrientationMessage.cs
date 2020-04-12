@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameMapChangeOrientationMessage : Message
-	{
+    public class GameMapChangeOrientationMessage : Message
+    {
 
-		// Properties
-		public ActorOrientation Orientation { get; set; }
+        // Properties
+        public ActorOrientation Orientation { get; set; }
 
 
-		// Constructors
-		public GameMapChangeOrientationMessage() { }
+        // Constructors
+        public GameMapChangeOrientationMessage() { }
 
-		public GameMapChangeOrientationMessage(ActorOrientation orientation = null)
-		{
-			Orientation = orientation;
-		}
+        public GameMapChangeOrientationMessage(ActorOrientation orientation = null)
+        {
+            Orientation = orientation;
+        }
 
-	}
+    }
 }

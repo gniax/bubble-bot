@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AchievementDetailsRequestMessage : Message
-	{
+    public class AchievementDetailsRequestMessage : Message
+    {
 
-		// Properties
-		public uint AchievementId { get; set; }
+        // Properties
+        public uint AchievementId { get; set; }
 
 
-		// Constructors
-		public AchievementDetailsRequestMessage() { }
+        // Constructors
+        public AchievementDetailsRequestMessage() { }
 
-		public AchievementDetailsRequestMessage(uint achievementId = 0)
-		{
-			AchievementId = achievementId;
-		}
+        public AchievementDetailsRequestMessage(uint achievementId = 0)
+        {
+            AchievementId = achievementId;
+        }
 
-	}
+    }
 }

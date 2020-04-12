@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildInformationsMembersMessage : Message
-	{
+    public class GuildInformationsMembersMessage : Message
+    {
 
-		// Properties
-		public List<GuildMember> Members { get; set; }
+        // Properties
+        public List<GuildMember> Members { get; set; }
 
 
-		// Constructors
-		public GuildInformationsMembersMessage() { }
+        // Constructors
+        public GuildInformationsMembersMessage() { }
 
-		public GuildInformationsMembersMessage(List<GuildMember> members = null)
-		{
-			Members = members;
-		}
+        public GuildInformationsMembersMessage(List<GuildMember> members = null)
+        {
+            Members = members;
+        }
 
-	}
+    }
 }

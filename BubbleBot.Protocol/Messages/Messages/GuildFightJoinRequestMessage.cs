@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFightJoinRequestMessage : Message
-	{
+    public class GuildFightJoinRequestMessage : Message
+    {
 
-		// Properties
-		public int TaxCollectorId { get; set; }
+        // Properties
+        public int TaxCollectorId { get; set; }
 
 
-		// Constructors
-		public GuildFightJoinRequestMessage() { }
+        // Constructors
+        public GuildFightJoinRequestMessage() { }
 
-		public GuildFightJoinRequestMessage(int taxCollectorId = 0)
-		{
-			TaxCollectorId = taxCollectorId;
-		}
+        public GuildFightJoinRequestMessage(int taxCollectorId = 0)
+        {
+            TaxCollectorId = taxCollectorId;
+        }
 
-	}
+    }
 }

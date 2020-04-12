@@ -1,16 +1,16 @@
-using System;
-using System.Collections.Generic;
-using BubbleBot.Protocol.Messages;
-using BubbleBot.Protocol.Enums;
 using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
-using BubbleBot.Protocol.Types;
-using System.Linq;
-using BubbleBot.Protocol.Data;
+using BubbleBot.Core.Enums;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Shapes;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Messages;
+using BubbleBot.Protocol.Types;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Core.Enums;
 
 namespace BubbleBot.Core.Accounts.InGame.Fights
 {

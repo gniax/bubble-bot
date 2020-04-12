@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismFightJoinLeaveRequestMessage : Message
-	{
+    public class PrismFightJoinLeaveRequestMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public bool Join { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public bool Join { get; set; }
 
 
-		// Constructors
-		public PrismFightJoinLeaveRequestMessage() { }
+        // Constructors
+        public PrismFightJoinLeaveRequestMessage() { }
 
-		public PrismFightJoinLeaveRequestMessage(uint subAreaId = 0, bool join = false)
-		{
-			SubAreaId = subAreaId;
-			Join = join;
-		}
+        public PrismFightJoinLeaveRequestMessage(uint subAreaId = 0, bool join = false)
+        {
+            SubAreaId = subAreaId;
+            Join = join;
+        }
 
-	}
+    }
 }

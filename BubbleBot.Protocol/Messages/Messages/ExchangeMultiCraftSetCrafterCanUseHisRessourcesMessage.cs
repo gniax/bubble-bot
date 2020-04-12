@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage : Message
-	{
+    public class ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage : Message
+    {
 
-		// Properties
-		public bool Allow { get; set; }
+        // Properties
+        public bool Allow { get; set; }
 
 
-		// Constructors
-		public ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage() { }
+        // Constructors
+        public ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage() { }
 
-		public ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(bool allow = false)
-		{
-			Allow = allow;
-		}
+        public ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(bool allow = false)
+        {
+            Allow = allow;
+        }
 
-	}
+    }
 }

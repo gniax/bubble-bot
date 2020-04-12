@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobCrafterDirectoryDefineSettingsMessage : Message
-	{
+    public class JobCrafterDirectoryDefineSettingsMessage : Message
+    {
 
-		// Properties
-		public JobCrafterDirectorySettings Settings { get; set; }
+        // Properties
+        public JobCrafterDirectorySettings Settings { get; set; }
 
 
-		// Constructors
-		public JobCrafterDirectoryDefineSettingsMessage() { }
+        // Constructors
+        public JobCrafterDirectoryDefineSettingsMessage() { }
 
-		public JobCrafterDirectoryDefineSettingsMessage(JobCrafterDirectorySettings settings = null)
-		{
-			Settings = settings;
-		}
+        public JobCrafterDirectoryDefineSettingsMessage(JobCrafterDirectorySettings settings = null)
+        {
+            Settings = settings;
+        }
 
-	}
+    }
 }

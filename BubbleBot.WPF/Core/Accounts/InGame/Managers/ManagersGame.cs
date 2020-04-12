@@ -1,9 +1,9 @@
+using BubbleBot.Core.Accounts.InGame.Managers.Gathers;
 using BubbleBot.Core.Accounts.InGame.Managers.Interactives;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
-using BubbleBot.Core.Accounts.InGame.Managers.Gathers;
+using BubbleBot.Core.Accounts.InGame.Managers.Teleportables;
 using BubbleBot.Core.Accounts.InGame.Map;
 using System;
-using BubbleBot.Core.Accounts.InGame.Managers.Teleportables;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers
 {

@@ -1,8 +1,8 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Converters.Enums
 {

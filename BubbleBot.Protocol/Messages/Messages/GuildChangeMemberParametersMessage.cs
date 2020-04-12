@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildChangeMemberParametersMessage : Message
-	{
+    public class GuildChangeMemberParametersMessage : Message
+    {
 
-		// Properties
-		public uint MemberId { get; set; }
-		public uint Rank { get; set; }
-		public uint ExperienceGivenPercent { get; set; }
-		public uint Rights { get; set; }
+        // Properties
+        public uint MemberId { get; set; }
+        public uint Rank { get; set; }
+        public uint ExperienceGivenPercent { get; set; }
+        public uint Rights { get; set; }
 
 
-		// Constructors
-		public GuildChangeMemberParametersMessage() { }
+        // Constructors
+        public GuildChangeMemberParametersMessage() { }
 
-		public GuildChangeMemberParametersMessage(uint memberId = 0, uint rank = 0, uint experienceGivenPercent = 0, uint rights = 0)
-		{
-			MemberId = memberId;
-			Rank = rank;
-			ExperienceGivenPercent = experienceGivenPercent;
-			Rights = rights;
-		}
+        public GuildChangeMemberParametersMessage(uint memberId = 0, uint rank = 0, uint experienceGivenPercent = 0, uint rights = 0)
+        {
+            MemberId = memberId;
+            Rank = rank;
+            ExperienceGivenPercent = experienceGivenPercent;
+            Rights = rights;
+        }
 
-	}
+    }
 }

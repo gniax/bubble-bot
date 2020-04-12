@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyRestrictedMessage : AbstractPartyMessage
-	{
+    public class PartyRestrictedMessage : AbstractPartyMessage
+    {
 
-		// Properties
-		public bool Restricted { get; set; }
+        // Properties
+        public bool Restricted { get; set; }
 
 
-		// Constructors
-		public PartyRestrictedMessage() { }
+        // Constructors
+        public PartyRestrictedMessage() { }
 
-		public PartyRestrictedMessage(uint partyId = 0, bool restricted = false)
-		{
-			PartyId = partyId;
-			Restricted = restricted;
-		}
+        public PartyRestrictedMessage(uint partyId = 0, bool restricted = false)
+        {
+            PartyId = partyId;
+            Restricted = restricted;
+        }
 
-	}
+    }
 }

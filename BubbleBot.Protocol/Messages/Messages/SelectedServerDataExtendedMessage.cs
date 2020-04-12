@@ -1,27 +1,26 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class SelectedServerDataExtendedMessage : SelectedServerDataMessage
-	{
+    public class SelectedServerDataExtendedMessage : SelectedServerDataMessage
+    {
 
-		// Properties
-		public List<uint> ServerIds { get; set; }
+        // Properties
+        public List<uint> ServerIds { get; set; }
 
 
-		// Constructors
-		public SelectedServerDataExtendedMessage() { }
+        // Constructors
+        public SelectedServerDataExtendedMessage() { }
 
-		public SelectedServerDataExtendedMessage(int serverId = 0, string address = "", uint port = 0, bool canCreateNewCharacter = false, string ticket = "", List<uint> serverIds = null)
-		{
-			ServerId = serverId;
-			Address = address;
-			Port = port;
-			CanCreateNewCharacter = canCreateNewCharacter;
-			Ticket = ticket;
-			ServerIds = serverIds;
-		}
+        public SelectedServerDataExtendedMessage(int serverId = 0, string address = "", uint port = 0, bool canCreateNewCharacter = false, string ticket = "", List<uint> serverIds = null)
+        {
+            ServerId = serverId;
+            Address = address;
+            Port = port;
+            CanCreateNewCharacter = canCreateNewCharacter;
+            Ticket = ticket;
+            ServerIds = serverIds;
+        }
 
-	}
+    }
 }

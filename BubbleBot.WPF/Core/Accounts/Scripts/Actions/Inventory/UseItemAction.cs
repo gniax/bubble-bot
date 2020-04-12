@@ -25,7 +25,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Inventory
             if (obj != null)
             {
                 account.Game.Character.Inventory.UseObject(obj, Quantity);
-                //await Task.Delay(500);
+                await Task.Delay(1);
             }
 
             return ScriptActionResults.DONE;

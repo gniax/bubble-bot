@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ShortcutBarContentMessage : Message
-	{
+    public class ShortcutBarContentMessage : Message
+    {
 
-		// Properties
-		public List<Shortcut> Shortcuts { get; set; }
-		public uint BarType { get; set; }
+        // Properties
+        public List<Shortcut> Shortcuts { get; set; }
+        public uint BarType { get; set; }
 
 
-		// Constructors
-		public ShortcutBarContentMessage() { }
+        // Constructors
+        public ShortcutBarContentMessage() { }
 
-		public ShortcutBarContentMessage(uint barType = 0, List<Shortcut> shortcuts = null)
-		{
-			BarType = barType;
-			Shortcuts = shortcuts;
-		}
+        public ShortcutBarContentMessage(uint barType = 0, List<Shortcut> shortcuts = null)
+        {
+            BarType = barType;
+            Shortcuts = shortcuts;
+        }
 
-	}
+    }
 }

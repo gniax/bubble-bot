@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildMemberSetWarnOnConnectionMessage : Message
-	{
+    public class GuildMemberSetWarnOnConnectionMessage : Message
+    {
 
-		// Properties
-		public bool Enable { get; set; }
+        // Properties
+        public bool Enable { get; set; }
 
 
-		// Constructors
-		public GuildMemberSetWarnOnConnectionMessage() { }
+        // Constructors
+        public GuildMemberSetWarnOnConnectionMessage() { }
 
-		public GuildMemberSetWarnOnConnectionMessage(bool enable = false)
-		{
-			Enable = enable;
-		}
+        public GuildMemberSetWarnOnConnectionMessage(bool enable = false)
+        {
+            Enable = enable;
+        }
 
-	}
+    }
 }

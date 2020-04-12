@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class QuestActiveInformations
-	{
+    public class QuestActiveInformations
+    {
 
-		// Properties
-		public uint QuestId { get; set; }
+        // Properties
+        public uint QuestId { get; set; }
 
 
-		// Constructors
-		public QuestActiveInformations() { }
+        // Constructors
+        public QuestActiveInformations() { }
 
-		public QuestActiveInformations(uint questId = 0)
-		{
-			QuestId = questId;
-		}
+        public QuestActiveInformations(uint questId = 0)
+        {
+            QuestId = questId;
+        }
 
-	}
+    }
 }

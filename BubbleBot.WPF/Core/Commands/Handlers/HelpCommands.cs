@@ -1,8 +1,8 @@
-using System.Linq;
-using BubbleBot.Core.Accounts;
-using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Commands.Handlers
 {

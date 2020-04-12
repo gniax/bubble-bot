@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeItemGoldAddAsPaymentMessage : Message
-	{
+    public class ExchangeItemGoldAddAsPaymentMessage : Message
+    {
 
-		// Properties
-		public int PaymentType { get; set; }
-		public uint Quantity { get; set; }
+        // Properties
+        public int PaymentType { get; set; }
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ExchangeItemGoldAddAsPaymentMessage() { }
+        // Constructors
+        public ExchangeItemGoldAddAsPaymentMessage() { }
 
-		public ExchangeItemGoldAddAsPaymentMessage(int paymentType = 0, uint quantity = 0)
-		{
-			PaymentType = paymentType;
-			Quantity = quantity;
-		}
+        public ExchangeItemGoldAddAsPaymentMessage(int paymentType = 0, uint quantity = 0)
+        {
+            PaymentType = paymentType;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

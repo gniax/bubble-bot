@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Configurations;
@@ -13,6 +9,10 @@ using BubbleBot.Protocol.Messages.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Utility;
 using BubbleBot.Utility.DofusTouch;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 {

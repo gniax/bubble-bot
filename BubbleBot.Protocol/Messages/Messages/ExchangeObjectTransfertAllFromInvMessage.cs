@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeObjectTransfertAllFromInvMessage : Message
-	{
+    public class ExchangeObjectTransfertAllFromInvMessage : Message
+    {
 
-		// Constructors
-		public ExchangeObjectTransfertAllFromInvMessage() { }
+        // Constructors
+        public ExchangeObjectTransfertAllFromInvMessage() { }
 
 
-	}
+    }
 }

@@ -1,4 +1,4 @@
-using GalaSoft.MvvmLight;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
 using BubbleBot.Core.Accounts.InGame.Character.Jobs;
 using BubbleBot.Core.Accounts.InGame.Character.Mount;
@@ -8,13 +8,13 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Character
 {
@@ -101,7 +101,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         {
             if (LifeStatus != PlayerLifeStatusEnum.STATUS_TOMBSTONE)
                 return false;
-            
+
             return true;
         }
 

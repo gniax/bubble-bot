@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class QuestStepStartedMessage : Message
-	{
+    public class QuestStepStartedMessage : Message
+    {
 
-		// Properties
-		public uint QuestId { get; set; }
-		public uint StepId { get; set; }
+        // Properties
+        public uint QuestId { get; set; }
+        public uint StepId { get; set; }
 
 
-		// Constructors
-		public QuestStepStartedMessage() { }
+        // Constructors
+        public QuestStepStartedMessage() { }
 
-		public QuestStepStartedMessage(uint questId = 0, uint stepId = 0)
-		{
-			QuestId = questId;
-			StepId = stepId;
-		}
+        public QuestStepStartedMessage(uint questId = 0, uint stepId = 0)
+        {
+            QuestId = questId;
+            StepId = stepId;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterReportMessage : Message
-	{
+    public class CharacterReportMessage : Message
+    {
 
-		// Properties
-		public uint ReportedId { get; set; }
-		public uint Reason { get; set; }
+        // Properties
+        public uint ReportedId { get; set; }
+        public uint Reason { get; set; }
 
 
-		// Constructors
-		public CharacterReportMessage() { }
+        // Constructors
+        public CharacterReportMessage() { }
 
-		public CharacterReportMessage(uint reportedId = 0, uint reason = 0)
-		{
-			ReportedId = reportedId;
-			Reason = reason;
-		}
+        public CharacterReportMessage(uint reportedId = 0, uint reason = 0)
+        {
+            ReportedId = reportedId;
+            Reason = reason;
+        }
 
-	}
+    }
 }

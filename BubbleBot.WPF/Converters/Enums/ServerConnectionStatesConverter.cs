@@ -22,7 +22,7 @@ namespace BubbleBot.Converters.Enums
                     color = "orange";
                     break;
             }
-            
+
             return new BitmapImage(new Uri($"pack://application:,,,/Resources/circle_{color}.png"));
         }
 

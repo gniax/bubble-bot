@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceModificationNameAndTagValidMessage : Message
-	{
+    public class AllianceModificationNameAndTagValidMessage : Message
+    {
 
-		// Properties
-		public string AllianceName { get; set; }
-		public string AllianceTag { get; set; }
+        // Properties
+        public string AllianceName { get; set; }
+        public string AllianceTag { get; set; }
 
 
-		// Constructors
-		public AllianceModificationNameAndTagValidMessage() { }
+        // Constructors
+        public AllianceModificationNameAndTagValidMessage() { }
 
-		public AllianceModificationNameAndTagValidMessage(string allianceName = "", string allianceTag = "")
-		{
-			AllianceName = allianceName;
-			AllianceTag = allianceTag;
-		}
+        public AllianceModificationNameAndTagValidMessage(string allianceName = "", string allianceTag = "")
+        {
+            AllianceName = allianceName;
+            AllianceTag = allianceTag;
+        }
 
-	}
+    }
 }

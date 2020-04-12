@@ -68,7 +68,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
 
         public static Spell Load(BinaryReader br)
         {
-            return new Spell(br.ReadInt32(), br.ReadString(),  (SpellTargets)br.ReadByte(),
+            return new Spell(br.ReadInt32(), br.ReadString(), (SpellTargets)br.ReadByte(),
                              br.ReadByte(), br.ReadByte(), br.ReadByte(), br.ReadByte(),
                              (SpellResistances)br.ReadByte(), br.ReadByte(), br.ReadByte(),
                              br.ReadBoolean(), br.ReadBoolean(), br.ReadBoolean(), br.ReadBoolean());

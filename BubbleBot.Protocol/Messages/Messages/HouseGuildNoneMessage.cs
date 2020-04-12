@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class HouseGuildNoneMessage : Message
-	{
+    public class HouseGuildNoneMessage : Message
+    {
 
-		// Properties
-		public uint HouseId { get; set; }
+        // Properties
+        public uint HouseId { get; set; }
 
 
-		// Constructors
-		public HouseGuildNoneMessage() { }
+        // Constructors
+        public HouseGuildNoneMessage() { }
 
-		public HouseGuildNoneMessage(uint houseId = 0)
-		{
-			HouseId = houseId;
-		}
+        public HouseGuildNoneMessage(uint houseId = 0)
+        {
+            HouseId = houseId;
+        }
 
-	}
+    }
 }

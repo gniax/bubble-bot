@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class KrosmasterTransferMessage : Message
-	{
+    public class KrosmasterTransferMessage : Message
+    {
 
-		// Properties
-		public string Uid { get; set; }
-		public uint Failure { get; set; }
+        // Properties
+        public string Uid { get; set; }
+        public uint Failure { get; set; }
 
 
-		// Constructors
-		public KrosmasterTransferMessage() { }
+        // Constructors
+        public KrosmasterTransferMessage() { }
 
-		public KrosmasterTransferMessage(string uid = "", uint failure = 0)
-		{
-			Uid = uid;
-			Failure = failure;
-		}
+        public KrosmasterTransferMessage(string uid = "", uint failure = 0)
+        {
+            Uid = uid;
+            Failure = failure;
+        }
 
-	}
+    }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
-using BubbleBot.Website.Models;
+﻿using BubbleBot.Website.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace BubbleBot.Website.Controllers
 {

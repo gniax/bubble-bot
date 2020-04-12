@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class UpdateMapPlayersAgressableStatusMessage : Message
-	{
+    public class UpdateMapPlayersAgressableStatusMessage : Message
+    {
 
-		// Properties
-		public List<uint> PlayerIds { get; set; }
-		public List<uint> Enable { get; set; }
+        // Properties
+        public List<uint> PlayerIds { get; set; }
+        public List<uint> Enable { get; set; }
 
 
-		// Constructors
-		public UpdateMapPlayersAgressableStatusMessage() { }
+        // Constructors
+        public UpdateMapPlayersAgressableStatusMessage() { }
 
-		public UpdateMapPlayersAgressableStatusMessage(List<uint> playerIds = null, List<uint> enable = null)
-		{
-			PlayerIds = playerIds;
-			Enable = enable;
-		}
+        public UpdateMapPlayersAgressableStatusMessage(List<uint> playerIds = null, List<uint> enable = null)
+        {
+            PlayerIds = playerIds;
+            Enable = enable;
+        }
 
-	}
+    }
 }

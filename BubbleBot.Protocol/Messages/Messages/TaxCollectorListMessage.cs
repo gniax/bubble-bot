@@ -1,26 +1,26 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class TaxCollectorListMessage : Message
-	{
+    public class TaxCollectorListMessage : Message
+    {
 
-		// Properties
-		public List<TaxCollectorInformations> Informations { get; set; }
-		public List<TaxCollectorFightersInformation> FightersInformations { get; set; }
-		public uint NbcollectorMax { get; set; }
+        // Properties
+        public List<TaxCollectorInformations> Informations { get; set; }
+        public List<TaxCollectorFightersInformation> FightersInformations { get; set; }
+        public uint NbcollectorMax { get; set; }
 
 
-		// Constructors
-		public TaxCollectorListMessage() { }
+        // Constructors
+        public TaxCollectorListMessage() { }
 
-		public TaxCollectorListMessage(uint nbcollectorMax = 0, List<TaxCollectorInformations> informations = null, List<TaxCollectorFightersInformation> fightersInformations = null)
-		{
-			NbcollectorMax = nbcollectorMax;
-			Informations = informations;
-			FightersInformations = fightersInformations;
-		}
+        public TaxCollectorListMessage(uint nbcollectorMax = 0, List<TaxCollectorInformations> informations = null, List<TaxCollectorFightersInformation> fightersInformations = null)
+        {
+            NbcollectorMax = nbcollectorMax;
+            Informations = informations;
+            FightersInformations = fightersInformations;
+        }
 
-	}
+    }
 }

@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using BubbleBot.Website.Enums;
+using BubbleBot.Website.Extensions;
 using BubbleBot.Website.Models;
 using BubbleBot.Website.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using BubbleBot.Website.Extensions;
 using System.Text.RegularExpressions;
-using System.IO;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using BubbleBot.Website.Enums;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Website.Controllers
 {
@@ -233,10 +232,10 @@ namespace BubbleBot.Website.Controllers
 
                 if (archivedCharacterList.Count() > 0)
                 {
-                    if(_userBots != null)
+                    if (_userBots != null)
                     {
                         Character selectedBot = _userBots.Where(c => c.Account == Account && c.Name == BotName).FirstOrDefault();
-                        if(selectedBot == null)
+                        if (selectedBot == null)
                         {
                             errorMessage = "Le personnage sélectionné est introuvable....";
                             return Json(new { success = false, error = errorMessage });
@@ -258,17 +257,17 @@ namespace BubbleBot.Website.Controllers
                                                                                             .ToList();
 
                         ILookup<string, (byte, DateTime)> lvlList = archivedCharacterList.Select(i => new { i.Level, i.Updated_at, i.Script_Name })
-                                                                                         .OrderBy(g => g.Updated_at)                                                                                           
+                                                                                         .OrderBy(g => g.Updated_at)
                                                                                          .ToLookup(c => c.Script_Name, c => (c.Level, c.Updated_at));
-                        
+
                         Dictionary<string, string[]> lvlAverageList = new Dictionary<string, string[]>();
                         int counter = 0;
                         foreach (var line in lvlList)
                         {
-                            if(line.Key != null)
+                            if (line.Key != null)
                             {
 
-                                if(counter < 5)
+                                if (counter < 5)
                                 {
                                     bool first = true;
 
@@ -280,7 +279,7 @@ namespace BubbleBot.Website.Controllers
 
                                     foreach ((byte, DateTime) items in line)
                                     {
-                                        if(!(items.Item2 > beforeDate.AddHours(1)) && !first)
+                                        if (!(items.Item2 > beforeDate.AddHours(1)) && !first)
                                         {
                                             dateSum += items.Item2 - beforeDate;
                                             levelSum += (int)items.Item1 - beforeLevel;
@@ -292,9 +291,9 @@ namespace BubbleBot.Website.Controllers
 
                                     double lvlAverage = Math.Round((levelSum / dateSum.TotalHours), 2);
                                     double hourSum = Math.Round((dateSum.TotalHours), 0);
-                                    string[] data = { lvlAverage.ToString(), hourSum.ToString(), levelSum.ToString() }; 
-                                   
-                                    if(lvlAverage != 0 && hourSum != 0)
+                                    string[] data = { lvlAverage.ToString(), hourSum.ToString(), levelSum.ToString() };
+
+                                    if (lvlAverage != 0 && hourSum != 0)
                                     {
                                         lvlAverageList.Add(line.Key, data);
                                         counter++;
@@ -347,24 +346,32 @@ namespace BubbleBot.Website.Controllers
 
                             switch (state)
                             {
-                                case AccountStates.NONE: s_state = "Inactif";
+                                case AccountStates.NONE:
+                                    s_state = "Inactif";
                                     break;
-                                case AccountStates.MOVING: s_state = "Déplacement";
+                                case AccountStates.MOVING:
+                                    s_state = "Déplacement";
                                     break;
-                                case AccountStates.FIGHTING: s_state = "Combat";
+                                case AccountStates.FIGHTING:
+                                    s_state = "Combat";
                                     break;
-                                case AccountStates.RECAPTCHA: s_state = "Captcha";
+                                case AccountStates.RECAPTCHA:
+                                    s_state = "Captcha";
                                     break;
-                                case AccountStates.REGENERATING: s_state = "Regénération"; 
+                                case AccountStates.REGENERATING:
+                                    s_state = "Regénération";
                                     break;
-                                case AccountStates.BUYING: s_state = "HDV";
+                                case AccountStates.BUYING:
+                                    s_state = "HDV";
                                     break;
-                                case AccountStates.SELLING: s_state = "HDV";
+                                case AccountStates.SELLING:
+                                    s_state = "HDV";
                                     break;
-                                case AccountStates.GATHERING: s_state = "Récolte";
+                                case AccountStates.GATHERING:
+                                    s_state = "Récolte";
                                     break;
                             }
-                            if(s_state != null)
+                            if (s_state != null)
                             {
                                 // Note : to get all the data (for instance: in a week) we have to do the sum of the day data + week data
                                 if (updatedat > yesterday)
@@ -394,7 +401,7 @@ namespace BubbleBot.Website.Controllers
                                 }
                             }
                         }
-                       
+
                         statesDay.OrderByDescending(v => v.Value);
                         statesWeek.OrderByDescending(v => v.Value);
                         statesMonth.OrderByDescending(v => v.Value);
@@ -524,7 +531,7 @@ namespace BubbleBot.Website.Controllers
 
                                 List<Character> existing;
                                 if (offlineAccounts.TryGetValue(character.Account, out existing))
-                                { 
+                                {
                                     existing.Add(character);
                                     offlineAccounts[character.Account] = existing;
                                 }
@@ -621,7 +628,7 @@ namespace BubbleBot.Website.Controllers
 
                 return View(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("EXCEPTION : " + ex);
                 return StatusCode(404);
@@ -669,36 +676,36 @@ namespace BubbleBot.Website.Controllers
                 return StatusCode(404);
 
             if (FirstName != null)
-            if (FirstName.Length < 2 || FirstName.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
-            {
-                TempData["error"] += "La longueur du prénom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";     
-            }
+                if (FirstName.Length < 2 || FirstName.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
+                {
+                    TempData["error"] += "La longueur du prénom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";
+                }
 
-            if(Surname != null)
-            if (Surname.Length < 2 || Surname.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
-            {
-                TempData["error"] += "La longueur du nom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";
-            }
+            if (Surname != null)
+                if (Surname.Length < 2 || Surname.Length > 15 || !Regex.IsMatch(FirstName, @"^[a-zA-Z]+$"))
+                {
+                    TempData["error"] += "La longueur du nom doit être compris entre 2 et 15 caractères alphabétiques.<br/>";
+                }
 
             if (Discord != null)
-            if (Discord.Length < 2 || Surname.Length > 18)
-            {
-                TempData["error"] += "La longueur du discord doit être compris entre 2 et 18 caractères.<br/>";
+                if (Discord.Length < 2 || Surname.Length > 18)
+                {
+                    TempData["error"] += "La longueur du discord doit être compris entre 2 et 18 caractères.<br/>";
                 }
 
             if (Description != null)
-            if (Description.Length > 255)
-            {
-                TempData["error"] += "La longueur de la description doit être inférieur à 255 caractères.<br/>";
-            }
+                if (Description.Length > 255)
+                {
+                    TempData["error"] += "La longueur de la description doit être inférieur à 255 caractères.<br/>";
+                }
 
-            if(TempData["error"] != null)
+            if (TempData["error"] != null)
             {
                 return RedirectToAction("UserProfile");
             }
 
             bool userChange = false;
-            if(user.Surname != Surname)
+            if (user.Surname != Surname)
             {
                 user.Surname = Surname;
                 userChange = true;
@@ -722,7 +729,7 @@ namespace BubbleBot.Website.Controllers
                 userChange = true;
             }
 
-            if(Avatar != null)
+            if (Avatar != null)
             {
                 string fileExt = Path.GetExtension(Avatar.FileName).ToLower();
                 string fileName = Path.GetFileName(Avatar.FileName);
@@ -732,9 +739,9 @@ namespace BubbleBot.Website.Controllers
                     {
                         if (Avatar.Length <= 2e+6)
                         {
-                            if(user.Avatar != "default.jpg")
+                            if (user.Avatar != "default.jpg")
                             {
-                                if(System.IO.File.Exists(_webHostEnvironment.WebRootPath + "/uploads/avatars/" + user.Avatar))
+                                if (System.IO.File.Exists(_webHostEnvironment.WebRootPath + "/uploads/avatars/" + user.Avatar))
                                     System.IO.File.Delete(_webHostEnvironment.WebRootPath + "/uploads/avatars/" + user.Avatar);
                             }
 
@@ -769,7 +776,7 @@ namespace BubbleBot.Website.Controllers
                 return RedirectToAction("UserProfile");
             }
 
-            if(userChange)
+            if (userChange)
             {
                 _panelDbContext.Update(user);
                 _panelDbContext.SaveChanges();

@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismAlignmentBonusResultMessage : Message
-	{
+    public class PrismAlignmentBonusResultMessage : Message
+    {
 
-		// Properties
-		public AlignmentBonusInformations AlignmentBonus { get; set; }
+        // Properties
+        public AlignmentBonusInformations AlignmentBonus { get; set; }
 
 
-		// Constructors
-		public PrismAlignmentBonusResultMessage() { }
+        // Constructors
+        public PrismAlignmentBonusResultMessage() { }
 
-		public PrismAlignmentBonusResultMessage(AlignmentBonusInformations alignmentBonus = null)
-		{
-			AlignmentBonus = alignmentBonus;
-		}
+        public PrismAlignmentBonusResultMessage(AlignmentBonusInformations alignmentBonus = null)
+        {
+            AlignmentBonus = alignmentBonus;
+        }
 
-	}
+    }
 }

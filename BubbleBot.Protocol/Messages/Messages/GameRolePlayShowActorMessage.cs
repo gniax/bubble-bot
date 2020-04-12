@@ -1,25 +1,24 @@
-using System.Collections.Generic;
+using BubbleBot.Protocol.Converters;
 using BubbleBot.Protocol.Types;
 using Newtonsoft.Json;
-using BubbleBot.Protocol.Converters;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayShowActorMessage : Message
-	{
+    public class GameRolePlayShowActorMessage : Message
+    {
 
-		// Properties
+        // Properties
         [JsonConverter(typeof(TypedPropertyConverter))]
-		public GameRolePlayActorInformations Informations { get; set; }
+        public GameRolePlayActorInformations Informations { get; set; }
 
 
-		// Constructors
-		public GameRolePlayShowActorMessage() { }
+        // Constructors
+        public GameRolePlayShowActorMessage() { }
 
-		public GameRolePlayShowActorMessage(GameRolePlayActorInformations informations = null)
-		{
-			Informations = informations;
-		}
+        public GameRolePlayShowActorMessage(GameRolePlayActorInformations informations = null)
+        {
+            Informations = informations;
+        }
 
-	}
+    }
 }

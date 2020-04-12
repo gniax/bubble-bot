@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChallengeDungeonStackedBonusMessage : Message
-	{
+    public class ChallengeDungeonStackedBonusMessage : Message
+    {
 
-		// Properties
-		public uint DungeonId { get; set; }
-		public uint XpBonus { get; set; }
-		public uint DropBonus { get; set; }
+        // Properties
+        public uint DungeonId { get; set; }
+        public uint XpBonus { get; set; }
+        public uint DropBonus { get; set; }
 
 
-		// Constructors
-		public ChallengeDungeonStackedBonusMessage() { }
+        // Constructors
+        public ChallengeDungeonStackedBonusMessage() { }
 
-		public ChallengeDungeonStackedBonusMessage(uint dungeonId = 0, uint xpBonus = 0, uint dropBonus = 0)
-		{
-			DungeonId = dungeonId;
-			XpBonus = xpBonus;
-			DropBonus = dropBonus;
-		}
+        public ChallengeDungeonStackedBonusMessage(uint dungeonId = 0, uint xpBonus = 0, uint dropBonus = 0)
+        {
+            DungeonId = dungeonId;
+            XpBonus = xpBonus;
+            DropBonus = dropBonus;
+        }
 
-	}
+    }
 }

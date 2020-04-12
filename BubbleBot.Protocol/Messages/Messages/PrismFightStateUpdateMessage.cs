@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismFightStateUpdateMessage : Message
-	{
+    public class PrismFightStateUpdateMessage : Message
+    {
 
-		// Properties
-		public uint State { get; set; }
+        // Properties
+        public uint State { get; set; }
 
 
-		// Constructors
-		public PrismFightStateUpdateMessage() { }
+        // Constructors
+        public PrismFightStateUpdateMessage() { }
 
-		public PrismFightStateUpdateMessage(uint state = 0)
-		{
-			State = state;
-		}
+        public PrismFightStateUpdateMessage(uint state = 0)
+        {
+            State = state;
+        }
 
-	}
+    }
 }

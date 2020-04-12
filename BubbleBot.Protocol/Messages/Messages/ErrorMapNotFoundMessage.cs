@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ErrorMapNotFoundMessage : Message
-	{
+    public class ErrorMapNotFoundMessage : Message
+    {
 
-		// Properties
-		public uint MapId { get; set; }
+        // Properties
+        public uint MapId { get; set; }
 
 
-		// Constructors
-		public ErrorMapNotFoundMessage() { }
+        // Constructors
+        public ErrorMapNotFoundMessage() { }
 
-		public ErrorMapNotFoundMessage(uint mapId = 0)
-		{
-			MapId = mapId;
-		}
+        public ErrorMapNotFoundMessage(uint mapId = 0)
+        {
+            MapId = mapId;
+        }
 
-	}
+    }
 }

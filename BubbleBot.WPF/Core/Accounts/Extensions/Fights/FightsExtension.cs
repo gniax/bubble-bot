@@ -1,3 +1,5 @@
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Core.Accounts.Extensions.Fights.Utility;
@@ -10,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {

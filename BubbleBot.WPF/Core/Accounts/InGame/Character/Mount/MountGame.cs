@@ -1,5 +1,5 @@
-using System;
 using BubbleBot.Protocol.Messages;
+using System;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Mount
 {

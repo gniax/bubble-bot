@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NpcGenericActionFailureMessage : Message
-	{
+    public class NpcGenericActionFailureMessage : Message
+    {
 
-		// Constructors
-		public NpcGenericActionFailureMessage() { }
+        // Constructors
+        public NpcGenericActionFailureMessage() { }
 
 
-	}
+    }
 }

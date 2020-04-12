@@ -1,9 +1,9 @@
 using BubbleBot.Core.Accounts.Extensions.Bid;
+using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 using BubbleBot.Core.Accounts.Extensions.Exchanges;
 using BubbleBot.Core.Accounts.Extensions.Fights;
 using BubbleBot.Core.Accounts.Extensions.Flood;
 using System;
-using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 
 namespace BubbleBot.Core.Accounts.Extensions
 {

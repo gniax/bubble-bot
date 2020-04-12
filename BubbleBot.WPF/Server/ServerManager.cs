@@ -1,25 +1,22 @@
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Groups;
+using BubbleBot.Server.Messages;
+using BubbleBot.Server.Network;
+using BubbleBot.Utility.DofusTouch;
+using BubbleBot.Utility.Extensions;
 using GalaSoft.MvvmLight;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Extensions;
-using BubbleBot.Core.Groups;
-using BubbleBot.Server.Enums;
-using BubbleBot.Server.Messages;
-using BubbleBot.Server.Network;
-using BubbleBot.Utility.Extensions;
-using BubbleBot.Utility.Security;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Windows;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Utility.DofusTouch;
-using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Server
 {
@@ -103,7 +100,7 @@ namespace BubbleBot.Server
                 return;
 
             Task.Delay(3000);
-            _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService); 
+            _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService);
             FunctionalitiesManager.Initialize();
         }
 
@@ -234,10 +231,10 @@ namespace BubbleBot.Server
 
                 _client.Connect(BubbleBot.Constants.ServerHost, BubbleBot.Constants.ServerService);
                 bool result = SpinWait.SpinUntil(() => State == ServerConnectionStates.CONNECTED, 10000);
-                if(result)
+                if (result)
                 {
                     ReconnectionSuccess?.Invoke(_client);
-                    break;                  
+                    break;
                 }
             }
         }
@@ -248,7 +245,7 @@ namespace BubbleBot.Server
 
         private static void HandleReconnectSuccessMessage(ReconnectSuccessMessage message)
         {
-            foreach(Account account in BubbleBotMain.Instance.ConnectedAccounts)
+            foreach (Account account in BubbleBotMain.Instance.ConnectedAccounts)
             {
                 BubbleBotMain.Instance.Server.SendMessage(new ConnectedAccountMessage(account.AccountConfig.Username));
                 if (account.Game.Character.IsSelected)
@@ -312,29 +309,29 @@ namespace BubbleBot.Server
                 switch (entity)
                 {
                     case Account account:
-                    {
-                        if (TryGenerateBot(account, out Bot bot))
                         {
-                            bots.Add(account.AccountConfig.Username, bot);
-                        }
-                        break;
-                    }
-                    case Group group:
-                    {
-                        if (TryGenerateBot(group.Chief, out Bot bot))
-                        {
-                            bots.Add(group.Chief.AccountConfig.Username, bot);
-                        }
-
-                        for (int i = 0; i < group.Members.Count; i++)
-                        {
-                            if (TryGenerateBot(group.Members[i], out Bot mbot))
+                            if (TryGenerateBot(account, out Bot bot))
                             {
-                                bots.Add(group.Members[i].AccountConfig.Username, mbot);
+                                bots.Add(account.AccountConfig.Username, bot);
                             }
+                            break;
                         }
-                        break;
-                    }
+                    case Group group:
+                        {
+                            if (TryGenerateBot(group.Chief, out Bot bot))
+                            {
+                                bots.Add(group.Chief.AccountConfig.Username, bot);
+                            }
+
+                            for (int i = 0; i < group.Members.Count; i++)
+                            {
+                                if (TryGenerateBot(group.Members[i], out Bot mbot))
+                                {
+                                    bots.Add(group.Members[i].AccountConfig.Username, mbot);
+                                }
+                            }
+                            break;
+                        }
                 }
             }
 

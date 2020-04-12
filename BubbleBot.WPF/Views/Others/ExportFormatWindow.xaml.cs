@@ -21,7 +21,7 @@ namespace BubbleBot.Views
 
         private void txtFormat_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(spAlert.IsVisible)
+            if (spAlert.IsVisible)
             {
                 spAlert.Visibility = Visibility.Hidden;
             }
@@ -29,7 +29,7 @@ namespace BubbleBot.Views
 
         private void btn_formatValidation(object sender, RoutedEventArgs e)
         {
-            if(txtFormat.Text != null)
+            if (txtFormat.Text != null)
             {
                 string[] separators = { ":" };
                 string[] keys = txtFormat.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -38,7 +38,7 @@ namespace BubbleBot.Views
                 int error = 0;
                 foreach (var key in keys)
                 {
-                    List<string> balises = new List<string>{ "username" , "password" , "ip" , "port" , "pxy-user" , "pxy-pass" , "id" };
+                    List<string> balises = new List<string> { "username", "password", "ip", "port", "pxy-user", "pxy-pass", "id" };
                     if (balises.IndexOf(key.ToLower()) != -1)
                         listOutput.Add(key);
                     else
@@ -52,10 +52,10 @@ namespace BubbleBot.Views
                 }
 
                 List<string> accountsOutput = new List<string>();
-                foreach(AccountConfiguration account in Accounts)
+                foreach (AccountConfiguration account in Accounts)
                 {
                     string line = "";
-                    foreach(var key in listOutput)
+                    foreach (var key in listOutput)
                     {
                         switch (key)
                         {
@@ -66,7 +66,7 @@ namespace BubbleBot.Views
                                 line += account.Password + ':';
                                 break;
                             case "ip":
-                                if(account.Proxy.Ip != "")
+                                if (account.Proxy.Ip != "")
                                     line += account.Proxy.Ip + ':';
                                 break;
                             case "port":
@@ -90,7 +90,7 @@ namespace BubbleBot.Views
                                 break;
                         }
                     }
-                    if(line.Length > 0)
+                    if (line.Length > 0)
                     {
                         // Remove the last ':' from the string
                         line = line.Remove(line.Length - 1);
@@ -103,7 +103,7 @@ namespace BubbleBot.Views
                     }
                 }
 
-                if(accountsOutput.Count > 0)
+                if (accountsOutput.Count > 0)
                 {
                     SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                     saveFileDialog1.Filter = "Text file|*.txt";

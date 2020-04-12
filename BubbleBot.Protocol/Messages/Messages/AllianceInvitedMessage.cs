@@ -1,26 +1,25 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceInvitedMessage : Message
-	{
+    public class AllianceInvitedMessage : Message
+    {
 
-		// Properties
-		public uint RecruterId { get; set; }
-		public string RecruterName { get; set; }
-		public BasicNamedAllianceInformations AllianceInfo { get; set; }
+        // Properties
+        public uint RecruterId { get; set; }
+        public string RecruterName { get; set; }
+        public BasicNamedAllianceInformations AllianceInfo { get; set; }
 
 
-		// Constructors
-		public AllianceInvitedMessage() { }
+        // Constructors
+        public AllianceInvitedMessage() { }
 
-		public AllianceInvitedMessage(uint recruterId = 0, string recruterName = "", BasicNamedAllianceInformations allianceInfo = null)
-		{
-			RecruterId = recruterId;
-			RecruterName = recruterName;
-			AllianceInfo = allianceInfo;
-		}
+        public AllianceInvitedMessage(uint recruterId = 0, string recruterName = "", BasicNamedAllianceInformations allianceInfo = null)
+        {
+            RecruterId = recruterId;
+            RecruterName = recruterName;
+            AllianceInfo = allianceInfo;
+        }
 
-	}
+    }
 }

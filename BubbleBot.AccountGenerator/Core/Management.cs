@@ -57,19 +57,19 @@ namespace AccountGenerator.Core
 
         public async Task GeneratorManagement()
         {
-          //  Console.WriteLine(Directory.GetCurrentDirectory()+ mailFile);
-          //  System.Threading.Thread.Sleep(1000000);
+            //  Console.WriteLine(Directory.GetCurrentDirectory()+ mailFile);
+            //  System.Threading.Thread.Sleep(1000000);
             if (File.Exists(Directory.GetCurrentDirectory() + proxyFile))
             {
                 proxyList = File.ReadAllLines(Directory.GetCurrentDirectory() + proxyFile).ToList();
-                if(proxyList.Count > 0)
+                if (proxyList.Count > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Les proxys ont bien été trouver !");
                     Console.WriteLine("Found " + proxyList.Count + " proxys.");
-                    maxProxy = proxyList.Count -1 ;
+                    maxProxy = proxyList.Count - 1;
                     // await StartGeneration();
-                    if(MODE == 1)
+                    if (MODE == 1)
                     {
                         await StartGenerationMultiple();
                     }
@@ -77,12 +77,12 @@ namespace AccountGenerator.Core
                     {
                         await StartGeneration();
                     }
-                   
-                   /* foreach (string value in proxyList)
-                    {
-                        Console.WriteLine(value);
-                        ProxyChecker(value);
-                    }*/
+
+                    /* foreach (string value in proxyList)
+                     {
+                         Console.WriteLine(value);
+                         ProxyChecker(value);
+                     }*/
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace AccountGenerator.Core
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Erreur, les proxys n'ont pas été trouver !");
             }
-            
+
         }
         public async Task debugOutput(string debugtxt)
         {
@@ -132,8 +132,8 @@ namespace AccountGenerator.Core
                     Console.WriteLine("Fin de la génération...");
                     break;
                 }
-                
-                for (int i = 0; i < MAX_THREAD;i++)
+
+                for (int i = 0; i < MAX_THREAD; i++)
                 {
                     if (counterProxy > maxProxy)
                     {
@@ -142,15 +142,15 @@ namespace AccountGenerator.Core
                     }
                     else
                     {
-                  //      Console.WriteLine("Lancement proxy toute thread...");
+                        //      Console.WriteLine("Lancement proxy toute thread...");
                         ProxyChecker(proxyList.ElementAt(counterProxy));
                         counterProxy++;
                     }
                 }
 
-                while(proxyCertified.Count < MAX_THREAD)
+                while (proxyCertified.Count < MAX_THREAD)
                 {
-                  //  Console.WriteLine("Verif proxy toute thread...");
+                    //  Console.WriteLine("Verif proxy toute thread...");
                     if (counterProxy > maxProxy && proxyFailled > 0)
                     {
                         proxyFailled--;
@@ -185,7 +185,7 @@ namespace AccountGenerator.Core
                 {
                     for (int i = 0; i < MAX_THREAD; i++)
                     {
-                        if(currentGen.ElementAt(i).allfinished == true)
+                        if (currentGen.ElementAt(i).allfinished == true)
                         {
                             currentGen.ElementAt(i).allfinished = false;
                             ingen--;
@@ -243,28 +243,28 @@ namespace AccountGenerator.Core
             await MailVerification(true);
 
             while (true)
-             {
+            {
                 if (proxyList.ElementAt(counterProxy) == "")
                 {
                     Console.WriteLine("Fin de la génération...");
                     break;
                 }
 
-                while(await ProxyChecker(proxyList.ElementAt(counterProxy)) == false)
+                while (await ProxyChecker(proxyList.ElementAt(counterProxy)) == false)
                 {
                     counterProxy++;
                 }
 
                 var accountCreating = new AccountGeneratorTouch("", PASSWORD, MAIL, proxyList.ElementAt(counterProxy), "", nbaccount);
                 accountCreating.CreationCompteStart();
-                while(accountCreating.allfinished == false)
+                while (accountCreating.allfinished == false)
                 {
                     System.Threading.Thread.Sleep(1000);
                 }
 
                 //Console.WriteLine("Fin de la creation du compte: 1");
-                string resAccount1  = accountCreating.outputAcc1;
-                string resAccount1p =  accountCreating.outputAcc1p;
+                string resAccount1 = accountCreating.outputAcc1;
+                string resAccount1p = accountCreating.outputAcc1p;
                 string resAccount2 = accountCreating.outputAcc2;
                 string resAccount2p = accountCreating.outputAcc2p;
                 string resAccount3 = accountCreating.outputAcc3;
@@ -295,7 +295,7 @@ namespace AccountGenerator.Core
                 }
 
 
-            counterProxy++;
+                counterProxy++;
             }
 
         }
@@ -305,14 +305,14 @@ namespace AccountGenerator.Core
             _semaphoreFile.Wait();
             if (File.Exists(Directory.GetCurrentDirectory() + outputFile))
             {
-             //   Console.WriteLine("Le fichier account.txt existe déjà !");
+                //   Console.WriteLine("Le fichier account.txt existe déjà !");
             }
             else
             {
                 File.Create(Directory.GetCurrentDirectory() + outputFile);
-            //    Console.WriteLine("on creer le fichier acccount.txt !");
+                //    Console.WriteLine("on creer le fichier acccount.txt !");
             }
-            StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + outputFile,true);
+            StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + outputFile, true);
             file.WriteLine(name + ":" + password);
             file.Flush();
             file.Dispose();
@@ -382,7 +382,7 @@ namespace AccountGenerator.Core
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Proxy valide !");
-                        if(MODE==1)
+                        if (MODE == 1)
                         {
                             await AddCertifiedProxy(proxy);
                         }
@@ -429,7 +429,7 @@ namespace AccountGenerator.Core
             foreach (string urlToVal in allUrlValidation)
             {
                 resp = await httpClient.GetAsync(urlToVal);
-             //   Console.Write(await resp.Content.ReadAsStringAsync());
+                //   Console.Write(await resp.Content.ReadAsStringAsync());
             }
             allUrlValidation = new List<string>();
         }
@@ -461,7 +461,7 @@ namespace AccountGenerator.Core
                         "user",
                         CancellationToken.None,
                         new FileDataStore(credPath, true)).Result;
-                  //  Console.WriteLine("Credential file saved to: " + credPath);
+                    //  Console.WriteLine("Credential file saved to: " + credPath);
                 }
 
                 // Create Gmail API service.
@@ -538,7 +538,7 @@ namespace AccountGenerator.Core
                                     int Index1 = body.IndexOf(posUrl1);
                                     int Index2 = body.IndexOf(@" ]", Index1 + posUrl1.Length);
                                     string validUrl = body.Substring(Index1 + posUrl1.Length, Index2 - Index1 - posUrl1.Length);
-                                   // Console.WriteLine(validUrl);
+                                    // Console.WriteLine(validUrl);
                                     tempUrlValidation.Add(validUrl);
                                 }
                             }

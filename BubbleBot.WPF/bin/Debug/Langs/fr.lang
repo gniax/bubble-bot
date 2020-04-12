@@ -1,4 +1,4 @@
-1|Erreur lors du chargement du compte {0}.\nMessage: {1}
+1|Erreur lors du chargement du compte {0}.                                           Message: {0}
 2|Message: {0}
 3|Lancer le script
 4|Arrêter le script
@@ -661,3 +661,6 @@
 669|Appliquer aux comptes sélectionnés
 670|Cloudflare a banni temporairement votre IP (TOO_MANY_REQUESTS) ! 
 671|Reconnectez-vous dans {0} secondes...
+672|Erreur d'accés Internet, vérifiez la validité de votre Proxy
+673|Erreur d'accés Internet, vérifiez l'état de votre connexion...
+674|Ajout de l'id à la liste des autorisations.

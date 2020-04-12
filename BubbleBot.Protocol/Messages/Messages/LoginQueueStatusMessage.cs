@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LoginQueueStatusMessage : Message
-	{
+    public class LoginQueueStatusMessage : Message
+    {
 
-		// Properties
-		public uint Position { get; set; }
-		public uint Total { get; set; }
+        // Properties
+        public uint Position { get; set; }
+        public uint Total { get; set; }
 
 
-		// Constructors
-		public LoginQueueStatusMessage() { }
+        // Constructors
+        public LoginQueueStatusMessage() { }
 
-		public LoginQueueStatusMessage(uint position = 0, uint total = 0)
-		{
-			Position = position;
-			Total = total;
-		}
+        public LoginQueueStatusMessage(uint position = 0, uint total = 0)
+        {
+            Position = position;
+            Total = total;
+        }
 
-	}
+    }
 }

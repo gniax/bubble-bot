@@ -1,19 +1,14 @@
-using System;
-using System.Collections;
+using BubbleBot.Configurations;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using BubbleBot.Configurations;
 
 namespace BubbleBot.Views.Planner
 {
     public partial class PlannerWindow
     {
-        public ObservableCollection<bool> TempCollection { get; set;  }
+        public ObservableCollection<bool> TempCollection { get; set; }
         public bool TempForceScript { get; set; }
         public bool TempActivated { get; set; }
         // Constructor
@@ -40,7 +35,7 @@ namespace BubbleBot.Views.Planner
                 TempCollection[index] = !TempCollection[index];
                 return;
             }
-            
+
 
             var account = LbAccounts.SelectedItem as AccountConfiguration;
             account.Planification[index] = !account.Planification[index];
@@ -61,10 +56,10 @@ namespace BubbleBot.Views.Planner
                 if (PlanificationForceScriptCheckbox.IsChecked == true)
                     account.ForceStartScript = true;
 
-                for(int i=0; i<24; i++)
+                for (int i = 0; i < 24; i++)
                 {
                     account.Planification[i] = TempCollection[i];
-                }               
+                }
             }
 
             GlobalConfiguration.Instance.Save();

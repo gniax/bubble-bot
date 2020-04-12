@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TaxCollectorMovementRemoveMessage : Message
-	{
+    public class TaxCollectorMovementRemoveMessage : Message
+    {
 
-		// Properties
-		public int CollectorId { get; set; }
+        // Properties
+        public int CollectorId { get; set; }
 
 
-		// Constructors
-		public TaxCollectorMovementRemoveMessage() { }
+        // Constructors
+        public TaxCollectorMovementRemoveMessage() { }
 
-		public TaxCollectorMovementRemoveMessage(int collectorId = 0)
-		{
-			CollectorId = collectorId;
-		}
+        public TaxCollectorMovementRemoveMessage(int collectorId = 0)
+        {
+            CollectorId = collectorId;
+        }
 
-	}
+    }
 }

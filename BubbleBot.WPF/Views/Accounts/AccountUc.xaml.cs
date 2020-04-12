@@ -1,3 +1,4 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
 using BubbleBot.Server.Enums;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using BubbleBot.Configurations.Language;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Views.Accounts
@@ -104,8 +104,9 @@ namespace BubbleBot.Views.Accounts
         {
             if (!removing)
             {
-                if (BubbleBotMain.Instance.SelectedAccount != null && tcMain.SelectedIndex != null || tcMain.SelectedIndex <= -1)
-                    await BubbleBotMain.Instance.RemoveSelectedAccount();
+                removing = true;
+                if (BubbleBotMain.Instance.SelectedAccount != null && tcMain.SelectedIndex >= 0)
+                    await BubbleBotMain.Instance.RemoveSelectedAccount().ConfigureAwait(false);
                 removing = false;
             }
         }

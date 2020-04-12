@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class KrosmasterAuthTokenErrorMessage : Message
-	{
+    public class KrosmasterAuthTokenErrorMessage : Message
+    {
 
-		// Properties
-		public uint Reason { get; set; }
+        // Properties
+        public uint Reason { get; set; }
 
 
-		// Constructors
-		public KrosmasterAuthTokenErrorMessage() { }
+        // Constructors
+        public KrosmasterAuthTokenErrorMessage() { }
 
-		public KrosmasterAuthTokenErrorMessage(uint reason = 0)
-		{
-			Reason = reason;
-		}
+        public KrosmasterAuthTokenErrorMessage(uint reason = 0)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

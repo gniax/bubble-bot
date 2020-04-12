@@ -1,6 +1,6 @@
-using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight;
 using BubbleBot.Utility.Security;
+using GalaSoft.MvvmLight;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
@@ -16,12 +16,12 @@ namespace BubbleBot.Configurations
 
 
         // Properties
-        public string Username { get; set;}
-        public string Password { get; set;}
-        public string Server { get; set;}
-        public string Character { get; set;}
-        public string Nickname { get; set;}
-        public string Identifiant { get; set;}
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Server { get; set; }
+        public string Character { get; set; }
+        public string Nickname { get; set; }
+        public string Identifiant { get; set; }
         public bool IsBan { get; set; }
 
         public ProxyConfiguration Proxy { get; private set; }

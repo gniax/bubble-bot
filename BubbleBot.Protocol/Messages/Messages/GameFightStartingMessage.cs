@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightStartingMessage : Message
-	{
+    public class GameFightStartingMessage : Message
+    {
 
-		// Properties
-		public uint FightType { get; set; }
+        // Properties
+        public uint FightType { get; set; }
 
 
-		// Constructors
-		public GameFightStartingMessage() { }
+        // Constructors
+        public GameFightStartingMessage() { }
 
-		public GameFightStartingMessage(uint fightType = 0)
-		{
-			FightType = fightType;
-		}
+        public GameFightStartingMessage(uint fightType = 0)
+        {
+            FightType = fightType;
+        }
 
-	}
+    }
 }

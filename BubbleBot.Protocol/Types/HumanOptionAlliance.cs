@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class HumanOptionAlliance : HumanOption
-	{
+    public class HumanOptionAlliance : HumanOption
+    {
 
-		// Properties
-		public AllianceInformations AllianceInformations { get; set; }
-		public uint Aggressable { get; set; }
+        // Properties
+        public AllianceInformations AllianceInformations { get; set; }
+        public uint Aggressable { get; set; }
 
 
-		// Constructors
-		public HumanOptionAlliance() { }
+        // Constructors
+        public HumanOptionAlliance() { }
 
-		public HumanOptionAlliance(AllianceInformations allianceInformations = null, uint aggressable = 0)
-		{
-			AllianceInformations = allianceInformations;
-			Aggressable = aggressable;
-		}
+        public HumanOptionAlliance(AllianceInformations allianceInformations = null, uint aggressable = 0)
+        {
+            AllianceInformations = allianceInformations;
+            Aggressable = aggressable;
+        }
 
-	}
+    }
 }

@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class CharacterMinimalInformations : AbstractCharacterInformation
-	{
+    public class CharacterMinimalInformations : AbstractCharacterInformation
+    {
 
-		// Properties
-		public uint Level { get; set; }
-		public string Name { get; set; }
+        // Properties
+        public uint Level { get; set; }
+        public string Name { get; set; }
 
 
-		// Constructors
-		public CharacterMinimalInformations() { }
+        // Constructors
+        public CharacterMinimalInformations() { }
 
-		public CharacterMinimalInformations(uint id = 0, uint level = 0, string name = "")
-		{
-			Id = id;
-			Level = level;
-			Name = name;
-		}
+        public CharacterMinimalInformations(uint id = 0, uint level = 0, string name = "")
+        {
+            Id = id;
+            Level = level;
+            Name = name;
+        }
 
-	}
+    }
 }

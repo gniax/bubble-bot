@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismSetSabotagedRefusedMessage : Message
-	{
+    public class PrismSetSabotagedRefusedMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public int Reason { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public int Reason { get; set; }
 
 
-		// Constructors
-		public PrismSetSabotagedRefusedMessage() { }
+        // Constructors
+        public PrismSetSabotagedRefusedMessage() { }
 
-		public PrismSetSabotagedRefusedMessage(uint subAreaId = 0, int reason = 0)
-		{
-			SubAreaId = subAreaId;
-			Reason = reason;
-		}
+        public PrismSetSabotagedRefusedMessage(uint subAreaId = 0, int reason = 0)
+        {
+            SubAreaId = subAreaId;
+            Reason = reason;
+        }
 
-	}
+    }
 }

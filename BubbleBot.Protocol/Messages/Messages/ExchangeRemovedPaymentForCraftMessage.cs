@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeRemovedPaymentForCraftMessage : Message
-	{
+    public class ExchangeRemovedPaymentForCraftMessage : Message
+    {
 
-		// Properties
-		public bool OnlySuccess { get; set; }
-		public uint ObjectUID { get; set; }
+        // Properties
+        public bool OnlySuccess { get; set; }
+        public uint ObjectUID { get; set; }
 
 
-		// Constructors
-		public ExchangeRemovedPaymentForCraftMessage() { }
+        // Constructors
+        public ExchangeRemovedPaymentForCraftMessage() { }
 
-		public ExchangeRemovedPaymentForCraftMessage(bool onlySuccess = false, uint objectUID = 0)
-		{
-			OnlySuccess = onlySuccess;
-			ObjectUID = objectUID;
-		}
+        public ExchangeRemovedPaymentForCraftMessage(bool onlySuccess = false, uint objectUID = 0)
+        {
+            OnlySuccess = onlySuccess;
+            ObjectUID = objectUID;
+        }
 
-	}
+    }
 }

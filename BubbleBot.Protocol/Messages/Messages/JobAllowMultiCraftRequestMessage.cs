@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobAllowMultiCraftRequestMessage : Message
-	{
+    public class JobAllowMultiCraftRequestMessage : Message
+    {
 
-		// Properties
-		public bool Enabled { get; set; }
+        // Properties
+        public bool Enabled { get; set; }
 
 
-		// Constructors
-		public JobAllowMultiCraftRequestMessage() { }
+        // Constructors
+        public JobAllowMultiCraftRequestMessage() { }
 
-		public JobAllowMultiCraftRequestMessage(bool enabled = false)
-		{
-			Enabled = enabled;
-		}
+        public JobAllowMultiCraftRequestMessage(bool enabled = false)
+        {
+            Enabled = enabled;
+        }
 
-	}
+    }
 }

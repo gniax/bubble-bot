@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectAddedMessage : Message
-	{
+    public class ObjectAddedMessage : Message
+    {
 
-		// Properties
-		public ObjectItem @Object { get; set; }
+        // Properties
+        public ObjectItem @Object { get; set; }
 
 
-		// Constructors
-		public ObjectAddedMessage() { }
+        // Constructors
+        public ObjectAddedMessage() { }
 
-		public ObjectAddedMessage(ObjectItem @object = null)
-		{
-			@Object = @object;
-		}
+        public ObjectAddedMessage(ObjectItem @object = null)
+        {
+            @Object = @object;
+        }
 
-	}
+    }
 }

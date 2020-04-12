@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeCraftSlotCountIncreasedMessage : Message
-	{
+    public class ExchangeCraftSlotCountIncreasedMessage : Message
+    {
 
-		// Properties
-		public uint NewMaxSlot { get; set; }
+        // Properties
+        public uint NewMaxSlot { get; set; }
 
 
-		// Constructors
-		public ExchangeCraftSlotCountIncreasedMessage() { }
+        // Constructors
+        public ExchangeCraftSlotCountIncreasedMessage() { }
 
-		public ExchangeCraftSlotCountIncreasedMessage(uint newMaxSlot = 0)
-		{
-			NewMaxSlot = newMaxSlot;
-		}
+        public ExchangeCraftSlotCountIncreasedMessage(uint newMaxSlot = 0)
+        {
+            NewMaxSlot = newMaxSlot;
+        }
 
-	}
+    }
 }

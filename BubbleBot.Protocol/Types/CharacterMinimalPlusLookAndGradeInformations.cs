@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class CharacterMinimalPlusLookAndGradeInformations : CharacterMinimalPlusLookInformations
-	{
+    public class CharacterMinimalPlusLookAndGradeInformations : CharacterMinimalPlusLookInformations
+    {
 
-		// Properties
-		public uint Grade { get; set; }
+        // Properties
+        public uint Grade { get; set; }
 
 
-		// Constructors
-		public CharacterMinimalPlusLookAndGradeInformations() { }
+        // Constructors
+        public CharacterMinimalPlusLookAndGradeInformations() { }
 
-		public CharacterMinimalPlusLookAndGradeInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null, uint grade = 0)
-		{
-			Id = id;
-			Level = level;
-			Name = name;
-			EntityLook = entityLook;
-			Grade = grade;
-		}
+        public CharacterMinimalPlusLookAndGradeInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null, uint grade = 0)
+        {
+            Id = id;
+            Level = level;
+            Name = name;
+            EntityLook = entityLook;
+            Grade = grade;
+        }
 
-	}
+    }
 }

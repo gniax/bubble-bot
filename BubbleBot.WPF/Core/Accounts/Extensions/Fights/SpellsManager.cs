@@ -1,3 +1,4 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Core.Accounts.InGame.Fights;
@@ -10,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {
@@ -423,7 +423,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return true;
 
             var nearestEnnemy = _account.Game.Fight.GetNearestEnnemy();
-            
+
             if (nearestEnnemy == null)
                 return false;
 

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicTimeMessage : Message
-	{
+    public class BasicTimeMessage : Message
+    {
 
-		// Properties
-		public uint Timestamp { get; set; }
-		public int TimezoneOffset { get; set; }
+        // Properties
+        public uint Timestamp { get; set; }
+        public int TimezoneOffset { get; set; }
 
 
-		// Constructors
-		public BasicTimeMessage() { }
+        // Constructors
+        public BasicTimeMessage() { }
 
-		public BasicTimeMessage(uint timestamp = 0, int timezoneOffset = 0)
-		{
-			Timestamp = timestamp;
-			TimezoneOffset = timezoneOffset;
-		}
+        public BasicTimeMessage(uint timestamp = 0, int timezoneOffset = 0)
+        {
+            Timestamp = timestamp;
+            TimezoneOffset = timezoneOffset;
+        }
 
-	}
+    }
 }

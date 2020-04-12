@@ -1,10 +1,10 @@
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
+using MahApps.Metro.Controls.Dialogs;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Views.Accounts
 {

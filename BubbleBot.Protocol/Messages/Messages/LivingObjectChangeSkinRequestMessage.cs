@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LivingObjectChangeSkinRequestMessage : Message
-	{
+    public class LivingObjectChangeSkinRequestMessage : Message
+    {
 
-		// Properties
-		public uint LivingUID { get; set; }
-		public uint LivingPosition { get; set; }
-		public uint SkinId { get; set; }
+        // Properties
+        public uint LivingUID { get; set; }
+        public uint LivingPosition { get; set; }
+        public uint SkinId { get; set; }
 
 
-		// Constructors
-		public LivingObjectChangeSkinRequestMessage() { }
+        // Constructors
+        public LivingObjectChangeSkinRequestMessage() { }
 
-		public LivingObjectChangeSkinRequestMessage(uint livingUID = 0, uint livingPosition = 0, uint skinId = 0)
-		{
-			LivingUID = livingUID;
-			LivingPosition = livingPosition;
-			SkinId = skinId;
-		}
+        public LivingObjectChangeSkinRequestMessage(uint livingUID = 0, uint livingPosition = 0, uint skinId = 0)
+        {
+            LivingUID = livingUID;
+            LivingPosition = livingPosition;
+            SkinId = skinId;
+        }
 
-	}
+    }
 }

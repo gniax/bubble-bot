@@ -1,4 +1,3 @@
-using System;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters

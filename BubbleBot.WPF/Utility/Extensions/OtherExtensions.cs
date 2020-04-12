@@ -1,9 +1,9 @@
-using System.Net.Http;
-using System.Threading.Tasks;
+using CrashReporterDotNET;
 using Newtonsoft.Json.Linq;
 using System;
-using CrashReporterDotNET;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Utility.Extensions
 {

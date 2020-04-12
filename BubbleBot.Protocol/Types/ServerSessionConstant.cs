@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class ServerSessionConstant
-	{
+    public class ServerSessionConstant
+    {
 
-		// Properties
-		public uint Id { get; set; }
+        // Properties
+        public uint Id { get; set; }
 
 
-		// Constructors
-		public ServerSessionConstant() { }
+        // Constructors
+        public ServerSessionConstant() { }
 
-		public ServerSessionConstant(uint id = 0)
-		{
-			Id = id;
-		}
+        public ServerSessionConstant(uint id = 0)
+        {
+            Id = id;
+        }
 
-	}
+    }
 }

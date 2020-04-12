@@ -1,8 +1,8 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Frames.Game
 {
@@ -60,7 +60,7 @@ namespace BubbleBot.Core.Frames.Game
 
         public static Task HandleGameFightTurnReadyRequestMessage(Account account, GameFightTurnReadyRequestMessage message)
            => Task.Run(async () =>
-           {           
+           {
                await Task.Delay(message.Id == account.Game.Character.Id ? 200 : 400 * (int)account.Extensions.Fights.Configuration.FightsSpeed);
                await account.Network.SendMessageAsync(new GameFightTurnReadyMessage(true));
            });

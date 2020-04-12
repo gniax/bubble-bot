@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismSettingsErrorMessage : Message
-	{
+    public class PrismSettingsErrorMessage : Message
+    {
 
-		// Constructors
-		public PrismSettingsErrorMessage() { }
+        // Constructors
+        public PrismSettingsErrorMessage() { }
 
 
-	}
+    }
 }

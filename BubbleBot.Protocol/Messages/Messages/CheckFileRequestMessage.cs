@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CheckFileRequestMessage : Message
-	{
+    public class CheckFileRequestMessage : Message
+    {
 
-		// Properties
-		public string Filename { get; set; }
-		public uint Type { get; set; }
+        // Properties
+        public string Filename { get; set; }
+        public uint Type { get; set; }
 
 
-		// Constructors
-		public CheckFileRequestMessage() { }
+        // Constructors
+        public CheckFileRequestMessage() { }
 
-		public CheckFileRequestMessage(string filename = "", uint type = 0)
-		{
-			Filename = filename;
-			Type = type;
-		}
+        public CheckFileRequestMessage(string filename = "", uint type = 0)
+        {
+            Filename = filename;
+            Type = type;
+        }
 
-	}
+    }
 }

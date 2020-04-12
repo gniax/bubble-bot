@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildInvitationAnswerMessage : Message
-	{
+    public class GuildInvitationAnswerMessage : Message
+    {
 
-		// Properties
-		public bool Accept { get; set; }
+        // Properties
+        public bool Accept { get; set; }
 
 
-		// Constructors
-		public GuildInvitationAnswerMessage() { }
+        // Constructors
+        public GuildInvitationAnswerMessage() { }
 
-		public GuildInvitationAnswerMessage(bool accept = false)
-		{
-			Accept = accept;
-		}
+        public GuildInvitationAnswerMessage(bool accept = false)
+        {
+            Accept = accept;
+        }
 
-	}
+    }
 }

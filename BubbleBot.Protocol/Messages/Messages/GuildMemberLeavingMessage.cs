@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildMemberLeavingMessage : Message
-	{
+    public class GuildMemberLeavingMessage : Message
+    {
 
-		// Properties
-		public bool Kicked { get; set; }
-		public int MemberId { get; set; }
+        // Properties
+        public bool Kicked { get; set; }
+        public int MemberId { get; set; }
 
 
-		// Constructors
-		public GuildMemberLeavingMessage() { }
+        // Constructors
+        public GuildMemberLeavingMessage() { }
 
-		public GuildMemberLeavingMessage(bool kicked = false, int memberId = 0)
-		{
-			Kicked = kicked;
-			MemberId = memberId;
-		}
+        public GuildMemberLeavingMessage(bool kicked = false, int memberId = 0)
+        {
+            Kicked = kicked;
+            MemberId = memberId;
+        }
 
-	}
+    }
 }

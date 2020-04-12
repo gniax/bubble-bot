@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildPaddockBoughtMessage : Message
-	{
+    public class GuildPaddockBoughtMessage : Message
+    {
 
-		// Properties
-		public PaddockContentInformations PaddockInfo { get; set; }
+        // Properties
+        public PaddockContentInformations PaddockInfo { get; set; }
 
 
-		// Constructors
-		public GuildPaddockBoughtMessage() { }
+        // Constructors
+        public GuildPaddockBoughtMessage() { }
 
-		public GuildPaddockBoughtMessage(PaddockContentInformations paddockInfo = null)
-		{
-			PaddockInfo = paddockInfo;
-		}
+        public GuildPaddockBoughtMessage(PaddockContentInformations paddockInfo = null)
+        {
+            PaddockInfo = paddockInfo;
+        }
 
-	}
+    }
 }

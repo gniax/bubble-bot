@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterSelectionWithRenameMessage : CharacterSelectionMessage
-	{
+    public class CharacterSelectionWithRenameMessage : CharacterSelectionMessage
+    {
 
-		// Properties
-		public string Name { get; set; }
+        // Properties
+        public string Name { get; set; }
 
 
-		// Constructors
-		public CharacterSelectionWithRenameMessage() { }
+        // Constructors
+        public CharacterSelectionWithRenameMessage() { }
 
-		public CharacterSelectionWithRenameMessage(int id = 0, string name = "")
-		{
-			Id = id;
-			Name = name;
-		}
+        public CharacterSelectionWithRenameMessage(int id = 0, string name = "")
+        {
+            Id = id;
+            Name = name;
+        }
 
-	}
+    }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
 {
@@ -14,7 +10,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         public int Value { get; private set; }
 
         // Constructor
-        public EditValueIntAction(string filename,string name,int value)
+        public EditValueIntAction(string filename, string name, int value)
         {
             FileName = filename;
             Name = name;

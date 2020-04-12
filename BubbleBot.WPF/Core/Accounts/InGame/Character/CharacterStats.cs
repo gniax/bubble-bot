@@ -1,8 +1,7 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
-using System;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.InGame.Character
 {

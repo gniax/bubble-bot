@@ -1,6 +1,5 @@
 ﻿using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
-using System;
 using System.Windows;
 
 namespace BubbleBot.Views.Accounts
@@ -28,7 +27,7 @@ namespace BubbleBot.Views.Accounts
 
         private void btnConfirmation_Click(object sender, RoutedEventArgs e)
         {
-            if (Account.Username != txtUsername.Text)           
+            if (Account.Username != txtUsername.Text)
                 Account.IsBan = false;
 
             Account.Username = txtUsername.Text;
@@ -46,14 +45,14 @@ namespace BubbleBot.Views.Accounts
         {
             switch (serverName)
             {
-                case "-" : return 0;
-                case "Terra Cogita" : return 1;
-                case "Herdegrize" : return 2;
-                case "Oshimo" : return 3;
-                case "Dodge" : return 4;
-                case "Brutas" : return 5;
-                case "Grandapan" : return 6;
-                default : return 0;
+                case "-": return 0;
+                case "Terra Cogita": return 1;
+                case "Herdegrize": return 2;
+                case "Oshimo": return 3;
+                case "Dodge": return 4;
+                case "Brutas": return 5;
+                case "Grandapan": return 6;
+                default: return 0;
             }
         }
     }

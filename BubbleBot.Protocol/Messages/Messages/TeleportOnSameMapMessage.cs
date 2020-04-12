@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TeleportOnSameMapMessage : Message
-	{
+    public class TeleportOnSameMapMessage : Message
+    {
 
-		// Properties
-		public int TargetId { get; set; }
-		public uint CellId { get; set; }
+        // Properties
+        public int TargetId { get; set; }
+        public uint CellId { get; set; }
 
 
-		// Constructors
-		public TeleportOnSameMapMessage() { }
+        // Constructors
+        public TeleportOnSameMapMessage() { }
 
-		public TeleportOnSameMapMessage(int targetId = 0, uint cellId = 0)
-		{
-			TargetId = targetId;
-			CellId = cellId;
-		}
+        public TeleportOnSameMapMessage(int targetId = 0, uint cellId = 0)
+        {
+            TargetId = targetId;
+            CellId = cellId;
+        }
 
-	}
+    }
 }

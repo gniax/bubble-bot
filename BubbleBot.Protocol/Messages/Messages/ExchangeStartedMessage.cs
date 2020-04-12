@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeStartedMessage : Message
-	{
+    public class ExchangeStartedMessage : Message
+    {
 
-		// Properties
-		public int ExchangeType { get; set; }
+        // Properties
+        public int ExchangeType { get; set; }
 
 
-		// Constructors
-		public ExchangeStartedMessage() { }
+        // Constructors
+        public ExchangeStartedMessage() { }
 
-		public ExchangeStartedMessage(int exchangeType = 0)
-		{
-			ExchangeType = exchangeType;
-		}
+        public ExchangeStartedMessage(int exchangeType = 0)
+        {
+            ExchangeType = exchangeType;
+        }
 
-	}
+    }
 }

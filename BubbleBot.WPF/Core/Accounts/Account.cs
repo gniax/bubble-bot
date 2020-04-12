@@ -1,40 +1,31 @@
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Configurations;
+using BubbleBot.Core.Accounts.Extensions;
+using BubbleBot.Core.Accounts.InGame;
+using BubbleBot.Core.Accounts.Network;
+using BubbleBot.Core.Accounts.Scripts;
+using BubbleBot.Core.Accounts.Statistics;
+using BubbleBot.Core.Commands;
+using BubbleBot.Core.Enums;
+using BubbleBot.Core.Groups;
+using BubbleBot.Core.Logs;
+using BubbleBot.Protocol.Messages;
+using BubbleBot.Utility;
+using CefSharp;
+using CefSharp.OffScreen;
+using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BubbleBot.Core.Logs;
-using BubbleBot.Utility.Extensions;
-using BubbleBot.Core.Accounts.Network;
-using BubbleBot.Core.Accounts.InGame;
-using BubbleBot.Core.Enums;
-using BubbleBot.Core.Commands;
-using BubbleBot.Core.Accounts.Scripts;
-using BubbleBot.Configurations;
-using BubbleBot.Core.Accounts.Extensions;
-using BubbleBot.Protocol.Messages;
-using GalaSoft.MvvmLight;
-using BubbleBot.Core.Accounts.Configurations;
-using BubbleBot.Core.Accounts.Statistics;
-using BubbleBot.Core.Groups;
 using System.Diagnostics;
-using BubbleBot.Utility;
 using System.Dynamic;
-using System.Threading;
-using BubbleBot.Configurations.Language;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.IO;
-using System.Text;
-using CefSharp.OffScreen;
-using CefSharp;
-using System.Runtime.CompilerServices;
-using BubbleBot.Server.Messages;
-using BubbleBot.Core.Extensions;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Globalization;
-using CefSharp.Handler;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts
 {
@@ -49,11 +40,9 @@ namespace BubbleBot.Core.Accounts
         private string _apiKey;
         private string _token;
         private bool _fightLimitReached;
-
-        public ChromiumWebBrowser browser;
+        private ChromiumWebBrowser browser;
+        CancellationTokenSource _taskCancelToken;
         // Properties
-        public static List<uint> AuthorizeByDefautTrade = new List<uint>();
-        public static readonly SemaphoreSlim _AddSemaphore = new SemaphoreSlim(1,1);
         public AccountConfiguration AccountConfig { get; private set; }
         public Configuration Configuration { get; private set; }
         public FramesData FramesData { get; private set; }
@@ -108,13 +97,6 @@ namespace BubbleBot.Core.Accounts
         public event Action<Account> RecaptchaReceived;
         public event Action<Account, bool> RecaptchaResolved;
 
-        public static void addAutorizedPlayer(uint playerId)
-        {
-            _AddSemaphore.Wait();
-            AuthorizeByDefautTrade.Add(playerId);
-            _AddSemaphore.Release();
-        }
-
         // Constructor
         public Account(AccountConfiguration accountConfig)
         {
@@ -159,14 +141,14 @@ namespace BubbleBot.Core.Accounts
         }
         public void CloseBrowser()
         {
-            if(browser != null)
+            if (browser != null)
             {
                 if (browser.IsDisposed)
                 {
                     browser = null;
                     return;
                 }
-                else if(browser.IsBrowserInitialized && browser.IsLoading)
+                else if (browser.IsBrowserInitialized && browser.IsLoading)
                     browser.Stop();
 
                 browser.Dispose();
@@ -185,6 +167,7 @@ namespace BubbleBot.Core.Accounts
             {
                 if (e.HttpStatusCode == 200) //Si la requète POST a fonctionné --> on continue 
                 {
+                    _taskCancelToken = new CancellationTokenSource();
                     e.Frame.GetTextAsync().ContinueWith(taskHtml =>
                     {
                         string resultHtml = taskHtml.Result;
@@ -194,13 +177,15 @@ namespace BubbleBot.Core.Accounts
                         {
                             string apikey = (string)dictionaryRes["key"];
                             _apiKey = apikey;
+                            _taskCancelToken.Cancel(false);
                         }
                         else if (method == 2 && dictionaryRes.ContainsKey("token"))
                         {
                             string token = (string)dictionaryRes["token"];
                             _token = token;
+                            _taskCancelToken.Cancel(false);
                         }
-                    });
+                    }, _taskCancelToken.Token);
                     return e.HttpStatusCode;
                 }
                 else if (e.HttpStatusCode == 601)
@@ -250,13 +235,15 @@ namespace BubbleBot.Core.Accounts
                 if (method == 1)
                     _apiKey = "failed";
                 else if (method == 2)
-                    _token = "failed";              
+                    _token = "failed";
             }
             return e.HttpStatusCode;
         }
 
         private async Task<bool> SetToken()
         {
+            await Task.Delay(1);
+
             Console.WriteLine("[1/3] - Retrieving API key");
             string username = AccountConfig.Username;
             string password = AccountConfig.Password;
@@ -298,7 +285,7 @@ namespace BubbleBot.Core.Accounts
 
             IFrame frame = browser.GetMainFrame();
             IRequest request = frame.CreateRequest();
-            
+
             request.Url = "https://haapi.ankama.com/json/Ankama/v2/Api/CreateApiKey";
             byte[] bytes = Encoding.ASCII.GetBytes($"login={username}&password={password}&long_life_token=false");
             request.Method = "POST";
@@ -314,7 +301,7 @@ namespace BubbleBot.Core.Accounts
             {
                 httpCode = SetKey(1, RuntimeHelpers.GetObjectValue(sender), e);
             };
-            
+
             bool boolGetApiKey = System.Threading.SpinWait.SpinUntil(() => (_apiKey != null), TimeSpan.FromSeconds(20));
 
             if (ConnectError.Key == "Retry-After")
@@ -329,7 +316,13 @@ namespace BubbleBot.Core.Accounts
 
             if (boolGetApiKey == false || _apiKey == "failed")
             {
-                if (ConnectError.Key != "Retry-After")
+                if (httpCode == 0 && AccountConfig.Proxy.IsValid )
+                    Logger.LogError("", LanguageManager.Translate("672"));
+
+                else if(httpCode == 0)
+                    Logger.LogError("", LanguageManager.Translate("673"));
+
+                if (ConnectError.Key != "Retry-After" && httpCode != 0)
                     Logger.LogError("", LanguageManager.Translate("32", httpCode));
                 CloseBrowser();
                 _apiKey = null;
@@ -365,7 +358,13 @@ namespace BubbleBot.Core.Accounts
 
             if (getToken == false || _token == "failed")
             {
-                if (ConnectError.Key != "Retry-After")
+                if (httpCode == 0 && AccountConfig.Proxy.IsValid)
+                    Logger.LogError("", LanguageManager.Translate("672"));
+
+                else if (httpCode == 0)
+                    Logger.LogError("", LanguageManager.Translate("673"));
+
+                if (ConnectError.Key != "Retry-After" && httpCode != 0)
                     Logger.LogError("", LanguageManager.Translate("32", httpCode));
                 CloseBrowser();
                 _token = null;
@@ -484,7 +483,7 @@ namespace BubbleBot.Core.Accounts
         {
             try
             {
-                if(State != AccountStates.BANNED && !AccountConfig.IsBan)
+                if (State != AccountStates.BANNED && !AccountConfig.IsBan)
                     State = AccountStates.DISCONNECTED;
                 Logger.LogWarning("Network", LanguageManager.Translate("31"));
 
@@ -502,19 +501,21 @@ namespace BubbleBot.Core.Accounts
                     {
                         Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616"));
 
-                        if (Network.connectTimeout != null && Network.connectTimeout.Enabled == true)
-                            Network.connectTimeout.Close();
+                        if (Network.ConnectTimeout != null)
+                            Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
+                        PreventPlanificationReconnection = true;
 
                         Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("614", 30));
                         await Task.Delay(30000).ConfigureAwait(false);
-                            
 
                         await Connect().ConfigureAwait(false);
+                        PreventPlanificationReconnection = false;
                         if (_wasScriptEnabled || _wasScriptRunning)
                             WaitForRestartScript = true;
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine("Exception ex: {0}", ex.Message);
             }
@@ -593,8 +594,8 @@ namespace BubbleBot.Core.Accounts
 
             await Connect().ConfigureAwait(true);
 
-            if(Network.Connected)
-                WaitForRestartScript = true;             
+            if (Network.Connected)
+                WaitForRestartScript = true;
 
             return;
         }
@@ -615,16 +616,16 @@ namespace BubbleBot.Core.Accounts
             }
             // [Planification Activated]
             // If the bot is disconnected and the hour is green
-            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && !PreventPlanificationReconnection && 
+            else if (State == AccountStates.DISCONNECTED && AccountConfig.Planification[hour] && !PreventPlanificationReconnection &&
                      AccountConfig.PlanificationActivated)
             {
-                if(ConnectError.Value.AddMinutes(10) < DateTime.Now)
+                if (ConnectError.Value.AddMinutes(10) < DateTime.Now)
                 {
                     Logger.LogInfo("Planificateur", LanguageManager.Translate("585"));
                     try
                     {
                         await Connect();
-                        if(AccountConfig.ForceStartScript)
+                        if (AccountConfig.ForceStartScript)
                             WaitForRestartScript = true;
                     }
                     catch (Exception ex)
@@ -637,7 +638,7 @@ namespace BubbleBot.Core.Accounts
             }
             // [Either Planification Actived or Deactivated]
             // If the bot is connected and the script is not running as we want 
-            else if(Network.Connected && !Scripts.Running && WaitForRestartScript && !IsBusy)
+            else if (Network.Connected && !Scripts.Running && WaitForRestartScript && !IsBusy)
             {
                 if ((HasGroup && IsGroupChief) || !HasGroup)
                     Scripts.StartScript();
@@ -651,7 +652,7 @@ namespace BubbleBot.Core.Accounts
 
         private async void Map_MapLoaded()
         {
-            if(WaitForRestartScript)
+            if (WaitForRestartScript)
             {
                 // If this account is a group chief or solo, restart script
                 if ((HasGroup && IsGroupChief) || !HasGroup)
@@ -659,8 +660,8 @@ namespace BubbleBot.Core.Accounts
 
                 await Task.Delay(1500);
 
-                if(Scripts.Enabled && Scripts.Running)
-                { 
+                if (Scripts.Enabled && Scripts.Running)
+                {
                     WaitForRestartScript = false;
                 }
                 return;
@@ -671,7 +672,7 @@ namespace BubbleBot.Core.Accounts
 
             await Task.Delay(1500);
 
-            if(Scripts.CurrentScriptName != null)
+            if (Scripts.CurrentScriptName != null)
                 Logger.LogInfo("Planificateur", LanguageManager.Translate("583"));
 
             if ((HasGroup && IsGroupChief) || !HasGroup)
@@ -686,8 +687,10 @@ namespace BubbleBot.Core.Accounts
         {
             if (!_disposedValue)
             {
+                _taskCancelToken.Cancel(false);
                 if (disposing)
                 {
+                    _taskCancelToken.Dispose();
                     Logger.Dispose();
                     Network.Dispose();
                     Game.Dispose();
@@ -701,9 +704,9 @@ namespace BubbleBot.Core.Accounts
                 }
 
                 browser = null;
+                _taskCancelToken = null;
                 _state = AccountStates.NONE;
                 _apiKey = null;
-                ConnectError = (default);
                 _token = null;
                 AccountConfig = null;
                 Configuration = null;

@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class StartupActionsListMessage : Message
-	{
+    public class StartupActionsListMessage : Message
+    {
 
-		// Properties
-		public List<StartupActionAddObject> Actions { get; set; }
+        // Properties
+        public List<StartupActionAddObject> Actions { get; set; }
 
 
-		// Constructors
-		public StartupActionsListMessage() { }
+        // Constructors
+        public StartupActionsListMessage() { }
 
-		public StartupActionsListMessage(List<StartupActionAddObject> actions = null)
-		{
-			Actions = actions;
-		}
+        public StartupActionsListMessage(List<StartupActionAddObject> actions = null)
+        {
+            Actions = actions;
+        }
 
-	}
+    }
 }

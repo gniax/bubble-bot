@@ -1,6 +1,6 @@
-using BubbleBot.Protocol.Types;
-using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Messages;
+using BubbleBot.Protocol.Types;
 using BubbleBot.Utility.DofusTouch;
 using GalaSoft.MvvmLight;
 
@@ -8,7 +8,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 {
     public class SpellEntry : ViewModelBase
     {
-        
+
         // Properties
         public int Id { get; private set; }
         public byte Level { get; private set; }

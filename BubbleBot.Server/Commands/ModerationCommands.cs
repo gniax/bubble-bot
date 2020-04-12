@@ -69,9 +69,9 @@ namespace BubbleBot.Server.Commands
             if (args.Length != 0)
                 return;
 
-            if(ServerMain.Clients.Count > 0)
+            if (ServerMain.Clients.Count > 0)
             {
-                foreach(Client client in ServerMain.Clients)
+                foreach (Client client in ServerMain.Clients)
                 {
                     if (client == null)
                         break;

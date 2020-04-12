@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LockableStateUpdateHouseDoorMessage : LockableStateUpdateAbstractMessage
-	{
+    public class LockableStateUpdateHouseDoorMessage : LockableStateUpdateAbstractMessage
+    {
 
-		// Properties
-		public int HouseId { get; set; }
+        // Properties
+        public int HouseId { get; set; }
 
 
-		// Constructors
-		public LockableStateUpdateHouseDoorMessage() { }
+        // Constructors
+        public LockableStateUpdateHouseDoorMessage() { }
 
-		public LockableStateUpdateHouseDoorMessage(bool locked = false, int houseId = 0)
-		{
-			Locked = locked;
-			HouseId = houseId;
-		}
+        public LockableStateUpdateHouseDoorMessage(bool locked = false, int houseId = 0)
+        {
+            Locked = locked;
+            HouseId = houseId;
+        }
 
-	}
+    }
 }

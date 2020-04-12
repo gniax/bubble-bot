@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class UpdateSelfAgressableStatusMessage : Message
-	{
+    public class UpdateSelfAgressableStatusMessage : Message
+    {
 
-		// Properties
-		public uint Status { get; set; }
-		public uint ProbationTime { get; set; }
+        // Properties
+        public uint Status { get; set; }
+        public uint ProbationTime { get; set; }
 
 
-		// Constructors
-		public UpdateSelfAgressableStatusMessage() { }
+        // Constructors
+        public UpdateSelfAgressableStatusMessage() { }
 
-		public UpdateSelfAgressableStatusMessage(uint status = 0, uint probationTime = 0)
-		{
-			Status = status;
-			ProbationTime = probationTime;
-		}
+        public UpdateSelfAgressableStatusMessage(uint status = 0, uint probationTime = 0)
+        {
+            Status = status;
+            ProbationTime = probationTime;
+        }
 
-	}
+    }
 }

@@ -29,7 +29,7 @@ namespace AntiRecaptcha.Base
             var jsonPostData = new JObject();
             jsonPostData["clientKey"] = ClientKey;
             jsonPostData["task"] = taskJson ?? throw new Exception("A task preparing error.");
-            
+
             dynamic postResult = JsonPostRequest(ApiMethods.CreateTask, jsonPostData);
 
             if (postResult == null || postResult.Equals(false))

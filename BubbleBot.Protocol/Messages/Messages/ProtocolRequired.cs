@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ProtocolRequired : Message
-	{
+    public class ProtocolRequired : Message
+    {
 
-		// Properties
-		public uint RequiredVersion { get; set; }
-		public uint CurrentVersion { get; set; }
+        // Properties
+        public uint RequiredVersion { get; set; }
+        public uint CurrentVersion { get; set; }
 
 
-		// Constructors
-		public ProtocolRequired() { }
+        // Constructors
+        public ProtocolRequired() { }
 
-		public ProtocolRequired(uint requiredVersion = 0, uint currentVersion = 0)
-		{
-			RequiredVersion = requiredVersion;
-			CurrentVersion = currentVersion;
-		}
+        public ProtocolRequired(uint requiredVersion = 0, uint currentVersion = 0)
+        {
+            RequiredVersion = requiredVersion;
+            CurrentVersion = currentVersion;
+        }
 
-	}
+    }
 }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SubscriptionZoneMessage : Message
-	{
+    public class SubscriptionZoneMessage : Message
+    {
 
-		// Properties
-		public bool Active { get; set; }
+        // Properties
+        public bool Active { get; set; }
 
 
-		// Constructors
-		public SubscriptionZoneMessage() { }
+        // Constructors
+        public SubscriptionZoneMessage() { }
 
-		public SubscriptionZoneMessage(bool active = false)
-		{
-			Active = active;
-		}
+        public SubscriptionZoneMessage(bool active = false)
+        {
+            Active = active;
+        }
 
-	}
+    }
 }

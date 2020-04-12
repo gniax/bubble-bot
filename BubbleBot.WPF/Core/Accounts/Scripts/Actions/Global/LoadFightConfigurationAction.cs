@@ -1,9 +1,7 @@
 ﻿using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
-using BubbleBot.Views.Accounts;
 using System.IO;
 using System.Threading.Tasks;
-using BubbleBot.WPF.Views;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
@@ -23,6 +21,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
+            await Task.Delay(1);
             string path = FightsConfiguration.ConfigurationsPath + "\\" + FileName + ".fconfig";
             if (File.Exists(path))
             {

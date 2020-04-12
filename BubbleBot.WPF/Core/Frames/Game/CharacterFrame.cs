@@ -1,11 +1,7 @@
-using System.Diagnostics;
-using System.Linq;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Server.Messages;
-using BubbleBot.Core.Extensions;
 
 namespace BubbleBot.Core.Frames.Game
 {
@@ -86,7 +82,7 @@ namespace BubbleBot.Core.Frames.Game
         public static Task HandlebakSoftToHardCurrentRateSuccess(Account account, bakSoftToHardCurrentRateSuccess message)
             => Task.Run(() =>
             {
-                if(message.Rate.HasValue)
+                if (message.Rate.HasValue)
                     account.Game.bakRate = (double)message.Rate;
             });
         public static Task HandleshopBuyError(Account account, shopBuyError message)

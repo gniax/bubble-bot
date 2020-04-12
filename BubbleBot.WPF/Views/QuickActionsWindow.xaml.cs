@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Enums;
+using BubbleBot.Server.Messages;
+using Microsoft.Win32;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Enums;
-using BubbleBot.Server.Messages;
-using Microsoft.Win32;
 
 namespace BubbleBot.Views
 {
@@ -82,8 +78,8 @@ namespace BubbleBot.Views
                 var result = ofd.ShowDialog();
                 if (result.HasValue && result.Value)
                 {
-                    BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 0, 
-                        new[]{ ofd.FileName, File.ReadAllText(ofd.FileName) }));
+                    BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 0,
+                        new[] { ofd.FileName, File.ReadAllText(ofd.FileName) }));
                 }
             }
             catch { }

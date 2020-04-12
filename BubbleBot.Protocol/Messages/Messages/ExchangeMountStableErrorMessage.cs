@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeMountStableErrorMessage : Message
-	{
+    public class ExchangeMountStableErrorMessage : Message
+    {
 
-		// Constructors
-		public ExchangeMountStableErrorMessage() { }
+        // Constructors
+        public ExchangeMountStableErrorMessage() { }
 
 
-	}
+    }
 }

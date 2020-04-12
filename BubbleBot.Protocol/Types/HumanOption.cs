@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class HumanOption
-	{
+    public class HumanOption
+    {
 
-		// Constructors
-		public HumanOption() { }
+        // Constructors
+        public HumanOption() { }
 
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeStartOkCraftWithInformationMessage : ExchangeStartOkCraftMessage
-	{
+    public class ExchangeStartOkCraftWithInformationMessage : ExchangeStartOkCraftMessage
+    {
 
-		// Properties
-		public uint NbCase { get; set; }
-		public uint SkillId { get; set; }
+        // Properties
+        public uint NbCase { get; set; }
+        public uint SkillId { get; set; }
 
 
-		// Constructors
-		public ExchangeStartOkCraftWithInformationMessage() { }
+        // Constructors
+        public ExchangeStartOkCraftWithInformationMessage() { }
 
-		public ExchangeStartOkCraftWithInformationMessage(uint nbCase = 0, uint skillId = 0)
-		{
-			NbCase = nbCase;
-			SkillId = skillId;
-		}
+        public ExchangeStartOkCraftWithInformationMessage(uint nbCase = 0, uint skillId = 0)
+        {
+            NbCase = nbCase;
+            SkillId = skillId;
+        }
 
-	}
+    }
 }

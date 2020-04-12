@@ -1,11 +1,11 @@
-using GalaSoft.MvvmLight;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Jobs.Skills;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Utility.DofusTouch;
+using GalaSoft.MvvmLight;
 using System.Collections.Generic;
 using System.Linq;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 {

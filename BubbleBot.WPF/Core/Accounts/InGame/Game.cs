@@ -1,15 +1,15 @@
+using BubbleBot.Core.Accounts.InGame.Bid;
 using BubbleBot.Core.Accounts.InGame.Character;
-using BubbleBot.Core.Accounts.InGame.Map;
-using BubbleBot.Core.Accounts.InGame.Server;
-using BubbleBot.Core.Accounts.InGame.Fights;
 using BubbleBot.Core.Accounts.InGame.Chat;
+using BubbleBot.Core.Accounts.InGame.Exchange;
+using BubbleBot.Core.Accounts.InGame.ExtendScript;
+using BubbleBot.Core.Accounts.InGame.Fights;
 using BubbleBot.Core.Accounts.InGame.Managers;
+using BubbleBot.Core.Accounts.InGame.Map;
 using BubbleBot.Core.Accounts.InGame.Npcs;
+using BubbleBot.Core.Accounts.InGame.Server;
 using BubbleBot.Core.Accounts.InGame.Storage;
 using System;
-using BubbleBot.Core.Accounts.InGame.Exchange;
-using BubbleBot.Core.Accounts.InGame.Bid;
-using BubbleBot.Core.Accounts.InGame.ExtendScript;
 
 namespace BubbleBot.Core.Accounts.InGame
 {

@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismFightDefenderLeaveMessage : Message
-	{
+    public class PrismFightDefenderLeaveMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public double FightId { get; set; }
-		public uint FighterToRemoveId { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public double FightId { get; set; }
+        public uint FighterToRemoveId { get; set; }
 
 
-		// Constructors
-		public PrismFightDefenderLeaveMessage() { }
+        // Constructors
+        public PrismFightDefenderLeaveMessage() { }
 
-		public PrismFightDefenderLeaveMessage(uint subAreaId = 0, double fightId = 0, uint fighterToRemoveId = 0)
-		{
-			SubAreaId = subAreaId;
-			FightId = fightId;
-			FighterToRemoveId = fighterToRemoveId;
-		}
+        public PrismFightDefenderLeaveMessage(uint subAreaId = 0, double fightId = 0, uint fighterToRemoveId = 0)
+        {
+            SubAreaId = subAreaId;
+            FightId = fightId;
+            FighterToRemoveId = fighterToRemoveId;
+        }
 
-	}
+    }
 }

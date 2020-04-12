@@ -1,22 +1,22 @@
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Scripts.Managers;
 using BubbleBot.Core.Commands;
 using BubbleBot.Core.Frames;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Data.Maps;
 using BubbleBot.Protocol.Types;
+using BubbleBot.Server.Messages;
+using BubbleBot.Updates;
 using BubbleBot.Utility;
 using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Views;
+using BubbleBot.Views.Planner;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using BubbleBot.Server.Messages;
-using BubbleBot.Updates;
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Views.Planner;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -64,29 +64,23 @@ namespace BubbleBot.WPF.Views
                     {
                         Protocol.Messages.MessagesBuilder.Initialize();
                         controller.SetProgress(0.14);
-                        await Task.Delay(200);
 
                         TypesBuilder.Initialize();
                         controller.SetProgress(0.28);
-                        await Task.Delay(200);
 
                         DataManager.Initialize(DTConstants.AssetsVersion, GlobalConfiguration.Instance.Lang);
                         controller.SetProgress(0.42);
-                        await Task.Delay(200);
 
                         MapsManager.Initialize(DTConstants.AssetsVersion);
                         controller.SetProgress(0.56);
-                        await Task.Delay(200);
 
                         FramesManager.Initialize();
                         controller.SetProgress(0.70);
-                        await Task.Delay(200);
 
                         CommandsHandler.Initialize();
 
                         BreedsUtility.Initialize();
                         controller.SetProgress(1);
-                        await Task.Delay(200);
 
                         LuaScriptManager.Initialize();
                     });

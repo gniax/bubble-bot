@@ -1,13 +1,13 @@
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Extensions.Bid;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Server.Messages;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Views.Accounts
 {

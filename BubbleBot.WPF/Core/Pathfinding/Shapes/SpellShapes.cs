@@ -56,7 +56,7 @@ namespace BubbleBot.Core.Pathfinding.Shapes
                 dirY = targetCoords.Y == casterCoords.Y ? 0 : targetCoords.Y > casterCoords.Y ? 1 : -1;
             }
 
-            var radiusMin = shaper.WithoutCenter ? (effect.ZoneMinSize == 0 ? 1 : effect.ZoneMinSize): effect.ZoneMinSize;
+            var radiusMin = shaper.WithoutCenter ? (effect.ZoneMinSize == 0 ? 1 : effect.ZoneMinSize) : effect.ZoneMinSize;
             var rangeCoords = shaper.Fn(targetCoords.X, targetCoords.Y, radiusMin, effect.ZoneSize, dirX, dirY);
 
             foreach (var mp in rangeCoords)

@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextQuitMessage : Message
-	{
+    public class GameContextQuitMessage : Message
+    {
 
-		// Constructors
-		public GameContextQuitMessage() { }
+        // Constructors
+        public GameContextQuitMessage() { }
 
 
-	}
+    }
 }

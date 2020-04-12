@@ -1,3 +1,5 @@
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
@@ -5,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Core.Accounts.InGame.Bid
@@ -61,7 +61,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
             uint minPriceTake = cheapestItem.Prices[lot == 1 ? 0 : lot == 10 ? 1 : 2];
 
-            if(minPriceTake >= 1 )
+            if (minPriceTake >= 1)
             {
                 return minPriceTake;
             }
@@ -137,9 +137,9 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 return false;
             }
 
-            if(unsoldDelay == 0)
+            if (unsoldDelay == 0)
                 _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("105", lot, item.Name, price));
-            else if(unsoldDelay > 0)
+            else if (unsoldDelay > 0)
                 _account.Logger.LogInfo(LanguageManager.Translate("102"), (LanguageManager.Translate("105", lot, item.Name, price) + LanguageManager.Translate("657", unsoldDelay)));
             else
                 _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("658"));
@@ -215,7 +215,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
         {
             if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return;
-        
+
             _itemDescriptionTcs?.SetResult(message.ItemTypeDescriptions);
         }
 
@@ -291,7 +291,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             {
                 _itemDescriptionTcs = new TaskCompletionSource<List<BidExchangerObjectInfo>>();
                 _account.Network.SendMessage(new ExchangeBidHouseSearchMessage((uint)item.TypeId, gid));
-                
+
                 _itemDescriptionTcs.Task.Wait();
                 _lastSearchedGID = gid;
             }
@@ -299,7 +299,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        public bool ExtendedBuyItem(uint gid, uint lot,uint maxPrice)
+        public bool ExtendedBuyItem(uint gid, uint lot, uint maxPrice)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
@@ -323,7 +323,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                     condition.Checked = false;
                 }
 
-                for (int effId = 0; effId < item.Effects.Count;effId++)  //Pour chaque effet de l'item
+                for (int effId = 0; effId < item.Effects.Count; effId++)  //Pour chaque effet de l'item
                 {
                     if (nbConditionToCheck > 0)
                     {
@@ -346,7 +346,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                                     break;
                                 }
                             }
-                             
+
                         }
                     }
                 }
@@ -362,7 +362,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                             }
                         }
                     }
-                    if(conditionChecked == nbConditionToCheck)
+                    if (conditionChecked == nbConditionToCheck)
                     {
                         filteredItem.Add(item);
                     }
@@ -392,7 +392,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                     return false;
                 }
 
-                if(itemToBuy.Prices[index] > 0)
+                if (itemToBuy.Prices[index] > 0)
                 {
                     _account.Logger.LogInfo(LanguageManager.Translate("102"), LanguageManager.Translate("648", gid, lot, price));
                     _account.Network.SendMessage(new ExchangeBidHouseBuyMessage(itemToBuy.ObjectUID, lot, price));
@@ -422,7 +422,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return _itemDescriptionTcs.Task.Result;
         }
 
-        public bool AddBuyItemCondition(int EffectsId, string conditionType , int EffectsValue)
+        public bool AddBuyItemCondition(int EffectsId, string conditionType, int EffectsValue)
         {
             UserCondition.Add(new BidUserCondition(EffectsId, conditionType, EffectsValue));
             return true;

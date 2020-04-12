@@ -1,31 +1,29 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 using Newtonsoft.Json;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightLifePointsLostMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightLifePointsLostMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public int TargetId { get; set; }
-		public uint Loss { get; set; }
-		public uint PermanentDamages { get; set; }
+        // Properties
+        public int TargetId { get; set; }
+        public uint Loss { get; set; }
+        public uint PermanentDamages { get; set; }
         [JsonProperty("_isDead")]
         public bool IsDead { get; set; }
 
 
-		// Constructors
-		public GameActionFightLifePointsLostMessage() { }
+        // Constructors
+        public GameActionFightLifePointsLostMessage() { }
 
-		public GameActionFightLifePointsLostMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, uint loss = 0, uint permanentDamages = 0)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			TargetId = targetId;
-			Loss = loss;
-			PermanentDamages = permanentDamages;
-		}
+        public GameActionFightLifePointsLostMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, uint loss = 0, uint permanentDamages = 0)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            TargetId = targetId;
+            Loss = loss;
+            PermanentDamages = permanentDamages;
+        }
 
-	}
+    }
 }

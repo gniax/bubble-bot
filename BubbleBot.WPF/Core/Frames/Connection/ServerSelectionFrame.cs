@@ -1,14 +1,14 @@
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Frames.Connection
 {
-    public static  class ServerSelectionFrame
+    public static class ServerSelectionFrame
     {
 
         public static Task HandleServersListMessage(Account account, ServersListMessage message)
@@ -46,7 +46,7 @@ namespace BubbleBot.Core.Frames.Connection
         public static Task HandleServerStatusUpdateMessage(Account account, ServerStatusUpdateMessage message)
             => Task.Run(async () =>
             {
-                
+
                 if (account.FramesData.ServerToAutoConnectTo != 0 && message.Server.Id == account.FramesData.ServerToAutoConnectTo && (ServerStatusEnum)message.Server.Status == ServerStatusEnum.ONLINE)
                 {
                     await Task.Delay(2000);
@@ -69,7 +69,7 @@ namespace BubbleBot.Core.Frames.Connection
             => Task.Run(async () =>
             {
                 account.Logger.LogError(LanguageManager.Translate("87"), LanguageManager.Translate("632", (ServersListEnum)message.ServerId, (ServerStatusEnum)message.ServerStatus));
-                account.Network.Disconnect("CLIENT_CLOSING");
+                await account.Network.Disconnect("CLIENT_CLOSING");
             });
 
         public static Task HandleHelloGameMessage(Account account, HelloGameMessage message)

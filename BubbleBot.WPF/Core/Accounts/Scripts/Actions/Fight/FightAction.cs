@@ -1,7 +1,7 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 {

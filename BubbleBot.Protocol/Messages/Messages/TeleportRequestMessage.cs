@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TeleportRequestMessage : Message
-	{
+    public class TeleportRequestMessage : Message
+    {
 
-		// Properties
-		public uint TeleporterType { get; set; }
-		public uint MapId { get; set; }
+        // Properties
+        public uint TeleporterType { get; set; }
+        public uint MapId { get; set; }
 
 
-		// Constructors
-		public TeleportRequestMessage() { }
+        // Constructors
+        public TeleportRequestMessage() { }
 
-		public TeleportRequestMessage(uint teleporterType = 0, uint mapId = 0)
-		{
-			TeleporterType = teleporterType;
-			MapId = mapId;
-		}
+        public TeleportRequestMessage(uint teleporterType = 0, uint mapId = 0)
+        {
+            TeleporterType = teleporterType;
+            MapId = mapId;
+        }
 
-	}
+    }
 }

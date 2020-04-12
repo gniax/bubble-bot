@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Protocol.Enums;
+using System.Collections.Generic;
 
 namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 {

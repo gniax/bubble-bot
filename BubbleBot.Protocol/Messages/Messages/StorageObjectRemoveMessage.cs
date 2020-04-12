@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class StorageObjectRemoveMessage : Message
-	{
+    public class StorageObjectRemoveMessage : Message
+    {
 
-		// Properties
-		public uint ObjectUID { get; set; }
+        // Properties
+        public uint ObjectUID { get; set; }
 
 
-		// Constructors
-		public StorageObjectRemoveMessage() { }
+        // Constructors
+        public StorageObjectRemoveMessage() { }
 
-		public StorageObjectRemoveMessage(uint objectUID = 0)
-		{
-			ObjectUID = objectUID;
-		}
+        public StorageObjectRemoveMessage(uint objectUID = 0)
+        {
+            ObjectUID = objectUID;
+        }
 
-	}
+    }
 }

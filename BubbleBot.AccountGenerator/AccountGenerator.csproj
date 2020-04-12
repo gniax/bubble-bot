@@ -7,6 +7,12 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+  <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    None
+  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+</PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Lib\" />
   </ItemGroup>

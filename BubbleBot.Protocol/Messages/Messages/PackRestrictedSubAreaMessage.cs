@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PackRestrictedSubAreaMessage : Message
-	{
+    public class PackRestrictedSubAreaMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
 
 
-		// Constructors
-		public PackRestrictedSubAreaMessage() { }
+        // Constructors
+        public PackRestrictedSubAreaMessage() { }
 
-		public PackRestrictedSubAreaMessage(uint subAreaId = 0)
-		{
-			SubAreaId = subAreaId;
-		}
+        public PackRestrictedSubAreaMessage(uint subAreaId = 0)
+        {
+            SubAreaId = subAreaId;
+        }
 
-	}
+    }
 }

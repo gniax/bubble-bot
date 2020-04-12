@@ -1,12 +1,10 @@
-using System;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
-using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using MoonSharp.Interpreter.Debugging;
 using BubbleBot.Server.Messages;
-using BubbleBot.Core.Extensions;
-using BubbleBot.Configurations;
+using System;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Frames.Common
 {
@@ -43,7 +41,7 @@ namespace BubbleBot.Core.Frames.Common
                 if (account.Configuration.DisconnectUponFightsLimit)
                 {
                     account.Logger.LogWarning("SecurityFrame", LanguageManager.Translate("534"));
-                    
+
                     if (account.HasGroup && account.IsGroupChief)
                     {
                         await account.Group.Disconnect("CLIENT_CLOSING");
@@ -71,13 +69,13 @@ namespace BubbleBot.Core.Frames.Common
                     GlobalConfiguration.Instance.Save();
 
                     // Here we have to disconnect every bot which has set his auto disconnection
-                    if(account.Game.Character != null)
+                    if (account.Game.Character != null)
                     {
                         foreach (Account acc in BubbleBotMain.Instance.ConnectedAccounts)
                         {
-                            if(acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc.AccountConfig.Username != account.AccountConfig.Username)
+                            if (acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc.AccountConfig.Username != account.AccountConfig.Username)
                             {
-                                if(acc.Configuration.BanReconnectionDelay > 0)
+                                if (acc.Configuration.BanReconnectionDelay > 0)
                                 {
                                     acc.Logger.LogWarning(LanguageManager.Translate("654"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
                                     acc.PreventPlanificationReconnection = true;
@@ -90,7 +88,7 @@ namespace BubbleBot.Core.Frames.Common
                                     acc.Network.Disconnect("CLIENT_CLOSING", false).ConfigureAwait(false);
                                 }
                             }
-                            else if(acc.AccountConfig.Username != account.AccountConfig.Username)
+                            else if (acc.AccountConfig.Username != account.AccountConfig.Username)
                             {
                                 acc.Logger.LogWarning(LanguageManager.Translate("655"), LanguageManager.Translate("653", account.Game.Character.Name, account.Game.Server.Name));
                             }
@@ -112,7 +110,8 @@ namespace BubbleBot.Core.Frames.Common
                         account.Scripts.CurrentScriptName != null ? account.Scripts.CurrentScriptName : "-"
                     ));
                     account.Logger.LogError("", LanguageManager.Translate("559", until.ToString("G")));
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine("Error kicked msg : {0}", ex.Message);
                 }

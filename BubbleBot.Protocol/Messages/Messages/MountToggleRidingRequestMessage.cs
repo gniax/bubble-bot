@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountToggleRidingRequestMessage : Message
-	{
+    public class MountToggleRidingRequestMessage : Message
+    {
 
-		// Constructors
-		public MountToggleRidingRequestMessage() { }
+        // Constructors
+        public MountToggleRidingRequestMessage() { }
 
 
-	}
+    }
 }

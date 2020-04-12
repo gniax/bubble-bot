@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class CompassUpdatePartyMemberMessage : CompassUpdateMessage
-	{
+    public class CompassUpdatePartyMemberMessage : CompassUpdateMessage
+    {
 
-		// Properties
-		public uint MemberId { get; set; }
+        // Properties
+        public uint MemberId { get; set; }
 
 
-		// Constructors
-		public CompassUpdatePartyMemberMessage() { }
+        // Constructors
+        public CompassUpdatePartyMemberMessage() { }
 
-		public CompassUpdatePartyMemberMessage(uint type = 0, MapCoordinates coords = null, uint memberId = 0)
-		{
-			Type = type;
-			Coords = coords;
-			MemberId = memberId;
-		}
+        public CompassUpdatePartyMemberMessage(uint type = 0, MapCoordinates coords = null, uint memberId = 0)
+        {
+            Type = type;
+            Coords = coords;
+            MemberId = memberId;
+        }
 
-	}
+    }
 }

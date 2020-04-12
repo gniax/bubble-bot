@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AlliancePrismDialogQuestionMessage : Message
-	{
+    public class AlliancePrismDialogQuestionMessage : Message
+    {
 
-		// Constructors
-		public AlliancePrismDialogQuestionMessage() { }
+        // Constructors
+        public AlliancePrismDialogQuestionMessage() { }
 
 
-	}
+    }
 }

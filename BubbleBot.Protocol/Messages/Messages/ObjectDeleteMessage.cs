@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectDeleteMessage : Message
-	{
+    public class ObjectDeleteMessage : Message
+    {
 
-		// Properties
-		public uint ObjectUID { get; set; }
-		public uint Quantity { get; set; }
+        // Properties
+        public uint ObjectUID { get; set; }
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ObjectDeleteMessage() { }
+        // Constructors
+        public ObjectDeleteMessage() { }
 
-		public ObjectDeleteMessage(uint objectUID = 0, uint quantity = 0)
-		{
-			ObjectUID = objectUID;
-			Quantity = quantity;
-		}
+        public ObjectDeleteMessage(uint objectUID = 0, uint quantity = 0)
+        {
+            ObjectUID = objectUID;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayAggressionMessage : Message
-	{
+    public class GameRolePlayAggressionMessage : Message
+    {
 
-		// Properties
-		public uint AttackerId { get; set; }
-		public uint DefenderId { get; set; }
+        // Properties
+        public uint AttackerId { get; set; }
+        public uint DefenderId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayAggressionMessage() { }
+        // Constructors
+        public GameRolePlayAggressionMessage() { }
 
-		public GameRolePlayAggressionMessage(uint attackerId = 0, uint defenderId = 0)
-		{
-			AttackerId = attackerId;
-			DefenderId = defenderId;
-		}
+        public GameRolePlayAggressionMessage(uint attackerId = 0, uint defenderId = 0)
+        {
+            AttackerId = attackerId;
+            DefenderId = defenderId;
+        }
 
-	}
+    }
 }

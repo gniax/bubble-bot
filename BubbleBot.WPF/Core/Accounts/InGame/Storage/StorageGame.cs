@@ -1,3 +1,4 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Data;
@@ -6,7 +7,6 @@ using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Storage
 {

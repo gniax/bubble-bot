@@ -1,12 +1,10 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Server.Messages;
 using BubbleBot.Utility.DofusTouch;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using System;
-using BubbleBot.Protocol.Messages.Messages;
 
 namespace BubbleBot.Core.Frames.Connection
 {
@@ -70,7 +68,7 @@ namespace BubbleBot.Core.Frames.Connection
                 await account.Network.SendMessageAsync(new ClientKeyMessage(FlashKeyGenerator.GetRandomFlashKey()));
                 await account.Network.SendMessageAsync(new GameContextCreateRequestMessage());
 
-                BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccesMessage(account.AccountConfig.Username, (int)account.Game.Character.Id, account.Game.Character.Name, 
+                BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccesMessage(account.AccountConfig.Username, (int)account.Game.Character.Id, account.Game.Character.Name,
                     account.Game.Server.Name, account.Game.Character.Breed.ToString(), account.Game.Character.Level));
             });
 

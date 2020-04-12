@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PaddockMoveItemRequestMessage : Message
-	{
+    public class PaddockMoveItemRequestMessage : Message
+    {
 
-		// Properties
-		public uint OldCellId { get; set; }
-		public uint NewCellId { get; set; }
+        // Properties
+        public uint OldCellId { get; set; }
+        public uint NewCellId { get; set; }
 
 
-		// Constructors
-		public PaddockMoveItemRequestMessage() { }
+        // Constructors
+        public PaddockMoveItemRequestMessage() { }
 
-		public PaddockMoveItemRequestMessage(uint oldCellId = 0, uint newCellId = 0)
-		{
-			OldCellId = oldCellId;
-			NewCellId = newCellId;
-		}
+        public PaddockMoveItemRequestMessage(uint oldCellId = 0, uint newCellId = 0)
+        {
+            OldCellId = oldCellId;
+            NewCellId = newCellId;
+        }
 
-	}
+    }
 }

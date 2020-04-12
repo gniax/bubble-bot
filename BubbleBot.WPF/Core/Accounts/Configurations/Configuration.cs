@@ -1,5 +1,5 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Core.Enums;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -255,7 +255,7 @@ namespace BubbleBot.Core.Accounts.Configurations
                         AutoMount = br.ReadBoolean();
                     }
                 }
-                catch {}
+                catch { }
             }
 
             _loaded = true;
@@ -307,7 +307,7 @@ namespace BubbleBot.Core.Accounts.Configurations
                     bw.Write(AutoMount);
                 }
             }
-            catch {}
+            catch { }
         }
 
         #region IDisposable Support
@@ -325,7 +325,7 @@ namespace BubbleBot.Core.Accounts.Configurations
                 _disposedValue = true;
             }
         }
-        
+
         public void Dispose()
             => Dispose(true);
 

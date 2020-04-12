@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class HouseToSellListRequestMessage : Message
-	{
+    public class HouseToSellListRequestMessage : Message
+    {
 
-		// Properties
-		public uint PageIndex { get; set; }
+        // Properties
+        public uint PageIndex { get; set; }
 
 
-		// Constructors
-		public HouseToSellListRequestMessage() { }
+        // Constructors
+        public HouseToSellListRequestMessage() { }
 
-		public HouseToSellListRequestMessage(uint pageIndex = 0)
-		{
-			PageIndex = pageIndex;
-		}
+        public HouseToSellListRequestMessage(uint pageIndex = 0)
+        {
+            PageIndex = pageIndex;
+        }
 
-	}
+    }
 }

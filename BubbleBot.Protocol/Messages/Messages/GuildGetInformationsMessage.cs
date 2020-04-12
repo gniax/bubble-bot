@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildGetInformationsMessage : Message
-	{
+    public class GuildGetInformationsMessage : Message
+    {
 
-		// Properties
-		public uint InfoType { get; set; }
+        // Properties
+        public uint InfoType { get; set; }
 
 
-		// Constructors
-		public GuildGetInformationsMessage() { }
+        // Constructors
+        public GuildGetInformationsMessage() { }
 
-		public GuildGetInformationsMessage(uint infoType = 0)
-		{
-			InfoType = infoType;
-		}
+        public GuildGetInformationsMessage(uint infoType = 0)
+        {
+            InfoType = infoType;
+        }
 
-	}
+    }
 }

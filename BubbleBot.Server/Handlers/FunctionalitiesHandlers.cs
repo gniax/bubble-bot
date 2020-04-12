@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using BubbleBot.Server.Clients;
+﻿using BubbleBot.Server.Clients;
 using BubbleBot.Server.Clients.Accounts;
 using BubbleBot.Server.Enums;
 using BubbleBot.Server.Messages;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;

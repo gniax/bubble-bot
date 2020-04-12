@@ -1,13 +1,13 @@
-using System.Text;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Core.Accounts.InGame.Character;
+using BubbleBot.WPF.Views;
+using MahApps.Metro.Controls.Dialogs;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Configurations.Language;
-using BubbleBot.WPF.Views;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -29,7 +29,7 @@ namespace BubbleBot.Views.Accounts
         {
             if (lvSpells.SelectedItem == null || lvSpells.SelectedIndex == 0)
                 return;
-            
+
             var temp = Account.Extensions.Fights.Configuration.Spells[lvSpells.SelectedIndex - 1];
             Account.Extensions.Fights.Configuration.Spells[lvSpells.SelectedIndex - 1] = Account.Extensions.Fights.Configuration.Spells[lvSpells.SelectedIndex];
             Account.Extensions.Fights.Configuration.Spells[lvSpells.SelectedIndex] = temp;
@@ -81,7 +81,7 @@ namespace BubbleBot.Views.Accounts
                 return;
 
             Account.Extensions.Fights.Configuration.Spells.Add(new Spell(spell.Id, spell.Name, (SpellTargets)cmbTarget.SelectedIndex, (byte)nudTurns.Value, (byte)nudRelaunchs.Value, (byte)nudTargetHp.Value,
-                (byte)nudCharacterHp.Value, (SpellResistances)cmbResistance.SelectedIndex, (byte)nudResistanceValue.Value, (byte)nudDistanceToClosestMonster.Value, cbHandToHand.IsChecked.Value, cbAOE.IsChecked.Value, 
+                (byte)nudCharacterHp.Value, (SpellResistances)cmbResistance.SelectedIndex, (byte)nudResistanceValue.Value, (byte)nudDistanceToClosestMonster.Value, cbHandToHand.IsChecked.Value, cbAOE.IsChecked.Value,
                 cbCarefulAOE.IsChecked.Value, cbAvoidAllies.IsChecked.Value));
             Account.Extensions.Fights.Configuration.Save();
         }

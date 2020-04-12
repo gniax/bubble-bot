@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using BubbleBot.Website.Extensions;
 using BubbleBot.Website.Models;
 using BubbleBot.Website.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using BubbleBot.Website.Extensions;
 
 namespace BubbleBot.Website.Controllers
 {
@@ -78,7 +72,7 @@ namespace BubbleBot.Website.Controllers
 
             if (lvm.ValidationToken != null)
             {
-                if(lvm.ValidationToken.Length == 24)
+                if (lvm.ValidationToken.Length == 24)
                 {
                     bool result = false;
                     var task = Task.Run(() =>
@@ -101,7 +95,7 @@ namespace BubbleBot.Website.Controllers
 
                     task.Wait();
 
-                    if(!result)
+                    if (!result)
                         return StatusCode(404);
 
                     return View();
@@ -117,7 +111,7 @@ namespace BubbleBot.Website.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel lvm)
-        {     
+        {
             if (HttpContext.User.Identity.IsAuthenticated)
                 return RedirectToAction("Index");
 
@@ -130,14 +124,14 @@ namespace BubbleBot.Website.Controllers
                 return View(lvm);
             }
 
-            if(lvm.Username.Length < 3 || lvm.Username.Length > 15)
+            if (lvm.Username.Length < 3 || lvm.Username.Length > 15)
             {
                 ViewBag.ErrorMessage = "La longueur du nom d'utilisateur doit être comprise entre 3 et 15 caractères.";
                 return View(lvm);
             }
 
             List<string> blackList = new List<string> { "administrateur", "admin", "root", "default", "modo", "moderateur", "pute", "bite", "niquetamere", "chatte", "fdp" };
-            if(blackList.IndexOf(lvm.Username.ToLower()) != -1)
+            if (blackList.IndexOf(lvm.Username.ToLower()) != -1)
             {
                 ViewBag.ErrorMessage = "Le nom d'utilisateur " + lvm.Username + " est interdit.";
                 return View(lvm);
@@ -149,7 +143,7 @@ namespace BubbleBot.Website.Controllers
                 return View(lvm);
             }
 
-            if(!new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(lvm.EmailAddress))
+            if (!new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(lvm.EmailAddress))
             {
                 ViewBag.ErrorMessage = "Le format de l'adresse e-mail est incorrecte...";
                 return View(lvm);
@@ -185,7 +179,7 @@ namespace BubbleBot.Website.Controllers
             }
             try
             {
-                
+
             }
             catch
             {

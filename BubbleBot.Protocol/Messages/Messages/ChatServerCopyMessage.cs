@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChatServerCopyMessage : ChatAbstractServerMessage
-	{
+    public class ChatServerCopyMessage : ChatAbstractServerMessage
+    {
 
-		// Properties
-		public uint ReceiverId { get; set; }
-		public string ReceiverName { get; set; }
+        // Properties
+        public uint ReceiverId { get; set; }
+        public string ReceiverName { get; set; }
 
 
-		// Constructors
-		public ChatServerCopyMessage() { }
+        // Constructors
+        public ChatServerCopyMessage() { }
 
-		public ChatServerCopyMessage(uint channel = 0, string content = "", uint timestamp = 0, string fingerprint = "", uint receiverId = 0, string receiverName = "")
-		{
-			Channel = channel;
-			Content = content;
-			Timestamp = timestamp;
-			Fingerprint = fingerprint;
-			ReceiverId = receiverId;
-			ReceiverName = receiverName;
-		}
+        public ChatServerCopyMessage(uint channel = 0, string content = "", uint timestamp = 0, string fingerprint = "", uint receiverId = 0, string receiverName = "")
+        {
+            Channel = channel;
+            Content = content;
+            Timestamp = timestamp;
+            Fingerprint = fingerprint;
+            ReceiverId = receiverId;
+            ReceiverName = receiverName;
+        }
 
-	}
+    }
 }

@@ -59,7 +59,7 @@ namespace BubbleBot.Views.Accounts
         {
             InitializeComponent();
             Initialize();
-            
+
             DataContextChanged += MapViewerUc_DataContextChanged;
             MouseLeftButtonUp += MapViewerUc_MouseLeftButtonUp;
         }
@@ -203,7 +203,7 @@ namespace BubbleBot.Views.Accounts
                 {
                     _cellsPoints[i].Draw(drawingContext, brush, _pen);
 
-                    
+
 
                     if (_path?.Contains(i) == true)
                     {
@@ -213,7 +213,7 @@ namespace BubbleBot.Views.Accounts
 
                 if (ShowCellIds)
                 {
-                    var fText = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : Brushes.Black);
+                    var fText = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
                     drawingContext.DrawText(fText, new Point(_cellsPoints[i].Points[0].X - fText.Width / 2, _cellsPoints[i].Points[1].Y - fText.Height / 2));
                 }
 
@@ -222,7 +222,7 @@ namespace BubbleBot.Views.Accounts
                     // Draw the sun image if this cell has it
                     if (Account.Game.Map.TeleportableCells.Contains(i))
                     {
-                        _cellsPoints[i].DrawImage(drawingContext, _sunImage);   
+                        _cellsPoints[i].DrawImage(drawingContext, _sunImage);
                     }
                     else if (Account.Game.Map.Phenixs.FirstOrDefault(p => p.CellId == i) != null)
                     {
@@ -296,7 +296,7 @@ namespace BubbleBot.Views.Accounts
                 {
                     _cellsPoints[cellId].DrawRectangle(drawingContext, _doorsBrush);
                 }
-                else if (Account.Game.Map.StatedElements.FirstOrDefault(se => se.CellId == cellId) != null || 
+                else if (Account.Game.Map.StatedElements.FirstOrDefault(se => se.CellId == cellId) != null ||
                     Account.Game.Map.Zaap?.CellId == cellId || Account.Game.Map.Zaapi?.CellId == cellId)
                 {
                     _cellsPoints[cellId].DrawRectangle(drawingContext, _interactivesBrush);

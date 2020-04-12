@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismFightDefendersSwapMessage : Message
-	{
+    public class PrismFightDefendersSwapMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public double FightId { get; set; }
-		public uint FighterId1 { get; set; }
-		public uint FighterId2 { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public double FightId { get; set; }
+        public uint FighterId1 { get; set; }
+        public uint FighterId2 { get; set; }
 
 
-		// Constructors
-		public PrismFightDefendersSwapMessage() { }
+        // Constructors
+        public PrismFightDefendersSwapMessage() { }
 
-		public PrismFightDefendersSwapMessage(uint subAreaId = 0, double fightId = 0, uint fighterId1 = 0, uint fighterId2 = 0)
-		{
-			SubAreaId = subAreaId;
-			FightId = fightId;
-			FighterId1 = fighterId1;
-			FighterId2 = fighterId2;
-		}
+        public PrismFightDefendersSwapMessage(uint subAreaId = 0, double fightId = 0, uint fighterId1 = 0, uint fighterId2 = 0)
+        {
+            SubAreaId = subAreaId;
+            FightId = fightId;
+            FighterId1 = fighterId1;
+            FighterId2 = fighterId2;
+        }
 
-	}
+    }
 }

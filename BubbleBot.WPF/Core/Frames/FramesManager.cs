@@ -1,12 +1,10 @@
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
-using System;
+using BubbleBot.Utility.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows;
-using BubbleBot.Utility.Extensions;
 
 namespace BubbleBot.Core.Frames
 {
@@ -60,7 +58,7 @@ namespace BubbleBot.Core.Frames
             {
                 try
                 {
-                    (method.Invoke(null, new object[] {account, message}) as Task).ContinueWith(
+                    (method.Invoke(null, new object[] { account, message }) as Task).ContinueWith(
                         c => c.Exception.InnerException.SendCrashReport(),
                         TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
                 }

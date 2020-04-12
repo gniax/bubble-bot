@@ -5,7 +5,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
 {
     public class MovableEntity
     {
- 
+
         // Properties
         public short CellId { get; protected set; }
 

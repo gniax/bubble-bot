@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightTurnListMessage : Message
-	{
+    public class GameFightTurnListMessage : Message
+    {
 
-		// Properties
-		public List<int> Ids { get; set; }
-		public List<int> DeadsIds { get; set; }
+        // Properties
+        public List<int> Ids { get; set; }
+        public List<int> DeadsIds { get; set; }
 
 
-		// Constructors
-		public GameFightTurnListMessage() { }
+        // Constructors
+        public GameFightTurnListMessage() { }
 
-		public GameFightTurnListMessage(List<int> ids = null, List<int> deadsIds = null)
-		{
-			Ids = ids;
-			DeadsIds = deadsIds;
-		}
+        public GameFightTurnListMessage(List<int> ids = null, List<int> deadsIds = null)
+        {
+            Ids = ids;
+            DeadsIds = deadsIds;
+        }
 
-	}
+    }
 }

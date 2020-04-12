@@ -1,5 +1,5 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Server.Messages;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Server
 {

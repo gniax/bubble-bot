@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class ObjectEffectMinMax : ObjectEffect
-	{
+    public class ObjectEffectMinMax : ObjectEffect
+    {
 
-		// Properties
-		public uint Min { get; set; }
-		public uint Max { get; set; }
+        // Properties
+        public uint Min { get; set; }
+        public uint Max { get; set; }
 
 
-		// Constructors
-		public ObjectEffectMinMax() { }
+        // Constructors
+        public ObjectEffectMinMax() { }
 
-		public ObjectEffectMinMax(uint actionId = 0, uint min = 0, uint max = 0)
-		{
-			ActionId = actionId;
-			Min = min;
-			Max = max;
-		}
+        public ObjectEffectMinMax(uint actionId = 0, uint min = 0, uint max = 0)
+        {
+            ActionId = actionId;
+            Min = min;
+            Max = max;
+        }
 
-	}
+    }
 }

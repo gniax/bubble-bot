@@ -1,20 +1,19 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class PresetIcons : IData
-	{
+    public class PresetIcons : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
-		[JsonProperty("order")]
-		public int Order { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("order")]
+        public int Order { get; set; }
 
 
-		//Constructor
-		internal PresetIcons() {}
+        //Constructor
+        internal PresetIcons() { }
 
-	}
+    }
 }

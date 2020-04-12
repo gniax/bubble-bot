@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PaddockBuyRequestMessage : Message
-	{
+    public class PaddockBuyRequestMessage : Message
+    {
 
-		// Constructors
-		public PaddockBuyRequestMessage() { }
+        // Constructors
+        public PaddockBuyRequestMessage() { }
 
 
-	}
+    }
 }

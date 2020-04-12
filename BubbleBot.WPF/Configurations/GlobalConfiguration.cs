@@ -1,13 +1,13 @@
-using GalaSoft.MvvmLight;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Groups;
+using GalaSoft.MvvmLight;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Configurations
 {
@@ -92,7 +92,7 @@ namespace BubbleBot.Configurations
                 Save();
             }
         }
-        
+
         public List<AccountConfiguration> AccountsList
         {
             get

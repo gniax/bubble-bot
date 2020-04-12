@@ -1,7 +1,7 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Teleportables;
 using BubbleBot.Utility.Extensions;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {

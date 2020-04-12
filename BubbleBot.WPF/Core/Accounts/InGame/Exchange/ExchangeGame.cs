@@ -1,13 +1,12 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
+using BubbleBot.Core.Enums;
+using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
-using BubbleBot.Protocol.Enums;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Accounts.InGame.Exchange
 {
@@ -22,6 +21,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         // Properties
         public List<ObjectEntry> Objects { get; private set; }
         public List<ObjectEntry> RemoteObjects { get; private set; }
+        public List<uint> AuthorizedPlayersList = new List<uint>();
         public uint Kamas { get; private set; }
         public uint RemoteKamas { get; private set; }
         public uint CurrentWeight { get; private set; }
@@ -73,7 +73,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 return false;
 
             _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)_account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
-            
+
             return true;
         }
 
@@ -103,6 +103,12 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
             _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)quantity));
             _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("118", quantity, obj.Name));
+            return true;
+        }
+
+        public bool AddPlayerAuthorization(uint playerId)
+        {
+            AuthorizedPlayersList.Add(playerId);
             return true;
         }
 

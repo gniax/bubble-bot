@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountDataErrorMessage : Message
-	{
+    public class MountDataErrorMessage : Message
+    {
 
-		// Properties
-		public uint Reason { get; set; }
+        // Properties
+        public uint Reason { get; set; }
 
 
-		// Constructors
-		public MountDataErrorMessage() { }
+        // Constructors
+        public MountDataErrorMessage() { }
 
-		public MountDataErrorMessage(uint reason = 0)
-		{
-			Reason = reason;
-		}
+        public MountDataErrorMessage(uint reason = 0)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

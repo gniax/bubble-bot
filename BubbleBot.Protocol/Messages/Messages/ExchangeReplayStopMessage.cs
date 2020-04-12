@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeReplayStopMessage : Message
-	{
+    public class ExchangeReplayStopMessage : Message
+    {
 
-		// Constructors
-		public ExchangeReplayStopMessage() { }
+        // Constructors
+        public ExchangeReplayStopMessage() { }
 
 
-	}
+    }
 }

@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using BubbleBot.Protocol.Messages;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {

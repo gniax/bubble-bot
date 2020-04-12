@@ -1,11 +1,11 @@
-using BubbleBot.Server;
-using BubbleBot.Server.Messages;
-using System.Windows;
-using BubbleBot.Server.Enums;
-using BubbleBot.WPF.Views;
 using BubbleBot.Configurations;
-using System.Windows.Controls;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Server;
+using BubbleBot.Server.Enums;
+using BubbleBot.Server.Messages;
+using BubbleBot.WPF.Views;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace BubbleBot.Views
 {

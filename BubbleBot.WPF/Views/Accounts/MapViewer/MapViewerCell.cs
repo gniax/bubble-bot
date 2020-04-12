@@ -1,4 +1,3 @@
-using BubbleBot.Utility.DofusTouch;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;

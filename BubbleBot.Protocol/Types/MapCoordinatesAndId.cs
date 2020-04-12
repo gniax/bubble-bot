@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class MapCoordinatesAndId : MapCoordinates
-	{
+    public class MapCoordinatesAndId : MapCoordinates
+    {
 
-		// Properties
-		public int MapId { get; set; }
+        // Properties
+        public int MapId { get; set; }
 
 
-		// Constructors
-		public MapCoordinatesAndId() { }
+        // Constructors
+        public MapCoordinatesAndId() { }
 
-		public MapCoordinatesAndId(int worldX = 0, int worldY = 0, int mapId = 0)
-		{
-			WorldX = worldX;
-			WorldY = worldY;
-			MapId = mapId;
-		}
+        public MapCoordinatesAndId(int worldX = 0, int worldY = 0, int mapId = 0)
+        {
+            WorldX = worldX;
+            WorldY = worldY;
+            MapId = mapId;
+        }
 
-	}
+    }
 }

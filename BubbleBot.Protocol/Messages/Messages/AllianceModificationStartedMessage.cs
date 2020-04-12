@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceModificationStartedMessage : Message
-	{
+    public class AllianceModificationStartedMessage : Message
+    {
 
-		// Properties
-		public bool CanChangeName { get; set; }
-		public bool CanChangeTag { get; set; }
-		public bool CanChangeEmblem { get; set; }
+        // Properties
+        public bool CanChangeName { get; set; }
+        public bool CanChangeTag { get; set; }
+        public bool CanChangeEmblem { get; set; }
 
 
-		// Constructors
-		public AllianceModificationStartedMessage() { }
+        // Constructors
+        public AllianceModificationStartedMessage() { }
 
-		public AllianceModificationStartedMessage(bool canChangeName = false, bool canChangeTag = false, bool canChangeEmblem = false)
-		{
-			CanChangeName = canChangeName;
-			CanChangeTag = canChangeTag;
-			CanChangeEmblem = canChangeEmblem;
-		}
+        public AllianceModificationStartedMessage(bool canChangeName = false, bool canChangeTag = false, bool canChangeEmblem = false)
+        {
+            CanChangeName = canChangeName;
+            CanChangeTag = canChangeTag;
+            CanChangeEmblem = canChangeEmblem;
+        }
 
-	}
+    }
 }

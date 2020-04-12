@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AlignmentSubAreaUpdateMessage : Message
-	{
+    public class AlignmentSubAreaUpdateMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public int Side { get; set; }
-		public bool Quiet { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public int Side { get; set; }
+        public bool Quiet { get; set; }
 
 
-		// Constructors
-		public AlignmentSubAreaUpdateMessage() { }
+        // Constructors
+        public AlignmentSubAreaUpdateMessage() { }
 
-		public AlignmentSubAreaUpdateMessage(uint subAreaId = 0, int side = 0, bool quiet = false)
-		{
-			SubAreaId = subAreaId;
-			Side = side;
-			Quiet = quiet;
-		}
+        public AlignmentSubAreaUpdateMessage(uint subAreaId = 0, int side = 0, bool quiet = false)
+        {
+            SubAreaId = subAreaId;
+            Side = side;
+            Quiet = quiet;
+        }
 
-	}
+    }
 }

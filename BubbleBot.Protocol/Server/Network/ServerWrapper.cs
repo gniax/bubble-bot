@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 
 namespace BubbleBot.Server.Network
 {
@@ -11,7 +10,7 @@ namespace BubbleBot.Server.Network
     {
 
         // Fields
-        private readonly TcpListener _tcpListener; 
+        private readonly TcpListener _tcpListener;
 
 
         // Properties

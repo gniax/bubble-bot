@@ -1,12 +1,12 @@
-﻿using System;
+﻿using BubbleBot.Website.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using PayPal;
+using PayPal.Api;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BubbleBot.Website.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PayPal.Api;
-using Microsoft.AspNetCore.Http;
-using PayPal;
 
 namespace BubbleBot.Website.Controllers
 {

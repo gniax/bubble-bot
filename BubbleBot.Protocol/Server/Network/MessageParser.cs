@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using BubbleBot.Protocol;
 
 namespace BubbleBot.Server.Network
 {

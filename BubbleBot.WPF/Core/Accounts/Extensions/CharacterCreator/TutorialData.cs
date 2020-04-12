@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 {
@@ -155,7 +153,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                         string newCharacters = Newtonsoft.Json.JsonConvert.SerializeObject(FileList, Formatting.Indented);
                         File.WriteAllText(path, newCharacters);
                         return;
-                    }            
+                    }
                 }
                 FileList.accounts.Add(characterToAdd);
                 string newCharacters1 = Newtonsoft.Json.JsonConvert.SerializeObject(FileList, Formatting.Indented);
@@ -193,7 +191,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                             foreach (Characterdata character1 in accountCharacters)
                             {
                                 if (character1.charactername == character)
-                                {                                 
+                                {
                                     return character1.stepnumber;
                                 }
                             }
@@ -205,7 +203,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             {
                 Console.WriteLine("Erreur - fichier sûrement non existant \n Sinon : {0}", ex);
             }
-                return 0;
+            return 0;
         }
 
         public static int GetItemIndexFromCharacter(string character, string givenaccountname, string path)

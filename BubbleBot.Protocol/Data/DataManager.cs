@@ -34,7 +34,7 @@ namespace BubbleBot.Protocol.Data
             {
                 if (!dataType.IsAssignableFrom(type) || type == dataType)
                     continue;
-                
+
                 _cache.Add(type.Name, new ConcurrentDictionary<int, IData>());
             }
         }

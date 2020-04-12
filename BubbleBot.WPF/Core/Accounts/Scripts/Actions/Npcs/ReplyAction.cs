@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 {

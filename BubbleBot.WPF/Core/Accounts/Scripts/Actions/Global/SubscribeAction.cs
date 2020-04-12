@@ -1,10 +1,7 @@
-﻿using BubbleBot.Protocol.Messages;
+﻿using BubbleBot.Configurations.Language;
+using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
-using BubbleBot.Core.Accounts.Extensions;
-using BubbleBot.Core.Accounts.Scripts.Managers;
-using System.Threading;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
@@ -51,7 +48,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     account.Logger.LogError(LanguageManager.Translate("606"), LanguageManager.Translate("620"));
                     break;
             }
-                return ScriptActionResults.DONE;
+            return ScriptActionResults.DONE;
         }
     }
 }

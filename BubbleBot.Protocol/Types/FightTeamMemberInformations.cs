@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightTeamMemberInformations
-	{
+    public class FightTeamMemberInformations
+    {
 
-		// Properties
-		public int Id { get; set; }
+        // Properties
+        public int Id { get; set; }
 
 
-		// Constructors
-		public FightTeamMemberInformations() { }
+        // Constructors
+        public FightTeamMemberInformations() { }
 
-		public FightTeamMemberInformations(int id = 0)
-		{
-			Id = id;
-		}
+        public FightTeamMemberInformations(int id = 0)
+        {
+            Id = id;
+        }
 
-	}
+    }
 }

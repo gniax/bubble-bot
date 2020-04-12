@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LockableCodeResultMessage : Message
-	{
+    public class LockableCodeResultMessage : Message
+    {
 
-		// Properties
-		public uint Result { get; set; }
+        // Properties
+        public uint Result { get; set; }
 
 
-		// Constructors
-		public LockableCodeResultMessage() { }
+        // Constructors
+        public LockableCodeResultMessage() { }
 
-		public LockableCodeResultMessage(uint result = 0)
-		{
-			Result = result;
-		}
+        public LockableCodeResultMessage(uint result = 0)
+        {
+            Result = result;
+        }
 
-	}
+    }
 }

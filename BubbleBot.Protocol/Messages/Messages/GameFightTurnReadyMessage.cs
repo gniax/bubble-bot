@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightTurnReadyMessage : Message
-	{
+    public class GameFightTurnReadyMessage : Message
+    {
 
-		// Properties
-		public bool IsReady { get; set; }
+        // Properties
+        public bool IsReady { get; set; }
 
 
-		// Constructors
-		public GameFightTurnReadyMessage() { }
+        // Constructors
+        public GameFightTurnReadyMessage() { }
 
-		public GameFightTurnReadyMessage(bool isReady = false)
-		{
-			IsReady = isReady;
-		}
+        public GameFightTurnReadyMessage(bool isReady = false)
+        {
+            IsReady = isReady;
+        }
 
-	}
+    }
 }

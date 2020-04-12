@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildSpellUpgradeRequestMessage : Message
-	{
+    public class GuildSpellUpgradeRequestMessage : Message
+    {
 
-		// Properties
-		public uint SpellId { get; set; }
+        // Properties
+        public uint SpellId { get; set; }
 
 
-		// Constructors
-		public GuildSpellUpgradeRequestMessage() { }
+        // Constructors
+        public GuildSpellUpgradeRequestMessage() { }
 
-		public GuildSpellUpgradeRequestMessage(uint spellId = 0)
-		{
-			SpellId = spellId;
-		}
+        public GuildSpellUpgradeRequestMessage(uint spellId = 0)
+        {
+            SpellId = spellId;
+        }
 
-	}
+    }
 }

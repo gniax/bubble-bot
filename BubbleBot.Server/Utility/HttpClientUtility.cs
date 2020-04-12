@@ -60,7 +60,7 @@ namespace BubbleBot.Server.Utility
                     Content = content
                 });
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 Console.WriteLine("Erreur PatchAsync:" + ex);
             }

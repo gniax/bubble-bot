@@ -1,19 +1,18 @@
 using AntiRecaptcha;
 using BubbleBot.Configurations;
 using System;
-using System.Threading;
 
 namespace BubbleBot.Utility
 {
     public class RecaptchaHandler
     {
         // Fields
-       // private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        // private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
 
         public string GetResponse(string siteKey)
         {
-           // _semaphore.Wait();
+            // _semaphore.Wait();
             string result = null;
 
             if (!string.IsNullOrEmpty(GlobalConfiguration.Instance.AntiCaptchaKey))
@@ -30,12 +29,12 @@ namespace BubbleBot.Utility
                 }
                 catch
                 {
-             //       _semaphore.Release();
+                    //       _semaphore.Release();
                     throw;
                 }
             }
 
-           // _semaphore.Release();
+            // _semaphore.Release();
             return result;
         }
 

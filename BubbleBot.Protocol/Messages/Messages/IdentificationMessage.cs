@@ -1,34 +1,33 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class IdentificationMessage : Message
-	{
+    public class IdentificationMessage : Message
+    {
 
-		// Properties
-		public List<int> Credentials { get; set; }
-		public string Lang { get; set; }
-		public int ServerId { get; set; }
-		public bool Autoconnect { get; set; }
-		public bool UseCertificate { get; set; }
-		public bool UseLoginToken { get; set; }
-		public double SessionOptionalSalt { get; set; }
+        // Properties
+        public List<int> Credentials { get; set; }
+        public string Lang { get; set; }
+        public int ServerId { get; set; }
+        public bool Autoconnect { get; set; }
+        public bool UseCertificate { get; set; }
+        public bool UseLoginToken { get; set; }
+        public double SessionOptionalSalt { get; set; }
 
 
-		// Constructors
-		public IdentificationMessage() { }
+        // Constructors
+        public IdentificationMessage() { }
 
-		public IdentificationMessage(string lang = "", int serverId = 0, bool autoconnect = false, bool useCertificate = false, bool useLoginToken = false, double sessionOptionalSalt = 0, List<int> credentials = null)
-		{
-			Lang = lang;
-			ServerId = serverId;
-			Autoconnect = autoconnect;
-			UseCertificate = useCertificate;
-			UseLoginToken = useLoginToken;
-			SessionOptionalSalt = sessionOptionalSalt;
-			Credentials = credentials;
-		}
+        public IdentificationMessage(string lang = "", int serverId = 0, bool autoconnect = false, bool useCertificate = false, bool useLoginToken = false, double sessionOptionalSalt = 0, List<int> credentials = null)
+        {
+            Lang = lang;
+            ServerId = serverId;
+            Autoconnect = autoconnect;
+            UseCertificate = useCertificate;
+            UseLoginToken = useLoginToken;
+            SessionOptionalSalt = sessionOptionalSalt;
+            Credentials = credentials;
+        }
 
-	}
+    }
 }

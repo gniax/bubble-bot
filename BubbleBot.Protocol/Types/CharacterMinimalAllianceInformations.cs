@@ -1,27 +1,24 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class CharacterMinimalAllianceInformations : CharacterMinimalGuildInformations
-	{
+    public class CharacterMinimalAllianceInformations : CharacterMinimalGuildInformations
+    {
 
-		// Properties
-		public BasicAllianceInformations Alliance { get; set; }
+        // Properties
+        public BasicAllianceInformations Alliance { get; set; }
 
 
-		// Constructors
-		public CharacterMinimalAllianceInformations() { }
+        // Constructors
+        public CharacterMinimalAllianceInformations() { }
 
-		public CharacterMinimalAllianceInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null, BasicGuildInformations guild = null, BasicAllianceInformations alliance = null)
-		{
-			Id = id;
-			Level = level;
-			Name = name;
-			EntityLook = entityLook;
-			Guild = guild;
-			Alliance = alliance;
-		}
+        public CharacterMinimalAllianceInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null, BasicGuildInformations guild = null, BasicAllianceInformations alliance = null)
+        {
+            Id = id;
+            Level = level;
+            Name = name;
+            EntityLook = entityLook;
+            Guild = guild;
+            Alliance = alliance;
+        }
 
-	}
+    }
 }

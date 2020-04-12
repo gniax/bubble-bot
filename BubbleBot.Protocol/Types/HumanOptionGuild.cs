@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class HumanOptionGuild : HumanOption
-	{
+    public class HumanOptionGuild : HumanOption
+    {
 
-		// Properties
-		public GuildInformations GuildInformations { get; set; }
+        // Properties
+        public GuildInformations GuildInformations { get; set; }
 
 
-		// Constructors
-		public HumanOptionGuild() { }
+        // Constructors
+        public HumanOptionGuild() { }
 
-		public HumanOptionGuild(GuildInformations guildInformations = null)
-		{
-			GuildInformations = guildInformations;
-		}
+        public HumanOptionGuild(GuildInformations guildInformations = null)
+        {
+            GuildInformations = guildInformations;
+        }
 
-	}
+    }
 }

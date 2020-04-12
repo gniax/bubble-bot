@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicAckMessage : Message
-	{
+    public class BasicAckMessage : Message
+    {
 
-		// Properties
-		public uint Seq { get; set; }
-		public uint LastPacketId { get; set; }
+        // Properties
+        public uint Seq { get; set; }
+        public uint LastPacketId { get; set; }
 
 
-		// Constructors
-		public BasicAckMessage() { }
+        // Constructors
+        public BasicAckMessage() { }
 
-		public BasicAckMessage(uint seq = 0, uint lastPacketId = 0)
-		{
-			Seq = seq;
-			LastPacketId = lastPacketId;
-		}
+        public BasicAckMessage(uint seq = 0, uint lastPacketId = 0)
+        {
+            Seq = seq;
+            LastPacketId = lastPacketId;
+        }
 
-	}
+    }
 }

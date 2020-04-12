@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountEmoteIconUsedOkMessage : Message
-	{
+    public class MountEmoteIconUsedOkMessage : Message
+    {
 
-		// Properties
-		public int MountId { get; set; }
-		public uint ReactionType { get; set; }
+        // Properties
+        public int MountId { get; set; }
+        public uint ReactionType { get; set; }
 
 
-		// Constructors
-		public MountEmoteIconUsedOkMessage() { }
+        // Constructors
+        public MountEmoteIconUsedOkMessage() { }
 
-		public MountEmoteIconUsedOkMessage(int mountId = 0, uint reactionType = 0)
-		{
-			MountId = mountId;
-			ReactionType = reactionType;
-		}
+        public MountEmoteIconUsedOkMessage(int mountId = 0, uint reactionType = 0)
+        {
+            MountId = mountId;
+            ReactionType = reactionType;
+        }
 
-	}
+    }
 }

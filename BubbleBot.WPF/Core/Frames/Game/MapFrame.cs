@@ -2,6 +2,7 @@ using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Messages;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Frames.Game
@@ -12,8 +13,8 @@ namespace BubbleBot.Core.Frames.Game
         public static Task HandleCurrentMapMessage(Account account, CurrentMapMessage message)
             => Task.Run(async () =>
             {
-                if (account.Network.connectTimeout != null)
-                    account.Network.connectTimeout.Dispose();
+                if (account.Network.ConnectTimeout != null)
+                    account.Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
 
                 if (account.State != AccountStates.RECAPTCHA)
                 {

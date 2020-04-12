@@ -1,28 +1,27 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class PrismFightersInformation
-	{
+    public class PrismFightersInformation
+    {
 
-		// Properties
-		public List<CharacterMinimalPlusLookInformations> AllyCharactersInformations { get; set; }
-		public List<CharacterMinimalPlusLookInformations> EnemyCharactersInformations { get; set; }
-		public uint SubAreaId { get; set; }
-		public ProtectedEntityWaitingForHelpInfo WaitingForHelpInfo { get; set; }
+        // Properties
+        public List<CharacterMinimalPlusLookInformations> AllyCharactersInformations { get; set; }
+        public List<CharacterMinimalPlusLookInformations> EnemyCharactersInformations { get; set; }
+        public uint SubAreaId { get; set; }
+        public ProtectedEntityWaitingForHelpInfo WaitingForHelpInfo { get; set; }
 
 
-		// Constructors
-		public PrismFightersInformation() { }
+        // Constructors
+        public PrismFightersInformation() { }
 
-		public PrismFightersInformation(uint subAreaId = 0, ProtectedEntityWaitingForHelpInfo waitingForHelpInfo = null, List<CharacterMinimalPlusLookInformations> allyCharactersInformations = null, List<CharacterMinimalPlusLookInformations> enemyCharactersInformations = null)
-		{
-			SubAreaId = subAreaId;
-			WaitingForHelpInfo = waitingForHelpInfo;
-			AllyCharactersInformations = allyCharactersInformations;
-			EnemyCharactersInformations = enemyCharactersInformations;
-		}
+        public PrismFightersInformation(uint subAreaId = 0, ProtectedEntityWaitingForHelpInfo waitingForHelpInfo = null, List<CharacterMinimalPlusLookInformations> allyCharactersInformations = null, List<CharacterMinimalPlusLookInformations> enemyCharactersInformations = null)
+        {
+            SubAreaId = subAreaId;
+            WaitingForHelpInfo = waitingForHelpInfo;
+            AllyCharactersInformations = allyCharactersInformations;
+            EnemyCharactersInformations = enemyCharactersInformations;
+        }
 
-	}
+    }
 }

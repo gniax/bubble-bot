@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SequenceEndMessage : Message
-	{
+    public class SequenceEndMessage : Message
+    {
 
-		// Properties
-		public uint ActionId { get; set; }
-		public int AuthorId { get; set; }
-		public int SequenceType { get; set; }
+        // Properties
+        public uint ActionId { get; set; }
+        public int AuthorId { get; set; }
+        public int SequenceType { get; set; }
 
 
-		// Constructors
-		public SequenceEndMessage() { }
+        // Constructors
+        public SequenceEndMessage() { }
 
-		public SequenceEndMessage(uint actionId = 0, int authorId = 0, int sequenceType = 0)
-		{
-			ActionId = actionId;
-			AuthorId = authorId;
-			SequenceType = sequenceType;
-		}
+        public SequenceEndMessage(uint actionId = 0, int authorId = 0, int sequenceType = 0)
+        {
+            ActionId = actionId;
+            AuthorId = authorId;
+            SequenceType = sequenceType;
+        }
 
-	}
+    }
 }

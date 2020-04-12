@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class KrosmasterFigure
-	{
+    public class KrosmasterFigure
+    {
 
-		// Properties
-		public string Uid { get; set; }
-		public uint Figure { get; set; }
-		public uint Pedestal { get; set; }
-		public bool Bound { get; set; }
+        // Properties
+        public string Uid { get; set; }
+        public uint Figure { get; set; }
+        public uint Pedestal { get; set; }
+        public bool Bound { get; set; }
 
 
-		// Constructors
-		public KrosmasterFigure() { }
+        // Constructors
+        public KrosmasterFigure() { }
 
-		public KrosmasterFigure(string uid = "", uint figure = 0, uint pedestal = 0, bool bound = false)
-		{
-			Uid = uid;
-			Figure = figure;
-			Pedestal = pedestal;
-			Bound = bound;
-		}
+        public KrosmasterFigure(string uid = "", uint figure = 0, uint pedestal = 0, bool bound = false)
+        {
+            Uid = uid;
+            Figure = figure;
+            Pedestal = pedestal;
+            Bound = bound;
+        }
 
-	}
+    }
 }

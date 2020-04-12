@@ -1,18 +1,15 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class IdentificationFailedForBadVersionMessage : IdentificationFailedMessage
-	{
+    public class IdentificationFailedForBadVersionMessage : IdentificationFailedMessage
+    {
 
-		// Constructors
-		public IdentificationFailedForBadVersionMessage() { }
+        // Constructors
+        public IdentificationFailedForBadVersionMessage() { }
 
-		public IdentificationFailedForBadVersionMessage(uint reason = 99)
-		{
-			Reason = reason;
-		}
+        public IdentificationFailedForBadVersionMessage(uint reason = 99)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

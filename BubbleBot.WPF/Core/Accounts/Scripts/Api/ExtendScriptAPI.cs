@@ -1,6 +1,4 @@
-﻿using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript;
-using BubbleBot.Core.Accounts.Scripts.Actions.Global;
+﻿using BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript;
 using MoonSharp.Interpreter;
 using System;
 using System.Reflection;
@@ -30,8 +28,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account.Scripts.ActionsManager.EnqueueAction(new DeleteFileAction((string)filename), false);
         }
-           
-        public void EditValueInt(string filename,string name, int value)
+
+        public void EditValueInt(string filename, string name, int value)
         {
             _account.Scripts.ActionsManager.EnqueueAction(new EditValueIntAction(filename, name, value), false);
         }
@@ -45,7 +43,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
         public int GetValueInt(string filename, string name)
         {
-            return _account.Game.ExtendScript.GetValueInt(filename,name);
+            return _account.Game.ExtendScript.GetValueInt(filename, name);
         }
 
         public string GetValueString(string filename, string name)

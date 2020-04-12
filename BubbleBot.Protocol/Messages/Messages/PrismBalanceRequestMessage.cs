@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismBalanceRequestMessage : Message
-	{
+    public class PrismBalanceRequestMessage : Message
+    {
 
-		// Constructors
-		public PrismBalanceRequestMessage() { }
+        // Constructors
+        public PrismBalanceRequestMessage() { }
 
 
-	}
+    }
 }

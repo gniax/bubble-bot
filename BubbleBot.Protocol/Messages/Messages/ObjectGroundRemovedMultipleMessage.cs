@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectGroundRemovedMultipleMessage : Message
-	{
+    public class ObjectGroundRemovedMultipleMessage : Message
+    {
 
-		// Properties
-		public List<uint> Cells { get; set; }
+        // Properties
+        public List<uint> Cells { get; set; }
 
 
-		// Constructors
-		public ObjectGroundRemovedMultipleMessage() { }
+        // Constructors
+        public ObjectGroundRemovedMultipleMessage() { }
 
-		public ObjectGroundRemovedMultipleMessage(List<uint> cells = null)
-		{
-			Cells = cells;
-		}
+        public ObjectGroundRemovedMultipleMessage(List<uint> cells = null)
+        {
+            Cells = cells;
+        }
 
-	}
+    }
 }

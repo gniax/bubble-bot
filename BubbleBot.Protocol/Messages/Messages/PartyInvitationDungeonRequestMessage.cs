@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyInvitationDungeonRequestMessage : PartyInvitationRequestMessage
-	{
+    public class PartyInvitationDungeonRequestMessage : PartyInvitationRequestMessage
+    {
 
-		// Properties
-		public uint DungeonId { get; set; }
+        // Properties
+        public uint DungeonId { get; set; }
 
 
-		// Constructors
-		public PartyInvitationDungeonRequestMessage() { }
+        // Constructors
+        public PartyInvitationDungeonRequestMessage() { }
 
-		public PartyInvitationDungeonRequestMessage(string name = "", uint dungeonId = 0)
-		{
-			Name = name;
-			DungeonId = dungeonId;
-		}
+        public PartyInvitationDungeonRequestMessage(string name = "", uint dungeonId = 0)
+        {
+            Name = name;
+            DungeonId = dungeonId;
+        }
 
-	}
+    }
 }

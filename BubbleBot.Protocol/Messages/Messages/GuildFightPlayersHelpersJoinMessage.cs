@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFightPlayersHelpersJoinMessage : Message
-	{
+    public class GuildFightPlayersHelpersJoinMessage : Message
+    {
 
-		// Properties
-		public double FightId { get; set; }
-		public CharacterMinimalPlusLookInformations PlayerInfo { get; set; }
+        // Properties
+        public double FightId { get; set; }
+        public CharacterMinimalPlusLookInformations PlayerInfo { get; set; }
 
 
-		// Constructors
-		public GuildFightPlayersHelpersJoinMessage() { }
+        // Constructors
+        public GuildFightPlayersHelpersJoinMessage() { }
 
-		public GuildFightPlayersHelpersJoinMessage(double fightId = 0, CharacterMinimalPlusLookInformations playerInfo = null)
-		{
-			FightId = fightId;
-			PlayerInfo = playerInfo;
-		}
+        public GuildFightPlayersHelpersJoinMessage(double fightId = 0, CharacterMinimalPlusLookInformations playerInfo = null)
+        {
+            FightId = fightId;
+            PlayerInfo = playerInfo;
+        }
 
-	}
+    }
 }

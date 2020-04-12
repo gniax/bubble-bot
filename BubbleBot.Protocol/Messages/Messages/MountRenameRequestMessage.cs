@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountRenameRequestMessage : Message
-	{
+    public class MountRenameRequestMessage : Message
+    {
 
-		// Properties
-		public string Name { get; set; }
-		public double MountId { get; set; }
+        // Properties
+        public string Name { get; set; }
+        public double MountId { get; set; }
 
 
-		// Constructors
-		public MountRenameRequestMessage() { }
+        // Constructors
+        public MountRenameRequestMessage() { }
 
-		public MountRenameRequestMessage(string name = "", double mountId = 0)
-		{
-			Name = name;
-			MountId = mountId;
-		}
+        public MountRenameRequestMessage(string name = "", double mountId = 0)
+        {
+            Name = name;
+            MountId = mountId;
+        }
 
-	}
+    }
 }

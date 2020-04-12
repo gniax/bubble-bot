@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildPaddockTeleportRequestMessage : Message
-	{
+    public class GuildPaddockTeleportRequestMessage : Message
+    {
 
-		// Properties
-		public int PaddockId { get; set; }
+        // Properties
+        public int PaddockId { get; set; }
 
 
-		// Constructors
-		public GuildPaddockTeleportRequestMessage() { }
+        // Constructors
+        public GuildPaddockTeleportRequestMessage() { }
 
-		public GuildPaddockTeleportRequestMessage(int paddockId = 0)
-		{
-			PaddockId = paddockId;
-		}
+        public GuildPaddockTeleportRequestMessage(int paddockId = 0)
+        {
+            PaddockId = paddockId;
+        }
 
-	}
+    }
 }

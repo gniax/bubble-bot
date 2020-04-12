@@ -1,26 +1,25 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceCreationValidMessage : Message
-	{
+    public class AllianceCreationValidMessage : Message
+    {
 
-		// Properties
-		public string AllianceName { get; set; }
-		public string AllianceTag { get; set; }
-		public GuildEmblem AllianceEmblem { get; set; }
+        // Properties
+        public string AllianceName { get; set; }
+        public string AllianceTag { get; set; }
+        public GuildEmblem AllianceEmblem { get; set; }
 
 
-		// Constructors
-		public AllianceCreationValidMessage() { }
+        // Constructors
+        public AllianceCreationValidMessage() { }
 
-		public AllianceCreationValidMessage(string allianceName = "", string allianceTag = "", GuildEmblem allianceEmblem = null)
-		{
-			AllianceName = allianceName;
-			AllianceTag = allianceTag;
-			AllianceEmblem = allianceEmblem;
-		}
+        public AllianceCreationValidMessage(string allianceName = "", string allianceTag = "", GuildEmblem allianceEmblem = null)
+        {
+            AllianceName = allianceName;
+            AllianceTag = allianceTag;
+            AllianceEmblem = allianceEmblem;
+        }
 
-	}
+    }
 }

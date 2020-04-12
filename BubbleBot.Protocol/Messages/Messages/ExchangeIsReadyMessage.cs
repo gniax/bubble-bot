@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeIsReadyMessage : Message
-	{
+    public class ExchangeIsReadyMessage : Message
+    {
 
-		// Properties
-		public uint Id { get; set; }
-		public bool Ready { get; set; }
+        // Properties
+        public uint Id { get; set; }
+        public bool Ready { get; set; }
 
 
-		// Constructors
-		public ExchangeIsReadyMessage() { }
+        // Constructors
+        public ExchangeIsReadyMessage() { }
 
-		public ExchangeIsReadyMessage(uint id = 0, bool ready = false)
-		{
-			Id = id;
-			Ready = ready;
-		}
+        public ExchangeIsReadyMessage(uint id = 0, bool ready = false)
+        {
+            Id = id;
+            Ready = ready;
+        }
 
-	}
+    }
 }

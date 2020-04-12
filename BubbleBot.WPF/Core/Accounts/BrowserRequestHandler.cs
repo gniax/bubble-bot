@@ -1,12 +1,5 @@
 ﻿using CefSharp;
-using CefSharp.Handler;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using WebSocketSharp.Net;
 
 namespace BubbleBot.Core.Accounts
 {
@@ -82,4 +75,4 @@ namespace BubbleBot.Core.Accounts
             return false;
         }
     }
-    }
+}

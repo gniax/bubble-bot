@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class StorageObjectsRemoveMessage : Message
-	{
+    public class StorageObjectsRemoveMessage : Message
+    {
 
-		// Properties
-		public List<uint> ObjectUIDList { get; set; }
+        // Properties
+        public List<uint> ObjectUIDList { get; set; }
 
 
-		// Constructors
-		public StorageObjectsRemoveMessage() { }
+        // Constructors
+        public StorageObjectsRemoveMessage() { }
 
-		public StorageObjectsRemoveMessage(List<uint> objectUIDList = null)
-		{
-			ObjectUIDList = objectUIDList;
-		}
+        public StorageObjectsRemoveMessage(List<uint> objectUIDList = null)
+        {
+            ObjectUIDList = objectUIDList;
+        }
 
-	}
+    }
 }

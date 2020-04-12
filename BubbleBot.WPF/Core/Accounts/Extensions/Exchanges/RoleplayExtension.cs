@@ -1,8 +1,7 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot;
 
 namespace BubbleBot.Core.Accounts.Extensions.Exchanges
 {
@@ -29,9 +28,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
             bool defautAuthorized = false;
 
             //Si un personnage du bot ajoute sont id il est accepter pour echange
-            foreach(uint playerIdTmp in Account.AuthorizeByDefautTrade)
+            foreach (uint playerIdTmp in _account.Game.Exchange.AuthorizedPlayersList)
             {
-                if(playerIdTmp == from)
+                if (playerIdTmp == from)
                 {
                     defautAuthorized = true;
                 }

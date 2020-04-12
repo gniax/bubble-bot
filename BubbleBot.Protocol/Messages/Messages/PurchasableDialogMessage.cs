@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PurchasableDialogMessage : Message
-	{
+    public class PurchasableDialogMessage : Message
+    {
 
-		// Properties
-		public bool BuyOrSell { get; set; }
-		public uint PurchasableId { get; set; }
-		public uint Price { get; set; }
+        // Properties
+        public bool BuyOrSell { get; set; }
+        public uint PurchasableId { get; set; }
+        public uint Price { get; set; }
 
 
-		// Constructors
-		public PurchasableDialogMessage() { }
+        // Constructors
+        public PurchasableDialogMessage() { }
 
-		public PurchasableDialogMessage(bool buyOrSell = false, uint purchasableId = 0, uint price = 0)
-		{
-			BuyOrSell = buyOrSell;
-			PurchasableId = purchasableId;
-			Price = price;
-		}
+        public PurchasableDialogMessage(bool buyOrSell = false, uint purchasableId = 0, uint price = 0)
+        {
+            BuyOrSell = buyOrSell;
+            PurchasableId = purchasableId;
+            Price = price;
+        }
 
-	}
+    }
 }

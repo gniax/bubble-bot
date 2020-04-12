@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.ExtendScript
@@ -66,7 +63,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 return false;
             int nbtry = 0;
             int maxNbtry = 200;
-            
+
             while (nbtry < maxNbtry)
             {
                 try
@@ -200,17 +197,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             try
                             {
                                 nbvariablesint = br.ReadInt32();
-                            }
-                            catch (Exception e)
-                            {
-                                nbvariablesint = 0;
-                            }
-                            try
-                            {
                                 nbvariablesstring = br.ReadInt32();
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
+                                Console.WriteLine("Exception ex: {0}", ex.Message);
+                                nbvariablesint = 0;
                                 nbvariablesstring = 0;
                             }
 
@@ -283,7 +275,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                     nbtry++;
                 }
             }
-        return true;
+            return true;
         }
         public bool DeleteVariable(string filename, string name)
         {
@@ -312,17 +304,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             try
                             {
                                 nbvariablesint = br.ReadInt32();
-                            }
-                            catch (Exception e)
-                            {
-                                nbvariablesint = 0;
-                            }
-                            try
-                            {
                                 nbvariablesstring = br.ReadInt32();
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
+                                Console.WriteLine("Exception ex: {0}", ex.Message);
+                                nbvariablesint = 0;
                                 nbvariablesstring = 0;
                             }
 
@@ -354,7 +341,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                                     string tmpValue = br.ReadString();
                                     if (tmpVar != name)
                                     {
-                                         AllValueString.Add(tmpVar, tmpValue);
+                                        AllValueString.Add(tmpVar, tmpValue);
                                     }
                                     else
                                     {
@@ -398,7 +385,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             return true;
         }
 
-         public int GetValueInt(string filename , string name)
+        public int GetValueInt(string filename, string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return 0;
@@ -422,9 +409,9 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             {
                                 nbvariablesint = br.ReadInt32();
                             }
-                            catch 
+                            catch
                             {
-                                 nbvariablesint = 0;
+                                nbvariablesint = 0;
                             }
                             //Get nb string var 
                             try
@@ -555,7 +542,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 }
 
                 _account = null;
-               // _FileSemaphore = null;
+                // _FileSemaphore = null;
 
                 disposedValue = true;
             }

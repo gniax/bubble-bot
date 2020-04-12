@@ -1,7 +1,7 @@
+using BubbleBot.Configurations.Language;
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Converters.Specific
 {

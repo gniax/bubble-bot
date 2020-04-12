@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightTurnEndMessage : Message
-	{
+    public class GameFightTurnEndMessage : Message
+    {
 
-		// Properties
-		public int Id { get; set; }
+        // Properties
+        public int Id { get; set; }
 
 
-		// Constructors
-		public GameFightTurnEndMessage() { }
+        // Constructors
+        public GameFightTurnEndMessage() { }
 
-		public GameFightTurnEndMessage(int id = 0)
-		{
-			Id = id;
-		}
+        public GameFightTurnEndMessage(int id = 0)
+        {
+            Id = id;
+        }
 
-	}
+    }
 }

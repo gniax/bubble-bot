@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeRequestOnShopStockMessage : Message
-	{
+    public class ExchangeRequestOnShopStockMessage : Message
+    {
 
-		// Constructors
-		public ExchangeRequestOnShopStockMessage() { }
+        // Constructors
+        public ExchangeRequestOnShopStockMessage() { }
 
 
-	}
+    }
 }

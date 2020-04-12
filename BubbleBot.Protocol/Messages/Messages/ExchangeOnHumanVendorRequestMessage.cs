@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeOnHumanVendorRequestMessage : Message
-	{
+    public class ExchangeOnHumanVendorRequestMessage : Message
+    {
 
-		// Properties
-		public uint HumanVendorId { get; set; }
-		public uint HumanVendorCell { get; set; }
+        // Properties
+        public uint HumanVendorId { get; set; }
+        public uint HumanVendorCell { get; set; }
 
 
-		// Constructors
-		public ExchangeOnHumanVendorRequestMessage() { }
+        // Constructors
+        public ExchangeOnHumanVendorRequestMessage() { }
 
-		public ExchangeOnHumanVendorRequestMessage(uint humanVendorId = 0, uint humanVendorCell = 0)
-		{
-			HumanVendorId = humanVendorId;
-			HumanVendorCell = humanVendorCell;
-		}
+        public ExchangeOnHumanVendorRequestMessage(uint humanVendorId = 0, uint humanVendorCell = 0)
+        {
+            HumanVendorId = humanVendorId;
+            HumanVendorCell = humanVendorCell;
+        }
 
-	}
+    }
 }

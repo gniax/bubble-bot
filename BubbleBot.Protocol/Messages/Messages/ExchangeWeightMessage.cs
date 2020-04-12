@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeWeightMessage : Message
-	{
+    public class ExchangeWeightMessage : Message
+    {
 
-		// Properties
-		public uint CurrentWeight { get; set; }
-		public uint MaxWeight { get; set; }
+        // Properties
+        public uint CurrentWeight { get; set; }
+        public uint MaxWeight { get; set; }
 
 
-		// Constructors
-		public ExchangeWeightMessage() { }
+        // Constructors
+        public ExchangeWeightMessage() { }
 
-		public ExchangeWeightMessage(uint currentWeight = 0, uint maxWeight = 0)
-		{
-			CurrentWeight = currentWeight;
-			MaxWeight = maxWeight;
-		}
+        public ExchangeWeightMessage(uint currentWeight = 0, uint maxWeight = 0)
+        {
+            CurrentWeight = currentWeight;
+            MaxWeight = maxWeight;
+        }
 
-	}
+    }
 }

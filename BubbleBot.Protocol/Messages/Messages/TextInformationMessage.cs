@@ -1,27 +1,26 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class TextInformationMessage : Message
-	{
+    public class TextInformationMessage : Message
+    {
 
-		// Properties
-		public List<string> Parameters { get; set; }
-		public uint MsgType { get; set; }
-		public uint MsgId { get; set; }
+        // Properties
+        public List<string> Parameters { get; set; }
+        public uint MsgType { get; set; }
+        public uint MsgId { get; set; }
         public string Text { get; set; }
 
 
-		// Constructors
-		public TextInformationMessage() { }
+        // Constructors
+        public TextInformationMessage() { }
 
-		public TextInformationMessage(uint msgType = 0, uint msgId = 0, List<string> parameters = null)
-		{
-			MsgType = msgType;
-			MsgId = msgId;
-			Parameters = parameters;
-		}
+        public TextInformationMessage(uint msgType = 0, uint msgId = 0, List<string> parameters = null)
+        {
+            MsgType = msgType;
+            MsgId = msgId;
+            Parameters = parameters;
+        }
 
-	}
+    }
 }

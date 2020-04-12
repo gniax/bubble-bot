@@ -1,29 +1,27 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Map;
-using MoonSharp.Interpreter;
-using System;
-using BubbleBot.Core.Accounts.Scripts.Managers;
-using System.IO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BubbleBot.Core.Accounts.Scripts.Actions.Gather;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Scripts.Actions;
 using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
+using BubbleBot.Core.Accounts.Scripts.Actions.Gather;
+using BubbleBot.Core.Accounts.Scripts.Actions.Global;
+using BubbleBot.Core.Accounts.Scripts.Actions.Map;
 using BubbleBot.Core.Accounts.Scripts.Actions.Npcs;
 using BubbleBot.Core.Accounts.Scripts.Actions.Storage;
-using BubbleBot.Core.Accounts.Scripts.Actions.Global;
 using BubbleBot.Core.Accounts.Scripts.Api;
 using BubbleBot.Core.Accounts.Scripts.Flags;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using BubbleBot.Core.Accounts.Scripts.Actions;
+using BubbleBot.Core.Accounts.Scripts.Managers;
+using BubbleBot.Core.Enums;
+using BubbleBot.Core.Extensions;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
-using BubbleBot.Core.Extensions;
-using GalaSoft.MvvmLight;
-using BubbleBot.Configurations.Language;
 using BubbleBot.Utility.Extensions;
-using BubbleBot.Core.Enums;
-using MoonSharp.Interpreter.Debugging;
-using System.Threading;
+using GalaSoft.MvvmLight;
+using MoonSharp.Interpreter;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts
 {
@@ -139,8 +137,9 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("hasReachFightLimit", (Func<bool>)_account.isFightLimitReached);
             ScriptManager.SetGlobal("getSubscriptionPrice", new Func<double>(() => { return Math.Ceiling(_account.Game.bakRate * 800); }));
             ScriptManager.SetGlobal("reconnectFunc", new Action<int, bool>((s, restartscript) => ActionsManager.EnqueueAction(new ReconnectAction(s, restartscript), true)));
-            ScriptManager.SetGlobal("disconnectFunc", new Action<bool>((preventPlanif) => {
-                if(preventPlanif)
+            ScriptManager.SetGlobal("disconnectFunc", new Action<bool>((preventPlanif) =>
+            {
+                if (preventPlanif)
                     _account.PreventPlanificationReconnection = true;
                 _account.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false);
             }));
@@ -155,7 +154,8 @@ namespace BubbleBot.Core.Accounts.Scripts
                 return false;
             }));
             ScriptManager.SetGlobal("planificationEndTimestamp", new Func<long>(()
-            => {
+            =>
+            {
                 if (!_account.AccountConfig.PlanificationActivated)
                     return 0;
 
@@ -321,7 +321,7 @@ namespace BubbleBot.Core.Accounts.Scripts
                     }
 
                     // In case no entry was found in this map
-                    if(!_account.Extensions.CharacterCreation.IsDoingTutorial)
+                    if (!_account.Extensions.CharacterCreation.IsDoingTutorial)
                         StopScript(LanguageManager.Translate("144") + " 0");
                 }
                 catch (Exception ex)
@@ -407,7 +407,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             if (!Running)
                 return;
 
-           // _account.Logger.LogDebug("", $"ProcessEntryFlags, caller: {caller}.");
+            // _account.Logger.LogDebug("", $"ProcessEntryFlags, caller: {caller}.");
 
             // Check for max_pods
             if (GotToMaxPods())
@@ -1080,7 +1080,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             if (!Enabled)
                 return;
 
-            if(_account.FightLimitReached)
+            if (_account.FightLimitReached)
                 _account.FightLimitReached = false;
 
             Paused = true;

@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectSetPositionMessage : Message
-	{
+    public class ObjectSetPositionMessage : Message
+    {
 
-		// Properties
-		public uint ObjectUID { get; set; }
-		public uint Position { get; set; }
-		public uint Quantity { get; set; }
+        // Properties
+        public uint ObjectUID { get; set; }
+        public uint Position { get; set; }
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ObjectSetPositionMessage() { }
+        // Constructors
+        public ObjectSetPositionMessage() { }
 
-		public ObjectSetPositionMessage(uint objectUID = 0, uint position = 63, uint quantity = 0)
-		{
-			ObjectUID = objectUID;
-			Position = position;
-			Quantity = quantity;
-		}
+        public ObjectSetPositionMessage(uint objectUID = 0, uint position = 63, uint quantity = 0)
+        {
+            ObjectUID = objectUID;
+            Position = position;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

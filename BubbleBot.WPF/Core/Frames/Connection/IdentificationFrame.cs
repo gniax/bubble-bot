@@ -1,19 +1,14 @@
-using System;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
-using BubbleBot.Utility.DofusTouch;
-using System.Linq;
-using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using System.Net.WebSockets;
 using BubbleBot.Views;
-using System.Windows.Threading;
+using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using BubbleBot.Configurations;
-using BubbleBot.Utility;
-using System.IO;
 
 namespace BubbleBot.Core.Frames.Connection
 {
@@ -76,7 +71,7 @@ namespace BubbleBot.Core.Frames.Connection
         public static Task HandleNicknameRefusedMessage(Account account, NicknameRefusedMessage message)
             => Task.Run(async () =>
             {
-                if(GlobalConfiguration.Instance.AutomaticReconnection)
+                if (GlobalConfiguration.Instance.AutomaticReconnection)
                     await account.Network.Disconnect("CLIENT_CLOSING", true);
                 else
                     await account.Network.Disconnect("CLIENT_CLOSING", false);
@@ -106,10 +101,13 @@ namespace BubbleBot.Core.Frames.Connection
         public static Task HandleIdentificationSuccessMessage(Account account, IdentificationSuccessMessage message)
             => Task.Run(() =>
             {
+                if (account.Network.ConnectTimeout != null)
+                    account.Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
+
                 Console.WriteLine("HandleIdentificationSuccessMessage");
                 account.Login = message.Login;
-                account.SubscriptionEndDate = message.SubscriptionEndDate == 0 ? 
-                                              null : 
+                account.SubscriptionEndDate = message.SubscriptionEndDate == 0 ?
+                                              null :
                                               (DateTime?)DateTime.Now.AddDays(Math.Floor((message.SubscriptionEndDate - DateTimeOffset.Now.ToUnixTimeMilliseconds()) / 1000 / 60 / 60 / 24));
 
                 var log = $"{LanguageManager.Translate("83")}{(message.WasAlreadyConnected ? LanguageManager.Translate("84") : ".")}";

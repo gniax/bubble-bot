@@ -1,6 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 {
@@ -27,7 +26,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
                 account.Scripts.StopScript(LanguageManager.Translate("178", NpcId, ActionIndex));
                 return FailedResult;
             }
-            
+
             return ProcessingResult;
         }
 

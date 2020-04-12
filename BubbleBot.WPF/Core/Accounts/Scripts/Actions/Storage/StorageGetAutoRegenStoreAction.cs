@@ -1,14 +1,14 @@
+using BubbleBot.Configurations.Language;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
 {
     public class StorageGetAutoRegenStoreAction : ScriptAction
     {
-        
+
         // Properties
         public List<int> Items { get; private set; }
         public int Store { get; private set; }

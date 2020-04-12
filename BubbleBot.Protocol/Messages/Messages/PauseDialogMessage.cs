@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PauseDialogMessage : Message
-	{
+    public class PauseDialogMessage : Message
+    {
 
-		// Properties
-		public uint DialogType { get; set; }
+        // Properties
+        public uint DialogType { get; set; }
 
 
-		// Constructors
-		public PauseDialogMessage() { }
+        // Constructors
+        public PauseDialogMessage() { }
 
-		public PauseDialogMessage(uint dialogType = 0)
-		{
-			DialogType = dialogType;
-		}
+        public PauseDialogMessage(uint dialogType = 0)
+        {
+            DialogType = dialogType;
+        }
 
-	}
+    }
 }

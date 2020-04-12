@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFightLeaveRequestMessage : Message
-	{
+    public class GuildFightLeaveRequestMessage : Message
+    {
 
-		// Properties
-		public int TaxCollectorId { get; set; }
-		public uint CharacterId { get; set; }
+        // Properties
+        public int TaxCollectorId { get; set; }
+        public uint CharacterId { get; set; }
 
 
-		// Constructors
-		public GuildFightLeaveRequestMessage() { }
+        // Constructors
+        public GuildFightLeaveRequestMessage() { }
 
-		public GuildFightLeaveRequestMessage(int taxCollectorId = 0, uint characterId = 0)
-		{
-			TaxCollectorId = taxCollectorId;
-			CharacterId = characterId;
-		}
+        public GuildFightLeaveRequestMessage(int taxCollectorId = 0, uint characterId = 0)
+        {
+            TaxCollectorId = taxCollectorId;
+            CharacterId = characterId;
+        }
 
-	}
+    }
 }

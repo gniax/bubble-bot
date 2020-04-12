@@ -1,11 +1,11 @@
-using GalaSoft.MvvmLight;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Protocol.Messages;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Core.Accounts.Extensions.Bid

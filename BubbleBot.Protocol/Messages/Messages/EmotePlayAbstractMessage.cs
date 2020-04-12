@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class EmotePlayAbstractMessage : Message
-	{
+    public class EmotePlayAbstractMessage : Message
+    {
 
-		// Properties
-		public uint EmoteId { get; set; }
-		public double EmoteStartTime { get; set; }
+        // Properties
+        public uint EmoteId { get; set; }
+        public double EmoteStartTime { get; set; }
 
 
-		// Constructors
-		public EmotePlayAbstractMessage() { }
+        // Constructors
+        public EmotePlayAbstractMessage() { }
 
-		public EmotePlayAbstractMessage(uint emoteId = 0, double emoteStartTime = 0)
-		{
-			EmoteId = emoteId;
-			EmoteStartTime = emoteStartTime;
-		}
+        public EmotePlayAbstractMessage(uint emoteId = 0, double emoteStartTime = 0)
+        {
+            EmoteId = emoteId;
+            EmoteStartTime = emoteStartTime;
+        }
 
-	}
+    }
 }

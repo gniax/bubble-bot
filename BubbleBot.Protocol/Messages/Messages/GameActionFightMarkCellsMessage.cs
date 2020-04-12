@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightMarkCellsMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightMarkCellsMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public GameActionMark Mark { get; set; }
+        // Properties
+        public GameActionMark Mark { get; set; }
 
 
-		// Constructors
-		public GameActionFightMarkCellsMessage() { }
+        // Constructors
+        public GameActionFightMarkCellsMessage() { }
 
-		public GameActionFightMarkCellsMessage(uint actionId = 0, int sourceId = 0, GameActionMark mark = null)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			Mark = mark;
-		}
+        public GameActionFightMarkCellsMessage(uint actionId = 0, int sourceId = 0, GameActionMark mark = null)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            Mark = mark;
+        }
 
-	}
+    }
 }

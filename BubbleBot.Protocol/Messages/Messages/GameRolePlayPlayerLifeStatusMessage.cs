@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayPlayerLifeStatusMessage : Message
-	{
+    public class GameRolePlayPlayerLifeStatusMessage : Message
+    {
 
-		// Properties
-		public uint State { get; set; }
+        // Properties
+        public uint State { get; set; }
 
 
-		// Constructors
-		public GameRolePlayPlayerLifeStatusMessage() { }
+        // Constructors
+        public GameRolePlayPlayerLifeStatusMessage() { }
 
-		public GameRolePlayPlayerLifeStatusMessage(uint state = 0)
-		{
-			State = state;
-		}
+        public GameRolePlayPlayerLifeStatusMessage(uint state = 0)
+        {
+            State = state;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AuthenticationTicketMessage : Message
-	{
+    public class AuthenticationTicketMessage : Message
+    {
 
-		// Properties
-		public string Lang { get; set; }
-		public string Ticket { get; set; }
+        // Properties
+        public string Lang { get; set; }
+        public string Ticket { get; set; }
 
 
-		// Constructors
-		public AuthenticationTicketMessage() { }
+        // Constructors
+        public AuthenticationTicketMessage() { }
 
-		public AuthenticationTicketMessage(string lang = "", string ticket = "")
-		{
-			Lang = lang;
-			Ticket = ticket;
-		}
+        public AuthenticationTicketMessage(string lang = "", string ticket = "")
+        {
+            Lang = lang;
+            Ticket = ticket;
+        }
 
-	}
+    }
 }

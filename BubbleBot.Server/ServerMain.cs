@@ -1,18 +1,12 @@
-﻿using System;
+﻿using BubbleBot.Server.Clients;
+using BubbleBot.Server.Commands;
+using BubbleBot.Server.Messages;
+using BubbleBot.Server.Network;
+using BubbleBot.Server.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
-using System.Threading.Tasks;
-using BubbleBot.Server.Handlers;
-using System.Net.Sockets;
-using System.Threading;
-using BubbleBot.Server.Utility;
-using System.Collections.Concurrent;
-using BubbleBot.Server.Clients;
-using BubbleBot.Server.Commands;
-using BubbleBot.Server.Network;
-using BubbleBot.Server.Messages;
 
 namespace BubbleBot.Server
 {
@@ -36,10 +30,10 @@ namespace BubbleBot.Server
         // Updates
         public static Dictionary<string, string> FilesHashes { get; set; }
 
-        
+
     }
     public static class ServerMain
-    { 
+    {
         public static List<Client> Clients { get; private set; }
         static void Main(string[] args)
         {
@@ -50,12 +44,12 @@ namespace BubbleBot.Server
             server.ErrorOccured += Server_ErrorOccured;
             server.ClientDisconnected += Server_ClientDisconnected;
 
-            ConsoleLogger(1);  
+            ConsoleLogger(1);
             CommandsManager.Initialize();
             ConstantsCommands.RefreshFilesHashesCommand(null);
             StatisticsManager.Initialize();
-            
-            ConsoleLogger(2);  
+
+            ConsoleLogger(2);
 
             bool result = false;
             if (SetVersions.setVersions())
@@ -99,7 +93,7 @@ namespace BubbleBot.Server
             if (client == null)
                 return;
 
-            Console.WriteLine("[-][{0}]  Client déconnecté : {1}, {2} restant(s)", DateTime.Now.ToString("HH:mm:ss"), client.Informations.ToString(), (Clients.Count)-1);
+            Console.WriteLine("[-][{0}]  Client déconnecté : {1}, {2} restant(s)", DateTime.Now.ToString("HH:mm:ss"), client.Informations.ToString(), (Clients.Count) - 1);
 
             // Remove any accounts left
             await client.RemoveAccounts(client.Accounts.Values.Where(a => a.HasBot).Select(a => a.Username), client.Informations.Id);

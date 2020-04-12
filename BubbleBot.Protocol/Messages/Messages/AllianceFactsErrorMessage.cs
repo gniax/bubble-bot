@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceFactsErrorMessage : Message
-	{
+    public class AllianceFactsErrorMessage : Message
+    {
 
-		// Properties
-		public uint AllianceId { get; set; }
+        // Properties
+        public uint AllianceId { get; set; }
 
 
-		// Constructors
-		public AllianceFactsErrorMessage() { }
+        // Constructors
+        public AllianceFactsErrorMessage() { }
 
-		public AllianceFactsErrorMessage(uint allianceId = 0)
-		{
-			AllianceId = allianceId;
-		}
+        public AllianceFactsErrorMessage(uint allianceId = 0)
+        {
+            AllianceId = allianceId;
+        }
 
-	}
+    }
 }

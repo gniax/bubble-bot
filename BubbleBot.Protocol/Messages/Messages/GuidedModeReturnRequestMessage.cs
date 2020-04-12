@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuidedModeReturnRequestMessage : Message
-	{
+    public class GuidedModeReturnRequestMessage : Message
+    {
 
-		// Constructors
-		public GuidedModeReturnRequestMessage() { }
+        // Constructors
+        public GuidedModeReturnRequestMessage() { }
 
 
-	}
+    }
 }

@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class HouseBuyResultMessage : Message
-	{
+    public class HouseBuyResultMessage : Message
+    {
 
-		// Properties
-		public uint HouseId { get; set; }
-		public bool Bought { get; set; }
-		public uint RealPrice { get; set; }
+        // Properties
+        public uint HouseId { get; set; }
+        public bool Bought { get; set; }
+        public uint RealPrice { get; set; }
 
 
-		// Constructors
-		public HouseBuyResultMessage() { }
+        // Constructors
+        public HouseBuyResultMessage() { }
 
-		public HouseBuyResultMessage(uint houseId = 0, bool bought = false, uint realPrice = 0)
-		{
-			HouseId = houseId;
-			Bought = bought;
-			RealPrice = realPrice;
-		}
+        public HouseBuyResultMessage(uint houseId = 0, bool bought = false, uint realPrice = 0)
+        {
+            HouseId = houseId;
+            Bought = bought;
+            RealPrice = realPrice;
+        }
 
-	}
+    }
 }

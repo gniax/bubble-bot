@@ -1,26 +1,25 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class TaxCollectorFightersInformation
-	{
+    public class TaxCollectorFightersInformation
+    {
 
-		// Properties
-		public List<CharacterMinimalPlusLookInformations> AllyCharactersInformations { get; set; }
-		public List<CharacterMinimalPlusLookInformations> EnemyCharactersInformations { get; set; }
-		public int CollectorId { get; set; }
+        // Properties
+        public List<CharacterMinimalPlusLookInformations> AllyCharactersInformations { get; set; }
+        public List<CharacterMinimalPlusLookInformations> EnemyCharactersInformations { get; set; }
+        public int CollectorId { get; set; }
 
 
-		// Constructors
-		public TaxCollectorFightersInformation() { }
+        // Constructors
+        public TaxCollectorFightersInformation() { }
 
-		public TaxCollectorFightersInformation(int collectorId = 0, List<CharacterMinimalPlusLookInformations> allyCharactersInformations = null, List<CharacterMinimalPlusLookInformations> enemyCharactersInformations = null)
-		{
-			CollectorId = collectorId;
-			AllyCharactersInformations = allyCharactersInformations;
-			EnemyCharactersInformations = enemyCharactersInformations;
-		}
+        public TaxCollectorFightersInformation(int collectorId = 0, List<CharacterMinimalPlusLookInformations> allyCharactersInformations = null, List<CharacterMinimalPlusLookInformations> enemyCharactersInformations = null)
+        {
+            CollectorId = collectorId;
+            AllyCharactersInformations = allyCharactersInformations;
+            EnemyCharactersInformations = enemyCharactersInformations;
+        }
 
-	}
+    }
 }

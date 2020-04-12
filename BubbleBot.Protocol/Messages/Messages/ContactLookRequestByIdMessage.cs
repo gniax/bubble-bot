@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ContactLookRequestByIdMessage : ContactLookRequestMessage
-	{
+    public class ContactLookRequestByIdMessage : ContactLookRequestMessage
+    {
 
-		// Properties
-		public uint PlayerId { get; set; }
+        // Properties
+        public uint PlayerId { get; set; }
 
 
-		// Constructors
-		public ContactLookRequestByIdMessage() { }
+        // Constructors
+        public ContactLookRequestByIdMessage() { }
 
-		public ContactLookRequestByIdMessage(uint requestId = 0, uint contactType = 0, uint playerId = 0)
-		{
-			RequestId = requestId;
-			ContactType = contactType;
-			PlayerId = playerId;
-		}
+        public ContactLookRequestByIdMessage(uint requestId = 0, uint contactType = 0, uint playerId = 0)
+        {
+            RequestId = requestId;
+            ContactType = contactType;
+            PlayerId = playerId;
+        }
 
-	}
+    }
 }

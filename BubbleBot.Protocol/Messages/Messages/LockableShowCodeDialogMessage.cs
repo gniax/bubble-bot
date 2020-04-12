@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LockableShowCodeDialogMessage : Message
-	{
+    public class LockableShowCodeDialogMessage : Message
+    {
 
-		// Properties
-		public bool ChangeOrUse { get; set; }
-		public uint CodeSize { get; set; }
+        // Properties
+        public bool ChangeOrUse { get; set; }
+        public uint CodeSize { get; set; }
 
 
-		// Constructors
-		public LockableShowCodeDialogMessage() { }
+        // Constructors
+        public LockableShowCodeDialogMessage() { }
 
-		public LockableShowCodeDialogMessage(bool changeOrUse = false, uint codeSize = 0)
-		{
-			ChangeOrUse = changeOrUse;
-			CodeSize = codeSize;
-		}
+        public LockableShowCodeDialogMessage(bool changeOrUse = false, uint codeSize = 0)
+        {
+            ChangeOrUse = changeOrUse;
+            CodeSize = codeSize;
+        }
 
-	}
+    }
 }

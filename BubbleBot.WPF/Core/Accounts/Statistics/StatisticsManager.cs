@@ -1,8 +1,8 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Core.Accounts.InGame.Managers.Gathers;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

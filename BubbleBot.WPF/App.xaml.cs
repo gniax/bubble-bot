@@ -1,14 +1,14 @@
-using System.Globalization;
-using System.Threading;
 using BubbleBot.Configurations;
-using System.Windows;
 using BubbleBot.Configurations.Language;
-using System.Reflection;
-using System;
-using System.IO;
 using CefSharp;
 using CefSharp.OffScreen;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows;
 
 #pragma warning disable MSB3270
 

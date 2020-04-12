@@ -1,10 +1,9 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using BubbleBot.Utility;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {

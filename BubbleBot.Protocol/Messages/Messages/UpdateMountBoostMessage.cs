@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class UpdateMountBoostMessage : Message
-	{
+    public class UpdateMountBoostMessage : Message
+    {
 
-		// Properties
-		public List<UpdateMountBoost> BoostToUpdateList { get; set; }
-		public double RideId { get; set; }
+        // Properties
+        public List<UpdateMountBoost> BoostToUpdateList { get; set; }
+        public double RideId { get; set; }
 
 
-		// Constructors
-		public UpdateMountBoostMessage() { }
+        // Constructors
+        public UpdateMountBoostMessage() { }
 
-		public UpdateMountBoostMessage(double rideId = 0, List<UpdateMountBoost> boostToUpdateList = null)
-		{
-			RideId = rideId;
-			BoostToUpdateList = boostToUpdateList;
-		}
+        public UpdateMountBoostMessage(double rideId = 0, List<UpdateMountBoost> boostToUpdateList = null)
+        {
+            RideId = rideId;
+            BoostToUpdateList = boostToUpdateList;
+        }
 
-	}
+    }
 }

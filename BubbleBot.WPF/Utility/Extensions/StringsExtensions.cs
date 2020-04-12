@@ -1,5 +1,5 @@
-using System.Linq;
 using BubbleBot.WPF;
+using System.Linq;
 
 namespace BubbleBot.Utility.Extensions
 {

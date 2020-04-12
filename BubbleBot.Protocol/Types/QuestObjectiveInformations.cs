@@ -1,26 +1,25 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class QuestObjectiveInformations
-	{
+    public class QuestObjectiveInformations
+    {
 
-		// Properties
-		public List<string> DialogParams { get; set; }
-		public uint ObjectiveId { get; set; }
-		public bool ObjectiveStatus { get; set; }
+        // Properties
+        public List<string> DialogParams { get; set; }
+        public uint ObjectiveId { get; set; }
+        public bool ObjectiveStatus { get; set; }
 
 
-		// Constructors
-		public QuestObjectiveInformations() { }
+        // Constructors
+        public QuestObjectiveInformations() { }
 
-		public QuestObjectiveInformations(uint objectiveId = 0, bool objectiveStatus = false, List<string> dialogParams = null)
-		{
-			ObjectiveId = objectiveId;
-			ObjectiveStatus = objectiveStatus;
-			DialogParams = dialogParams;
-		}
+        public QuestObjectiveInformations(uint objectiveId = 0, bool objectiveStatus = false, List<string> dialogParams = null)
+        {
+            ObjectiveId = objectiveId;
+            ObjectiveStatus = objectiveStatus;
+            DialogParams = dialogParams;
+        }
 
-	}
+    }
 }

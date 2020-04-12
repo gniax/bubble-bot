@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeWaitingResultMessage : Message
-	{
+    public class ExchangeWaitingResultMessage : Message
+    {
 
-		// Properties
-		public bool Bwait { get; set; }
+        // Properties
+        public bool Bwait { get; set; }
 
 
-		// Constructors
-		public ExchangeWaitingResultMessage() { }
+        // Constructors
+        public ExchangeWaitingResultMessage() { }
 
-		public ExchangeWaitingResultMessage(bool bwait = false)
-		{
-			Bwait = bwait;
-		}
+        public ExchangeWaitingResultMessage(bool bwait = false)
+        {
+            Bwait = bwait;
+        }
 
-	}
+    }
 }

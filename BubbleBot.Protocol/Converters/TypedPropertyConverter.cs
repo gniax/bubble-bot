@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace BubbleBot.Protocol.Converters
 {
@@ -45,7 +44,7 @@ namespace BubbleBot.Protocol.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            
+
         }
 
     }

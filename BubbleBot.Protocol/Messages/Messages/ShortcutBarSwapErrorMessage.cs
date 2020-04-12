@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ShortcutBarSwapErrorMessage : Message
-	{
+    public class ShortcutBarSwapErrorMessage : Message
+    {
 
-		// Properties
-		public uint Error { get; set; }
+        // Properties
+        public uint Error { get; set; }
 
 
-		// Constructors
-		public ShortcutBarSwapErrorMessage() { }
+        // Constructors
+        public ShortcutBarSwapErrorMessage() { }
 
-		public ShortcutBarSwapErrorMessage(uint error = 0)
-		{
-			Error = error;
-		}
+        public ShortcutBarSwapErrorMessage(uint error = 0)
+        {
+            Error = error;
+        }
 
-	}
+    }
 }

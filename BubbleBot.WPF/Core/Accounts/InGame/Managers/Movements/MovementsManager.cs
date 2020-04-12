@@ -1,14 +1,14 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Map;
+using BubbleBot.Core.Enums;
 using BubbleBot.Core.Pathfinding;
+using BubbleBot.Core.Pathfinding.Fights;
 using BubbleBot.Protocol.Messages;
+using BubbleBot.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Pathfinding.Fights;
-using BubbleBot.Utility;
-using BubbleBot.Core.Enums;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
 {
@@ -44,7 +44,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                 case MapChangeDirections.LEFT:
                     return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId % 14 == 0 && cellId != 546;
                 case MapChangeDirections.RIGHT:
-                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId % 14 == 13 && cellId != 13 ;
+                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId % 14 == 13 && cellId != 13;
                 case MapChangeDirections.TOP:
                     return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId < 27;
                 default: // BOTTOM
@@ -279,8 +279,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                        //       Also not sure if this is the best way to handle map changements
                        _account.State = AccountStates.MOVING;
 
-                       if(!_account.Configuration.SpeedHack)
-                       await Task.Delay(PathDuration.Calculate(_currentPath) + 200);
+                       if (!_account.Configuration.SpeedHack)
+                           await Task.Delay(PathDuration.Calculate(_currentPath) + 200);
 
                        // In case the account was disconnected/disposed
                        if (_account == null || _account.State == AccountStates.DISCONNECTED)

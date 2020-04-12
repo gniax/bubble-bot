@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TaxCollectorStateUpdateMessage : Message
-	{
+    public class TaxCollectorStateUpdateMessage : Message
+    {
 
-		// Properties
-		public int UniqueId { get; set; }
-		public int State { get; set; }
+        // Properties
+        public int UniqueId { get; set; }
+        public int State { get; set; }
 
 
-		// Constructors
-		public TaxCollectorStateUpdateMessage() { }
+        // Constructors
+        public TaxCollectorStateUpdateMessage() { }
 
-		public TaxCollectorStateUpdateMessage(int uniqueId = 0, int state = 0)
-		{
-			UniqueId = uniqueId;
-			State = state;
-		}
+        public TaxCollectorStateUpdateMessage(int uniqueId = 0, int state = 0)
+        {
+            UniqueId = uniqueId;
+            State = state;
+        }
 
-	}
+    }
 }

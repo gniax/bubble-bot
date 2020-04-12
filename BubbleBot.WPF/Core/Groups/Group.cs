@@ -1,3 +1,4 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Scripts.Actions;
 using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
@@ -7,11 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Groups
 {

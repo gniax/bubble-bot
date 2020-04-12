@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFightPlayersEnemiesListMessage : Message
-	{
+    public class GuildFightPlayersEnemiesListMessage : Message
+    {
 
-		// Properties
-		public List<CharacterMinimalPlusLookInformations> PlayerInfo { get; set; }
-		public double FightId { get; set; }
+        // Properties
+        public List<CharacterMinimalPlusLookInformations> PlayerInfo { get; set; }
+        public double FightId { get; set; }
 
 
-		// Constructors
-		public GuildFightPlayersEnemiesListMessage() { }
+        // Constructors
+        public GuildFightPlayersEnemiesListMessage() { }
 
-		public GuildFightPlayersEnemiesListMessage(double fightId = 0, List<CharacterMinimalPlusLookInformations> playerInfo = null)
-		{
-			FightId = fightId;
-			PlayerInfo = playerInfo;
-		}
+        public GuildFightPlayersEnemiesListMessage(double fightId = 0, List<CharacterMinimalPlusLookInformations> playerInfo = null)
+        {
+            FightId = fightId;
+            PlayerInfo = playerInfo;
+        }
 
-	}
+    }
 }

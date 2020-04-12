@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class CompassUpdateMessage : Message
-	{
+    public class CompassUpdateMessage : Message
+    {
 
-		// Properties
-		public uint Type { get; set; }
-		public MapCoordinates Coords { get; set; }
+        // Properties
+        public uint Type { get; set; }
+        public MapCoordinates Coords { get; set; }
 
 
-		// Constructors
-		public CompassUpdateMessage() { }
+        // Constructors
+        public CompassUpdateMessage() { }
 
-		public CompassUpdateMessage(uint type = 0, MapCoordinates coords = null)
-		{
-			Type = type;
-			Coords = coords;
-		}
+        public CompassUpdateMessage(uint type = 0, MapCoordinates coords = null)
+        {
+            Type = type;
+            Coords = coords;
+        }
 
-	}
+    }
 }

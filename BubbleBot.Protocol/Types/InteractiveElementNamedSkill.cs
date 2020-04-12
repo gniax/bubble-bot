@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class InteractiveElementNamedSkill : InteractiveElementSkill
-	{
+    public class InteractiveElementNamedSkill : InteractiveElementSkill
+    {
 
-		// Properties
-		public uint NameId { get; set; }
+        // Properties
+        public uint NameId { get; set; }
 
 
-		// Constructors
-		public InteractiveElementNamedSkill() { }
+        // Constructors
+        public InteractiveElementNamedSkill() { }
 
-		public InteractiveElementNamedSkill(uint skillId = 0, uint skillInstanceUid = 0, uint nameId = 0)
-		{
-			SkillId = skillId;
-			SkillInstanceUid = skillInstanceUid;
-			NameId = nameId;
-		}
+        public InteractiveElementNamedSkill(uint skillId = 0, uint skillInstanceUid = 0, uint nameId = 0)
+        {
+            SkillId = skillId;
+            SkillInstanceUid = skillInstanceUid;
+            NameId = nameId;
+        }
 
-	}
+    }
 }

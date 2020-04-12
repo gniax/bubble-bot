@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class ActorOrientation
-	{
+    public class ActorOrientation
+    {
 
-		// Properties
-		public int Id { get; set; }
-		public uint Direction { get; set; }
+        // Properties
+        public int Id { get; set; }
+        public uint Direction { get; set; }
 
 
-		// Constructors
-		public ActorOrientation() { }
+        // Constructors
+        public ActorOrientation() { }
 
-		public ActorOrientation(int id = 0, uint direction = 1)
-		{
-			Id = id;
-			Direction = direction;
-		}
+        public ActorOrientation(int id = 0, uint direction = 1)
+        {
+            Id = id;
+            Direction = direction;
+        }
 
-	}
+    }
 }

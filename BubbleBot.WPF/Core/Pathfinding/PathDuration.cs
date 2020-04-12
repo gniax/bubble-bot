@@ -35,7 +35,7 @@ namespace BubbleBot.Core.Pathfinding
             for (int i = 0; i < path.Count; i++)
             {
                 path[i].TryGetCoord(out float X, out float Y);
-                
+
                 if (i != 0)
                 {
                     if (Y == prevY)
@@ -51,7 +51,7 @@ namespace BubbleBot.Core.Pathfinding
                         duration += motionScheme.Linear;
                     }
                 }
-                
+
                 prevX = X;
                 prevY = Y;
             }

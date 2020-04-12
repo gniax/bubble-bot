@@ -1,14 +1,12 @@
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Enums;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using BubbleBot.Configurations.Language;
-using Microsoft.Win32;
-using Newtonsoft.Json;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -16,7 +14,7 @@ namespace BubbleBot.Views.Accounts
     {
 
         // Properties
-        private  Account Account => BubbleBotMain.Instance.SelectedAccount;
+        private Account Account => BubbleBotMain.Instance.SelectedAccount;
 
 
         // Constructor

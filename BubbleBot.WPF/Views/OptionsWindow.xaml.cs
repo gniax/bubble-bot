@@ -1,6 +1,6 @@
+using BubbleBot.Configurations;
 using System.Diagnostics;
 using System.Windows.Navigation;
-using BubbleBot.Configurations;
 
 namespace BubbleBot.Views
 {

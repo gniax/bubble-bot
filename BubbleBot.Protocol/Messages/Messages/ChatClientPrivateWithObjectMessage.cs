@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChatClientPrivateWithObjectMessage : ChatClientPrivateMessage
-	{
+    public class ChatClientPrivateWithObjectMessage : ChatClientPrivateMessage
+    {
 
-		// Properties
-		public List<ObjectItem> Objects { get; set; }
+        // Properties
+        public List<ObjectItem> Objects { get; set; }
 
 
-		// Constructors
-		public ChatClientPrivateWithObjectMessage() { }
+        // Constructors
+        public ChatClientPrivateWithObjectMessage() { }
 
-		public ChatClientPrivateWithObjectMessage(string content = "", string receiver = "", List<ObjectItem> objects = null)
-		{
-			Content = content;
-			Receiver = receiver;
-			Objects = objects;
-		}
+        public ChatClientPrivateWithObjectMessage(string content = "", string receiver = "", List<ObjectItem> objects = null)
+        {
+            Content = content;
+            Receiver = receiver;
+            Objects = objects;
+        }
 
-	}
+    }
 }

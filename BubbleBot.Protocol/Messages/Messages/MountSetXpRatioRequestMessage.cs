@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountSetXpRatioRequestMessage : Message
-	{
+    public class MountSetXpRatioRequestMessage : Message
+    {
 
-		// Properties
-		public uint XpRatio { get; set; }
+        // Properties
+        public uint XpRatio { get; set; }
 
 
-		// Constructors
-		public MountSetXpRatioRequestMessage() { }
+        // Constructors
+        public MountSetXpRatioRequestMessage() { }
 
-		public MountSetXpRatioRequestMessage(uint xpRatio = 0)
-		{
-			XpRatio = xpRatio;
-		}
+        public MountSetXpRatioRequestMessage(uint xpRatio = 0)
+        {
+            XpRatio = xpRatio;
+        }
 
-	}
+    }
 }

@@ -1,3 +1,4 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Gathers;
 using BubbleBot.Core.Accounts.Scripts.Actions;
 using BubbleBot.Core.Accounts.Scripts.Actions.Bid;
@@ -7,17 +8,15 @@ using BubbleBot.Core.Accounts.Scripts.Actions.Gather;
 using BubbleBot.Core.Accounts.Scripts.Actions.Global;
 using BubbleBot.Core.Accounts.Scripts.Actions.Map;
 using BubbleBot.Core.Accounts.Scripts.Actions.Npcs;
+using BubbleBot.Core.Enums;
+using BubbleBot.Protocol.Messages.Messages;
+using BubbleBot.Utility;
+using BubbleBot.Utility.Extensions;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Threading;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
-using BubbleBot.Protocol.Messages.Messages;
-using BubbleBot.Utility;
-using BubbleBot.Utility.Extensions;
 
 namespace BubbleBot.Core.Accounts.Scripts.Managers
 {
@@ -38,7 +37,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
         // Properties
         public int FightsOnThisMap { get; private set; }
         public int MonstersGroupToAttack { get; set; }
-        
+
         // Events
         public event Action<Account, bool> ActionsFinished;
         public event Action<Account, bool> CustomHandled;
@@ -152,7 +151,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 _account.Logger.LogDebug(caller, $"Waited {delay}ms.");
 
                 // If the queue still has actions
-                if (_actionsQueue.Count > 0) 
+                if (_actionsQueue.Count > 0)
                 {
                     if (_actionsQueue.TryDequeue(out ScriptAction action))
                     {
@@ -230,7 +229,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             // In case the bot gets into a fight (wheiter wanted or not)
             // Added UseAction here because the character can get aggressed in his path and we need to re-run the script after it
             // Added coroutine here also because the character can get into a fight thanks to a custom function (fight() or gather() or even pnj)
-            if (!(_currentAction is ChangeMapAction) && !(_currentAction is FightAction) && !(_currentAction is GatherAction) && !(_currentAction is UseAction) && 
+            if (!(_currentAction is ChangeMapAction) && !(_currentAction is FightAction) && !(_currentAction is GatherAction) && !(_currentAction is UseAction) &&
                 _currentCoroutine == null)
                 return;
 
@@ -240,11 +239,11 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
 
             ClearActions();
 
-            if(!_account.HasGroup)
-            DequeueActions(1500);
+            if (!_account.HasGroup)
+                DequeueActions(1500);
 
             else
-            DequeueActions(3000);
+                DequeueActions(3000);
         }
 
         private async void Movements_MovementFinished(bool success)
@@ -548,7 +547,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 {
                     _timeoutTimer.Dispose();
                 }
-                
+
                 _actionsQueue = null;
                 _currentAction = null;
                 _account = null;

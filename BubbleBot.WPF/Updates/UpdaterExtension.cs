@@ -1,10 +1,10 @@
+using BubbleBot.Configurations.Language;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Updates
 {

@@ -5,7 +5,7 @@ namespace BubbleBot.Utility.DofusTouch
 {
     public static class FlashKeyGenerator
     {
-        
+
         public static string GetRandomFlashKey()
         {
             StringBuilder sb = new StringBuilder();

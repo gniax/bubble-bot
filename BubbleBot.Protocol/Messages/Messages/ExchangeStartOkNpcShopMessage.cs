@@ -1,26 +1,26 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeStartOkNpcShopMessage : Message
-	{
+    public class ExchangeStartOkNpcShopMessage : Message
+    {
 
-		// Properties
-		public List<ObjectItemToSellInNpcShop> ObjectsInfos { get; set; }
-		public int NpcSellerId { get; set; }
-		public uint TokenId { get; set; }
+        // Properties
+        public List<ObjectItemToSellInNpcShop> ObjectsInfos { get; set; }
+        public int NpcSellerId { get; set; }
+        public uint TokenId { get; set; }
 
 
-		// Constructors
-		public ExchangeStartOkNpcShopMessage() { }
+        // Constructors
+        public ExchangeStartOkNpcShopMessage() { }
 
-		public ExchangeStartOkNpcShopMessage(int npcSellerId = 0, uint tokenId = 0, List<ObjectItemToSellInNpcShop> objectsInfos = null)
-		{
-			NpcSellerId = npcSellerId;
-			TokenId = tokenId;
-			ObjectsInfos = objectsInfos;
-		}
+        public ExchangeStartOkNpcShopMessage(int npcSellerId = 0, uint tokenId = 0, List<ObjectItemToSellInNpcShop> objectsInfos = null)
+        {
+            NpcSellerId = npcSellerId;
+            TokenId = tokenId;
+            ObjectsInfos = objectsInfos;
+        }
 
-	}
+    }
 }

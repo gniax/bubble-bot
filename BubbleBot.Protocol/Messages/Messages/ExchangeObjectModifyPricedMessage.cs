@@ -1,20 +1,17 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeObjectModifyPricedMessage : ExchangeObjectMovePricedMessage
-	{
+    public class ExchangeObjectModifyPricedMessage : ExchangeObjectMovePricedMessage
+    {
 
-		// Constructors
-		public ExchangeObjectModifyPricedMessage() { }
+        // Constructors
+        public ExchangeObjectModifyPricedMessage() { }
 
-		public ExchangeObjectModifyPricedMessage(uint objectUID = 0, int quantity = 0, int price = 0)
-		{
-			ObjectUID = objectUID;
-			Quantity = quantity;
-			Price = price;
-		}
+        public ExchangeObjectModifyPricedMessage(uint objectUID = 0, int quantity = 0, int price = 0)
+        {
+            ObjectUID = objectUID;
+            Quantity = quantity;
+            Price = price;
+        }
 
-	}
+    }
 }

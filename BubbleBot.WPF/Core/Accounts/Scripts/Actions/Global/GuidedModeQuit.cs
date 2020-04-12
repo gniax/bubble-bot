@@ -1,13 +1,10 @@
-﻿using BubbleBot.Protocol.Messages;
+﻿using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Enums;
 using System;
-using System.Threading.Tasks;
-using BubbleBot.Core.Accounts.Extensions;
-using BubbleBot.Core.Accounts.Scripts.Managers;
-using BubbleBot.Configurations;
 using System.Collections.Generic;
 using System.Threading;
-using BubbleBot.Core.Enums;
-using BubbleBot.Configurations.Language;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
@@ -36,7 +33,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                 int prvBreed = (int)account.Game.Character.Breed,
                     prvSex = account.Game.Character.Sex ? -1 : 0,
                     prvHead = -1;
- 
+
                 List<int> prvColors = account.Game.Character.Look.IndexedColors;
 
                 // Here we have to re-create a character
@@ -74,7 +71,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     }
                 }
 
-                return ScriptActionResults.FAILED;           
+                return ScriptActionResults.FAILED;
             }
         }
     }

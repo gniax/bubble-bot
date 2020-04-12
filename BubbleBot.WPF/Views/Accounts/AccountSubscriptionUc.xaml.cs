@@ -1,20 +1,13 @@
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Accounts.Extensions.Bid;
-using BubbleBot.Protocol.Data;
-using BubbleBot.Server.Messages;
-using Microsoft.Win32;
+using BubbleBot.Protocol.Messages;
 using System;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using BubbleBot.Configurations.Language;
-using BubbleBot.Protocol.Messages;
-using System.Threading.Tasks;
-using BubbleBot.Protocol.Messages.Messages;
-using System.Threading;
-using Newtonsoft.Json;
 using System.Windows.Media;
-using System.ComponentModel;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -51,7 +44,8 @@ namespace BubbleBot.Views.Accounts
 
         private void bgWorker_WorkCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            ProgressBar.Dispatcher.Invoke(new Action(() => {
+            ProgressBar.Dispatcher.Invoke(new Action(() =>
+            {
                 ProgressBar.Visibility = Visibility.Hidden;
                 ProgressBar.Value = 0;
             }));
@@ -69,7 +63,8 @@ namespace BubbleBot.Views.Accounts
 
                 showTimeout = new System.Timers.Timer(); // Fix timer interval to elapsed if bought
                 showTimeout.Interval = 60000;
-                showTimeout.Elapsed += (s, en) => {
+                showTimeout.Elapsed += (s, en) =>
+                {
                     SubscriptionCost.Dispatcher.Invoke(new Action(() =>
                     {
                         subscriptionText = "?";
@@ -77,9 +72,9 @@ namespace BubbleBot.Views.Accounts
                         BtnShow.Dispatcher.Invoke(new Action(() => BtnShow.IsEnabled = true));
                         BtnBuy.Dispatcher.Invoke(new Action(() => BtnBuy.IsEnabled = false));
                     }));
-                    showTimeout.Stop(); 
+                    showTimeout.Stop();
                 };
-                showTimeout.Start(); 
+                showTimeout.Start();
 
                 return;
             }
@@ -93,18 +88,20 @@ namespace BubbleBot.Views.Accounts
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = Interval;
             tbAlert.Dispatcher.Invoke(new Action(() => tbAlert.Text = message));
-            if(success)
+            if (success)
                 spAlert.Dispatcher.Invoke(new Action(() => spAlert.Background = new SolidColorBrush(Color.FromArgb(255, 46, 176, 59))));
             else
                 spAlert.Dispatcher.Invoke(new Action(() => spAlert.Background = new SolidColorBrush(Color.FromArgb(255, 205, 93, 93))));
 
-            spAlert.Dispatcher.Invoke(new Action(() => {
+            spAlert.Dispatcher.Invoke(new Action(() =>
+            {
                 spAlert.Visibility = Visibility.Visible;
             }));
 
             // above two line sets the visibility and shows the message and interval elapses hide the visibility of the label. Elapsed will we called after Start() method.
 
-            timer.Elapsed += (s, en) => {
+            timer.Elapsed += (s, en) =>
+            {
                 spAlert.Dispatcher.Invoke(new Action(() => spAlert.Visibility = Visibility.Hidden));
                 timer.Stop(); // Stop the timer(otherwise keeps on calling)
             };
@@ -114,8 +111,9 @@ namespace BubbleBot.Views.Accounts
 
         private async void Subscribe()
         {
-            BtnBuy.Dispatcher.Invoke(new Action(() => {
-                    BtnBuy.IsEnabled = false;
+            BtnBuy.Dispatcher.Invoke(new Action(() =>
+            {
+                BtnBuy.IsEnabled = false;
             }));
 
             bgWorkerWorking = true;
@@ -139,7 +137,7 @@ namespace BubbleBot.Views.Accounts
             System.Threading.SpinWait.SpinUntil(() => (Account.Game.shopBuyInfo != 0), TimeSpan.FromSeconds(30));
             bgWorkerWorking = false;
 
-            switch(Account.Game.shopBuyInfo)
+            switch (Account.Game.shopBuyInfo)
             {
                 case 0:
                     Account.Game.shopBuyInfo = 0;
@@ -164,13 +162,13 @@ namespace BubbleBot.Views.Accounts
         }
         private void BtnBuy_Click(object sender, RoutedEventArgs e)
         {
-            if(Account.State != Core.Enums.AccountStates.NONE)
+            if (Account.State != Core.Enums.AccountStates.NONE)
             {
                 SetAlert("Le personnage doit être en jeu et inactif");
                 return;
             }
-            if(Account.Game.Character.Inventory.Kamas < Convert.ToDouble(subscriptionText))
-            { 
+            if (Account.Game.Character.Inventory.Kamas < Convert.ToDouble(subscriptionText))
+            {
                 SetAlert("Vous n'avez pas assez de kamas pour acheter l'abonnement");
                 return;
             }

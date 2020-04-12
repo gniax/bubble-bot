@@ -1,7 +1,7 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Utility;
+using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
                 return;
 
             var seekChannelSentences = GetSentences(ChatActivableChannelsEnum.CHANNEL_SEEK);
-            
+
             if (seekChannelSentences.Count > 0)
             {
                 var sentence = seekChannelSentences[Randomize.GetRandomInt(0, seekChannelSentences.Count)];
@@ -84,7 +84,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
                 return;
 
             var salesChannelSentences = GetSentences(ChatActivableChannelsEnum.CHANNEL_SALES);
-            
+
             if (salesChannelSentences.Count > 0)
             {
                 var sentence = salesChannelSentences[Randomize.GetRandomInt(0, salesChannelSentences.Count)];

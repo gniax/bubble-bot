@@ -27,7 +27,7 @@ namespace BubbleBot.Views.Accounts
 
             if (spell == null)
                 return;
-            
+
             Account.Game.Character.LevelUpSpell(spell);
         }
 

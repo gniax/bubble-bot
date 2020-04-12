@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class SubEntity
-	{
+    public class SubEntity
+    {
 
-		// Properties
-		public uint BindingPointCategory { get; set; }
-		public uint BindingPointIndex { get; set; }
-		public EntityLook SubEntityLook { get; set; }
+        // Properties
+        public uint BindingPointCategory { get; set; }
+        public uint BindingPointIndex { get; set; }
+        public EntityLook SubEntityLook { get; set; }
 
 
-		// Constructors
-		public SubEntity() { }
+        // Constructors
+        public SubEntity() { }
 
-		public SubEntity(uint bindingPointCategory = 0, uint bindingPointIndex = 0, EntityLook subEntityLook = null)
-		{
-			BindingPointCategory = bindingPointCategory;
-			BindingPointIndex = bindingPointIndex;
-			SubEntityLook = subEntityLook;
-		}
+        public SubEntity(uint bindingPointCategory = 0, uint bindingPointIndex = 0, EntityLook subEntityLook = null)
+        {
+            BindingPointCategory = bindingPointCategory;
+            BindingPointIndex = bindingPointIndex;
+            SubEntityLook = subEntityLook;
+        }
 
-	}
+    }
 }

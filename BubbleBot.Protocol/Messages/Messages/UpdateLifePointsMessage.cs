@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class UpdateLifePointsMessage : Message
-	{
+    public class UpdateLifePointsMessage : Message
+    {
 
-		// Properties
-		public uint LifePoints { get; set; }
-		public uint MaxLifePoints { get; set; }
+        // Properties
+        public uint LifePoints { get; set; }
+        public uint MaxLifePoints { get; set; }
 
 
-		// Constructors
-		public UpdateLifePointsMessage() { }
+        // Constructors
+        public UpdateLifePointsMessage() { }
 
-		public UpdateLifePointsMessage(uint lifePoints = 0, uint maxLifePoints = 0)
-		{
-			LifePoints = lifePoints;
-			MaxLifePoints = maxLifePoints;
-		}
+        public UpdateLifePointsMessage(uint lifePoints = 0, uint maxLifePoints = 0)
+        {
+            LifePoints = lifePoints;
+            MaxLifePoints = maxLifePoints;
+        }
 
-	}
+    }
 }

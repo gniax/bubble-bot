@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeStartOkMulticraftCrafterMessage : Message
-	{
+    public class ExchangeStartOkMulticraftCrafterMessage : Message
+    {
 
-		// Properties
-		public uint MaxCase { get; set; }
-		public uint SkillId { get; set; }
+        // Properties
+        public uint MaxCase { get; set; }
+        public uint SkillId { get; set; }
 
 
-		// Constructors
-		public ExchangeStartOkMulticraftCrafterMessage() { }
+        // Constructors
+        public ExchangeStartOkMulticraftCrafterMessage() { }
 
-		public ExchangeStartOkMulticraftCrafterMessage(uint maxCase = 0, uint skillId = 0)
-		{
-			MaxCase = maxCase;
-			SkillId = skillId;
-		}
+        public ExchangeStartOkMulticraftCrafterMessage(uint maxCase = 0, uint skillId = 0)
+        {
+            MaxCase = maxCase;
+            SkillId = skillId;
+        }
 
-	}
+    }
 }

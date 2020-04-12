@@ -1,7 +1,7 @@
-﻿using System;
-using System.Reflection;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace BubbleBot.Protocol.Messages
 {

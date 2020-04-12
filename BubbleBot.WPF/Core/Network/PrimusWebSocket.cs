@@ -1,8 +1,8 @@
-using System;
-using System.Threading;
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
+using System;
 using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace BubbleBot.Core.Network
@@ -18,7 +18,7 @@ namespace BubbleBot.Core.Network
 
         // Fields
         private WebSocket _webSocket;
-        private Timer _socketTimer;
+        private Timer _socketIOtimer;
         private ConcurrentQueue<JObject> _messagesQueue;
         private bool _waitingToBeClosed;
 
@@ -34,7 +34,7 @@ namespace BubbleBot.Core.Network
         public PrimusWebSocket()
         {
             _messagesQueue = new ConcurrentQueue<JObject>();
-            _socketTimer = new Timer(SocketTimerCallback, null, Timeout.Infinite, Timeout.Infinite);
+            _socketIOtimer = new Timer(SocketTimerCallback, null, Timeout.Infinite, Timeout.Infinite);
             _waitingToBeClosed = false;
         }
 
@@ -137,9 +137,7 @@ namespace BubbleBot.Core.Network
 
         private void InitializeWebsocket(string url, string sid, string proxyUrl, string proxyUsername, string proxyPassword)
         {
-            string fullUrl = url + "&sid=" + sid + "&t=" + Utility.Security.YeastAPI.GenerateKey() + "&b64=1";
-
-            Url = new Uri(fullUrl);
+            Url = new Uri(url + "&sid=" + sid + "&t=" + Utility.Security.YeastAPI.GenerateKey() + "&b64=1");
             _webSocket = new WebSocket(Url.AbsoluteUri);
             _webSocket.SetCookie(new WebSocketSharp.Net.Cookie("io", sid));
 
@@ -178,10 +176,10 @@ namespace BubbleBot.Core.Network
             // Useless message (or not?)
             if (e.Data.Length == 0)
                 return;
-            
+
             if (e.Data == "3")
             {
-                _socketTimer.Change(SocketPingInterval ?? 25000, SocketPingInterval ?? 25000);
+                _socketIOtimer.Change(SocketPingInterval ?? 25000, SocketPingInterval ?? 25000);
                 return;
             }
 
@@ -204,7 +202,7 @@ namespace BubbleBot.Core.Network
                 // Handle ping => not needed anymore
                 if (e.Data[0] == '0' && obj["pingInterval"] != null)
                     return;
-                
+
                 _messagesQueue.Enqueue(obj);
             }
             catch (Exception ex)
@@ -216,7 +214,7 @@ namespace BubbleBot.Core.Network
         private void WebSocket_Closed(object sender, EventArgs e)
         {
             _waitingToBeClosed = true;
-            _socketTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void WebSocket_Opened(object sender, EventArgs e)
@@ -224,7 +222,7 @@ namespace BubbleBot.Core.Network
             _webSocket.Send("2probe");
             _webSocket.Send("5");
 
-            _socketTimer.Change(SocketPingInterval ?? 25000, SocketPingInterval ?? 25000);
+            _socketIOtimer.Change(SocketPingInterval ?? 25000, SocketPingInterval ?? 25000);
 
             Connected = true;
 
@@ -236,8 +234,8 @@ namespace BubbleBot.Core.Network
 
         public void Dispose()
         {
-            _socketTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            _socketTimer.Dispose();
+            _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _socketIOtimer.Dispose();
             //webSocket.Dispose(); TODO: Implement this
 
             Url = null;
@@ -245,7 +243,7 @@ namespace BubbleBot.Core.Network
             SocketPingInterval = null;
             SocketPingTimeout = null;
             _webSocket = null;
-            _socketTimer = null;
+            _socketIOtimer = null;
         }
 
     }

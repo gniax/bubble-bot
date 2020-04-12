@@ -1,9 +1,7 @@
 ﻿using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
@@ -32,18 +30,18 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             DateTime newDate = localDate.AddSeconds(Seconds);
 
             string newDateToDay = newDate.Day.ToString() + " " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month);
-            string newDateToTime= newDate.ToString("HH:mm:ss");
+            string newDateToTime = newDate.ToString("HH:mm:ss");
 
             account.Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("612", newDateToDay, newDateToTime, RestartScript.ToString()));
             account.PreventPlanificationReconnection = true;
             await account.Network.Disconnect("CLIENT_CLOSING");
             await Task.Delay(400);
-            
+
             // Note: Here we'll log informations about current timer before reconnection
             // More the longer the time, and more will be display informations about situation
             // Ex: For 30 seconds reconnection -> 1 display at the half (show 15 seconds remaining)
             // For 86440s (1 day) -> a display each hour
-            for(int i=0; i<Seconds; i++)
+            for (int i = 0; i < Seconds; i++)
             {
                 int factor = 0;
 
@@ -108,13 +106,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             {
                 return ScriptActionResults.DONE;
             }
-            else if(!account.Network.Connected)
+            else if (!account.Network.Connected)
             {
                 return ScriptActionResults.FAILED;
             }
 
             return ScriptActionResults.FAILED;
-            
+
         }
 
     }

@@ -1,8 +1,8 @@
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Frames.Game
 {

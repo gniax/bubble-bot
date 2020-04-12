@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightResultFighterListEntry : FightResultListEntry
-	{
+    public class FightResultFighterListEntry : FightResultListEntry
+    {
 
-		// Properties
-		public int Id { get; set; }
-		public bool Alive { get; set; }
+        // Properties
+        public int Id { get; set; }
+        public bool Alive { get; set; }
 
 
-		// Constructors
-		public FightResultFighterListEntry() { }
+        // Constructors
+        public FightResultFighterListEntry() { }
 
-		public FightResultFighterListEntry(uint outcome = 0, FightLoot rewards = null, int id = 0, bool alive = false)
-		{
-			Outcome = outcome;
-			Rewards = rewards;
-			Id = id;
-			Alive = alive;
-		}
+        public FightResultFighterListEntry(uint outcome = 0, FightLoot rewards = null, int id = 0, bool alive = false)
+        {
+            Outcome = outcome;
+            Rewards = rewards;
+            Id = id;
+            Alive = alive;
+        }
 
-	}
+    }
 }

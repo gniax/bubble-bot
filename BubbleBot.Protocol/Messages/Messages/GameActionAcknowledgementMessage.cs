@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionAcknowledgementMessage : Message
-	{
+    public class GameActionAcknowledgementMessage : Message
+    {
 
-		// Properties
-		public bool Valid { get; set; }
-		public int ActionId { get; set; }
+        // Properties
+        public bool Valid { get; set; }
+        public int ActionId { get; set; }
 
 
-		// Constructors
-		public GameActionAcknowledgementMessage() { }
+        // Constructors
+        public GameActionAcknowledgementMessage() { }
 
-		public GameActionAcknowledgementMessage(bool valid = false, int actionId = 0)
-		{
-			Valid = valid;
-			ActionId = actionId;
-		}
+        public GameActionAcknowledgementMessage(bool valid = false, int actionId = 0)
+        {
+            Valid = valid;
+            ActionId = actionId;
+        }
 
-	}
+    }
 }

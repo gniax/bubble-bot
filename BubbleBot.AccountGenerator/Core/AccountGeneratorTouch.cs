@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CefSharp;
 using CefSharp.OffScreen;
-using CefSharp;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AccountGenerator.Core
 {
@@ -70,9 +69,9 @@ namespace AccountGenerator.Core
         public string outputAcc3 = "";
         public string outputAcc3p = "";
         public string debug = "";
-        
 
-        public AccountGeneratorTouch(string accountname, string accountpassword, string accountmail, string accountproxyadresse, string accountapikey,int nbcompte)
+
+        public AccountGeneratorTouch(string accountname, string accountpassword, string accountmail, string accountproxyadresse, string accountapikey, int nbcompte)
         {
             //On choisi pseudo
             if (accountname != "")
@@ -105,9 +104,9 @@ namespace AccountGenerator.Core
             //On choisi mail
             if (accountmail != "")
             {
-                 mMail1 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
-                 mMail2 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
-                 mMail3 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
+                mMail1 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
+                mMail2 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
+                mMail3 = accountmail + "%2B" + GetRandomStringMini(mLongueurMailAlias) + "%40gmail.com";
             }
 
             //On choisi adresse du proxy
@@ -187,9 +186,9 @@ namespace AccountGenerator.Core
             }
 
 
-            await SetProxy(browser, "http://"+ mProxyAdresse1);
+            await SetProxy(browser, "http://" + mProxyAdresse1);
 
-        
+
             browser.Load("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993");//https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993
 
             DofusConnection();
@@ -230,7 +229,7 @@ namespace AccountGenerator.Core
             }
 
             //Si le chargement ne fonctiuonne pas on quitte
-            if(chargement == false)
+            if (chargement == false)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Impossible de se connecter au site DofusTouch...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
@@ -253,7 +252,7 @@ namespace AccountGenerator.Core
                 allfinished = true;
                 return;
             }
-   
+
             string ckey = "";
             Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(captchares));
             if (dictionaryRes.ContainsKey("data")) //On récupère la reponse anti-captcha
@@ -282,7 +281,7 @@ namespace AccountGenerator.Core
             {
                 await browser.GetMainFrame().EvaluateScriptAsync("var request = new XMLHttpRequest();");
                 //Initialisation des valeurs de la requête 
-                
+
                 await browser.GetMainFrame().EvaluateScriptAsync("request.open('GET'," + '\'' + "https://haapi.ankama.com/json/Ankama/v2/Account/CreateGuest?game=18&lang=fr&web_params%5B%5D=&captcha_token=" + ckey + '\'' + ", false);");
                 Thread.Sleep(500);
                 //Envoie de la requête 
@@ -291,7 +290,7 @@ namespace AccountGenerator.Core
                 //Recuperation du header de la reponse
                 JavascriptResponse takeInfo85 = await browser.GetMainFrame().EvaluateScriptAsync("request.getAllResponseHeaders();");
                 headerGuest = JsonConvert.SerializeObject(takeInfo85.Result);
-               // Console.WriteLine(headerGuest);
+                // Console.WriteLine(headerGuest);
                 await outDebugSafe(headerGuest);
 
                 //"x-password: ttvA89QbSG79\r\ncontent-type: application/json\r\nx-duration: 81.073999\r\n"
@@ -407,7 +406,7 @@ namespace AccountGenerator.Core
                 Thread.Sleep(4000);
                 JavascriptResponse takeInfo100 = await browser.GetMainFrame().EvaluateScriptAsync("request.response;");
                 string resultCreate = JsonConvert.SerializeObject(takeInfo100.Result);
-               // Console.WriteLine(resultCreate);
+                // Console.WriteLine(resultCreate);
                 await outDebugSafe(resultCreate);
 
                 if (resultCreate.Contains("duration"))
@@ -419,7 +418,7 @@ namespace AccountGenerator.Core
                 else
                 {
                     await outDebugSafe("Erreur a la creation du compte !");
-                   // Console.WriteLine("Erreur a la creation du compte !");
+                    // Console.WriteLine("Erreur a la creation du compte !");
                     nbtrypostdata--;
                 }
             }
@@ -443,7 +442,7 @@ namespace AccountGenerator.Core
                 outputAcc1p = mPassword1;
                 counterAccount++;
                 DofusConnection();
-                
+
             }
             else if (counterAccount == 2)
             {
@@ -469,7 +468,7 @@ namespace AccountGenerator.Core
                 await outDebugSafe("Erreur, les comptes on déjà été créer...");
                 //Console.WriteLine("Erreur, les comptes on déjà été créer...");
             }
-            
+
         }
 
         public async Task StartCaptchaBypass()
@@ -479,58 +478,58 @@ namespace AccountGenerator.Core
             Console.WriteLine("Captcha reçue.");
             Console.WriteLine("On passe au traitement du captcha...");
 
-                bool success = false;
-                while (success == false)
+            bool success = false;
+            while (success == false)
+            {
+                JavascriptResponse takeInfo2 = await browser.EvaluateScriptAsync("document.querySelector('#challenge-form > script').dataset;");
+                string rawess = JsonConvert.SerializeObject(takeInfo2.Result);
+                Console.WriteLine(rawess);
+                Dictionary<string, object> dictionaryResds = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(rawess));
+
+                if (dictionaryResds.ContainsKey("sitekey")) //On récupère l'apikey
                 {
-                    JavascriptResponse takeInfo2 = await browser.EvaluateScriptAsync("document.querySelector('#challenge-form > script').dataset;");
-                    string rawess = JsonConvert.SerializeObject(takeInfo2.Result);
-                    Console.WriteLine(rawess);
-                    Dictionary<string, object> dictionaryResds = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(rawess));
-
-                    if (dictionaryResds.ContainsKey("sitekey")) //On récupère l'apikey
-                    {
-                        string monray = (string)dictionaryResds["sitekey"];
-                        Console.WriteLine(monray);
-                        mSitekey = monray;
-                        success = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Sitekey non trouver !");
-                        Thread.Sleep(2000);
-                        success = false;
-                    }
+                    string monray = (string)dictionaryResds["sitekey"];
+                    Console.WriteLine(monray);
+                    mSitekey = monray;
+                    success = true;
                 }
-
-                string captchares;
-                captchares = await HandleRecaptcha(mSitekey, 1);
-
-                string ckey = "";
-                Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(captchares));
-                if (dictionaryRes.ContainsKey("data")) //On récupère la reponse anti-captcha
+                else
                 {
-                    ckey = (string)dictionaryRes["data"];
-
+                    Console.WriteLine("Sitekey non trouver !");
+                    Thread.Sleep(2000);
+                    success = false;
                 }
-                Thread.Sleep(500);
+            }
 
-                 Console.WriteLine(ckey);
+            string captchares;
+            captchares = await HandleRecaptcha(mSitekey, 1);
 
-                await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').style.display =  " + '\'' + "block" + '\'' + ";");
-                Thread.Sleep(1000);
-                await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";");
-                Thread.Sleep(1000);
-                await MakeSnapshot(0);
-                Thread.Sleep(5000);
-                await browser.EvaluateScriptAsync(@"document.querySelector('#challenge-form input[type=submit]').click();");
-                //Thread.Sleep(5000);
-                //await MakeSnapshot(1);
-                Console.WriteLine("Requête terminer Captcha !");
-                Thread.Sleep(5000);
-                await MakeSnapshot(6);
+            string ckey = "";
+            Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(captchares));
+            if (dictionaryRes.ContainsKey("data")) //On récupère la reponse anti-captcha
+            {
+                ckey = (string)dictionaryRes["data"];
 
-                Thread.Sleep(5000);
-                Console.WriteLine("Normalement on a passez le captcha !");
+            }
+            Thread.Sleep(500);
+
+            Console.WriteLine(ckey);
+
+            await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').style.display =  " + '\'' + "block" + '\'' + ";");
+            Thread.Sleep(1000);
+            await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";");
+            Thread.Sleep(1000);
+            await MakeSnapshot(0);
+            Thread.Sleep(5000);
+            await browser.EvaluateScriptAsync(@"document.querySelector('#challenge-form input[type=submit]').click();");
+            //Thread.Sleep(5000);
+            //await MakeSnapshot(1);
+            Console.WriteLine("Requête terminer Captcha !");
+            Thread.Sleep(5000);
+            await MakeSnapshot(6);
+
+            Thread.Sleep(5000);
+            Console.WriteLine("Normalement on a passez le captcha !");
             // captchabypassed = true;
         }
 
@@ -560,7 +559,7 @@ namespace AccountGenerator.Core
         {
 
             // If _wasScriptRunning was already true, don't change it        
-           // RecaptchaReceived?.Invoke(this);
+            // RecaptchaReceived?.Invoke(this);
 
             try
             {
@@ -570,14 +569,14 @@ namespace AccountGenerator.Core
                 string response = "";
                 RecaptchaHandler cpttask = new RecaptchaHandler();
 
-                 response = await cpttask.GetResponse(sitekey);
+                response = await cpttask.GetResponse(sitekey);
                 //Console.WriteLine("reCaptcha Got response.");
                 await outDebugSafe("reCaptcha Got response.");
                 // If the response is null, its because the user didn't enter an anti-captcha key
                 if (response == null)
                 {
                     // We shouldn't leave this True
-                   // Console.WriteLine("Erreur Anti-captcha personnal key !");
+                    // Console.WriteLine("Erreur Anti-captcha personnal key !");
                     await outDebugSafe("Erreur Anti-captcha personnal key !");
                     RecaptchaResolved?.Invoke(this, false);
                 }
@@ -585,7 +584,7 @@ namespace AccountGenerator.Core
                 {
 
                     //Console.Write(sw.Elapsed.TotalSeconds);
-                    await outDebugSafe("Réponce reçue en " + sw.Elapsed.TotalSeconds + " secondes."); 
+                    await outDebugSafe("Réponce reçue en " + sw.Elapsed.TotalSeconds + " secondes.");
 
 
                     dynamic msg = new ExpandoObject();
@@ -612,14 +611,14 @@ namespace AccountGenerator.Core
             }
             catch (Exception ex)
             {
-              //  Console.Write("Erreur reCaptcha");
+                //  Console.Write("Erreur reCaptcha");
                 //Console.Write(ex.Message);
                 if (tries < 3)
                 {
                     // Console.Write("Captcha non résolut tentative numéro ");
                     //   Console.Write(++tries);
                     tries++;
-                   // Console.WriteLine(" ");
+                    // Console.WriteLine(" ");
                     await HandleRecaptcha(sitekey, tries);
                 }
 

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightHumanReadyStateMessage : Message
-	{
+    public class GameFightHumanReadyStateMessage : Message
+    {
 
-		// Properties
-		public uint CharacterId { get; set; }
-		public bool IsReady { get; set; }
+        // Properties
+        public uint CharacterId { get; set; }
+        public bool IsReady { get; set; }
 
 
-		// Constructors
-		public GameFightHumanReadyStateMessage() { }
+        // Constructors
+        public GameFightHumanReadyStateMessage() { }
 
-		public GameFightHumanReadyStateMessage(uint characterId = 0, bool isReady = false)
-		{
-			CharacterId = characterId;
-			IsReady = isReady;
-		}
+        public GameFightHumanReadyStateMessage(uint characterId = 0, bool isReady = false)
+        {
+            CharacterId = characterId;
+            IsReady = isReady;
+        }
 
-	}
+    }
 }

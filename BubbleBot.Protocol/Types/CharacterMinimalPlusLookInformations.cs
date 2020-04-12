@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class CharacterMinimalPlusLookInformations : CharacterMinimalInformations
-	{
+    public class CharacterMinimalPlusLookInformations : CharacterMinimalInformations
+    {
 
-		// Properties
-		public EntityLook EntityLook { get; set; }
+        // Properties
+        public EntityLook EntityLook { get; set; }
 
 
-		// Constructors
-		public CharacterMinimalPlusLookInformations() { }
+        // Constructors
+        public CharacterMinimalPlusLookInformations() { }
 
-		public CharacterMinimalPlusLookInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null)
-		{
-			Id = id;
-			Level = level;
-			Name = name;
-			EntityLook = entityLook;
-		}
+        public CharacterMinimalPlusLookInformations(uint id = 0, uint level = 0, string name = "", EntityLook entityLook = null)
+        {
+            Id = id;
+            Level = level;
+            Name = name;
+            EntityLook = entityLook;
+        }
 
-	}
+    }
 }

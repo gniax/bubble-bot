@@ -1,26 +1,26 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobCrafterDirectoryEntryMessage : Message
-	{
+    public class JobCrafterDirectoryEntryMessage : Message
+    {
 
-		// Properties
-		public List<JobCrafterDirectoryEntryJobInfo> JobInfoList { get; set; }
-		public JobCrafterDirectoryEntryPlayerInfo PlayerInfo { get; set; }
-		public EntityLook PlayerLook { get; set; }
+        // Properties
+        public List<JobCrafterDirectoryEntryJobInfo> JobInfoList { get; set; }
+        public JobCrafterDirectoryEntryPlayerInfo PlayerInfo { get; set; }
+        public EntityLook PlayerLook { get; set; }
 
 
-		// Constructors
-		public JobCrafterDirectoryEntryMessage() { }
+        // Constructors
+        public JobCrafterDirectoryEntryMessage() { }
 
-		public JobCrafterDirectoryEntryMessage(JobCrafterDirectoryEntryPlayerInfo playerInfo = null, EntityLook playerLook = null, List<JobCrafterDirectoryEntryJobInfo> jobInfoList = null)
-		{
-			PlayerInfo = playerInfo;
-			PlayerLook = playerLook;
-			JobInfoList = jobInfoList;
-		}
+        public JobCrafterDirectoryEntryMessage(JobCrafterDirectoryEntryPlayerInfo playerInfo = null, EntityLook playerLook = null, List<JobCrafterDirectoryEntryJobInfo> jobInfoList = null)
+        {
+            PlayerInfo = playerInfo;
+            PlayerLook = playerLook;
+            JobInfoList = jobInfoList;
+        }
 
-	}
+    }
 }

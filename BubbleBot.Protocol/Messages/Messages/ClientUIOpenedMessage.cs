@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ClientUIOpenedMessage : Message
-	{
+    public class ClientUIOpenedMessage : Message
+    {
 
-		// Properties
-		public uint Type { get; set; }
+        // Properties
+        public uint Type { get; set; }
 
 
-		// Constructors
-		public ClientUIOpenedMessage() { }
+        // Constructors
+        public ClientUIOpenedMessage() { }
 
-		public ClientUIOpenedMessage(uint type = 0)
-		{
-			Type = type;
-		}
+        public ClientUIOpenedMessage(uint type = 0)
+        {
+            Type = type;
+        }
 
-	}
+    }
 }

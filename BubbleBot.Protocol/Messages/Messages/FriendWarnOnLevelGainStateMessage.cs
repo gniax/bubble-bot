@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class FriendWarnOnLevelGainStateMessage : Message
-	{
+    public class FriendWarnOnLevelGainStateMessage : Message
+    {
 
-		// Properties
-		public bool Enable { get; set; }
+        // Properties
+        public bool Enable { get; set; }
 
 
-		// Constructors
-		public FriendWarnOnLevelGainStateMessage() { }
+        // Constructors
+        public FriendWarnOnLevelGainStateMessage() { }
 
-		public FriendWarnOnLevelGainStateMessage(bool enable = false)
-		{
-			Enable = enable;
-		}
+        public FriendWarnOnLevelGainStateMessage(bool enable = false)
+        {
+            Enable = enable;
+        }
 
-	}
+    }
 }

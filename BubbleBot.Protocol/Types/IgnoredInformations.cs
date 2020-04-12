@@ -1,19 +1,16 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class IgnoredInformations : AbstractContactInformations
-	{
+    public class IgnoredInformations : AbstractContactInformations
+    {
 
-		// Constructors
-		public IgnoredInformations() { }
+        // Constructors
+        public IgnoredInformations() { }
 
-		public IgnoredInformations(uint accountId = 0, string accountName = "")
-		{
-			AccountId = accountId;
-			AccountName = accountName;
-		}
+        public IgnoredInformations(uint accountId = 0, string accountName = "")
+        {
+            AccountId = accountId;
+            AccountName = accountName;
+        }
 
-	}
+    }
 }

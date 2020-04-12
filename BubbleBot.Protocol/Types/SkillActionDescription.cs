@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class SkillActionDescription
-	{
+    public class SkillActionDescription
+    {
 
-		// Properties
-		public uint SkillId { get; set; }
+        // Properties
+        public uint SkillId { get; set; }
 
 
-		// Constructors
-		public SkillActionDescription() { }
+        // Constructors
+        public SkillActionDescription() { }
 
-		public SkillActionDescription(uint skillId = 0)
-		{
-			SkillId = skillId;
-		}
+        public SkillActionDescription(uint skillId = 0)
+        {
+            SkillId = skillId;
+        }
 
-	}
+    }
 }

@@ -42,7 +42,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account.Scripts.ActionsManager.EnqueueAction(new BuyItemAction(gid, lot), true);
             return true;
         }
-        public bool ExtBuyItem(uint gid, uint lot,uint maxPrice = 0)
+        public bool ExtBuyItem(uint gid, uint lot, uint maxPrice = 0)
         {
             if (_account.State != Enums.AccountStates.BUYING)
                 return false;
@@ -50,7 +50,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account.Scripts.ActionsManager.EnqueueAction(new ExtendBuyItemAction(gid, lot, maxPrice), true);
             return true;
         }
-        public bool AddUserCondition(int ItemEffetId, string ItemCondition,int ItemValue)
+        public bool AddUserCondition(int ItemEffetId, string ItemCondition, int ItemValue)
         {
             if (_account.State != Enums.AccountStates.BUYING)
                 return false;

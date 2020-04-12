@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class PartyCompanionBaseInformations
-	{
+    public class PartyCompanionBaseInformations
+    {
 
-		// Properties
-		public uint IndexId { get; set; }
-		public uint CompanionGenericId { get; set; }
-		public EntityLook EntityLook { get; set; }
+        // Properties
+        public uint IndexId { get; set; }
+        public uint CompanionGenericId { get; set; }
+        public EntityLook EntityLook { get; set; }
 
 
-		// Constructors
-		public PartyCompanionBaseInformations() { }
+        // Constructors
+        public PartyCompanionBaseInformations() { }
 
-		public PartyCompanionBaseInformations(uint indexId = 0, uint companionGenericId = 0, EntityLook entityLook = null)
-		{
-			IndexId = indexId;
-			CompanionGenericId = companionGenericId;
-			EntityLook = entityLook;
-		}
+        public PartyCompanionBaseInformations(uint indexId = 0, uint companionGenericId = 0, EntityLook entityLook = null)
+        {
+            IndexId = indexId;
+            CompanionGenericId = companionGenericId;
+            EntityLook = entityLook;
+        }
 
-	}
+    }
 }

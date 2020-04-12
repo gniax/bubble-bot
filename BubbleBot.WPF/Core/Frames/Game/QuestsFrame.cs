@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Frames.Game
 {
@@ -12,7 +12,7 @@ namespace BubbleBot.Core.Frames.Game
 
         public static Task HandleQuestStepInfoMessage(Account account, QuestStepInfoMessage message)
             => Task.Run(() => account.Extensions.CharacterCreation.Update(message));
-            //=> Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
+        //=> Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
 
         public static Task HandleQuestStepValidatedMessage(Account account, QuestStepValidatedMessage message)
             => Task.Run(() => account.Extensions.CharacterCreation.Update(message));

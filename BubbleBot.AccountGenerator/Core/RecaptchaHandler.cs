@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AntiRecaptcha;
-using System.Threading;
+﻿using AntiRecaptcha;
+using System;
 using System.Threading.Tasks;
 
 namespace AccountGenerator.Core
@@ -12,13 +9,13 @@ namespace AccountGenerator.Core
 
         // Fields
         // private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        
+
         public async Task<string> GetResponse(string siteKey)
         {
-           // _semaphore.Wait();
+            // _semaphore.Wait();
             string result = null;
             //6Leicx0TAAAAAE-R05fbh9qqtID2XDtkOBd7-KnF
-            
+
             if (!string.IsNullOrEmpty(Program.API_KEY))
             {
                 try
@@ -33,12 +30,12 @@ namespace AccountGenerator.Core
                 }
                 catch
                 {
-             //       _semaphore.Release();
+                    //       _semaphore.Release();
                     throw;
                 }
             }
 
-           // _semaphore.Release();
+            // _semaphore.Release();
             return result;
         }
 

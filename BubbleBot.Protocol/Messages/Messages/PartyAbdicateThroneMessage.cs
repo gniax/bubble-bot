@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyAbdicateThroneMessage : AbstractPartyMessage
-	{
+    public class PartyAbdicateThroneMessage : AbstractPartyMessage
+    {
 
-		// Properties
-		public uint PlayerId { get; set; }
+        // Properties
+        public uint PlayerId { get; set; }
 
 
-		// Constructors
-		public PartyAbdicateThroneMessage() { }
+        // Constructors
+        public PartyAbdicateThroneMessage() { }
 
-		public PartyAbdicateThroneMessage(uint partyId = 0, uint playerId = 0)
-		{
-			PartyId = partyId;
-			PlayerId = playerId;
-		}
+        public PartyAbdicateThroneMessage(uint partyId = 0, uint playerId = 0)
+        {
+            PartyId = partyId;
+            PlayerId = playerId;
+        }
 
-	}
+    }
 }

@@ -70,7 +70,7 @@ namespace BubbleBot.Core.Logs
                 _disposedValue = true;
             }
         }
-        
+
         public void Dispose()
             => Dispose(true);
 

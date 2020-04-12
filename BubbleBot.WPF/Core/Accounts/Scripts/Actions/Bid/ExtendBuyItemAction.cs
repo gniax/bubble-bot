@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
 {
@@ -15,7 +11,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
         public uint MaxPrice { get; private set; }
 
         // Constructor
-        public ExtendBuyItemAction(uint gid, uint lot,uint maxPrice = 0)
+        public ExtendBuyItemAction(uint gid, uint lot, uint maxPrice = 0)
         {
             GID = gid;
             Lot = lot;

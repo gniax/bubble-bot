@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChannelEnablingMessage : Message
-	{
+    public class ChannelEnablingMessage : Message
+    {
 
-		// Properties
-		public uint Channel { get; set; }
-		public bool Enable { get; set; }
+        // Properties
+        public uint Channel { get; set; }
+        public bool Enable { get; set; }
 
 
-		// Constructors
-		public ChannelEnablingMessage() { }
+        // Constructors
+        public ChannelEnablingMessage() { }
 
-		public ChannelEnablingMessage(uint channel = 0, bool enable = false)
-		{
-			Channel = channel;
-			Enable = enable;
-		}
+        public ChannelEnablingMessage(uint channel = 0, bool enable = false)
+        {
+            Channel = channel;
+            Enable = enable;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ShowCellSpectatorMessage : ShowCellMessage
-	{
+    public class ShowCellSpectatorMessage : ShowCellMessage
+    {
 
-		// Properties
-		public string PlayerName { get; set; }
+        // Properties
+        public string PlayerName { get; set; }
 
 
-		// Constructors
-		public ShowCellSpectatorMessage() { }
+        // Constructors
+        public ShowCellSpectatorMessage() { }
 
-		public ShowCellSpectatorMessage(int sourceId = 0, uint cellId = 0, string playerName = "")
-		{
-			SourceId = sourceId;
-			CellId = cellId;
-			PlayerName = playerName;
-		}
+        public ShowCellSpectatorMessage(int sourceId = 0, uint cellId = 0, string playerName = "")
+        {
+            SourceId = sourceId;
+            CellId = cellId;
+            PlayerName = playerName;
+        }
 
-	}
+    }
 }

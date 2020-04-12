@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using BubbleBot.Server.Clients;
+﻿using BubbleBot.Server.Clients;
 using BubbleBot.Server.Messages;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Server.Handlers
 {
