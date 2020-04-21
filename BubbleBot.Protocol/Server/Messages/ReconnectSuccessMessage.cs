@@ -11,9 +11,6 @@ namespace BubbleBot.Server.Messages
 
         // Properties
         public short MessageId => ProtocolId;
-        public string Name { get; private set; }
-        public string Avatar { get; private set; }
-
 
         // Constructor
         public ReconnectSuccessMessage() { }

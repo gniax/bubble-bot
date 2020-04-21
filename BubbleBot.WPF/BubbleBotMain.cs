@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core;
@@ -8,55 +14,46 @@ using BubbleBot.Server.Messages;
 using BubbleBot.WPF.Views;
 using GalaSoft.MvvmLight;
 using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace BubbleBot
 {
     public static class Constants
     {
-        public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address
-        public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address 
-        public static string ServerHost = "93.113.207.95"; // Server host
+        //public static string WebsiteIpAddress = "http://93.113.207.95:80"; // Website address
+        //public static string ApiIpAddress = "http://93.113.207.95:5001"; // VPS address 
+        //public static string ServerHost = "93.113.207.95"; // Server host
 
-        //public static string WebsiteIpAddress = "http://localhost:80"; // Website address
-        //public static string ApiIpAddress = "http://localhost:5001"; // VPS address
-        //public static string ServerHost = "localhost"; // Server host
+        public static string WebsiteIpAddress = "http://localhost:80"; // Website address
+        public static string ApiIpAddress = "http://localhost:5001"; // VPS address
+        public static string ServerHost = "localhost"; // Server host
 
         public static int ServerService = 3000; // Server service : 3000
     }
+
     public class BubbleBotMain : ViewModelBase
     {
-
-        #region Singleton
-
-        private static BubbleBotMain _instance;
-
-        public static BubbleBotMain Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new BubbleBotMain();
-
-                return _instance;
-            }
-        }
-
-        #endregion
-
         // Fields
         private Account _selectedAccount;
+
+        // Constructor
+        public BubbleBotMain()
+        {
+            Server = new ServerManager();
+            Entities = new ObservableCollection<IEntity>();
+            // Accounts
+            Server.RegisterMessage<LoadAccountMessage>(HandleLoadAccountMessage);
+            Server.RegisterMessage<LoadAccountsMessage>(HandleLoadAccountsMessage);
+            Server.RegisterMessage<LoadGroupMessage>(HandleLoadGroupMessage);
+            Server.RegisterMessage<ConnectAccountMessage>(HandleConnectAccountMessage);
+            Server.RegisterMessage<ConnectAccountsMessage>(HandleConnectAccountsMessage);
+            Server.RegisterMessage<ConnectGroupMessage>(HandleConnectGroupMessage);
+        }
 
 
         // Properties
         public ServerManager Server { get; }
-
         public ObservableCollection<IEntity> Entities { get; }
+
         public Account SelectedAccount
         {
             get => _selectedAccount;
@@ -68,25 +65,32 @@ namespace BubbleBot
             if (e is Account a) return a;
             return (e as Group).Chief;
         });
-        // Constructor
-        public BubbleBotMain()
+
+        public void LoadAccounts(IEnumerable<AccountConfiguration> accountConfigs)
         {
-            Server = new ServerManager();
-            Entities = new ObservableCollection<IEntity>();
-
-            // Accounts
-            Server.RegisterMessage<ConnectAccountMessage>(HandleConnectAccountMessage);
-            Server.RegisterMessage<ConnectAccountsMessage>(HandleConnectAccountsMessage);
-            Server.RegisterMessage<ConnectGroupMessage>(HandleConnectGroupMessage);
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                foreach (var accountConfig in accountConfigs)
+                    try
+                    {
+                        var account = new Account(accountConfig);
+                        Application.Current.Dispatcher.Invoke(() => Entities.Add(account));
+                        SelectedAccount = account;
+                    }
+                    catch (Exception ex)
+                    {
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("1", accountConfig.Username, ex.Message));
+                        Server.SendMessage(new RemoveAccountRequestMessage(accountConfig.Username));
+                    }
+            });
         }
-
 
         public void ConnectAccounts(IEnumerable<AccountConfiguration> accountConfigs)
         {
             Application.Current.Dispatcher.Invoke(async () =>
             {
                 foreach (var accountConfig in accountConfigs)
-                {
                     try
                     {
                         var account = new Account(accountConfig);
@@ -96,20 +100,29 @@ namespace BubbleBot
                     }
                     catch (Exception ex)
                     {
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("1", accountConfig.Username, ex.Message));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("1", accountConfig.Username, ex.Message));
                         Server.SendMessage(new RemoveAccountRequestMessage(accountConfig.Username));
                     }
-                }
+            });
+        }
+
+        public void LoadGroup(AccountConfiguration chief, IEnumerable<AccountConfiguration> members)
+        {
+            var group = new Group(new Account(chief));
+            foreach (var member in members) @group.AddMember(new Account(member));
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Entities.Add(group);
+                SelectedAccount = group.Chief;
             });
         }
 
         public void ConnectGroup(AccountConfiguration chief, IEnumerable<AccountConfiguration> members)
         {
             var group = new Group(new Account(chief));
-            foreach (var member in members)
-            {
-                group.AddMember(new Account(member));
-            }
+            foreach (var member in members) @group.AddMember(new Account(member));
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -127,9 +140,9 @@ namespace BubbleBot
 
 
             var account = SelectedAccount;
-            int index = -1;
+            var index = -1;
             // Remove the account from the list
-            for (int i = Entities.Count - 1; i >= 0; i--)
+            for (var i = Entities.Count - 1; i >= 0; i--)
             {
                 if (Entities[i] is Account acc && acc == account)
                 {
@@ -152,7 +165,7 @@ namespace BubbleBot
                         return;
                     }
 
-                    for (int j = group.Members.Count - 1; j >= 0; j--)
+                    for (var j = group.Members.Count - 1; j >= 0; j--)
                     {
                         if (group.Members[j] != account)
                             continue;
@@ -165,14 +178,12 @@ namespace BubbleBot
                 }
             }
 
-            account.Cleanup();
-            account.Dispose();
             // Set another account as a SelectedAccount
             RefreshSelectedAccount(index);
 
             // Send the RemoveAccountRequestMessage and dispose the removed account
             Server.SendMessage(new RemoveAccountRequestMessage(account.AccountConfig.Username));
-
+            account?.Dispose();
         }
 
         private async Task RemoveGroup(Group group, int index)
@@ -181,10 +192,7 @@ namespace BubbleBot
             await DisconnectAccount(group.Chief);
 
             // Disconnect the members
-            for (int i = group.Members.Count - 1; i >= 0; i--)
-            {
-                await DisconnectAccount(group.Members[i]);
-            }
+            for (var i = group.Members.Count - 1; i >= 0; i--) await DisconnectAccount(@group.Members[i]);
 
             // Remove the group from Entities
             Entities.RemoveAt(index);
@@ -194,7 +202,7 @@ namespace BubbleBot
 
             // Send the RemoveAccountsRequestMessage and dispose the removed group
             Server.SendMessage(new RemoveAccountsRequestMessage(group.Members.Select(m => m.AccountConfig.Username)
-                .Concat(new[] { group.Chief.AccountConfig.Username }).ToList()));
+                .Concat(new[] {group.Chief.AccountConfig.Username}).ToList()));
             group.Dispose();
         }
 
@@ -217,66 +225,6 @@ namespace BubbleBot
             }
         }
 
-        #region Received messages
-
-        private void HandleConnectAccountMessage(ConnectAccountMessage message)
-        {
-            var accountConfig = GlobalConfiguration.Instance.AccountsList.FirstOrDefault(a => a.Username == message.Username);
-
-            if (accountConfig != null)
-            {
-                ConnectAccounts(new[] { accountConfig });
-            }
-        }
-
-        private void HandleConnectAccountsMessage(ConnectAccountsMessage message)
-        {
-            List<AccountConfiguration> accountsToConnect = new List<AccountConfiguration>();
-            foreach (var accountConfig in GlobalConfiguration.Instance.AccountsList)
-            {
-                if (message.Usernames.Contains(accountConfig.Username))
-                {
-                    accountsToConnect.Add(accountConfig);
-                }
-            }
-
-            if (accountsToConnect.Count > 0)
-            {
-                ConnectAccounts(accountsToConnect);
-            }
-        }
-
-        private void HandleConnectGroupMessage(ConnectGroupMessage message)
-        {
-            if (message.Usernames.Count < 2 || message.Usernames.Count > 8)
-                return;
-
-            var accountsList = GlobalConfiguration.Instance.AccountsList;
-            AccountConfiguration chief = accountsList.FirstOrDefault(a => a.Username == message.Usernames[0]);
-
-            if (chief != null)
-            {
-                List<AccountConfiguration> members = new List<AccountConfiguration>();
-
-                for (int i = 0; i < accountsList.Count; i++)
-                {
-                    if (accountsList[i] == chief)
-                        continue;
-
-                    if (message.Usernames.Contains(accountsList[i].Username))
-                        members.Add(accountsList[i]);
-                }
-
-                // Only connect the group if the numbers fit
-                if (message.Usernames.Count == members.Count + 1)
-                {
-                    ConnectGroup(chief, members);
-                }
-            }
-        }
-
-        #endregion
-
         public static async Task DisconnectAccount(Account account)
         {
             if (account.Network?.Connected == true)
@@ -286,5 +234,113 @@ namespace BubbleBot
             }
         }
 
+        #region Singleton
+
+        private static BubbleBotMain _instance;
+
+        public static BubbleBotMain Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new BubbleBotMain();
+
+                return _instance;
+            }
+        }
+
+        #endregion
+
+        #region Received messages
+
+        private void HandleLoadAccountMessage(LoadAccountMessage message)
+        {
+            var accountConfig =
+                GlobalConfiguration.Instance.AccountsList.FirstOrDefault(a => a.Username == message.Username);
+
+            if (accountConfig != null) LoadAccounts(new[] {accountConfig});
+        }
+
+        private void HandleLoadAccountsMessage(LoadAccountsMessage message)
+        {
+            var accountsToLoad = new List<AccountConfiguration>();
+            foreach (var accountConfig in GlobalConfiguration.Instance.AccountsList)
+                if (message.Usernames.Contains(accountConfig.Username))
+                    accountsToLoad.Add(accountConfig);
+
+            if (accountsToLoad.Count > 0) LoadAccounts(accountsToLoad);
+        }
+
+        private void HandleConnectAccountMessage(ConnectAccountMessage message)
+        {
+            var accountConfig =
+                GlobalConfiguration.Instance.AccountsList.FirstOrDefault(a => a.Username == message.Username);
+
+            if (accountConfig != null) ConnectAccounts(new[] {accountConfig});
+        }
+
+        private void HandleConnectAccountsMessage(ConnectAccountsMessage message)
+        {
+            var accountsToConnect = new List<AccountConfiguration>();
+            foreach (var accountConfig in GlobalConfiguration.Instance.AccountsList)
+                if (message.Usernames.Contains(accountConfig.Username))
+                    accountsToConnect.Add(accountConfig);
+
+            if (accountsToConnect.Count > 0) ConnectAccounts(accountsToConnect);
+        }
+
+        private void HandleConnectGroupMessage(ConnectGroupMessage message)
+        {
+            if (message.Usernames.Count < 2 || message.Usernames.Count > 8)
+                return;
+
+            var accountsList = GlobalConfiguration.Instance.AccountsList;
+            var chief = accountsList.FirstOrDefault(a => a.Username == message.Usernames[0]);
+
+            if (chief != null)
+            {
+                var members = new List<AccountConfiguration>();
+
+                for (var i = 0; i < accountsList.Count; i++)
+                {
+                    if (accountsList[i] == chief)
+                        continue;
+
+                    if (message.Usernames.Contains(accountsList[i].Username))
+                        members.Add(accountsList[i]);
+                }
+
+                // Only connect the group if the numbers fit
+                if (message.Usernames.Count == members.Count + 1) ConnectGroup(chief, members);
+            }
+        }
+
+        private void HandleLoadGroupMessage(LoadGroupMessage message)
+        {
+            if (message.Usernames.Count < 2 || message.Usernames.Count > 8)
+                return;
+
+            var accountsList = GlobalConfiguration.Instance.AccountsList;
+            var chief = accountsList.FirstOrDefault(a => a.Username == message.Usernames[0]);
+
+            if (chief != null)
+            {
+                var members = new List<AccountConfiguration>();
+
+                for (var i = 0; i < accountsList.Count; i++)
+                {
+                    if (accountsList[i] == chief)
+                        continue;
+
+                    if (message.Usernames.Contains(accountsList[i].Username))
+                        members.Add(accountsList[i]);
+                }
+
+                // Only connect the group if the numbers fit
+                if (message.Usernames.Count == members.Count + 1) LoadGroup(chief, members);
+            }
+        }
+
+        #endregion
     }
 }

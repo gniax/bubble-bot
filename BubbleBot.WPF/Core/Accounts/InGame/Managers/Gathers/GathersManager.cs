@@ -1,30 +1,25 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.InGame.Managers.Movements;
-using BubbleBot.Core.Accounts.InGame.Map;
-using BubbleBot.Core.Accounts.InGame.Map.Interactives;
-using BubbleBot.Core.Pathfinding;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
+using BubbleBot.Core.Accounts.InGame.Map;
+using BubbleBot.Core.Accounts.InGame.Map.Interactives;
+using BubbleBot.Core.Enums;
+using BubbleBot.Core.Pathfinding;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
 {
     public class GathersManager : IClearable, IDisposable
     {
-
         // Fields
         private Account _account;
-        private InteractiveElementEntry _elementToGather;
         private List<uint> _blackListedElements;
-        private bool _stolen;
+        private InteractiveElementEntry _elementToGather;
         private Pathfinder _pathfinder;
-
-
-        // Events
-        public event Action<GatherResults> GatherFinished;
-        public event Action GatherStarted;
+        private bool _stolen;
 
 
         // Constructor
@@ -41,12 +36,28 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             _account.Network.RegisterMessage<InteractiveUseErrorMessage>(HandleInteractiveUseErrorMessage);
         }
 
+        public void Clear()
+        {
+            _elementToGather = null;
+            _blackListedElements.Clear();
+            _stolen = false;
+        }
+
+
+        // Events
+        public event Action<GatherResults> GatherFinished;
+        public event Action GatherStarted;
+
 
         public bool CanGather(List<int> ressourcesIds)
-            => GetUsableElements(ressourcesIds).Count > 0;
+        {
+            return GetUsableElements(ressourcesIds).Count > 0;
+        }
 
         public void CancelGather()
-            => _elementToGather = null;
+        {
+            _elementToGather = null;
+        }
 
         public bool Gather(List<int> ressourcesIds)
         {
@@ -57,10 +68,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             }
 
             foreach (var kvp in GetUsableElements(ressourcesIds))
-            {
                 if (MoveToElement(kvp))
                     return true;
-            }
 
             _account.Logger.LogWarning("GathersManager", "No reachable resource found.");
             return false;
@@ -68,12 +77,12 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
 
         private Dictionary<InteractiveElementEntry, short> GetUsableElements(List<int> ressourcesIds)
         {
-            Dictionary<InteractiveElementEntry, short> usableElements = new Dictionary<InteractiveElementEntry, short>();
+            var usableElements = new Dictionary<InteractiveElementEntry, short>();
 
             try
             {
-                bool hasFishingRod = _account.Game.Character.Inventory.HasFishingRod;
-                int weaponRange = _account.Game.Character.Inventory.GetWeaponRange();
+                var hasFishingRod = _account.Game.Character.Inventory.HasFishingRod;
+                var weaponRange = _account.Game.Character.Inventory.GetWeaponRange();
 
                 foreach (var interactive in _account.Game.Map.Interactives)
                 {
@@ -89,10 +98,11 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
                     if (!ressourcesIds.Contains(interactive.ElementTypeId))
                         continue;
 
-                    var statedElement = _account.Game.Map.GetStatedElement((int)interactive.Id);
+                    var statedElement = _account.Game.Map.GetStatedElement((int) interactive.Id);
                     var elementMp = MapPoint.FromCellId(statedElement.CellId);
 
-                    var path = _pathfinder.GetPath(_account.Game.Map.PlayedCharacter.CellId, statedElement.CellId, _account.Game.Map.OccupiedCells, true, true);
+                    var path = _pathfinder.GetPath(_account.Game.Map.PlayedCharacter.CellId, statedElement.CellId,
+                        _account.Game.Map.OccupiedCells, true, true);
 
                     // If the path is invalid
                     if (path.Count == 0)
@@ -111,7 +121,9 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return usableElements;
         }
@@ -124,7 +136,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             switch (_account.Game.Managers.Movements.MoveToCell(element.Value, true))
             {
                 case MovementRequestResults.MOVED:
-                    _account.Logger.LogDebug(LanguageManager.Translate("133"), LanguageManager.Translate("122", element.Value, element.Key.Id));
+                    _account.Logger.LogDebug(LanguageManager.Translate("133"),
+                        LanguageManager.Translate("122", element.Value, element.Key.Id));
                     return true;
                 case MovementRequestResults.ALREADY_THERE:
                     TryUsingElementToGather();
@@ -144,8 +157,10 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             }
             else
             {
-                _account.Logger.LogDebug(LanguageManager.Translate("133"), LanguageManager.Translate("124", _elementToGather.Id));
-                _account.Network.SendMessage(new InteractiveUseRequestMessage(_elementToGather.Id, _elementToGather.EnabledSkills[0].InstanceUID));
+                _account.Logger.LogDebug(LanguageManager.Translate("133"),
+                    LanguageManager.Translate("124", _elementToGather.Id));
+                _account.Network.SendMessage(new InteractiveUseRequestMessage(_elementToGather.Id,
+                    _elementToGather.EnabledSkills[0].InstanceUID));
             }
         }
 
@@ -155,17 +170,14 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
                 return;
 
             if (success)
-            {
                 TryUsingElementToGather();
-            }
             else
-            {
                 OnGatherFinished(GatherResults.FAILED);
-            }
         }
 
         private Task HandleInteractiveUsedMessage(Account account, InteractiveUsedMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (_elementToGather == null || _elementToGather.Id != message.ElemId)
                     return;
@@ -177,26 +189,32 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
                 }
                 else
                 {
-                    _account.State = Enums.AccountStates.GATHERING;
+                    _account.State = AccountStates.GATHERING;
                     GatherStarted?.Invoke();
                 }
             });
+        }
 
         private Task HandleInteractiveUseEndedMessage(Account account, InteractiveUseEndedMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
-                _account.State = Enums.AccountStates.NONE;
+                _account.State = AccountStates.NONE;
                 _account.Logger.LogDebug(LanguageManager.Translate("133"), LanguageManager.Translate("126"));
                 OnGatherFinished(GatherResults.GATHERED);
             });
+        }
 
         private Task HandleInteractiveUseErrorMessage(Account account, InteractiveUseErrorMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
-                account.Logger.LogWarning(LanguageManager.Translate("133"), LanguageManager.Translate("127", _elementToGather.Id));
+                account.Logger.LogWarning(LanguageManager.Translate("133"),
+                    LanguageManager.Translate("127", _elementToGather.Id));
                 _blackListedElements.Add(_elementToGather.Id);
                 OnGatherFinished(GatherResults.BLACKLISTED);
             });
+        }
 
         private void Map_MapChanged()
         {
@@ -211,13 +229,6 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             GatherFinished?.Invoke(result);
         }
 
-        public void Clear()
-        {
-            _elementToGather = null;
-            _blackListedElements.Clear();
-            _stolen = false;
-        }
-
         #region IDisposable Support
 
         private bool _disposedValue;
@@ -226,10 +237,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    _pathfinder.Dispose();
-                }
+                if (disposing) _pathfinder.Dispose();
 
                 _blackListedElements.Clear();
                 _blackListedElements = null;
@@ -241,11 +249,16 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             }
         }
 
-        ~GathersManager() => Dispose(false);
+        ~GathersManager()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

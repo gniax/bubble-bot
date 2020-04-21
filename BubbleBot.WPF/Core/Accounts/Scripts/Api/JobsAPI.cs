@@ -1,8 +1,8 @@
-using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +10,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class JobsAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -23,13 +22,19 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public bool HasJob(int jobId)
-            => _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId) != null;
+        {
+            return _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId) != null;
+        }
 
         public string Name(int jobId)
-            => _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId)?.Name ?? "";
+        {
+            return _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId)?.Name ?? "";
+        }
 
         public uint Level(int jobId)
-            => _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId)?.Level ?? 0;
+        {
+            return _account.Game.Character.Jobs.Jobs.FirstOrDefault(j => j.Id == jobId)?.Level ?? 0;
+        }
 
         public List<int> GetCollectSkills(int jobId)
         {
@@ -42,11 +47,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         public List<int> GetAllCollectSkills()
-            => _account.Game.Character.Jobs.GetCollectSkillsIds().ToList();
+        {
+            return _account.Game.Character.Jobs.GetCollectSkillsIds().ToList();
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -59,12 +66,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~JobsAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

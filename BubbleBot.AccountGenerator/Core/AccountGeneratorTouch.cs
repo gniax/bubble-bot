@@ -15,11 +15,15 @@ namespace AccountGenerator.Core
     {
         public ChromiumWebBrowser browser;
 
+#pragma warning disable CS0067 // The event 'AccountGeneratorTouch.RecaptchaReceived' is never used
         public event Action<AccountGeneratorTouch> RecaptchaReceived;
+#pragma warning restore CS0067 // The event 'AccountGeneratorTouch.RecaptchaReceived' is never used
         public event Action<AccountGeneratorTouch, bool> RecaptchaResolved;
         //Progarm property
         private int mLongueurName = 10; // 6-19
+#pragma warning disable CS0414 // The field 'AccountGeneratorTouch.mLongueurPassword' is assigned but its value is never used
         private int mLongueurPassword = 12;
+#pragma warning restore CS0414 // The field 'AccountGeneratorTouch.mLongueurPassword' is assigned but its value is never used
         private int mLongueurMailAlias = 10;
         public bool debugmode = false;
         private int nombreAccount = 0;
@@ -145,7 +149,9 @@ namespace AccountGenerator.Core
 
 
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task outDebugSafe(string dbgtxt)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             debug = debug + "\n" + dbgtxt;
         }
@@ -191,7 +197,9 @@ namespace AccountGenerator.Core
 
             browser.Load("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993");//https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
             DofusConnection();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
 
 
         }
@@ -441,7 +449,9 @@ namespace AccountGenerator.Core
                 outputAcc1 = mUsername1;
                 outputAcc1p = mPassword1;
                 counterAccount++;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 DofusConnection();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
 
             }
             else if (counterAccount == 2)
@@ -451,7 +461,9 @@ namespace AccountGenerator.Core
                 outputAcc2 = mUsername2;
                 outputAcc2p = mPassword2;
                 counterAccount++;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 DofusConnection();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
             }
             else if (counterAccount == 3)
             {
@@ -609,7 +621,9 @@ namespace AccountGenerator.Core
                     */
                 }
             }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 //  Console.Write("Erreur reCaptcha");
                 //Console.Write(ex.Message);

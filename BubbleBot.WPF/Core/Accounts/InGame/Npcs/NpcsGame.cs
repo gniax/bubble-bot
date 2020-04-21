@@ -1,17 +1,23 @@
-using BubbleBot.Core.Accounts.InGame.Map.Entities;
-using BubbleBot.Core.Enums;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BubbleBot.Core.Accounts.InGame.Map.Entities;
+using BubbleBot.Core.Enums;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Npcs
 {
     public class NpcsGame : IDisposable
     {
-
         // Fields
         private Account _account;
+
+
+        // Constructor
+        public NpcsGame(Account account)
+        {
+            _account = account;
+        }
 
 
         // Properties
@@ -24,13 +30,6 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
         public event Action DialogLeft;
 
 
-        // Constructor
-        public NpcsGame(Account account)
-        {
-            _account = account;
-        }
-
-
         public bool Reply(int replyId)
         {
             if (_account.State != AccountStates.TALKING)
@@ -39,17 +38,17 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             // In case its an index
             if (replyId < 0)
             {
-                replyId = (replyId * -1) - 1;
+                replyId = replyId * -1 - 1;
 
                 if (PossibleReplies.Count <= replyId)
                     return false;
 
-                replyId = (int)PossibleReplies[replyId];
+                replyId = (int) PossibleReplies[replyId];
             }
 
-            if (PossibleReplies.Contains((uint)replyId))
+            if (PossibleReplies.Contains((uint) replyId))
             {
-                _account.Network.SendMessage(new NpcDialogReplyMessage((uint)replyId));
+                _account.Network.SendMessage(new NpcDialogReplyMessage((uint) replyId));
                 return true;
             }
 
@@ -72,7 +71,7 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             // In case the npcId is negative
             if (npcId < 0)
             {
-                int index = (npcId * -1) - 1;
+                var index = npcId * -1 - 1;
 
                 // Check if the index is invalid
                 if (npcs.Count() <= index)
@@ -93,7 +92,8 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             if (npc.Data.Actions.Count <= actionIndex)
                 return false;
 
-            _account.Network.SendMessage(new NpcGenericActionRequestMessage(npc.Id, (uint)npc.Data.Actions[actionIndex], _account.Game.Map.Id));
+            _account.Network.SendMessage(new NpcGenericActionRequestMessage(npc.Id,
+                (uint) npc.Data.Actions[actionIndex], _account.Game.Map.Id));
             return true;
         }
 
@@ -129,7 +129,7 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -137,7 +137,6 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             {
                 if (disposing)
                 {
-
                 }
 
                 PossibleReplies?.Clear();
@@ -148,11 +147,16 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             }
         }
 
-        ~NpcsGame() => Dispose(false);
+        ~NpcsGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

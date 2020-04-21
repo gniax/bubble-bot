@@ -4,16 +4,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Mount
 {
     public class SetRatioAction : ScriptAction
     {
-
-        // Properties
-        public uint Ratio { get; private set; }
-
-
         // Constructor
         public SetRatioAction(uint ratio)
         {
             Ratio = ratio;
         }
+
+        // Properties
+        public uint Ratio { get; }
 
 
         internal override async Task<ScriptActionResults> Process(Account account)
@@ -26,6 +24,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Mount
 
             return ScriptActionResults.DONE;
         }
-
     }
 }

@@ -38,14 +38,14 @@ namespace BubbleBot.Server.Network
 
         public void ForceClose()
         {
-            _socket.Close();
+            _socket?.Close();
         }
         public void Connect(string host, int port)
         {
             if (Running || _socket.Connected)
                 return;
 
-            _socket.BeginConnect(host, port, Socket_ConnectCallback, _socket);
+            _socket?.BeginConnect(host, port, Socket_ConnectCallback, _socket);
         }
 
         public void Start()
@@ -90,7 +90,7 @@ namespace BubbleBot.Server.Network
 
             try
             {
-                _socket.BeginSend(data, 0, data.Length, SocketFlags.None, Socket_SendCallback, _socket);
+                _socket?.BeginSend(data, 0, data.Length, SocketFlags.None, Socket_SendCallback, _socket);
             }
             catch (Exception ex)
             {
@@ -109,7 +109,7 @@ namespace BubbleBot.Server.Network
                 Running = true;
                 Connected?.Invoke(this);
 
-                _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, Socket_ReceiveCallback, _socket);
+                _socket?.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, Socket_ReceiveCallback, _socket);
             }
             catch (Exception ex)
             {
@@ -145,7 +145,7 @@ namespace BubbleBot.Server.Network
                 Array.Copy(_buffer, data, availableData);
                 _parser.HandleData(data);
 
-                _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, Socket_ReceiveCallback, _socket);
+                _socket?.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, Socket_ReceiveCallback, _socket);
             }
             catch (SocketException)
             {

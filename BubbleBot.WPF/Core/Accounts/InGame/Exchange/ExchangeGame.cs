@@ -1,46 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Exchange
 {
     public class ExchangeGame : IDisposable
     {
-
         // Fields
         private Account _account;
         private uint _step;
-
-
-        // Properties
-        public List<ObjectEntry> Objects { get; private set; }
-        public List<ObjectEntry> RemoteObjects { get; private set; }
         public List<uint> AuthorizedPlayersList = new List<uint>();
-        public uint Kamas { get; private set; }
-        public uint RemoteKamas { get; private set; }
-        public uint CurrentWeight { get; private set; }
-        public uint MaxWeight { get; private set; }
-        public uint RemoteCurrentWeight { get; private set; }
-        public uint RemoteMaxWeight { get; private set; }
-        public bool IsReady { get; private set; }
-        public bool RemoteIsReady { get; private set; }
-
-        public int WeightPercent => (int)(((double)CurrentWeight / MaxWeight) * 100);
-        public int RemoteWeightPercent => (int)(((double)RemoteCurrentWeight / RemoteMaxWeight) * 100);
-
-
-        // Events
-        public event Action<int> ExchangeRequested;
-        public event Action ExchangeStarted;
-        public event Action ExchangeContentChanged;
-        public event Action RemoteReady;
-        public event Action ExchangeLeft;
 
 
         // Constructor
@@ -52,6 +27,30 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             RemoteObjects = new List<ObjectEntry>();
         }
 
+
+        // Properties
+        public List<ObjectEntry> Objects { get; private set; }
+        public List<ObjectEntry> RemoteObjects { get; private set; }
+        public uint Kamas { get; private set; }
+        public uint RemoteKamas { get; private set; }
+        public uint CurrentWeight { get; private set; }
+        public uint MaxWeight { get; private set; }
+        public uint RemoteCurrentWeight { get; private set; }
+        public uint RemoteMaxWeight { get; private set; }
+        public bool IsReady { get; private set; }
+        public bool RemoteIsReady { get; private set; }
+
+        public int WeightPercent => (int) ((double) CurrentWeight / MaxWeight * 100);
+        public int RemoteWeightPercent => (int) ((double) RemoteCurrentWeight / RemoteMaxWeight * 100);
+
+
+        // Events
+        public event Action<int> ExchangeRequested;
+        public event Action ExchangeStarted;
+        public event Action ExchangeContentChanged;
+        public event Action RemoteReady;
+        public event Action ExchangeLeft;
+
         public bool StartExchange(int id)
         {
             if (_account.IsBusy)
@@ -60,7 +59,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (_account.Game.Map.Players.FirstOrDefault(p => p.Id == id) == null)
                 return false;
 
-            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
+            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint) id));
             return true;
         }
 
@@ -72,14 +71,15 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (_account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName) == null)
                 return false;
 
-            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)_account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1,
+                (uint) _account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
 
             return true;
         }
 
         public bool SendReady()
         {
-            if (_account.State != Enums.AccountStates.EXCHANGE)
+            if (_account.State != AccountStates.EXCHANGE)
                 return false;
 
             _account.Network.SendMessage(new ExchangeReadyMessage(true, _step));
@@ -97,12 +97,12 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (obj == null)
                 return false;
 
-            quantity = quantity == 0 ?
-                       obj.Quantity :
-                       (quantity > obj.Quantity ? obj.Quantity : quantity);
+            quantity = quantity == 0 ? obj.Quantity :
+                quantity > obj.Quantity ? obj.Quantity : quantity;
 
-            _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)quantity));
-            _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("118", quantity, obj.Name));
+            _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) quantity));
+            _account.Logger.LogInfo(LanguageManager.Translate("117"),
+                LanguageManager.Translate("118", quantity, obj.Name));
             return true;
         }
 
@@ -122,12 +122,12 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (obj == null)
                 return false;
 
-            quantity = quantity == 0 ?
-                       obj.Quantity :
-                       (quantity > obj.Quantity ? obj.Quantity : quantity);
+            quantity = quantity == 0 ? obj.Quantity :
+                quantity > obj.Quantity ? obj.Quantity : quantity;
 
-            _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)quantity * -1));
-            _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("119", quantity, obj.Name));
+            _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) quantity * -1));
+            _account.Logger.LogInfo(LanguageManager.Translate("117"),
+                LanguageManager.Translate("119", quantity, obj.Name));
             return true;
         }
 
@@ -143,7 +143,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                     continue;
 
-                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) obj.Quantity));
                 await Task.Delay(600);
             }
 
@@ -152,7 +152,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                     continue;
 
-                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) obj.Quantity));
                 await Task.Delay(600);
             }
 
@@ -161,7 +161,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                     continue;
 
-                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) obj.Quantity));
                 await Task.Delay(600);
             }
 
@@ -171,17 +171,17 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
         public bool PutKamas(uint quantity)
         {
-            if (_account.State != Enums.AccountStates.EXCHANGE)
+            if (_account.State != AccountStates.EXCHANGE)
                 return false;
 
-            quantity = quantity == 0 ?
-                       (uint)_account.Game.Character.Inventory.Kamas :
-                       (quantity > _account.Game.Character.Inventory.Kamas ? (uint)_account.Game.Character.Inventory.Kamas : quantity);
+            quantity = quantity == 0 ? (uint) _account.Game.Character.Inventory.Kamas :
+                quantity > _account.Game.Character.Inventory.Kamas ? (uint) _account.Game.Character.Inventory.Kamas :
+                quantity;
 
             if (quantity > 0)
             {
                 _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("120", quantity));
-                _account.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int)quantity));
+                _account.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int) quantity));
                 return true;
             }
 
@@ -190,17 +190,16 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
         public bool RemoveKamas(uint quantity)
         {
-            if (_account.State != Enums.AccountStates.EXCHANGE)
+            if (_account.State != AccountStates.EXCHANGE)
                 return false;
 
-            quantity = quantity == 0 ?
-                       Kamas :
-                       (quantity > Kamas ? Kamas : quantity);
+            quantity = quantity == 0 ? Kamas :
+                quantity > Kamas ? Kamas : quantity;
 
             if (quantity > 0)
             {
                 _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("121", quantity));
-                _account.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int)(Kamas - quantity)));
+                _account.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int) (Kamas - quantity)));
                 return true;
             }
 
@@ -212,7 +211,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         public void Update(ExchangeRequestedTradeMessage message)
         {
             if (message.ExchangeType == 1 && message.Target == _account.Game.Character.Id)
-                ExchangeRequested?.Invoke((int)message.Source);
+                ExchangeRequested?.Invoke((int) message.Source);
         }
 
         public void Update(ExchangeStartedWithPodsMessage message)
@@ -220,7 +219,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             _step = 0;
             IsReady = false;
             RemoteIsReady = false;
-            _account.State = Enums.AccountStates.EXCHANGE;
+            _account.State = AccountStates.EXCHANGE;
 
             if (message.FirstCharacterId == _account.Game.Character.Id)
             {
@@ -247,12 +246,12 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (message.Remote)
             {
                 RemoteObjects.Add(newObj);
-                RemoteCurrentWeight += (uint)newObj.RealWeight * newObj.Quantity;
+                RemoteCurrentWeight += (uint) newObj.RealWeight * newObj.Quantity;
             }
             else
             {
                 Objects.Add(newObj);
-                CurrentWeight += (uint)newObj.RealWeight * newObj.Quantity;
+                CurrentWeight += (uint) newObj.RealWeight * newObj.Quantity;
             }
 
             _step++;
@@ -261,21 +260,17 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
         public void Update(ExchangeObjectModifiedMessage message)
         {
-            var modifiedObj = message.Remote ?
-                              RemoteObjects.FirstOrDefault(o => o.UID == message.Object.ObjectUID) :
-                              Objects.FirstOrDefault(o => o.UID == message.Object.ObjectUID);
+            var modifiedObj = message.Remote
+                ? RemoteObjects.FirstOrDefault(o => o.UID == message.Object.ObjectUID)
+                : Objects.FirstOrDefault(o => o.UID == message.Object.ObjectUID);
 
-            int qtyDiff = (int)message.Object.Quantity - (int)modifiedObj.Quantity;
+            var qtyDiff = (int) message.Object.Quantity - (int) modifiedObj.Quantity;
             modifiedObj.Update(message.Object);
 
             if (message.Remote)
-            {
-                RemoteCurrentWeight += (uint)(qtyDiff * modifiedObj.RealWeight);
-            }
+                RemoteCurrentWeight += (uint) (qtyDiff * modifiedObj.RealWeight);
             else
-            {
-                CurrentWeight += (uint)(qtyDiff * modifiedObj.RealWeight);
-            }
+                CurrentWeight += (uint) (qtyDiff * modifiedObj.RealWeight);
 
             _step++;
             ExchangeContentChanged?.Invoke();
@@ -283,18 +278,18 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
         public void Update(ExchangeObjectRemovedMessage message)
         {
-            var removedObj = message.Remote ?
-                              RemoteObjects.FirstOrDefault(o => o.UID == message.ObjectUID) :
-                              Objects.FirstOrDefault(o => o.UID == message.ObjectUID);
+            var removedObj = message.Remote
+                ? RemoteObjects.FirstOrDefault(o => o.UID == message.ObjectUID)
+                : Objects.FirstOrDefault(o => o.UID == message.ObjectUID);
 
             if (message.Remote)
             {
-                RemoteCurrentWeight += (uint)(removedObj.Quantity * removedObj.RealWeight);
+                RemoteCurrentWeight += (uint) (removedObj.Quantity * removedObj.RealWeight);
                 RemoteObjects.Remove(removedObj);
             }
             else
             {
-                CurrentWeight += (uint)(removedObj.Quantity * removedObj.RealWeight);
+                CurrentWeight += (uint) (removedObj.Quantity * removedObj.RealWeight);
                 Objects.Remove(removedObj);
             }
 
@@ -305,13 +300,9 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         public void Update(ExchangeKamaModifiedMessage message)
         {
             if (message.Remote)
-            {
                 RemoteKamas = message.Quantity;
-            }
             else
-            {
                 Kamas = message.Quantity;
-            }
 
             _step++;
             ExchangeContentChanged?.Invoke();
@@ -332,7 +323,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
         public void Update(ExchangeLeaveMessage message)
         {
-            if (_account.State != Enums.AccountStates.EXCHANGE)
+            if (_account.State != AccountStates.EXCHANGE)
                 return;
 
             Objects.Clear();
@@ -340,7 +331,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             Kamas = RemoteKamas = 0;
             CurrentWeight = MaxWeight = RemoteCurrentWeight = RemoteMaxWeight = 0;
             _step = 0;
-            _account.State = Enums.AccountStates.NONE;
+            _account.State = AccountStates.NONE;
 
             ExchangeLeft?.Invoke();
         }
@@ -365,11 +356,16 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             }
         }
 
-        ~ExchangeGame() => Dispose(false);
+        ~ExchangeGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

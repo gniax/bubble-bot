@@ -1,17 +1,16 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class AccountStatesStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((AccountStates)value)
+            switch ((AccountStates) value)
             {
                 case AccountStates.CONNECTING:
                     return LanguageManager.Translate("12");
@@ -50,6 +49,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

@@ -1,31 +1,29 @@
-using BubbleBot.Protocol.Types;
 using System.Collections.Generic;
 using System.Linq;
+using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Accounts.InGame.Map.Entities
 {
     public class MonstersGroupEntry : MovableEntity
     {
-
-        // Properties
-        public int Id { get; private set; }
-        public MonsterEntry Leader { get; private set; }
-        public List<MonsterEntry> Followers { get; private set; }
-
-        public int MonstersCount => Followers.Count + 1;
-        public int TotalLevel => Leader.Level + Followers.Sum(f => f.Level);
-
-
         // Constructor
         public MonstersGroupEntry(GameRolePlayGroupMonsterInformations infos)
         {
             Id = infos.ContextualId;
-            CellId = (short)infos.Disposition.CellId;
+            CellId = (short) infos.Disposition.CellId;
             Followers = new List<MonsterEntry>(infos.StaticInfos.Underlings.Count);
 
             Leader = new MonsterEntry(infos.StaticInfos.MainCreatureLightInfos);
             infos.StaticInfos.Underlings.ForEach(u => Followers.Add(new MonsterEntry(u)));
         }
+
+        // Properties
+        public int Id { get; }
+        public MonsterEntry Leader { get; }
+        public List<MonsterEntry> Followers { get; }
+
+        public int MonstersCount => Followers.Count + 1;
+        public int TotalLevel => Leader.Level + Followers.Sum(f => f.Level);
 
 
         public bool ContainsMonster(int gid)
@@ -33,14 +31,11 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
             if (Leader.GenericId == gid)
                 return true;
 
-            for (int i = 0; i < Followers.Count; i++)
-            {
+            for (var i = 0; i < Followers.Count; i++)
                 if (Followers[i].GenericId == gid)
                     return true;
-            }
 
             return false;
         }
-
     }
 }

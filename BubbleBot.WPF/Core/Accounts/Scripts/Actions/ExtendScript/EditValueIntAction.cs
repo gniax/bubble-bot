@@ -2,13 +2,8 @@
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
 {
-    class EditValueIntAction : ScriptAction
+    internal class EditValueIntAction : ScriptAction
     {
-        // Properties
-        public string FileName { get; private set; }
-        public string Name { get; private set; }
-        public int Value { get; private set; }
-
         // Constructor
         public EditValueIntAction(string filename, string name, int value)
         {
@@ -17,14 +12,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
             Value = value;
         }
 
+        // Properties
+        public string FileName { get; }
+        public string Name { get; }
+        public int Value { get; }
+
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-
-            if (account.Game.ExtendScript.EditValueInt(FileName, Name, Value))
-            {
-                await Task.Delay(1);
-            }
+            if (account.Game.ExtendScript.EditValueInt(FileName, Name, Value)) await Task.Delay(1);
 
             return ScriptActionResults.DONE;
         }

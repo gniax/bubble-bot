@@ -7,6 +7,7 @@ namespace BubbleBot.Core.Logs
         INFO = 0x387a30, //0x418c38,
         WARNING = 0xd17e32,
         DOFUS = 0x1d64d6,
-        MESSAGE = 0xdceffc
+        MESSAGE = 0xdceffc,
+        FIGHT = 0x418c38
     }
 }

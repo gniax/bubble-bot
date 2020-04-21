@@ -1,16 +1,13 @@
-using BubbleBot.Configurations;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using BubbleBot.Configurations;
 
 namespace BubbleBot.Views.Planner
 {
     public partial class PlannerWindow
     {
-        public ObservableCollection<bool> TempCollection { get; set; }
-        public bool TempForceScript { get; set; }
-        public bool TempActivated { get; set; }
         // Constructor
         public PlannerWindow()
         {
@@ -22,6 +19,10 @@ namespace BubbleBot.Views.Planner
 
             DataContext = GlobalConfiguration.Instance;
         }
+
+        public ObservableCollection<bool> TempCollection { get; set; }
+        public bool TempForceScript { get; set; }
+        public bool TempActivated { get; set; }
 
         private void LbPlanification_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -56,10 +57,7 @@ namespace BubbleBot.Views.Planner
                 if (PlanificationForceScriptCheckbox.IsChecked == true)
                     account.ForceStartScript = true;
 
-                for (int i = 0; i < 24; i++)
-                {
-                    account.Planification[i] = TempCollection[i];
-                }
+                for (var i = 0; i < 24; i++) account.Planification[i] = TempCollection[i];
             }
 
             GlobalConfiguration.Instance.Save();
@@ -87,7 +85,7 @@ namespace BubbleBot.Views.Planner
                 return;
             }
 
-            AccountConfiguration account = LbAccounts.SelectedItem as AccountConfiguration;
+            var account = LbAccounts.SelectedItem as AccountConfiguration;
             LbPlanification.ItemsSource = account.Planification;
             PlanificationActivatedCheckbox.IsChecked = account.PlanificationActivated;
             PlanificationForceScriptCheckbox.IsChecked = account.ForceStartScript;
@@ -109,6 +107,5 @@ namespace BubbleBot.Views.Planner
 
             LbAccounts.UnselectAll();
         }
-
     }
 }

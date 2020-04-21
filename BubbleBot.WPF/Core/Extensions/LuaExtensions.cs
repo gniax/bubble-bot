@@ -4,7 +4,6 @@ namespace BubbleBot.Core.Extensions
 {
     public static class LuaExtensions
     {
-
         public static T GetOr<T>(this Table table, string key, DataType type, T orValue)
         {
             var flag = table.Get(key);
@@ -14,13 +13,12 @@ namespace BubbleBot.Core.Extensions
 
             try
             {
-                return (T)flag.ToObject(typeof(T));
+                return (T) flag.ToObject(typeof(T));
             }
             catch
             {
                 return orValue;
             }
         }
-
     }
 }

@@ -1,22 +1,20 @@
-﻿using BubbleBot.Configurations.Language;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class UseLockedStorageAction : ScriptAction
     {
-
-        // Properties
-        public short ElementCellId { get; }
-        public string LockCode { get; }
-
-
         // Constructor
         public UseLockedStorageAction(short elementCellId, string lockCode)
         {
             ElementCellId = elementCellId;
             LockCode = lockCode;
         }
+
+        // Properties
+        public short ElementCellId { get; }
+        public string LockCode { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -29,6 +27,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 
             return ProcessingResult;
         }
-
     }
 }

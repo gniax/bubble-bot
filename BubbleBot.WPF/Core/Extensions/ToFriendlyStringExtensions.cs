@@ -6,7 +6,6 @@ namespace BubbleBot.Core.Extensions
 {
     public static class ToFriendlyStringExtensions
     {
-
         public static string ToFriendlyString(this AccountStates state)
         {
             switch (state)
@@ -91,6 +90,5 @@ namespace BubbleBot.Core.Extensions
                     return "-";
             }
         }
-
     }
 }

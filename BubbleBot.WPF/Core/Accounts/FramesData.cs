@@ -4,6 +4,11 @@ namespace BubbleBot.Core.Accounts
 {
     public class FramesData : IClearable
     {
+        // Constructor
+        public FramesData()
+        {
+            Clear();
+        }
 
         // Properties
         public uint Sequence { get; set; }
@@ -13,11 +18,6 @@ namespace BubbleBot.Core.Accounts
         public string Ticket { get; set; }
         public bool Initialized { get; set; }
         public uint ServerToAutoConnectTo { get; set; }
-
-
-        // Constructor
-        public FramesData()
-            => Clear();
 
 
         public void Clear()
@@ -30,6 +30,5 @@ namespace BubbleBot.Core.Accounts
             Initialized = false;
             ServerToAutoConnectTo = 0;
         }
-
     }
 }

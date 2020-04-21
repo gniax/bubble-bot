@@ -5,12 +5,6 @@ namespace BubbleBot.Core.Accounts.Network
 {
     public class RegisteredMessage
     {
-
-        // Properties
-        public Type Type { get; }
-        public Func<Account, object, Task> Action { get; }
-
-
         // Constructor
         public RegisteredMessage(Type type, Func<Account, object, Task> action)
         {
@@ -18,5 +12,8 @@ namespace BubbleBot.Core.Accounts.Network
             Action = action;
         }
 
+        // Properties
+        public Type Type { get; }
+        public Func<Account, object, Task> Action { get; }
     }
 }

@@ -4,7 +4,7 @@ namespace BubbleBot.Protocol.Types
     {
 
         // Properties
-        public uint Value { get; set; }
+        public new uint Value { get; set; }
 
 
         // Constructors

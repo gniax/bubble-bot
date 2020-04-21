@@ -1,15 +1,15 @@
-using BubbleBot.Core.Pathfinding;
-using BubbleBot.Core.Pathfinding.Fights;
-using BubbleBot.Protocol.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BubbleBot.Core.Pathfinding;
+using BubbleBot.Core.Pathfinding.Fights;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Utility;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights.Utility
 {
     public class FightsUtility : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -20,30 +20,49 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Utility
             _account = account;
         }
 
+        #region Spells
+
+        public bool SpellIsHittingAnyEnnemy(short fromCellId, SpellLevels spellLevel)
+        {
+            foreach (var spellCell in _account.Game.Fight.GetSpellRange(fromCellId, spellLevel))
+            foreach (var ennemy in _account.Game.Fight.Ennemies)
+                // This ennemy is in range
+                if (spellCell == ennemy.CellId)
+                    return true;
+
+            return false;
+        }
+
+        #endregion
+
 
         #region Distances / Cells
 
-        public KeyValuePair<short, MoveNode>? GetNearestOrFarthestEndMoveNode(bool nearest, bool basedOnAllMonsters = true)
+        public KeyValuePair<short, MoveNode>? GetNearestOrFarthestEndMoveNode(bool nearest,
+            bool basedOnAllMonsters = true)
         {
             KeyValuePair<short, MoveNode>? node = null;
-            int totalDistances = -1;
-            int distance = -1;
+            var totalDistances = -1;
+            var distance = -1;
 
             // Include our current cell
-            totalDistances = basedOnAllMonsters ?
-                GetTotalDistancesFromEnnemies(_account.Game.Fight.PlayedFighter.CellId) :
-                MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId).DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId));
+            totalDistances = basedOnAllMonsters
+                ? GetTotalDistancesFromEnnemies(_account.Game.Fight.PlayedFighter.CellId)
+                : MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId)
+                    .DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId));
 
-            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data, _account.Game.Fight.PlayedFighter.CellId))
+            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data,
+                _account.Game.Fight.PlayedFighter.CellId))
             {
                 if (!kvp.Value.Reachable)
                     continue;
 
-                int tempTotalDistances = basedOnAllMonsters ?
-                    GetTotalDistancesFromEnnemies(kvp.Key) :
-                    MapPoint.FromCellId(kvp.Key).DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId));
+                var tempTotalDistances = basedOnAllMonsters
+                    ? GetTotalDistancesFromEnnemies(kvp.Key)
+                    : MapPoint.FromCellId(kvp.Key)
+                        .DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId));
 
-                if ((nearest && tempTotalDistances <= totalDistances) || (!nearest && tempTotalDistances >= totalDistances))
+                if (nearest && tempTotalDistances <= totalDistances || !nearest && tempTotalDistances >= totalDistances)
                 {
                     if (nearest)
                     {
@@ -63,16 +82,41 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Utility
             return node;
         }
 
+        public KeyValuePair<short, MoveNode>? GetRandomPossibleNode()
+        {
+            KeyValuePair<short, MoveNode>? node = null;
+            var possibleCells = new List<KeyValuePair<short, MoveNode>>();
+
+            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data,
+                _account.Game.Fight.PlayedFighter.CellId))
+            {
+                if (!kvp.Value.Reachable)
+                    continue;
+
+                possibleCells.Add(kvp);
+            }
+
+            // Count every member of list and generate random int between 0 and count then return it
+            if (possibleCells?.Count > 0)
+            {
+                var randomIndex = Randomize.GetRandomInt(0, possibleCells.Count);
+                node = possibleCells.ElementAt(randomIndex);
+            }
+
+            return node;
+        }
+
         public short GetNearestOrFarthestCell(bool nearest, IEnumerable<short> possibleCells)
         {
             short cellId = -1;
-            int totalDistances = -1;
+            var totalDistances = -1;
 
-            foreach (short cell in possibleCells)
+            foreach (var cell in possibleCells)
             {
-                int tempTotalDistances = GetTotalDistancesFromEnnemies(cell);
+                var tempTotalDistances = GetTotalDistancesFromEnnemies(cell);
 
-                if (cellId == -1 || ((nearest && tempTotalDistances < totalDistances) || (!nearest && tempTotalDistances > totalDistances)))
+                if (cellId == -1 || nearest && tempTotalDistances < totalDistances ||
+                    !nearest && tempTotalDistances > totalDistances)
                 {
                     cellId = cell;
                     totalDistances = tempTotalDistances;
@@ -85,33 +129,14 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Utility
         public int GetTotalDistancesFromEnnemies(short fromCellId)
         {
             return _account.Game.Fight.Ennemies.Sum(e =>
-                (MapPoint.FromCellId(fromCellId).DistanceToCell(MapPoint.FromCellId(e.CellId)) - 1));
-        }
-
-        #endregion
-
-        #region Spells
-
-        public bool SpellIsHittingAnyEnnemy(short fromCellId, SpellLevels spellLevel)
-        {
-            foreach (short spellCell in _account.Game.Fight.GetSpellRange(fromCellId, spellLevel))
-            {
-                foreach (var ennemy in _account.Game.Fight.Ennemies)
-                {
-                    // This ennemy is in range
-                    if (spellCell == ennemy.CellId)
-                        return true;
-                }
-            }
-
-            return false;
+                MapPoint.FromCellId(fromCellId).DistanceToCell(MapPoint.FromCellId(e.CellId)) - 1);
         }
 
         #endregion
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -124,12 +149,15 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Utility
         }
 
         ~FightsUtility()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

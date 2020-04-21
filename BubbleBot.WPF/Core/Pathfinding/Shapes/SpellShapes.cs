@@ -1,43 +1,35 @@
+using System.Collections.Generic;
+using System.Linq;
 using BubbleBot.Core.Pathfinding.Shapes.Zones;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Data.Maps;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BubbleBot.Core.Pathfinding.Shapes
 {
     public static class SpellShapes
     {
-
-        public static IEnumerable<MapPoint> GetSpellRange(short sourceCellId, SpellLevels spellLevel, int additionalRange = 0)
+        public static IEnumerable<MapPoint> GetSpellRange(short sourceCellId, SpellLevels spellLevel,
+            int additionalRange = 0)
         {
             var mp = MapPoint.FromCellId(sourceCellId);
-            int range = spellLevel.Range + (spellLevel.RangeCanBeBoosted ? additionalRange : 0);
+            var range = spellLevel.Range + (spellLevel.RangeCanBeBoosted ? additionalRange : 0);
 
             if (spellLevel.CastInLine && spellLevel.CastInDiagonal)
-            {
                 return Shaper.ShapeCross(mp.X, mp.Y, spellLevel.MinRange, range)
                     .Union(Shaper.ShapeStar(mp.X, mp.Y, spellLevel.MinRange, range));
-            }
-            else if (spellLevel.CastInDiagonal)
-            {
+            if (spellLevel.CastInDiagonal)
                 return Shaper.ShapeStar(mp.X, mp.Y, spellLevel.MinRange, range);
-            }
-            else if (spellLevel.CastInLine)
-            {
+            if (spellLevel.CastInLine)
                 return Shaper.ShapeCross(mp.X, mp.Y, spellLevel.MinRange, range);
-            }
-            else
-            {
-                return Shaper.ShapeRing(mp.X, mp.Y, spellLevel.MinRange, range);
-            }
+            return Shaper.ShapeRing(mp.X, mp.Y, spellLevel.MinRange, range);
         }
 
-        public static List<MapPoint> GetSpellEffectZone(Map map, SpellLevels spellLevel, short casterCellId, short targetCellId)
+        public static List<MapPoint> GetSpellEffectZone(Map map, SpellLevels spellLevel, short casterCellId,
+            short targetCellId)
         {
-            List<MapPoint> zone = new List<MapPoint>();
+            var zone = new List<MapPoint>();
 
-            Zone effect = GetZoneEffect(spellLevel);
+            var effect = GetZoneEffect(spellLevel);
             var shaper = Shaper.ShaperMap[effect.ZoneShape];
 
             if (shaper == null)
@@ -56,16 +48,14 @@ namespace BubbleBot.Core.Pathfinding.Shapes
                 dirY = targetCoords.Y == casterCoords.Y ? 0 : targetCoords.Y > casterCoords.Y ? 1 : -1;
             }
 
-            var radiusMin = shaper.WithoutCenter ? (effect.ZoneMinSize == 0 ? 1 : effect.ZoneMinSize) : effect.ZoneMinSize;
+            var radiusMin = shaper.WithoutCenter
+                ? effect.ZoneMinSize == 0 ? 1 : effect.ZoneMinSize
+                : effect.ZoneMinSize;
             var rangeCoords = shaper.Fn(targetCoords.X, targetCoords.Y, radiusMin, effect.ZoneSize, dirX, dirY);
 
             foreach (var mp in rangeCoords)
-            {
                 if (map.Cells[mp.CellId].IsWalkable(true))
-                {
                     zone.Add(mp);
-                }
-            }
 
             return zone;
         }
@@ -73,10 +63,9 @@ namespace BubbleBot.Core.Pathfinding.Shapes
         private static Zone GetZoneEffect(SpellLevels spellLevel)
         {
             Zone zoneEffect = null;
-            int ray = 63;
+            var ray = 63;
 
-            for (int i = 0; i < spellLevel.Effects.Count; i++)
-            {
+            for (var i = 0; i < spellLevel.Effects.Count; i++)
                 if (spellLevel.Effects[i]["rawZone"] != null)
                 {
                     var ze = ZonesUtility.ParseZone(spellLevel.Effects[i]["rawZone"].ToString());
@@ -86,11 +75,8 @@ namespace BubbleBot.Core.Pathfinding.Shapes
                         zoneEffect = ze;
                     }
                 }
-            }
 
-            return (zoneEffect != null ? zoneEffect : ZonesUtility.ParseZone("P"));
+            return zoneEffect != null ? zoneEffect : ZonesUtility.ParseZone("P");
         }
-
     }
-
 }

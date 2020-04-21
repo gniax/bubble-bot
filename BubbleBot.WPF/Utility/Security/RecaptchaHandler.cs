@@ -1,6 +1,6 @@
+using System;
 using AntiRecaptcha;
 using BubbleBot.Configurations;
-using System;
 
 namespace BubbleBot.Utility
 {
@@ -16,27 +16,17 @@ namespace BubbleBot.Utility
             string result = null;
 
             if (!string.IsNullOrEmpty(GlobalConfiguration.Instance.AntiCaptchaKey))
-            {
-                try
+                using (var ncp = new NoCaptchaProxyless(GlobalConfiguration.Instance.AntiCaptchaKey,
+                    new Uri("https://proxyconnection.touch.dofus.com/recaptcha"), siteKey))
                 {
-                    using (NoCaptchaProxyless ncp = new NoCaptchaProxyless(GlobalConfiguration.Instance.AntiCaptchaKey, new Uri("https://proxyconnection.touch.dofus.com/recaptcha"), siteKey))
-                    {
-                        ncp.CreateTask();
-                        ncp.WaitForResult(300);
+                    ncp.CreateTask();
+                    ncp.WaitForResult(300);
 
-                        result = ncp.GetTaskSolution();
-                    }
+                    result = ncp.GetTaskSolution();
                 }
-                catch
-                {
-                    //       _semaphore.Release();
-                    throw;
-                }
-            }
 
             // _semaphore.Release();
             return result;
         }
-
     }
 }

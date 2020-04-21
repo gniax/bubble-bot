@@ -5,7 +5,6 @@ namespace BubbleBot.Configurations.Language
 {
     public static class LanguageManager
     {
-
         // Fields
         private static Dictionary<string, string> _translations;
 
@@ -15,15 +14,15 @@ namespace BubbleBot.Configurations.Language
             if (!Directory.Exists("Langs"))
                 return false;
 
-            string langFile = Path.Combine("Langs", $"{GlobalConfiguration.Instance.Lang}.lang");
+            var langFile = Path.Combine("Langs", $"{GlobalConfiguration.Instance.Lang}.lang");
 
             if (!File.Exists(langFile))
                 return false;
 
             _translations = new Dictionary<string, string>();
-            foreach (string line in File.ReadAllLines(langFile))
+            foreach (var line in File.ReadAllLines(langFile))
             {
-                string[] translation = line.Split('|');
+                var translation = line.Split('|');
 
                 if (_translations.ContainsKey(translation[0]))
                     continue;
@@ -35,7 +34,9 @@ namespace BubbleBot.Configurations.Language
         }
 
         public static string Translate(string key)
-            => _translations?.ContainsKey(key) == true ? _translations[key] : key;
+        {
+            return _translations?.ContainsKey(key) == true ? _translations[key] : key;
+        }
 
         public static string Translate(string key, params object[] @params)
         {
@@ -44,6 +45,5 @@ namespace BubbleBot.Configurations.Language
 
             return @params.Length == 0 ? _translations[key] : string.Format(_translations[key], @params);
         }
-
     }
 }

@@ -7,29 +7,29 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 {
     public class CharacterStats : ViewModelBase
     {
-
-        // Fields
-        private uint _lifePoints;
-        private uint _maxLifePoints;
+        private CharacterBaseCharacteristic _actionPoints;
+        private CharacterBaseCharacteristic _agility;
+        private CharacterBaseCharacteristic _chance;
         private uint _energyPoints;
-        private uint _maxEnergyPoints;
         private double _experience;
         private double _experienceLevelFloor;
         private double _experienceNextLevelFloor;
-        private uint _statsPoints;
-        private uint _spellsPoints;
-        private CharacterBaseCharacteristic _actionPoints;
-        private CharacterBaseCharacteristic _mouvementPoints;
         private CharacterBaseCharacteristic _initiative;
+        private CharacterBaseCharacteristic _intelligence;
+
+        // Fields
+        private uint _lifePoints;
+        private uint _maxEnergyPoints;
+        private uint _maxLifePoints;
+        private CharacterBaseCharacteristic _mouvementPoints;
         private CharacterBaseCharacteristic _prospecting;
         private CharacterBaseCharacteristic _range;
+        private uint _spellsPoints;
+        private uint _statsPoints;
+        private CharacterBaseCharacteristic _strength;
         private CharacterBaseCharacteristic _summonableCreaturesBoost;
         private CharacterBaseCharacteristic _vitality;
         private CharacterBaseCharacteristic _wisdom;
-        private CharacterBaseCharacteristic _strength;
-        private CharacterBaseCharacteristic _intelligence;
-        private CharacterBaseCharacteristic _chance;
-        private CharacterBaseCharacteristic _agility;
 
 
         // Properties
@@ -42,6 +42,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
                     RaisePropertyChanged("LifePercent");
             }
         }
+
         public uint MaxLifePoints
         {
             get => _maxLifePoints;
@@ -51,6 +52,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
                     RaisePropertyChanged("LifePercent");
             }
         }
+
         public uint EnergyPoints
         {
             get => _energyPoints;
@@ -60,6 +62,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
                     RaisePropertyChanged("EnergyPercent");
             }
         }
+
         public uint MaxEnergyPoints
         {
             get => _maxEnergyPoints;
@@ -75,75 +78,91 @@ namespace BubbleBot.Core.Accounts.InGame.Character
             get => _statsPoints;
             set => Set(ref _statsPoints, value);
         }
+
         public uint SpellsPoints
         {
             get => _spellsPoints;
             set => Set(ref _spellsPoints, value);
         }
+
         public CharacterBaseCharacteristic ActionPoints
         {
             get => _actionPoints;
             set => Set(ref _actionPoints, value);
         }
+
         public CharacterBaseCharacteristic MouvementPoints
         {
             get => _mouvementPoints;
             set => Set(ref _mouvementPoints, value);
         }
+
         public CharacterBaseCharacteristic Initiative
         {
             get => _initiative;
             set => Set(ref _initiative, value);
         }
+
         public CharacterBaseCharacteristic Prospecting
         {
             get => _prospecting;
             set => Set(ref _prospecting, value);
         }
+
         public CharacterBaseCharacteristic Range
         {
             get => _range;
             set => Set(ref _range, value);
         }
+
         public CharacterBaseCharacteristic SummonableCreaturesBoost
         {
             get => _summonableCreaturesBoost;
             set => Set(ref _summonableCreaturesBoost, value);
         }
+
         public CharacterBaseCharacteristic Vitality
         {
             get => _vitality;
             set => Set(ref _vitality, value);
         }
+
         public CharacterBaseCharacteristic Wisdom
         {
             get => _wisdom;
             set => Set(ref _wisdom, value);
         }
+
         public CharacterBaseCharacteristic Strength
         {
             get => _strength;
             set => Set(ref _strength, value);
         }
+
         public CharacterBaseCharacteristic Intelligence
         {
             get => _intelligence;
             set => Set(ref _intelligence, value);
         }
+
         public CharacterBaseCharacteristic Chance
         {
             get => _chance;
             set => Set(ref _chance, value);
         }
+
         public CharacterBaseCharacteristic Agility
         {
             get => _agility;
             set => Set(ref _agility, value);
         }
 
-        public int LifePercent => MaxLifePoints == 0 ? 0 : (int)(((double)LifePoints / MaxLifePoints) * 100);
-        public int EnergyPercent => MaxEnergyPoints == 0 ? 0 : (int)(((double)EnergyPoints / MaxEnergyPoints) * 100);
-        public int ExperiencePercent => _experienceNextLevelFloor == 0 ? 0 : (int)((_experience - _experienceLevelFloor) / (_experienceNextLevelFloor - _experienceLevelFloor) * 100);
+        public int LifePercent => MaxLifePoints == 0 ? 0 : (int) ((double) LifePoints / MaxLifePoints * 100);
+        public int EnergyPercent => MaxEnergyPoints == 0 ? 0 : (int) ((double) EnergyPoints / MaxEnergyPoints * 100);
+
+        public int ExperiencePercent => _experienceNextLevelFloor == 0
+            ? 0
+            : (int) ((_experience - _experienceLevelFloor) / (_experienceNextLevelFloor - _experienceLevelFloor) * 100);
 
 
         #region Updates
@@ -195,6 +214,5 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         }
 
         #endregion
-
     }
 }

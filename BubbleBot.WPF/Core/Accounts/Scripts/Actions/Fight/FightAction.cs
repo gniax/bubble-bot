@@ -1,24 +1,15 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 {
     public class FightAction : ScriptAction
     {
-
-        // Properties
-        public int MinMonsters { get; private set; }
-        public int MaxMonsters { get; private set; }
-        public int MinMonstersLevel { get; private set; }
-        public int MaxMonstersLevel { get; private set; }
-        public List<int> ForbiddenMonsters { get; private set; }
-        public List<int> MandatoryMonsters { get; private set; }
-
-
         // Constructor
-        public FightAction(int minMonsters, int maxMonsters, int minMonstersLevel, int maxMonstersLevel, List<int> forbiddenMonsters, List<int> mandatoryMonsters)
+        public FightAction(int minMonsters, int maxMonsters, int minMonstersLevel, int maxMonstersLevel,
+            List<int> forbiddenMonsters, List<int> mandatoryMonsters)
         {
             MinMonsters = minMonsters;
             MaxMonsters = maxMonsters;
@@ -28,15 +19,24 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
             MandatoryMonsters = mandatoryMonsters;
         }
 
+        // Properties
+        public int MinMonsters { get; }
+        public int MaxMonsters { get; }
+        public int MinMonstersLevel { get; }
+        public int MaxMonstersLevel { get; }
+        public List<int> ForbiddenMonsters { get; }
+        public List<int> MandatoryMonsters { get; }
+
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            var availableGroups = account.Game.Map.GetMonstersGroup(MinMonsters, MaxMonsters, MinMonstersLevel, MaxMonstersLevel, ForbiddenMonsters, MandatoryMonsters);
+            var availableGroups = account.Game.Map.GetMonstersGroup(MinMonsters, MaxMonsters, MinMonstersLevel,
+                MaxMonstersLevel, ForbiddenMonsters, MandatoryMonsters);
 
             if (availableGroups.Count <= 0)
                 return DoneResult;
 
-            for (int i = 0; i < availableGroups.Count; i++)
+            for (var i = 0; i < availableGroups.Count; i++)
             {
                 if (account.Game.Map.BlacklistedMonsters.Contains(availableGroups[i].Id))
                     continue;
@@ -45,7 +45,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
                 {
                     case MovementRequestResults.MOVED:
                         account.Scripts.ActionsManager.MonstersGroupToAttack = availableGroups[i].Id;
-                        account.Logger.LogDebug(LanguageManager.Translate("165"), LanguageManager.Translate("166", availableGroups[i].CellId, availableGroups[i].MonstersCount, availableGroups[i].TotalLevel));
+                        account.Logger.LogDebug(LanguageManager.Translate("165"),
+                            LanguageManager.Translate("166", availableGroups[i].CellId,
+                                availableGroups[i].MonstersCount, availableGroups[i].TotalLevel));
                         return ProcessingResult;
                     case MovementRequestResults.ALREADY_THERE:
                     case MovementRequestResults.PATH_BLOCKED:
@@ -60,6 +62,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 
             return DoneResult;
         }
-
     }
 }

@@ -59,7 +59,20 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -221,12 +234,16 @@
     <Compile Include="Enums\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Enums\ListAddFailureEnum.cs" />
     <Compile Include="Enums\MapObstacleStateEnum.cs" />
+    <Compile Include="Enums\MonstersEnum.cs" />
     <Compile Include="Enums\MountEquipedErrorEnum.cs" />
     <Compile Include="Enums\NicknameErrorEnum.cs" />
     <Compile Include="Enums\NicknameGeneratingFailureEnum.cs" />
     <Compile Include="Enums\NumericalValueTypeEnum.cs" />
     <Compile Include="Enums\ObjectEffectsEnum.cs" />
+    <Compile Include="Enums\ObjectEffectsInFrenchEnum.cs" />
     <Compile Include="Enums\ObjectErrorEnum.cs" />
+    <Compile Include="Enums\ObjectEnum.cs" />
+    <Compile Include="Enums\ObjectTypeEnum.cs" />
     <Compile Include="Enums\PartStateEnum.cs" />
     <Compile Include="Enums\PartyJoinErrorEnum.cs" />
     <Compile Include="Enums\PartyTypeEnum.cs" />
@@ -244,6 +261,7 @@
     <Compile Include="Enums\PrismStateEnum.cs" />
     <Compile Include="Enums\PvpArenaStepEnum.cs" />
     <Compile Include="Enums\PvpArenaTypeEnum.cs" />
+    <Compile Include="Enums\ResourcesEnum.cs" />
     <Compile Include="Enums\SequenceTypeEnum.cs" />
     <Compile Include="Enums\ServerConnectionErrorEnum.cs" />
     <Compile Include="Enums\ServersListEnum.cs" />
@@ -252,6 +270,7 @@
     <Compile Include="Enums\SocialContactCategoryEnum.cs" />
     <Compile Include="Enums\SocialGroupCreationResultEnum.cs" />
     <Compile Include="Enums\SocialGroupInvitationStateEnum.cs" />
+    <Compile Include="Enums\SpellsEnum.cs" />
     <Compile Include="Enums\SubareaUpdateEventEnum.cs" />
     <Compile Include="Enums\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Enums\SubscriptionRequiredEnum.cs" />
@@ -1203,6 +1222,12 @@
     <Compile Include="Server\Messages\FilesHashesRequestMessage.cs" />
     <Compile Include="Server\Messages\InvalidOperationMessage.cs" />
     <Compile Include="Server\Messages\IServerMessage.cs" />
+    <Compile Include="Server\Messages\LoadAccountMessage.cs" />
+    <Compile Include="Server\Messages\LoadAccountRequestMessage.cs" />
+    <Compile Include="Server\Messages\LoadAccountsMessage.cs" />
+    <Compile Include="Server\Messages\LoadAccountsRequestMessage.cs" />
+    <Compile Include="Server\Messages\LoadGroupMessage.cs" />
+    <Compile Include="Server\Messages\LoadGroupRequestMessage.cs" />
     <Compile Include="Server\Messages\LoadScriptMessage.cs" />
     <Compile Include="Server\Messages\LoadScriptRequestMessage.cs" />
     <Compile Include="Server\Messages\LoginAcceptedMessage.cs" />
@@ -1229,6 +1254,7 @@
     <Compile Include="Server\Messages\StartScriptMessage.cs" />
     <Compile Include="Server\Messages\StartScriptRequestMessage.cs" />
     <Compile Include="Server\Messages\SubscriptionInformationsMessage.cs" />
+    <Compile Include="Server\Messages\MissingEntityMessage.cs" />
     <Compile Include="Server\Network\ClientWrapper.cs" />
     <Compile Include="Server\Network\MessageParser.cs" />
     <Compile Include="Server\Network\ServerWrapper.cs" />

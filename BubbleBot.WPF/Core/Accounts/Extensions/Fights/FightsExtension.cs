@@ -1,40 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Core.Accounts.Extensions.Fights.Utility;
-using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {
     public class FightsExtension : IClearable, IDisposable
     {
-
         // Fields
         private Account _account;
-        private SpellsManager _spellsManager;
-        private FightsUtility _utility;
-        private int _spellIndex;
-        private bool _endTurn;
-        private byte _turnId;
-        private bool _spellCasted;
         private bool _awaitingSequenceEnd;
-
-
-        // Properties
-        public FightsConfiguration Configuration { get; private set; }
-
-        private List<Spell> Spells => _account.Extensions.CharacterCreation.IsDoingTutorial
-            ? TutorialHelper.BaseSpells[_account.Game.Character.Breed]
-            : Configuration.Spells.ToList();
+        private byte _debugRetries;
+        private bool _endTurn;
+        private bool _spellCasted;
+        private int _spellIndex;
+        private SpellsManager _spellsManager;
+        private byte _turnId;
+        private FightsUtility _utility;
 
 
         // Constructor
@@ -48,6 +39,21 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             SetEvents();
         }
 
+        // Properties
+        public FightsConfiguration Configuration { get; private set; }
+        public List<short> PlayerCellChangeHistory { get; set; }
+
+        private List<Spell> Spells => _account.Extensions.CharacterCreation.IsDoingTutorial
+            ? TutorialHelper.BaseSpells[_account.Game.Character.Breed]
+            : Configuration.Spells.ToList();
+
+        public void Clear()
+        {
+            PlayerCellChangeHistory?.Clear();
+            _turnId = 0;
+            _debugRetries = 0;
+        }
+
 
         private void SetEvents()
         {
@@ -59,7 +65,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
         private void Fight_FightJoined()
         {
+            _debugRetries = 0;
             _turnId = 0;
+            PlayerCellChangeHistory?.Clear();
             foreach (var s in Spells)
             {
                 s.LastTurn = 0;
@@ -70,9 +78,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         private async void Fight_SpectatorJoined()
         {
             if (Configuration.BlockSpectatorScenario == BlockSpectatorScenarios.WHEN_SOMEONE_JOINS)
-            {
                 await _account.Game.Fight.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
-            }
         }
 
         #region Fight Turn
@@ -80,7 +86,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         private async void Fight_TurnStarted()
         {
             _turnId++;
-            _account.Logger.LogInfo(LanguageManager.Translate("472"), LanguageManager.Translate("47", _turnId));
+            _account.Logger.LogFight(LanguageManager.Translate("472"), LanguageManager.Translate("47", _turnId));
             _spellIndex = 0;
             _endTurn = false;
             _spellCasted = false;
@@ -100,7 +106,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
         private void Fight_TurnEnded()
         {
-            _account.Logger.LogInfo(LanguageManager.Translate("472"), LanguageManager.Translate("48"));
+            _account.Logger.LogFight(LanguageManager.Translate("472"), LanguageManager.Translate("48"));
         }
 
         private async Task ProcessSpells()
@@ -130,7 +136,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             // Otherwise handle the spell
             // Check if we can cast this spell this turn
-            if (!(_turnId == 1 || currentSpell.LastTurn == 0 || currentSpell.Turns == 1 || _turnId == currentSpell.LastTurn + currentSpell.Turns))
+            if (!(_turnId == 1 || currentSpell.LastTurn == 0 || currentSpell.Turns == 1 ||
+                  _turnId == currentSpell.LastTurn + currentSpell.Turns))
             {
                 Console.WriteLine(LanguageManager.Translate("53"));
                 await ProcessNextSpell(currentSpell);
@@ -166,10 +173,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             currentSpell.RemainingRelaunchs = currentSpell.Relaunchs;
             _spellIndex++;
 
-            if (updateLastTurn)
-            {
-                currentSpell.LastTurn = _turnId;
-            }
+            if (updateLastTurn) currentSpell.LastTurn = _turnId;
 
             Console.WriteLine("2- Calling ProcessSpells");
             await ProcessSpells();
@@ -182,15 +186,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             try
             {
                 if (_spellIndex >= Spells.Count)
-                {
                     await EndTurn();
-                }
                 else
-                {
                     await ProcessNextSpell(Spells[_spellIndex]);
-                }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public void Update(GameMapNoMovementMessage message)
@@ -248,17 +250,49 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             if (_account.Game.Fight.PlayedFighter.MovementPoints > 0 && _account.Game.Fight.Ennemies.Any())
             {
+                // Prevent bot to stay stuck in fight
+                // If within the last 15 rounds the bot had move to the same two cellID, did not receive any damage and where there's remaining one monster
+                // Then the bot is stuck and it will use random cells (8 times max if nothing change)
+                if (PlayerCellChangeHistory?.Skip(PlayerCellChangeHistory.Count - 15).Distinct().Count() == 2 &&
+                    _account.Game.Fight.LatestReceivedDamageRoundId + 15 < _turnId &&
+                    _account.Game.Fight.AliveEnnemiesCount == 1 ||
+                    _debugRetries > 0 && _account.Game.Fight.LatestReceivedDamageRoundId + 15 < _turnId)
+                {
+                    if (_debugRetries < 8)
+                    {
+                        _debugRetries++;
+                        var randomNode = _utility.GetRandomPossibleNode();
+                        if (randomNode != null)
+                        {
+                            _endTurn = true;
+                            _account.Logger.LogDebug(LanguageManager.Translate("472"),
+                                LanguageManager.Translate("675", randomNode.Value.Key));
+                            await _account.Game.Managers.Movements.MoveToCellInFight(randomNode);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _debugRetries = 0;
+                    }
+                }
+
                 // If no spell was casted, approach even if the tactic is fugitive
                 // Also if distance to the nearest ennemy is >= MaxCells
-                bool nearest = Configuration.Tactic == FightTactics.AGRESSIVE ||
-                               (Configuration.ApproachWhenNoSpellWasCasted || _account.Extensions.CharacterCreation.IsDoingTutorial) && !_spellCasted ||
-                               MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId).DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId)) >= Configuration.MaxCells;
-                var node = _utility.GetNearestOrFarthestEndMoveNode(nearest, (Configuration.Tactic == FightTactics.FUGITIVE || Configuration.BaseApproachOnAllMonsters));
+                var nearest = Configuration.Tactic == FightTactics.AGRESSIVE ||
+                              (Configuration.ApproachWhenNoSpellWasCasted ||
+                               _account.Extensions.CharacterCreation.IsDoingTutorial) && !_spellCasted ||
+                              MapPoint.FromCellId(_account.Game.Fight.GetNearestEnnemy().CellId)
+                                  .DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId)) >=
+                              Configuration.MaxCells;
+                var node = _utility.GetNearestOrFarthestEndMoveNode(nearest,
+                    Configuration.Tactic == FightTactics.FUGITIVE || Configuration.BaseApproachOnAllMonsters);
 
                 if (node != null)
                 {
                     _endTurn = true;
-                    _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("56", node.Value.Key));
+                    _account.Logger.LogDebug(LanguageManager.Translate("472"),
+                        LanguageManager.Translate("56", node.Value.Key));
                     await _account.Game.Managers.Movements.MoveToCellInFight(node);
                     return;
                 }
@@ -288,51 +322,49 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             // Check if we should lock the fight
             if (Configuration.LockFight)
-            {
                 await _account.Game.Fight.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_CLOSED);
-            }
 
             await Task.Delay(300);
 
             // Check if we should block spectator mode
             if (Configuration.BlockSpectatorScenario == BlockSpectatorScenarios.ALWAYS)
-            {
                 await _account.Game.Fight.ToggleOption(FightOptionsEnum.FIGHT_OPTION_SET_SECRET);
-            }
 
             await Task.Delay(300);
 
-            var possiblePositions = _account.Game.Fight.PlayedFighter.Team == TeamEnum.TEAM_CHALLENGER ?
-                                    message.PositionsForChallengers.Except(_account.Game.Fight.Allies.Select(a => (uint)a.CellId)).ToList() :
-                                    message.PositionsForDefenders.Except(_account.Game.Fight.Allies.Select(a => (uint)a.CellId)).ToList();
+            var possiblePositions = _account.Game.Fight.PlayedFighter.Team == TeamEnum.TEAM_CHALLENGER
+                ? message.PositionsForChallengers.Except(_account.Game.Fight.Allies.Select(a => (uint) a.CellId))
+                    .ToList()
+                : message.PositionsForDefenders.Except(_account.Game.Fight.Allies.Select(a => (uint) a.CellId))
+                    .ToList();
 
-            Console.WriteLine("{0} - {1} possible positions.", _account.AccountConfig.Username, possiblePositions.Count);
+            Console.WriteLine("{0} - {1} possible positions.", _account.AccountConfig.Username,
+                possiblePositions.Count);
 
             // Approach a monster
-            if (!(await TryApproachingMonster(possiblePositions)))
-            {
+            if (!await TryApproachingMonster(possiblePositions))
                 // Approach to cast a spell
-                if (!(await TryApproachingForSpell(possiblePositions)))
-                {
+                if (!await TryApproachingForSpell(possiblePositions))
                     // Placements
                     if (Configuration.FightStartPlacement != FightStartPlacements.STAY_STILL)
                     {
-                        short cellId = _utility.GetNearestOrFarthestCell(Configuration.FightStartPlacement == FightStartPlacements.CLOSE_TO_ENNEMIS,
-                            possiblePositions.Select(f => (short)f));
+                        var cellId = _utility.GetNearestOrFarthestCell(
+                            Configuration.FightStartPlacement == FightStartPlacements.CLOSE_TO_ENNEMIS,
+                            possiblePositions.Select(f => (short) f));
 
                         // If we're not already close
                         if (cellId != _account.Game.Fight.PlayedFighter.CellId)
                         {
-                            _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("58", cellId));
-                            await _account.Network.SendMessageAsync(new GameFightPlacementPositionRequestMessage((uint)cellId));
+                            _account.Logger.LogDebug(LanguageManager.Translate("472"),
+                                LanguageManager.Translate("58", cellId));
+                            await _account.Network.SendMessageAsync(
+                                new GameFightPlacementPositionRequestMessage((uint) cellId));
                         }
                         else
                         {
                             Console.WriteLine("{0} SAME CELL", _account.AccountConfig.Username);
                         }
                     }
-                }
-            }
 
             // If this account is a group chief, wait for the group members to join (or for the fight to start :/)
             if (_account.HasGroup && _account.IsGroupChief)
@@ -351,22 +383,22 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         public async Task Update(GameFightShowFighterMessage message)
         {
             // Avoid kicking monsters or ourselves..
-            if (_account.Game.Fight.Allies.FirstOrDefault(a => a.ContextualId == message.Informations.ContextualId) == null)
+            if (_account.Game.Fight.Allies.FirstOrDefault(a => a.ContextualId == message.Informations.ContextualId) ==
+                null)
                 return;
 
             // If this account is a group chief and a non-member joins the fight
             if (_account.HasGroup && _account.IsGroupChief)
-            {
                 if (!_account.Group.IsGroupMember(message.Informations.ContextualId))
                 {
                     await Task.Delay(800);
-                    await _account.Network.SendMessageAsync(new GameContextKickMessage(message.Informations.ContextualId));
+                    await _account.Network.SendMessageAsync(
+                        new GameContextKickMessage(message.Informations.ContextualId));
                     _account.Logger.LogWarning(LanguageManager.Translate("472"), LanguageManager.Translate("393"));
 
                     // If this person took a member's place, send a group signal so that the member joins again
                     _account.Group.SignalMembersToJoinFight();
                 }
-            }
         }
 
         private async Task<bool> TryApproachingForSpell(List<uint> possiblePlacements)
@@ -375,23 +407,26 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return false;
 
             var spell = DataManager.Get<Spells>(Configuration.SpellToApproach);
-            var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
+            var spellLevel =
+                DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
 
             // Check if we can cast the spell from our current position
             if (_utility.SpellIsHittingAnyEnnemy(_account.Game.Fight.PlayedFighter.CellId, spellLevel))
                 return true;
 
             // Otherwise check for the other cells
-            for (int i = 0; i < possiblePlacements.Count; i++)
+            for (var i = 0; i < possiblePlacements.Count; i++)
             {
                 // Avoid re-checking our current position
                 if (possiblePlacements[i] == _account.Game.Fight.PlayedFighter.CellId)
                     continue;
 
-                if (_utility.SpellIsHittingAnyEnnemy((short)possiblePlacements[i], spellLevel))
+                if (_utility.SpellIsHittingAnyEnnemy((short) possiblePlacements[i], spellLevel))
                 {
-                    _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("59", possiblePlacements[i]));
-                    await _account.Network.SendMessageAsync(new GameFightPlacementPositionRequestMessage(possiblePlacements[i]));
+                    _account.Logger.LogDebug(LanguageManager.Translate("472"),
+                        LanguageManager.Translate("59", possiblePlacements[i]));
+                    await _account.Network.SendMessageAsync(
+                        new GameFightPlacementPositionRequestMessage(possiblePlacements[i]));
                     return true;
                 }
             }
@@ -404,44 +439,38 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             if (Configuration.MonsterToApproach == -1)
                 return false;
 
-            FightMonsterEntry monster = _account.Game.Fight.Monsters.FirstOrDefault(f => f.CreatureGenericId == Configuration.MonsterToApproach);
+            var monster =
+                _account.Game.Fight.Monsters.FirstOrDefault(f =>
+                    f.CreatureGenericId == Configuration.MonsterToApproach);
             if (monster == null)
             {
                 _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("60"));
                 return false;
             }
             // The monster to approach is in the fight !
-            else
+
+            short cellId = -1;
+            var distance = -1;
+
+            foreach (short cell in possiblePlacements)
+                if (cellId == -1 || MapPoint.FromCellId(monster.CellId).DistanceToCell(MapPoint.FromCellId(cell)) <
+                    distance)
+                {
+                    cellId = cell;
+                    distance = MapPoint.FromCellId(monster.CellId).DistanceToCell(MapPoint.FromCellId(cell));
+                }
+
+            // If we're not already close
+            if (cellId != _account.Game.Fight.PlayedFighter.CellId)
             {
-                short cellId = -1;
-                int distance = -1;
-
-                foreach (short cell in possiblePlacements)
-                {
-                    if (cellId == -1 || (MapPoint.FromCellId(monster.CellId).DistanceToCell(MapPoint.FromCellId(cell)) < distance))
-                    {
-                        cellId = cell;
-                        distance = MapPoint.FromCellId(monster.CellId).DistanceToCell(MapPoint.FromCellId(cell));
-                    }
-                }
-
-                // If we're not already close
-                if (cellId != _account.Game.Fight.PlayedFighter.CellId)
-                {
-                    _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("61", cellId));
-                    await _account.Network.SendMessageAsync(new GameFightPlacementPositionRequestMessage((uint)cellId));
-                }
-
-                return true;
+                _account.Logger.LogDebug(LanguageManager.Translate("472"), LanguageManager.Translate("61", cellId));
+                await _account.Network.SendMessageAsync(new GameFightPlacementPositionRequestMessage((uint) cellId));
             }
+
+            return true;
         }
 
         #endregion
-
-        public void Clear()
-        {
-            _turnId = 0;
-        }
 
         #region IDisposable Support
 
@@ -467,11 +496,16 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             }
         }
 
-        ~FightsExtension() => Dispose(false);
+        ~FightsExtension()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

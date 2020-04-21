@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Core.Accounts.InGame.Map.Interactives;
 using BubbleBot.Core.Enums;
@@ -7,37 +14,47 @@ using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Server.Messages;
 using GalaSoft.MvvmLight;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
     public class MapGame : ViewModelBase, IClearable, IDisposable
     {
         // Fields
-        private static readonly List<int> DoorsSkillIds = new List<int>(new[] { 184, 183, 187, 198, 114, 84 });
+        private static readonly List<int> DoorsSkillIds = new List<int>(new[] {184, 183, 187, 198, 114, 84});
 
-        private static readonly List<int> DoorsTypeIds = new List<int>(new[] { -1, 128, 168, 16 });
+        private static readonly List<int> DoorsTypeIds = new List<int>(new[] {-1, 128, 168, 16});
         private Account _account;
-        private ConcurrentDictionary<int, PlayerEntry> _players;
-        private ConcurrentDictionary<int, NpcEntry> _npcs;
-        private ConcurrentDictionary<int, MonstersGroupEntry> _monstersGroups;
-        private ConcurrentDictionary<int, InteractiveElementEntry> _interactives;
-        private ConcurrentDictionary<int, ElementInCellEntry> _doors;
-        private ConcurrentDictionary<int, StatedElementEntry> _statedElements;
-        private ConcurrentDictionary<int, ElementInCellEntry> _phenixs;
-        private ConcurrentDictionary<int, ElementInCellEntry> _lockedStorages;
-        private bool _running = false;
         private string _area;
-        private string _subArea;
-        private bool _joinedFight;
+        private ConcurrentDictionary<int, ElementInCellEntry> _doors;
         private bool _firstTime = true;
+        private ConcurrentDictionary<int, InteractiveElementEntry> _interactives;
+        private bool _joinedFight;
+        private ConcurrentDictionary<int, ElementInCellEntry> _lockedStorages;
+        private ConcurrentDictionary<int, MonstersGroupEntry> _monstersGroups;
+        private ConcurrentDictionary<int, NpcEntry> _npcs;
         private bool _oneTime = true;
+        private ConcurrentDictionary<int, ElementInCellEntry> _phenixs;
+        private ConcurrentDictionary<int, PlayerEntry> _players;
+        private bool _running;
+        private ConcurrentDictionary<int, StatedElementEntry> _statedElements;
+        private string _subArea;
+
+
+        internal MapGame(Account account)
+        {
+            _account = account;
+            TeleportableCells = new List<short>();
+            _players = new ConcurrentDictionary<int, PlayerEntry>();
+            _npcs = new ConcurrentDictionary<int, NpcEntry>();
+            _monstersGroups = new ConcurrentDictionary<int, MonstersGroupEntry>();
+            _interactives = new ConcurrentDictionary<int, InteractiveElementEntry>();
+            _doors = new ConcurrentDictionary<int, ElementInCellEntry>();
+            _statedElements = new ConcurrentDictionary<int, StatedElementEntry>();
+            _phenixs = new ConcurrentDictionary<int, ElementInCellEntry>();
+            _lockedStorages = new ConcurrentDictionary<int, ElementInCellEntry>();
+            BlacklistedMonsters = new List<int>();
+            //_semaphore = new SemaphoreSlim(1,1);
+        }
 
 
         // Properties
@@ -79,6 +96,19 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public string CurrentPosition => $"{PosX},{PosY}";
 
+        public void Clear()
+        {
+            //_joinedFight = false;
+            Data = null;
+            Area = null;
+            SubArea = null;
+            PosX = 0;
+            PosY = 0;
+            _firstTime = true;
+            _oneTime = true;
+            RaisePropertyChanged("CurrentPosition");
+        }
+
 
         // Events
         public event Action MapChanged;
@@ -90,26 +120,9 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         public event Action<List<short>> PlayedCharacterMoving;
 
 
-        internal MapGame(Account account)
-        {
-            _account = account;
-            TeleportableCells = new List<short>();
-            _players = new ConcurrentDictionary<int, PlayerEntry>();
-            _npcs = new ConcurrentDictionary<int, NpcEntry>();
-            _monstersGroups = new ConcurrentDictionary<int, MonstersGroupEntry>();
-            _interactives = new ConcurrentDictionary<int, InteractiveElementEntry>();
-            _doors = new ConcurrentDictionary<int, ElementInCellEntry>();
-            _statedElements = new ConcurrentDictionary<int, StatedElementEntry>();
-            _phenixs = new ConcurrentDictionary<int, ElementInCellEntry>();
-            _lockedStorages = new ConcurrentDictionary<int, ElementInCellEntry>();
-            BlacklistedMonsters = new List<int>();
-            //_semaphore = new SemaphoreSlim(1,1);
-        }
-
-
         public async Task<bool> WaitMapChange(int maxDelayInSeconds)
         {
-            bool mapChanged = false;
+            var mapChanged = false;
 
             void AccountMapChanged()
             {
@@ -118,21 +131,24 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
             _account.Game.Map.MapChanged += AccountMapChanged;
 
-            for (int i = 0; i < maxDelayInSeconds && !mapChanged && _account.State != AccountStates.FIGHTING && _account.Scripts.Running; i++)
-            {
-                await Task.Delay(1000);
-            }
+            for (var i = 0;
+                i < maxDelayInSeconds && !mapChanged && _account.State != AccountStates.FIGHTING &&
+                _account.Scripts.Running;
+                i++) await Task.Delay(1000);
 
             _account.Game.Map.MapChanged -= AccountMapChanged;
 
             return mapChanged;
         }
 
-        public bool IsCellTeleportable(short cellId) => TeleportableCells.Contains(cellId);
+        public bool IsCellTeleportable(short cellId)
+        {
+            return TeleportableCells.Contains(cellId);
+        }
 
         public StatedElementEntry GetStatedElement(int elementId)
         {
-            if (_statedElements.TryGetValue(elementId, out StatedElementEntry element))
+            if (_statedElements.TryGetValue(elementId, out var element))
                 return element;
 
             return null;
@@ -140,16 +156,21 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public InteractiveElementEntry GetInteractiveElement(int elementId)
         {
-            if (_interactives.TryGetValue(elementId, out InteractiveElementEntry element))
+            if (_interactives.TryGetValue(elementId, out var element))
                 return element;
 
             return null;
         }
 
-        public bool CanFight(int minMonsters, int maxMonsters, int minLevel, int maxLevel, List<int> forbiddenMonsters, List<int> mandatoryMonsters)
-            => GetMonstersGroup(minMonsters, maxMonsters, minLevel, maxLevel, forbiddenMonsters, mandatoryMonsters).Count > 0;
+        public bool CanFight(int minMonsters, int maxMonsters, int minLevel, int maxLevel, List<int> forbiddenMonsters,
+            List<int> mandatoryMonsters)
+        {
+            return GetMonstersGroup(minMonsters, maxMonsters, minLevel, maxLevel, forbiddenMonsters, mandatoryMonsters)
+                .Count > 0;
+        }
 
-        public List<MonstersGroupEntry> GetMonstersGroup(int minMonsters, int maxMonsters, int minLevel, int maxLevel, List<int> forbiddenMonsters, List<int> mandatoryMonsters)
+        public List<MonstersGroupEntry> GetMonstersGroup(int minMonsters, int maxMonsters, int minLevel, int maxLevel,
+            List<int> forbiddenMonsters, List<int> mandatoryMonsters)
         {
             var monstersGroups = new List<MonstersGroupEntry>();
 
@@ -165,66 +186,60 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 if (monstersGroup.TotalLevel < minLevel || monstersGroup.TotalLevel > maxLevel)
                     continue;
 
-                bool valid = true;
+                var valid = true;
                 if (forbiddenMonsters != null)
-                {
-                    for (int i = 0; i < forbiddenMonsters.Count; i++)
-                    {
+                    for (var i = 0; i < forbiddenMonsters.Count; i++)
                         if (monstersGroup.ContainsMonster(forbiddenMonsters[i]))
                         {
                             valid = false;
                             break;
                         }
-                    }
-                }
 
                 // Only check for mandatory monsters if the group passed the forbidden monsters test
                 if (mandatoryMonsters != null && valid)
-                {
-                    for (int i = 0; i < mandatoryMonsters.Count; i++)
-                    {
+                    for (var i = 0; i < mandatoryMonsters.Count; i++)
                         if (!monstersGroup.ContainsMonster(mandatoryMonsters[i]))
                         {
                             valid = false;
                             break;
                         }
-                    }
-                }
 
                 // If the group is still valid, then its the one!
-                if (valid)
-                {
-                    monstersGroups.Add(monstersGroup);
-                }
+                if (valid) monstersGroups.Add(monstersGroup);
             }
 
             return monstersGroups;
         }
 
-        public bool IsOnMap(string coords) => coords == Id.ToString() || coords == CurrentPosition;
+        public bool IsOnMap(string coords)
+        {
+            return coords == Id.ToString() || coords == CurrentPosition;
+        }
 
         public PlayerEntry GetPlayer(int id)
         {
             if (PlayedCharacter?.Id == id)
                 return PlayedCharacter;
 
-            if (_players.TryGetValue(id, out PlayerEntry player))
+            if (_players.TryGetValue(id, out var player))
                 return player;
 
             return null;
         }
 
-        public void Clear()
+        private void RemoveEntity(int id)
         {
-            //_joinedFight = false;
-            Data = null;
-            Area = null;
-            SubArea = null;
-            PosX = 0;
-            PosY = 0;
-            _firstTime = true;
-            _oneTime = true;
-            RaisePropertyChanged("CurrentPosition");
+            var player = GetPlayer(id);
+            if (player != null)
+            {
+                _players.TryRemove(id, out var value);
+                PlayerLeft?.Invoke(player);
+                EntitiesUpdated?.Invoke();
+            }
+            else if (_monstersGroups.TryRemove(id, out var value))
+            {
+                EntitiesUpdated?.Invoke();
+            }
         }
 
         #region Updates
@@ -237,11 +252,11 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 _running = true;
                 _account.Logger.LogDebug("", "Got MCIDM for map " + message.MapId);
                 var sw = Stopwatch.StartNew();
-                bool sameMap = Data != null && message.MapId == Id;
-                Data = await MapsManager.GetMapAsync((int)message.MapId);
+                var sameMap = Data != null && message.MapId == Id;
+                Data = await MapsManager.GetMapAsync((int) message.MapId);
 
                 var mp = DataManager.Get<MapPositions>(Id);
-                var subArea = DataManager.Get<SubAreas>((int)message.SubAreaId);
+                var subArea = DataManager.Get<SubAreas>((int) message.SubAreaId);
                 var area = DataManager.Get<Areas>(subArea.AreaId);
 
                 // In case the account got disposed while we were getting the map's data
@@ -253,8 +268,8 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
                 SubArea = subArea.NameId;
                 Area = area.NameId;
-                PosX = (sbyte)mp.PosX;
-                PosY = (sbyte)mp.PosY;
+                PosX = (sbyte) mp.PosX;
+                PosY = (sbyte) mp.PosY;
                 _account.Logger.LogDebug("", $"Got map infos [{CurrentPosition}] in {sw.Elapsed.TotalMilliseconds}ms.");
                 RaisePropertyChanged("CurrentPosition");
 
@@ -274,7 +289,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 {
                     if (_oneTime && _account.Game.Map.CurrentPosition != "0,0")
                     {
-                        bool result = SpinWait.SpinUntil(() => (_account.Game.Map.Data.Id != 0), TimeSpan.FromSeconds(10));
+                        var result = SpinWait.SpinUntil(() => _account.Game.Map.Data.Id != 0, TimeSpan.FromSeconds(10));
                         if (result && _account != null)
                         {
                             Task.Delay(2000);
@@ -283,15 +298,17 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                                 BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
                                     _account.AccountConfig.Username,
                                     _account.Game.Character.Level,
-                                    (byte)_account.Game.Character.Stats.EnergyPercent,
-                                    (byte)_account.Game.Character.Inventory.WeightPercent,
+                                    (byte) _account.Game.Character.Stats.EnergyPercent,
+                                    (byte) _account.Game.Character.Inventory.WeightPercent,
                                     _account.Game.Character.Inventory.Kamas,
                                     _account.Game.Map.Id,
                                     _account.Game.Map.CurrentPosition,
                                     _account.State.ToString(),
                                     _account.GroupId,
                                     _account.Group_Chief,
-                                    _account.Scripts.CurrentScriptName != null ? _account.Scripts.CurrentScriptName : "-"
+                                    _account.Scripts.CurrentScriptName != null
+                                        ? _account.Scripts.CurrentScriptName
+                                        : "-"
                                 ));
                                 _oneTime = false;
                             }
@@ -301,28 +318,19 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
                 // Entities
                 foreach (var actor in message.Actors)
-                {
                     if (actor is GameRolePlayCharacterInformations player)
                     {
                         if (player.ContextualId == _account.Game.Character.Id)
-                        {
                             PlayedCharacter = new PlayerEntry(player);
-                        }
                         else
-                        {
                             _players.TryAdd(player.ContextualId, new PlayerEntry(player));
-                        }
                     }
                     else if (actor is GameRolePlayMutantInformations mutant)
                     {
                         if (mutant.ContextualId == _account.Game.Character.Id)
-                        {
                             PlayedCharacter = new PlayerEntry(mutant);
-                        }
                         else
-                        {
                             _players.TryAdd(mutant.ContextualId, new PlayerEntry(mutant));
-                        }
                     }
                     else if (actor is GameRolePlayNpcInformations npc)
                     {
@@ -332,17 +340,16 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                     {
                         _monstersGroups.TryAdd(monstersGroup.ContextualId, new MonstersGroupEntry(monstersGroup));
                     }
-                }
 
                 // Interactives
-                message.InteractiveElements.ForEach(i => _interactives.TryAdd((int)i.ElementId, new InteractiveElementEntry(i)));
-                message.StatedElements.ForEach(se => _statedElements.TryAdd((int)se.ElementId, new StatedElementEntry(se)));
+                message.InteractiveElements.ForEach(i =>
+                    _interactives.TryAdd((int) i.ElementId, new InteractiveElementEntry(i)));
+                message.StatedElements.ForEach(se =>
+                    _statedElements.TryAdd((int) se.ElementId, new StatedElementEntry(se)));
 
                 // Doors
                 foreach (var kvp in Data.MidgroundLayer)
-                {
-                    for (int i = 0; i < kvp.Value.Count; i++)
-                    {
+                    for (var i = 0; i < kvp.Value.Count; i++)
                         // Check for teleportable cells
                         if (kvp.Value[i].g == 21000)
                         {
@@ -358,36 +365,25 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
                             // Check if this element is a phenix (a phenix doesn't have skills that's why we check here)
                             if (kvp.Value[i].g == 7521)
-                            {
                                 _phenixs.TryAdd(kvp.Value[i].Id, new ElementInCellEntry(interactive, kvp.Key));
-                            }
 
                             if (!interactive.Usable)
                                 continue;
 
                             // Zaap
                             if (kvp.Value[i].g == 15363 || kvp.Value[i].g == 38003)
-                            {
                                 Zaap = new ElementInCellEntry(interactive, kvp.Key);
-                            }
                             // Zaapi
                             else if (kvp.Value[i].g == 15004)
-                            {
                                 Zaapi = new ElementInCellEntry(interactive, kvp.Key);
-                            }
                             // Locked storage
                             else if (kvp.Value[i].g == 12367)
-                            {
                                 _lockedStorages.TryAdd(kvp.Value[i].Id, new ElementInCellEntry(interactive, kvp.Key));
-                            }
                             // Doors
-                            else if (DoorsTypeIds.Contains(interactive.ElementTypeId) && DoorsSkillIds.Contains(interactive.EnabledSkills[0].Id))
-                            {
+                            else if (DoorsTypeIds.Contains(interactive.ElementTypeId) &&
+                                     DoorsSkillIds.Contains(interactive.EnabledSkills[0].Id))
                                 _doors.TryAdd(kvp.Value[i].Id, new ElementInCellEntry(interactive, kvp.Key));
-                            }
                         }
-                    }
-                }
 
                 // Only trigger the event when we actually changed the map
                 // IDK why DT has this, but there is a possibility that we get a second MCIDM for the same map
@@ -396,15 +392,13 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                     _joinedFight = false;
                     _account.Logger.LogDebug("", "Triggering MapChanged;");
                     MapChanged?.Invoke();
-                    if (_firstTime)
-                    {
-                        MapLoaded?.Invoke();
-                    }
+                    if (_firstTime) MapLoaded?.Invoke();
                 }
                 else
                 {
                     _account.Logger.LogWarning("", "Same map.");
                 }
+
                 _running = false;
             }
         }
@@ -450,15 +444,11 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 player.Update(message);
 
                 if (player == PlayedCharacter)
-                {
-                    PlayedCharacterMoving?.Invoke(message.KeyMovements.Select(c => (short)c).ToList());
-                }
+                    PlayedCharacterMoving?.Invoke(message.KeyMovements.Select(c => (short) c).ToList());
                 else
-                {
                     EntitiesUpdated?.Invoke();
-                }
             }
-            else if (_monstersGroups.TryGetValue(message.ActorId, out MonstersGroupEntry gm))
+            else if (_monstersGroups.TryGetValue(message.ActorId, out var gm))
             {
                 gm.Update(message);
                 EntitiesUpdated?.Invoke();
@@ -467,8 +457,9 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
         public void Update(InteractiveElementUpdatedMessage message)
         {
-            _interactives.TryRemove((int)message.InteractiveElement.ElementId, out InteractiveElementEntry value);
-            _interactives.TryAdd((int)message.InteractiveElement.ElementId, new InteractiveElementEntry(message.InteractiveElement));
+            _interactives.TryRemove((int) message.InteractiveElement.ElementId, out var value);
+            _interactives.TryAdd((int) message.InteractiveElement.ElementId,
+                new InteractiveElementEntry(message.InteractiveElement));
 
             InteractivesUpdated?.Invoke();
         }
@@ -477,18 +468,18 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         {
             _interactives.Clear();
 
-            for (int i = 0; i < message.InteractiveElements.Count; i++)
-            {
-                _interactives.TryAdd((int)message.InteractiveElements[i].ElementId, new InteractiveElementEntry(message.InteractiveElements[i]));
-            }
+            for (var i = 0; i < message.InteractiveElements.Count; i++)
+                _interactives.TryAdd((int) message.InteractiveElements[i].ElementId,
+                    new InteractiveElementEntry(message.InteractiveElements[i]));
 
             InteractivesUpdated?.Invoke();
         }
 
         public void Update(StatedElementUpdatedMessage message)
         {
-            _statedElements.TryRemove((int)message.StatedElement.ElementId, out StatedElementEntry value);
-            _statedElements.TryAdd((int)message.StatedElement.ElementId, new StatedElementEntry(message.StatedElement));
+            _statedElements.TryRemove((int) message.StatedElement.ElementId, out var value);
+            _statedElements.TryAdd((int) message.StatedElement.ElementId,
+                new StatedElementEntry(message.StatedElement));
 
             InteractivesUpdated?.Invoke();
         }
@@ -497,10 +488,9 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         {
             _statedElements.Clear();
 
-            for (int i = 0; i < message.StatedElements.Count; i++)
-            {
-                _statedElements.TryAdd((int)message.StatedElements[i].ElementId, new StatedElementEntry(message.StatedElements[i]));
-            }
+            for (var i = 0; i < message.StatedElements.Count; i++)
+                _statedElements.TryAdd((int) message.StatedElements[i].ElementId,
+                    new StatedElementEntry(message.StatedElements[i]));
 
             InteractivesUpdated?.Invoke();
         }
@@ -512,21 +502,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         }
 
         #endregion
-
-        private void RemoveEntity(int id)
-        {
-            var player = GetPlayer(id);
-            if (player != null)
-            {
-                _players.TryRemove(id, out PlayerEntry value);
-                PlayerLeft?.Invoke(player);
-                EntitiesUpdated?.Invoke();
-            }
-            else if (_monstersGroups.TryRemove(id, out MonstersGroupEntry value))
-            {
-                EntitiesUpdated?.Invoke();
-            }
-        }
 
         #region IDisposable Support
 
@@ -568,9 +543,15 @@ namespace BubbleBot.Core.Accounts.InGame.Map
             _disposedValue = true;
         }
 
-        ~MapGame() => Dispose(false);
+        ~MapGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
     }

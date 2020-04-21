@@ -6,20 +6,20 @@ namespace BubbleBot.Views.Accounts.MapViewer
 {
     public class MapViewerCell
     {
-
-        // Properties
-        public Point[] Points { get; }
-
-
         // Constructor
         public MapViewerCell(Point[] points)
         {
             Points = points;
         }
 
+        // Properties
+        public Point[] Points { get; }
+
 
         public void Draw(DrawingContext drawingContext, Brush brush, Pen pen)
-            => DrawPolygonOrPolyline(drawingContext, brush, pen, Points);
+        {
+            DrawPolygonOrPolyline(drawingContext, brush, pen, Points);
+        }
 
         public void DrawObstacle(DrawingContext drawingContext, Brush brush, Pen pen)
         {
@@ -58,8 +58,10 @@ namespace BubbleBot.Views.Accounts.MapViewer
 
         public void DrawCross(DrawingContext drawingContext, Pen pen)
         {
-            drawingContext.DrawLine(pen, new Point(Points[0].X - 4, Points[0].Y + 8), new Point(Points[0].X + 4, Points[1].Y + 2));
-            drawingContext.DrawLine(pen, new Point(Points[0].X + 4, Points[0].Y + 8), new Point(Points[0].X - 4, Points[1].Y + 2));
+            drawingContext.DrawLine(pen, new Point(Points[0].X - 4, Points[0].Y + 8),
+                new Point(Points[0].X + 4, Points[1].Y + 2));
+            drawingContext.DrawLine(pen, new Point(Points[0].X + 4, Points[0].Y + 8),
+                new Point(Points[0].X - 4, Points[1].Y + 2));
         }
 
         public void DrawImage(DrawingContext drawingContext, ImageSource image)
@@ -69,18 +71,15 @@ namespace BubbleBot.Views.Accounts.MapViewer
 
         public bool IsPointInside(Point pos)
         {
-            bool inside = false;
+            var inside = false;
 
-            int j = Points.Length - 1;
-            for (int i = 0; i < Points.Length; i++)
+            var j = Points.Length - 1;
+            for (var i = 0; i < Points.Length; i++)
             {
                 if (Points[i].Y < pos.Y && Points[j].Y >= pos.Y || Points[j].Y < pos.Y && Points[i].Y >= pos.Y)
-                {
-                    if (Points[i].X + (pos.Y - Points[i].Y) / (Points[j].Y - Points[i].Y) * (Points[j].X - Points[i].X) < pos.X)
-                    {
+                    if (Points[i].X + (pos.Y - Points[i].Y) / (Points[j].Y - Points[i].Y) *
+                        (Points[j].X - Points[i].X) < pos.X)
                         inside = !inside;
-                    }
-                }
                 j = i;
             }
 
@@ -107,7 +106,5 @@ namespace BubbleBot.Views.Accounts.MapViewer
             // Draw.
             drawingContext.DrawGeometry(brush, pen, geo);
         }
-
     }
-
 }

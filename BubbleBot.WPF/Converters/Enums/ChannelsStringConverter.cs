@@ -1,17 +1,16 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Protocol.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Protocol.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class ChannelsStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((ChatActivableChannelsEnum)value)
+            switch ((ChatActivableChannelsEnum) value)
             {
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
                     return LanguageManager.Translate("217");
@@ -33,6 +32,8 @@ namespace BubbleBot.Converters.Enums
                     return LanguageManager.Translate("225");
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
                     return LanguageManager.Translate("475");
+                case ChatActivableChannelsEnum.CHANNEL_FIGHT:
+                    return LanguageManager.Translate("472");
                 default: // Including GLOBAL
                     return LanguageManager.Translate("266");
             }
@@ -42,6 +43,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

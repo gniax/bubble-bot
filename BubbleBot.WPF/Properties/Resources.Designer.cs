@@ -173,6 +173,16 @@ namespace BubbleBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close_btn {
+            get {
+                object obj = ResourceManager.GetObject("close_btn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Emerald_icon {
             get {
                 object obj = ResourceManager.GetObject("Emerald_icon", resourceCulture);

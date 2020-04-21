@@ -4,12 +4,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
 {
     public class BuyItemAction : ScriptAction
     {
-
-        // Properties
-        public uint GID { get; private set; }
-        public uint Lot { get; private set; }
-
-
         // Constructor
         public BuyItemAction(uint gid, uint lot)
         {
@@ -17,16 +11,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
             Lot = lot;
         }
 
+        // Properties
+        public uint GID { get; }
+        public uint Lot { get; }
+
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.Bid.BuyItem(GID, Lot))
-            {
-                await Task.Delay(1500);
-            }
+            if (account.Game.Bid.BuyItem(GID, Lot)) await Task.Delay(1500);
 
             return ScriptActionResults.DONE;
         }
-
     }
 }

@@ -5,7 +5,6 @@ namespace BubbleBot.Configurations
 {
     public class CharacterCreation
     {
-
         // Properties
         public bool Create { get; set; }
         public string Name { get; set; }
@@ -31,7 +30,7 @@ namespace BubbleBot.Configurations
             writer.Write(Breed);
             writer.Write(Sex);
             writer.Write(Head);
-            Colors.ForEach(writer.Write);
+            Colors?.ForEach(writer.Write);
             writer.Write(ParametersToCopy);
             writer.Write(FightsConfigurationToCopy);
             writer.Write(CompleteTutorial);
@@ -50,12 +49,11 @@ namespace BubbleBot.Configurations
             Sex = reader.ReadInt32();
             Head = reader.ReadInt32();
             Colors = new List<int>();
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
                 Colors.Add(reader.ReadInt32());
             ParametersToCopy = reader.ReadString();
             FightsConfigurationToCopy = reader.ReadString();
             CompleteTutorial = reader.ReadBoolean();
         }
-
     }
 }

@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Map;
 using BubbleBot.Core.Enums;
@@ -5,27 +9,18 @@ using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Fights;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
 {
     public class MovementsManager : IClearable, IDisposable
     {
-
         // Fields
         private Account _account;
-        private Pathfinder _pathFinder;
         private List<short> _currentPath;
-        private int _neighbourMapId;
-        private int _retries;
         private int _maxretries;
-
-
-        // Events
-        public event Action<bool> MovementFinished;
+        private int _neighbourMapId;
+        private Pathfinder _pathFinder;
+        private int _retries;
 
 
         // Constructor
@@ -37,18 +32,32 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             map.MapChanged += Map_MapChanged;
         }
 
+        public void Clear()
+        {
+            _currentPath = null;
+            _neighbourMapId = 0;
+            _retries = 0;
+            _maxretries = 0;
+        }
+
+
+        // Events
+        public event Action<bool> MovementFinished;
+
         public bool CanChangeMap(short cellId, MapChangeDirections direction)
         {
             switch (direction)
             {
                 case MapChangeDirections.LEFT:
-                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId % 14 == 0 && cellId != 546;
+                    return (_account.Game.Map.Data.Cells[cellId].c & (int) direction) > 0 && cellId % 14 == 0 &&
+                           cellId != 546;
                 case MapChangeDirections.RIGHT:
-                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId % 14 == 13 && cellId != 13;
+                    return (_account.Game.Map.Data.Cells[cellId].c & (int) direction) > 0 && cellId % 14 == 13 &&
+                           cellId != 13;
                 case MapChangeDirections.TOP:
-                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId < 27;
+                    return (_account.Game.Map.Data.Cells[cellId].c & (int) direction) > 0 && cellId < 27;
                 default: // BOTTOM
-                    return (_account.Game.Map.Data.Cells[cellId].c & (int)direction) > 0 && cellId > 532;
+                    return (_account.Game.Map.Data.Cells[cellId].c & (int) direction) > 0 && cellId > 532;
             }
         }
 
@@ -56,7 +65,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
         {
             if (_account.IsBusy || _neighbourMapId != 0)
             {
-                _account.Logger.LogWarning("MovementsManager", $"Is busy ({_account.State}) or is already changing the map.");
+                _account.Logger.LogWarning("MovementsManager",
+                    $"Is busy ({_account.State}) or is already changing the map.");
                 return false;
             }
 
@@ -65,13 +75,13 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
 
             while (changeMapCells.Count > 0)
             {
-                short cellId = changeMapCells[Randomize.GetRandomInt(0, changeMapCells.Count)];
+                var cellId = changeMapCells[Randomize.GetRandomInt(0, changeMapCells.Count)];
 
                 // Ignore this cell if a group of monsters is on it
                 if (_account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == cellId) != null)
                     continue;
 
-                long neighbourMapId = GetNeighbourMapId(direction);
+                var neighbourMapId = GetNeighbourMapId(direction);
 
                 if (neighbourMapId <= 0)
                 {
@@ -79,7 +89,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                     return false;
                 }
 
-                _neighbourMapId = (int)neighbourMapId;
+                _neighbourMapId = (int) neighbourMapId;
 
                 // Only return true so that if one cell fails, we try the others
                 if (MoveToChangeMap(cellId))
@@ -100,7 +110,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             if (!CanChangeMap(cellId, direction))
                 return false;
 
-            long neighbourMapId = GetNeighbourMapId(direction);
+            var neighbourMapId = GetNeighbourMapId(direction);
 
             if (neighbourMapId <= 0)
             {
@@ -108,7 +118,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                 return false;
             }
 
-            _neighbourMapId = (int)neighbourMapId;
+            _neighbourMapId = (int) neighbourMapId;
 
             return MoveToChangeMap(cellId);
         }
@@ -123,14 +133,16 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
 
             if (_account.IsBusy || _currentPath != null)
             {
-                _account.Logger.LogWarning("MovementsManager", $"IsBusy: {_account.IsBusy}, PathNotNull: {_currentPath != null}.");
+                _account.Logger.LogWarning("MovementsManager",
+                    $"IsBusy: {_account.IsBusy}, PathNotNull: {_currentPath != null}.");
                 return MovementRequestResults.FAILED;
             }
 
             if (cellId == _account.Game.Map.PlayedCharacter.CellId)
                 return MovementRequestResults.ALREADY_THERE;
 
-            var tempPath = _pathFinder.GetPath(_account.Game.Map.PlayedCharacter.CellId, cellId, _account.Game.Map.OccupiedCells, true, stopNearTarget);
+            var tempPath = _pathFinder.GetPath(_account.Game.Map.PlayedCharacter.CellId, cellId,
+                _account.Game.Map.OccupiedCells, true, stopNearTarget);
 
             if (tempPath.Count == 0)
             {
@@ -147,7 +159,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                 return MovementRequestResults.ALREADY_THERE;
 
             // StopNearTarget=true case, the character is already next to the target
-            if (stopNearTarget && tempPath.Count == 2 && tempPath[0] == _account.Game.Map.PlayedCharacter.CellId && tempPath[1] == cellId)
+            if (stopNearTarget && tempPath.Count == 2 && tempPath[0] == _account.Game.Map.PlayedCharacter.CellId &&
+                tempPath[1] == cellId)
                 return MovementRequestResults.ALREADY_THERE;
 
             _currentPath = tempPath;
@@ -171,7 +184,12 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             // Insert the current cellId
             node.Value.Value.Path.Reachable.Insert(0, _account.Game.Fight.PlayedFighter.CellId);
 
-            await _account.Network.SendMessageAsync(new GameMapMovementRequestMessage((uint)_account.Game.Map.Id,
+            if (_account.Extensions.Fights.PlayerCellChangeHistory == null)
+                _account.Extensions.Fights.PlayerCellChangeHistory = new List<short>();
+
+            _account.Extensions.Fights.PlayerCellChangeHistory?.Add(node.Value.Key);
+
+            await _account.Network.SendMessageAsync(new GameMapMovementRequestMessage((uint) _account.Game.Map.Id,
                 _pathFinder.CompressPath(node.Value.Value.Path.Reachable)));
         }
 
@@ -183,7 +201,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                     _account.Logger.LogDebug("", $"{_account.Game.Map.CurrentPosition} Moving to change map.");
                     return true;
                 case MovementRequestResults.ALREADY_THERE:
-                    _account.Network.SendMessage(new ChangeMapMessage((uint)_neighbourMapId));
+                    _account.Network.SendMessage(new ChangeMapMessage((uint) _neighbourMapId));
                     _neighbourMapId = 0;
                     return true;
                 default: // FAILED or PATH_BLOCKED
@@ -194,120 +212,23 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
         }
 
         private List<short> GetChangeMapCells(MapChangeDirections direction)
-            => Enumerable.Range(0, 560).Select(c => (short)c).Where(c => CanChangeMap(c, direction)).ToList();
+        {
+            return Enumerable.Range(0, 560).Select(c => (short) c).Where(c => CanChangeMap(c, direction)).ToList();
+        }
 
         private void SendMoveMessage()
         {
             var compressedPath = _pathFinder.CompressPath(_currentPath);
-            _account.Network.SendMessage(new GameMapMovementRequestMessage((uint)_account.Game.Map.Id, compressedPath));
-            _account.Logger.LogDebug("MovementsManager", $"Path: {_currentPath.Select(c => c.ToString()).Aggregate((c, n) => $"{c}, {n}")}");
+            _account.Network.SendMessage(
+                new GameMapMovementRequestMessage((uint) _account.Game.Map.Id, compressedPath));
+            _account.Logger.LogDebug("MovementsManager",
+                $"Path: {_currentPath.Select(c => c.ToString()).Aggregate((c, n) => $"{c}, {n}")}");
         }
 
         public void Cancel()
-            => Clear();
-
-        public void Clear()
         {
-            _currentPath = null;
-            _neighbourMapId = 0;
-            _retries = 0;
-            _maxretries = 0;
+            Clear();
         }
-
-        #region Updates
-
-        public async Task Update(GameMapNoMovementMessage message)
-        {
-            if (_currentPath == null)
-                return;
-
-            if (!_account.Scripts.Running)
-            {
-                Clear();
-                return;
-            }
-
-            _retries++;
-            _maxretries++;
-            if (_maxretries > 9)
-            {
-                if (_account.State != AccountStates.RECAPTCHA)
-                {
-                    _account.State = AccountStates.NONE;
-                }
-
-                _account.Logger.LogError("MovementsManager", LanguageManager.Translate("631"));
-                await _account.Network.Disconnect("CLIENT_CLOSING", true);
-                return;
-            }
-            if (_retries > 3)
-            {
-                if (_account.State != AccountStates.RECAPTCHA)
-                {
-                    _account.State = AccountStates.NONE;
-                }
-
-                _account.Logger.LogError("MovementsManager", LanguageManager.Translate("55"));
-                return;
-            }
-
-            _account.Logger.LogWarning("MovementsManager", LanguageManager.Translate("555"));
-            await Task.Delay(5000);
-            await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint)_account.Game.Map.Id)).ConfigureAwait(false);
-
-            // In case one of these happen while we were waiting
-            if (_currentPath == null)
-                return;
-
-            if (!_account.Scripts.Running)
-            {
-                Clear();
-                return;
-            }
-
-            SendMoveMessage();
-        }
-
-        public Task Update(GameMapMovementMessage message)
-            => Task.Run(async () =>
-               {
-                   if (_currentPath != null && message.ActorId == _account.Game.Character.Id &&
-                        message.KeyMovements[0] == _currentPath[0] &&
-                        _currentPath.Contains((short)message.KeyMovements.Last()))
-                   {
-                       // TODO: Not sure if this is the best way to handle the account's state,
-                       //       Also not sure if this is the best way to handle map changements
-                       _account.State = AccountStates.MOVING;
-
-                       if (!_account.Configuration.SpeedHack)
-                           await Task.Delay(PathDuration.Calculate(_currentPath) + 200);
-
-                       // In case the account was disconnected/disposed
-                       if (_account == null || _account.State == AccountStates.DISCONNECTED)
-                           return;
-
-                       await _account.Network.SendMessageAsync(new GameMapMovementConfirmMessage());
-                       _account.State = AccountStates.NONE;
-
-                       if (_neighbourMapId == 0)
-                       {
-                           OnMovementFinished(true);
-                       }
-                       else
-                       {
-                           _currentPath = null; // Needs to be cleared
-
-                           // Handle the map change request
-                           if (_neighbourMapId != 0)
-                           {
-                               await _account.Network.SendMessageAsync(new ChangeMapMessage((uint)_neighbourMapId));
-                               _neighbourMapId = 0;
-                           };
-                       }
-                   }
-               });
-
-        #endregion
 
         private long GetNeighbourMapId(MapChangeDirections direction)
         {
@@ -334,7 +255,104 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
         }
 
         private void Map_MapChanged()
-            => _pathFinder.SetMap(_account.Game.Map.Data);
+        {
+            _pathFinder.SetMap(_account.Game.Map.Data);
+        }
+
+        #region Updates
+
+        public async Task Update(GameMapNoMovementMessage message)
+        {
+            if (_currentPath == null)
+                return;
+
+            if (!_account.Scripts.Running)
+            {
+                Clear();
+                return;
+            }
+
+            _retries++;
+            _maxretries++;
+            if (_maxretries > 9)
+            {
+                if (_account.State != AccountStates.RECAPTCHA) _account.State = AccountStates.NONE;
+
+                _account.Logger.LogError("MovementsManager", LanguageManager.Translate("631"));
+                await _account.Network.Disconnect("CLIENT_CLOSING", true);
+                return;
+            }
+
+            if (_retries > 3)
+            {
+                if (_account.State != AccountStates.RECAPTCHA) _account.State = AccountStates.NONE;
+
+                _account.Logger.LogError("MovementsManager", LanguageManager.Translate("55"));
+                return;
+            }
+
+            _account.Logger.LogWarning("MovementsManager", LanguageManager.Translate("555"));
+            await Task.Delay(5000);
+            await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint) _account.Game.Map.Id))
+                .ConfigureAwait(false);
+
+            // In case one of these happen while we were waiting
+            if (_currentPath == null)
+                return;
+
+            if (!_account.Scripts.Running)
+            {
+                Clear();
+                return;
+            }
+
+            SendMoveMessage();
+        }
+
+        public Task Update(GameMapMovementMessage message)
+        {
+            return Task.Run(async () =>
+            {
+                if (_currentPath != null && message.ActorId == _account.Game.Character.Id &&
+                    message.KeyMovements[0] == _currentPath[0] &&
+                    _currentPath.Contains((short) message.KeyMovements.Last()))
+                {
+                    // TODO: Not sure if this is the best way to handle the account's state,
+                    //       Also not sure if this is the best way to handle map changements
+                    _account.State = AccountStates.MOVING;
+
+                    if (!_account.Configuration.SpeedHack)
+                        await Task.Delay(PathDuration.Calculate(_currentPath) + 200);
+
+                    // In case the account was disconnected/disposed
+                    if (_account == null || _account.State == AccountStates.DISCONNECTED)
+                        return;
+
+                    await _account.Network.SendMessageAsync(new GameMapMovementConfirmMessage());
+                    _account.State = AccountStates.NONE;
+
+                    if (_neighbourMapId == 0)
+                    {
+                        OnMovementFinished(true);
+                    }
+                    else
+                    {
+                        _currentPath = null; // Needs to be cleared
+
+                        // Handle the map change request
+                        if (_neighbourMapId != 0)
+                        {
+                            await _account.Network.SendMessageAsync(new ChangeMapMessage((uint) _neighbourMapId));
+                            _neighbourMapId = 0;
+                        }
+
+                        ;
+                    }
+                }
+            });
+        }
+
+        #endregion
 
         #region IDisposable Support
 
@@ -344,10 +362,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    _pathFinder.Dispose();
-                }
+                if (disposing) _pathFinder.Dispose();
 
                 _currentPath?.Clear();
                 _currentPath = null;
@@ -358,11 +373,16 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             }
         }
 
-        ~MovementsManager() => Dispose(false);
+        ~MovementsManager()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -8,7 +8,7 @@ namespace BubbleBot.Server.Handlers
     public static class BotsHandlers
     {
 
-        public static Task HandleBotSelectedSuccesMessage(Client client, BotSelectedSuccesMessage message)
+        public static Task HandleBotSelectedSuccessMessage(Client client, BotSelectedSuccessMessage message)
             => Task.Run(() =>
             {
                 if (!client.LoggedIn)
@@ -16,7 +16,11 @@ namespace BubbleBot.Server.Handlers
 
                 if (client.Accounts.TryGetValue(message.Account, out Account account))
                 {
+                    if (account.HasBot && account.BotName == message.Name)
+                        return;
+
                     account.SetInitialBotInformations(client.Informations.Id, message.Id, message.Name, message.Server, message.Breed, message.Level);
+
                     ServerMain.BroadcastStatistics();
                 }
             });

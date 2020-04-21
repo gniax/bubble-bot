@@ -1,3 +1,5 @@
+using BubbleBot.Protocol.Converters;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Types
@@ -6,6 +8,7 @@ namespace BubbleBot.Protocol.Types
     {
 
         // Properties
+        [JsonConverter(typeof(TypedPropertyConverter))]
         public List<ObjectEffect> Effects { get; set; }
         public List<uint> Prices { get; set; }
         public uint ObjectUID { get; set; }

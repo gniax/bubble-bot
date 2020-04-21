@@ -1,9 +1,3 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Enums;
-using BubbleBot.Server.Enums;
-using BubbleBot.Server.Messages;
-using Microsoft.Win32;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -11,6 +5,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Enums;
+using BubbleBot.Server.Enums;
+using BubbleBot.Server.Messages;
+using MahApps.Metro.IconPacks;
+using Microsoft.Win32;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Views.Accounts
@@ -18,16 +19,17 @@ namespace BubbleBot.Views.Accounts
     [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     public partial class AccountUc : UserControl
     {
+        private static bool removing;
 
         // Properties
-        private Account Account => BubbleBotMain.Instance.SelectedAccount;
-
+        private bool _fixedTabs;
 
         // Constructor
         public AccountUc()
         {
             InitializeComponent();
 
+            _fixedTabs = true;
             DataContextChanged += AccountUc_DataContextChanged;
             tcMain.SelectionChanged += TcMain_SelectionChanged;
 
@@ -38,10 +40,29 @@ namespace BubbleBot.Views.Accounts
             });
         }
 
+        private Account Account => BubbleBotMain.Instance.SelectedAccount;
+
 
         private void AccountUc_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            tcMain.SelectedIndex = 0;
+            if (Account != null)
+            {
+                if (Account.Game != null && Account.Game.Character != null)
+                    if (!Account.Game.Character.IsSelected || !_fixedTabs)
+                        tcMain.SelectedIndex = 0;
+            }
+            else
+            {
+                tcMain.SelectedIndex = 0;
+            }
+
+
+            if (tcMain.SelectedIndex != default && tcMain.SelectedIndex == 9)
+            {
+                var ti = tcMain.SelectedItem as TabItem;
+                var content = ti.Content;
+                if (content is AccountSubscriptionUc accSubUc) accSubUc.Clear();
+            }
         }
 
         private async void ConnectDisconnect_Click(object sender, RoutedEventArgs e)
@@ -50,17 +71,13 @@ namespace BubbleBot.Views.Accounts
             {
                 // If the bot is connect, disconnect it
                 if (Account.Network.Connected)
-                {
                     await Account.Network.Disconnect("CLIENT_CLOSING");
-                    //Account.PlanificationTimer.Stop();
-                }
                 // Otherwise connect it
-                else if (Account.State == AccountStates.DISCONNECTED)
-                {
-                    await Account.Connect();
-                }
+                else if (Account.State == AccountStates.DISCONNECTED) await Account.Connect();
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         private void LoadScript_Click(object sender, object e)
@@ -72,9 +89,9 @@ namespace BubbleBot.Views.Accounts
 
                 var result = ofd.ShowDialog();
                 if (result.HasValue && result.Value)
-                {
-                    BubbleBotMain.Instance.Server.SendMessage(new LoadScriptRequestMessage(Account.AccountConfig.Username, ofd.FileName, File.ReadAllText(ofd.FileName)));
-                }
+                    BubbleBotMain.Instance.Server.SendMessage(
+                        new LoadScriptRequestMessage(Account.AccountConfig.Username, ofd.FileName,
+                            File.ReadAllText(ofd.FileName)));
             }
             catch (Exception ex)
             {
@@ -99,7 +116,6 @@ namespace BubbleBot.Views.Accounts
             }
         }
 
-        static bool removing = false;
         private async void Remove_Click(object sender, RoutedEventArgs e)
         {
             if (!removing)
@@ -108,6 +124,22 @@ namespace BubbleBot.Views.Accounts
                 if (BubbleBotMain.Instance.SelectedAccount != null && tcMain.SelectedIndex >= 0)
                     await BubbleBotMain.Instance.RemoveSelectedAccount().ConfigureAwait(false);
                 removing = false;
+            }
+        }
+
+        private void FixedTabs_Click(object sender, RoutedEventArgs e)
+        {
+            _fixedTabs = !_fixedTabs;
+
+            if (_fixedTabs == false)
+            {
+                FixedTabsIcon.Kind = PackIconMaterialKind.FitToPage;
+                FixedTabs.ToolTip = LanguageManager.Translate("679");
+            }
+            else
+            {
+                FixedTabsIcon.Kind = PackIconMaterialKind.PageFirst;
+                FixedTabs.ToolTip = LanguageManager.Translate("678");
             }
         }
 
@@ -147,22 +179,22 @@ namespace BubbleBot.Views.Accounts
                     // Flood & Statistics only need IsSubscribedToTouch
                     case 4:
                     case 8:
-                        if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch && !((tcMain.Items[tcMain.SelectedIndex] as TabItem).Content is TextBlock))
-                        {
+                        if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch &&
+                            !((tcMain.Items[tcMain.SelectedIndex] as TabItem).Content is TextBlock))
                             SetUnauthorizedTabText(tcMain.SelectedIndex);
-                        }
                         break;
                     // Bid needs IsSubscribedToTouch & HasExtension
                     case 6:
-                        if ((!BubbleBotMain.Instance.Server.IsSubscribedToTouch || !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
+                        if ((!BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
+                             !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                             && !((tcMain.Items[tcMain.SelectedIndex] as TabItem).Content is TextBlock))
-                        {
                             SetUnauthorizedTabText(tcMain.SelectedIndex);
-                        }
                         break;
                 }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         private void AddUserControlToTab(UserControl uc, int tabIndex)
@@ -176,7 +208,7 @@ namespace BubbleBot.Views.Accounts
 
         private void SetUnauthorizedTabText(int index)
         {
-            (tcMain.Items[index] as TabItem).Content = new TextBlock()
+            (tcMain.Items[index] as TabItem).Content = new TextBlock
             {
                 Text = LanguageManager.Translate("406"),
                 VerticalAlignment = VerticalAlignment.Center,
@@ -186,6 +218,5 @@ namespace BubbleBot.Views.Accounts
         }
 
         #endregion
-
     }
 }

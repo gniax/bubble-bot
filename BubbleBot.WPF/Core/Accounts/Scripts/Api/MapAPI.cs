@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Teleportables;
 using BubbleBot.Core.Accounts.Scripts.Actions.Global;
 using BubbleBot.Core.Accounts.Scripts.Actions.Map;
 using MoonSharp.Interpreter;
-using System;
-using System.Linq;
-using System.Reflection;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -13,7 +13,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class MapAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -30,7 +29,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             if (_account.IsBusy)
                 return false;
 
-            if (!ChangeMapAction.TryParse(where, out ChangeMapAction action))
+            if (!ChangeMapAction.TryParse(where, out var action))
             {
                 _account.Logger.LogWarning(LanguageManager.Translate("182"), LanguageManager.Translate("183", where));
                 return false;
@@ -45,7 +44,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             if (cellId < 0 || cellId > 559)
                 return false;
 
-            if (!_account.Game.Map.Data.Cells[cellId].IsWalkable(false) || _account.Game.Map.Data.Cells[cellId].IsObstacle())
+            if (!_account.Game.Map.Data.Cells[cellId].IsWalkable(false) ||
+                _account.Game.Map.Data.Cells[cellId].IsObstacle())
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new MoveToCellAction(cellId), true);
@@ -124,7 +124,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                 return false;
             }
 
-            _account.Scripts.ActionsManager.EnqueueAction(new UseTeleportableAction(Teleportables.ZAAP, destinationMapId), true);
+            _account.Scripts.ActionsManager.EnqueueAction(
+                new UseTeleportableAction(Teleportables.ZAAP, destinationMapId), true);
             return true;
         }
 
@@ -136,37 +137,54 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                 return false;
             }
 
-            _account.Scripts.ActionsManager.EnqueueAction(new UseTeleportableAction(Teleportables.ZAAPI, destinationMapId), true);
+            _account.Scripts.ActionsManager.EnqueueAction(
+                new UseTeleportableAction(Teleportables.ZAAPI, destinationMapId), true);
             return true;
         }
 
         public void WaitMapChange(uint delay = 5000)
-            => _account.Scripts.ActionsManager.EnqueueAction(new WaitMapChangeAction(delay), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new WaitMapChangeAction(delay), true);
+        }
 
         public void JoinFriend(string name)
-            => _account.Scripts.ActionsManager.EnqueueAction(new JoinFriendAction(name), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new JoinFriendAction(name), true);
+        }
 
         public bool OnCell(short cellId)
-            => _account.Game.Map.PlayedCharacter.CellId == cellId;
+        {
+            return _account.Game.Map.PlayedCharacter.CellId == cellId;
+        }
 
         public bool OnMap(string coords)
-            => _account.Game.Map.IsOnMap(coords);
+        {
+            return _account.Game.Map.IsOnMap(coords);
+        }
 
         public string CurrentPos()
-            => _account.Game.Map.CurrentPosition;
+        {
+            return _account.Game.Map.CurrentPosition;
+        }
 
         public string CurrentMapId()
-            => _account.Game.Map.Id.ToString();
+        {
+            return _account.Game.Map.Id.ToString();
+        }
 
         public string Area()
-            => _account.Game.Map.Area;
+        {
+            return _account.Game.Map.Area;
+        }
 
         public string SubArea()
-            => _account.Game.Map.SubArea;
+        {
+            return _account.Game.Map.SubArea;
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -180,12 +198,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~MapAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

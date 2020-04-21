@@ -4,20 +4,21 @@ namespace BubbleBot.Utility.Security
 {
     public static class YeastAPI
     {
-        private static char[] _Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_".ToCharArray();
-        private static string _PreviousKey = String.Empty;
+        private static readonly char[] _Alphabet =
+            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_".ToCharArray();
+
+        private static string _PreviousKey = string.Empty;
         private static int _Seed;
 
         public static string Encode(long number)
         {
-            var encoded = String.Empty;
+            var encoded = string.Empty;
 
             do
             {
                 encoded = _Alphabet[number % _Alphabet.Length] + encoded;
-                number = (long)Math.Floor((double)number / _Alphabet.Length);
-            }
-            while (number > 0);
+                number = (long) Math.Floor((double) number / _Alphabet.Length);
+            } while (number > 0);
 
             return encoded;
         }
@@ -34,8 +35,8 @@ namespace BubbleBot.Utility.Security
 
         public static string GenerateKey()
         {
-            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-            string key = Encode(now);
+            var now = (long) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+            var key = Encode(now);
 
             if (key != _PreviousKey)
             {
@@ -43,7 +44,8 @@ namespace BubbleBot.Utility.Security
                 _PreviousKey = key;
                 return key;
             }
-            else return $"{key}.{Encode(_Seed++)}";
+
+            return $"{key}.{Encode(_Seed++)}";
         }
     }
 }

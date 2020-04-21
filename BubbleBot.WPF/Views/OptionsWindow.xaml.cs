@@ -1,12 +1,11 @@
-using BubbleBot.Configurations;
 using System.Diagnostics;
 using System.Windows.Navigation;
+using BubbleBot.Configurations;
 
 namespace BubbleBot.Views
 {
     public partial class OptionsWindow
     {
-
         // Constructor
         public OptionsWindow()
         {
@@ -21,6 +20,5 @@ namespace BubbleBot.Views
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
-
     }
 }

@@ -1,22 +1,14 @@
+using System;
 using BubbleBot.Core.Accounts.InGame.Managers.Gathers;
 using BubbleBot.Core.Accounts.InGame.Managers.Interactives;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using BubbleBot.Core.Accounts.InGame.Managers.Teleportables;
 using BubbleBot.Core.Accounts.InGame.Map;
-using System;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers
 {
     public class ManagersGame : IClearable, IDisposable
     {
-
-        // Properties
-        public MovementsManager Movements { get; private set; }
-        public InteractivesManager Interactives { get; private set; }
-        public GathersManager Gathers { get; private set; }
-        public TeleportablesManager Teleportables { get; private set; }
-
-
         // Constructor
         public ManagersGame(Account account, MapGame map)
         {
@@ -26,6 +18,19 @@ namespace BubbleBot.Core.Accounts.InGame.Managers
             Teleportables = new TeleportablesManager(account, Interactives, map);
         }
 
+        // Properties
+        public MovementsManager Movements { get; private set; }
+        public InteractivesManager Interactives { get; private set; }
+        public GathersManager Gathers { get; private set; }
+        public TeleportablesManager Teleportables { get; private set; }
+
+        public void Clear()
+        {
+            Movements.Clear();
+            Interactives.Clear();
+            Gathers.Clear();
+        }
+
 
         public void Cancel()
         {
@@ -33,13 +38,6 @@ namespace BubbleBot.Core.Accounts.InGame.Managers
             Interactives.CancelUse();
             Gathers.CancelGather();
             Teleportables.Cancel();
-        }
-
-        public void Clear()
-        {
-            Movements.Clear();
-            Interactives.Clear();
-            Gathers.Clear();
         }
 
         #region IDisposable Support
@@ -67,11 +65,16 @@ namespace BubbleBot.Core.Accounts.InGame.Managers
             _disposedValue = true;
         }
 
-        ~ManagersGame() => Dispose(false);
+        ~ManagersGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

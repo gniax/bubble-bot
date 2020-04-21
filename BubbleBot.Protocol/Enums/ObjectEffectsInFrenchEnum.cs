@@ -1,0 +1,167 @@
+﻿namespace BubbleBot.Protocol.Enums
+{
+    // Pour récupérer facilement les ID :
+    // Voir HDV runes chaque id...
+
+    // Note:
+    // LESS => Valeur negatif
+    // Percent => %
+    public enum ObjectEffectsInFrenchEnum
+    {
+        Vol_PA = 84,
+        Vol_Eau = 91,
+        Vol_Terre = 92,
+        Vol_Air = 93,
+        Vol_Feu = 94,
+        Dégats_Eau = 96,
+        Dégats_Terre = 97,
+        Dégats_Air = 98,
+        Dégats_Feu = 99,
+        Dégats_Neutre = 100,
+        Apprendre_Attitude = 10, // value => nom attitude
+        Vie = 110,
+        PA = 111,
+        Dommages = 112,
+        Coups_Critiques = 115,
+        LESS_PO = 116,
+        PO = 117,
+        Force = 118,
+        Agilité = 119,
+        Chance = 123,
+        Sagesse = 124,
+        Vitalité = 125,
+        Intelligence = 126,
+        PM = 128,
+        Puissance = 138,
+        Points_énergie = 139,
+        LESS_Chance = 152,
+        LESS_Vitalité = 153,
+        LESS_Agilité = 154,
+        LESS_Intelligence = 155,
+        LESS_Sagesse = 156,
+        LESS_Force = 157,
+        Pods = 158,
+        LESS_Pods = 159,
+        Esquive_PA = 160,
+        Esquive_PM = 161,
+        LESS_Esquive_PA = 162,
+        LESS_Esquive_PM = 163,
+        LESS_PA = 168,
+        LESS_PM = 169,
+        LESS_Coups_Critiques = 171,
+        LESS_Résistance_Magique = 172,
+        LESS_Résistance_Physique = 173,
+        Initiative = 174,
+        LESS_Initiative = 175,
+        Prospection = 176,
+        LESS_Prospection = 177,
+        Soins = 178,
+        LESS_Soins = 179,
+        Invocation = 182,
+        Résistance_Magique = 183,
+        Résistance_Physique = 184,
+        LESS_Puissance = 186,
+        Monter_Descendre_monture = 193, // Exception : ne pas utiliser la valeur associée
+        Réssuscite_la_cible = 206,
+        PERCENT_Résistance_Terre = 210,
+        PERCENT_Résistance_Eau = 211,
+        PERCENT_Résistance_Air = 212,
+        PERCENT_Résistance_Feu = 213,
+        PERCENT_Résistance_Neutre = 214,
+        LESS_PERCENT_Résistance_Terre = 215,
+        LESS_PERCENT_Résistance_Eau = 216,
+        LESS_PERCENT_Résistance_Air = 217,
+        LESS_PERCENT_Résistance_Feu = 218,
+        LESS_PERCENT_Résistance_Neutre = 219,
+        Renvoie_dommages = 220,
+        Qui_y_a_t_il_dedans = 222, // Exception : ne pas utiliser la valeur associée
+        Dommages_Pièges = 225,
+        Puissance_Pièges = 226,
+        Résistance_Terre = 240,
+        Résistance_Eau = 241,
+        Résistance_Air = 242,
+        Résistance_Feu = 243,
+        Résistance_Neutre = 244,
+        LESS_Résistance_Terre = 245,
+        LESS_Résistance_Eau = 246,
+        LESS_Résistance_Air = 247,
+        LESS_Résistance_Feu = 248,
+        LESS_Résistance_Neutre = 249,
+        PERCENT_PVP_Résistance_Terre = 250,
+        PERCENT_PVP_Résistance_Eau = 251,
+        PERCENT_PVP_Résistance_Air = 252,
+        PERCENT_PVP_Résistance_Feu = 253,
+        PERCENT_PVP_Résistance_Neutre = 254,
+        LESS_PERCENT_PVP_Résistance_Terre = 255,
+        LESS_PERCENT_PVP_Résistance_Eau = 256,
+        LESS_PERCENT_PVP_Résistance_Air = 257,
+        LESS_PERCENT_PVP_Résistance_Feu = 258,
+        LESS_PERCENT_PVP_Résistance_Neutre = 259,
+        PVP_Résistance_Terre = 260,
+        PVP_Résistance_Eau = 261,
+        PVP_Résistance_Air = 262,
+        PVP_Résistance_Feu = 263,
+        PVP_Résistance_Neutre = 264,
+        Retrait_PA = 410,
+        Retrait_PM = 412,
+        Dommages_Poussée = 414,
+        Résistance_Poussée = 416,
+        Dommages_Critiques = 418,
+        Résistance_Critiques = 420,
+        Dommages_Terre = 422,
+        Dommages_Feu = 424,
+        Dommages_Eau = 426,
+        Dommages_Air = 428,
+        Dommages_Neutre = 430,
+        Vol_de_PA = 441,
+        Pose_un_prisme = 513,
+        Téléporte_au_point_de_sauvegarde = 600,
+        Apprend_le_sort = 604,
+        XP = 605, // (généralement min ou max) ex: parhcemin blanc
+        Sagesse_Permanent = 606,
+        Force_Permanent = 607,
+        Chance_Permanent = 608,
+        Agilité_Permanent = 609,
+        Vitalité_Permanent = 610, // + vitalité dans les caractéristiques
+        Intelligence_Permanent = 611, // + vitalité dans les caractéristiques
+        Point_de_sort = 613,
+        XP_Métier = 614, // diceSide => métier
+        Fait_oublier_le_métier = 615,
+        Consulter = 620, // Exception : ne pas utiliser la valeur associée
+        Invoque = 621, // oeuf d'invocation grade (dice num)  + diceSide (bwak d'air: 267)
+        Téléporte_chez_soi = 622, // Exception : ne pas utiliser la valeur associée
+        Fait_oublier_un_niveau_du_sort = 624, // value : id du sort
+        Libère_une_âme_ennemie = 648, // Exception : ne pas utiliser la valeur associée
+        Durabilité = 702,
+        PERCENT_Capturer_monture = 706,
+        Monstre = 717, // monstre avec ID_du_monstre : valeur => familiers
+        Fuite = 752,
+        Tacle = 753,
+        LESS_Fuite = 754,
+        LESS_Tacle = 755,
+        Arme_de_Chasse = 795, // Exception : ne pas utiliser la valeur associée
+        Points_de_vie = 800,
+        Corpulence = 806, // Plus sa valeur est élevé => maigrichon -VALEUR repas
+        Dernier_repas = 807,
+        A_mangé_le = 808,
+        Durabilité_item = 812, //diceConst : duramax , diceNum = durabilité actuelle
+        Téléporte = 826, // Exception : ne pas utiliser la valeur associée
+        Lance_un_combat_contre = 905, // diceSide : ID du monstre !
+        Augmente_les_capacités_familier = 939,
+        Capacités_accrues = 940,
+        Objet_pour_enclos = 948, // Exception : ne pas utiliser la valeur associée
+        Modifié_par = 985,
+        Fabriqué_par = 988,
+        Lié_au_personnage = 981, // Exception : ne pas utiliser la valeur associée
+        Certificat_invalide = 994, // Exception : ne pas utiliser la valeur associée
+        Appartient_à = 996,
+        Nom = 997,
+        Validité = 998,
+        Efficacité = 1007,
+        Apparence = 1151, // + id de l'item
+        //Capacités_accrues = 1152, // Exception : ne pas utiliser la valeur associée
+        Invoque_un_percepteur = 1153, // Exception : ne pas utiliser la valeur associée
+        Lance_le_sort_début_combat = 2822, // diceNum: id du sort
+        Rang = 2824,
+    }
+}

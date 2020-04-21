@@ -4,7 +4,6 @@ namespace BubbleBot.Core.Pathfinding.Fights
 {
     public class FightPath
     {
-
         // Properties
         public List<short> Reachable { get; set; }
         public List<short> Unreachable { get; set; }
@@ -12,6 +11,5 @@ namespace BubbleBot.Core.Pathfinding.Fights
         public Dictionary<short, int> UnreachableMap { get; set; }
         public int Ap { get; set; }
         public int Mp { get; set; }
-
     }
 }

@@ -15,9 +15,9 @@
     ShowMaxRestoreButton="False"
     WindowStartupLocation="CenterOwner"
     ResizeMode="CanMinimize"
-    Title="{_:Lang 237}" 
-    Height="544.049" 
-    Width="855.285" >
+    Title="{_:Lang 237}"
+    Height="544.049"
+    Width="855.285">
 
     <Window.Resources>
 
@@ -40,28 +40,42 @@
                 </DataTemplate>
             </TabItem.HeaderTemplate>
             <DockPanel LastChildFill="False">
-                <GroupBox Header="{_:Lang 390}" 
+                <GroupBox Header="{_:Lang 390}"
                           Name="GbGroup"
                           Visibility="Collapsed"
                           DockPanel.Dock="Bottom">
                     <StackPanel>
                         <DockPanel Margin="4">
                             <TextBlock Text="{_:Lang 391}" VerticalAlignment="Center" />
-                            <ComboBox Margin="4 0 0 0" 
+                            <ComboBox Margin="4 0 0 0"
                                       Name="CmbChief"
                                       ItemsSource="{Binding SelectedItems, ElementName=LvAccounts}"
-                                      DisplayMemberPath="Username"/>
+                                      DisplayMemberPath="Username" />
                         </DockPanel>
-                        <Button HorizontalAlignment="Right" 
+                        <DockPanel HorizontalAlignment="Right">
+                            <Button
                                 Width="100" Height="30"
-                                Margin="4"
+                                Margin="4 4 4 4"
+                                HorizontalContentAlignment="Stretch"
                                 Background="{StaticResource AccentColorBrush}"
-                                Click="BtnConnectGroup_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="AccountMultiple" />
-                                <TextBlock Margin="10 0 0 0" Text="{_:Lang 238}" />
-                            </StackPanel>
-                        </Button>
+                                Click="BtnLoadGroup_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="ProgressUpload" />
+                                    <TextBlock Margin="11 1 0 0" Text="{_:Lang 681}" />
+                                </StackPanel>
+                            </Button>
+                            <Button HorizontalAlignment="Right"
+                                    Width="100" Height="30"
+                                    Margin="4"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Click="BtnConnectGroup_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="AccountMultiple" />
+                                    <TextBlock Margin="10 0 0 0" Text="{_:Lang 238}" />
+                                </StackPanel>
+                            </Button>
+                        </DockPanel>
                     </StackPanel>
                 </GroupBox>
                 <ListView Margin="4 6 4 4"
@@ -71,8 +85,14 @@
                           ItemsSource="{Binding AccountsList}" Width="621">
                     <ListView.ContextMenu>
                         <ContextMenu Width="220">
-                            <MenuItem Header="{_:Lang 238}" 
-                                  Click="BtnConnectAccounts_Click">
+                            <MenuItem Header="{_:Lang 681}"
+                                      Click="BtnLoadAccounts_Click">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ProgressUpload" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{_:Lang 238}"
+                                      Click="BtnConnectAccounts_Click">
                                 <MenuItem.Icon>
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ArrowLeftBoldCircle" />
                                 </MenuItem.Icon>
@@ -96,7 +116,7 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Sort" />
                                 </MenuItem.Icon>
                                 <MenuItem.Items>
-                                    <MenuItem Header="par Pseudo"  Click="BtnSortByPseudo" />
+                                    <MenuItem Header="par Pseudo" Click="BtnSortByPseudo" />
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Editer">
@@ -104,8 +124,8 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="AccountEdit" />
                                 </MenuItem.Icon>
                                 <MenuItem.Items>
-                                    <MenuItem Header="Pseudo"  Click="BtnEditPseudo" />
-                                    <MenuItem Header="Compte" Click="BtnEditAccount"/>
+                                    <MenuItem Header="Pseudo" Click="BtnEditPseudo" />
+                                    <MenuItem Header="Compte" Click="BtnEditAccount" />
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Exporter">
@@ -113,7 +133,7 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Export" />
                                 </MenuItem.Icon>
                                 <MenuItem.Items>
-                                    <MenuItem Header=".txt"  Click="ExportAccountTxt_Click" />
+                                    <MenuItem Header=".txt" Click="ExportAccountTxt_Click" />
                                 </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="{_:Lang 239}" Click="BtnDeleteAccounts_Click">
@@ -126,8 +146,8 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Width="160">
-                                <Border BorderThickness="0 0 0 1" BorderBrush="White" >
-                                    <TextBlock FontSize="11" Width="140" Text="{_:Lang 240}"/>
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White">
+                                    <TextBlock FontSize="11" Width="140" Text="{_:Lang 240}" />
                                 </Border>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -136,23 +156,23 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Width="110" DisplayMemberBinding="{Binding Server}">
-                                <Border BorderThickness="0 0 0 1" BorderBrush="White" >
-                                    <TextBlock FontSize="11" Width="90" Text="{_:Lang 241}"/>
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White">
+                                    <TextBlock FontSize="11" Width="90" Text="{_:Lang 241}" />
                                 </Border>
                             </GridViewColumn>
                             <GridViewColumn Width="130" DisplayMemberBinding="{Binding Character}">
-                                <Border BorderThickness="0 0 0 1" BorderBrush="White" >
-                                    <TextBlock FontSize="11" Width="110" Text="{_:Lang 242}"/>
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White">
+                                    <TextBlock FontSize="11" Width="110" Text="{_:Lang 242}" />
                                 </Border>
                             </GridViewColumn>
                             <GridViewColumn Width="110" DisplayMemberBinding="{Binding Nickname}">
-                                <Border BorderThickness="0 0 0 1" BorderBrush="White" >
-                                    <TextBlock FontSize="11" Width="122" Text="{_:Lang 243}"/>
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White">
+                                    <TextBlock FontSize="11" Width="122" Text="{_:Lang 243}" />
                                 </Border>
                             </GridViewColumn>
                             <GridViewColumn Width="110" DisplayMemberBinding="{Binding Identifiant}">
-                                <Border BorderThickness="0 0 0 1" BorderBrush="White" Width="107" >
-                                    <TextBlock FontSize="11" Text="{_:Lang 644}" Margin="10,0,-10,0"/>
+                                <Border BorderThickness="0 0 0 1" BorderBrush="White" Width="107">
+                                    <TextBlock FontSize="11" Text="{_:Lang 644}" Margin="10,0,-10,0" />
                                 </Border>
                             </GridViewColumn>
                         </GridView>
@@ -167,7 +187,7 @@
                 <DataTemplate>
                     <StackPanel Height="22" Margin="0 2 0 0" Orientation="Horizontal">
                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="AccountMultiplePlus" />
-                        <TextBlock VerticalAlignment="Center" FontSize="15" Margin="10 0 0 0" Text="{_:Lang 459}"></TextBlock>
+                        <TextBlock VerticalAlignment="Center" FontSize="15" Margin="10 0 0 0" Text="{_:Lang 459}" />
                     </StackPanel>
                 </DataTemplate>
             </TabItem.HeaderTemplate>
@@ -177,19 +197,19 @@
                 <GroupBox Header="Ajouter un compte" Height="285">
                     <StackPanel Orientation="Vertical">
                         <TextBox Margin="0 0 0 10"
-                             Controls:TextBoxHelper.ClearTextButton="True"
-                             Controls:TextBoxHelper.Watermark="{_:Lang 244}" 
-                             Name="TxtUsername"/>
-                        <PasswordBox Margin="0 0 0 10"
                                  Controls:TextBoxHelper.ClearTextButton="True"
-                                 Controls:TextBoxHelper.Watermark="{_:Lang 245}"
-                                 Style="{StaticResource Win8MetroPasswordBox}"
-                                 FontSize="13" 
-                                 Name="TxtPassword" />
+                                 Controls:TextBoxHelper.Watermark="{_:Lang 244}"
+                                 Name="TxtUsername" />
+                        <PasswordBox Margin="0 0 0 10"
+                                     Controls:TextBoxHelper.ClearTextButton="True"
+                                     Controls:TextBoxHelper.Watermark="{_:Lang 245}"
+                                     Style="{StaticResource Win8MetroPasswordBox}"
+                                     FontSize="13"
+                                     Name="TxtPassword" />
                         <ComboBox Margin="0 0 0 10"
-                              Controls:TextBoxHelper.Watermark="{_:Lang 246}"
-                              SelectedIndex="0"
-                              Name="CmbServer">
+                                  Controls:TextBoxHelper.Watermark="{_:Lang 246}"
+                                  SelectedIndex="0"
+                                  Name="CmbServer">
                             <ComboBoxItem Content="-" />
                             <ComboBoxItem Content="Terra Cogita" />
                             <ComboBoxItem Content="Herdegrize" />
@@ -199,22 +219,22 @@
                             <ComboBoxItem Content="Grandapan" />
                         </ComboBox>
                         <TextBox Margin="0 0 0 10"
-                             Controls:TextBoxHelper.ClearTextButton="True"
-                             Controls:TextBoxHelper.Watermark="{_:Lang 247}"
-                             Name="TxtCharacter"/>
+                                 Controls:TextBoxHelper.ClearTextButton="True"
+                                 Controls:TextBoxHelper.Watermark="{_:Lang 247}"
+                                 Name="TxtCharacter" />
                         <TextBox Margin="0 0 0 10"
-                             Controls:TextBoxHelper.ClearTextButton="True"
-                             Controls:TextBoxHelper.Watermark="{_:Lang 248}"
-                             Name="TxtNickname"/>
+                                 Controls:TextBoxHelper.ClearTextButton="True"
+                                 Controls:TextBoxHelper.Watermark="{_:Lang 248}"
+                                 Name="TxtNickname" />
                         <TextBox Margin="0 0 0 8"
-                            Controls:TextBoxHelper.ClearTextButton="True"
-                            Controls:TextBoxHelper.Watermark="{_:Lang 645}"
-                            x:Name="TxtIdentifiant"/>
+                                 Controls:TextBoxHelper.ClearTextButton="True"
+                                 Controls:TextBoxHelper.Watermark="{_:Lang 645}"
+                                 x:Name="TxtIdentifiant" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button x:Name="BtnAddAccount" 
-                                Width="81" Height="33"
-                                Background="{StaticResource AccentColorBrush}"
-                                Click="BtnAddAccount_Click">
+                            <Button x:Name="BtnAddAccount"
+                                    Width="81" Height="33"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Click="BtnAddAccount_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="Plus" />
                                     <TextBlock Margin="10 0 0 0" Text="{_:Lang 260}" />
@@ -231,9 +251,9 @@
                                 <DataTemplate>
                                     <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
                                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="FileDocument" />
-                                        <TextBlock VerticalAlignment="Center" 
-                                                   FontSize="15" 
-                                                   Margin="10 0 0 0" 
+                                        <TextBlock VerticalAlignment="Center"
+                                                   FontSize="15"
+                                                   Margin="10 0 0 0"
                                                    Text="{_:Lang 544}" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -242,11 +262,11 @@
                             <StackPanel Margin="4 0" VerticalAlignment="Center">
                                 <DockPanel Margin="4">
                                     <TextBlock Text="{_:Lang 546}" VerticalAlignment="Center" />
-                                    <TextBox x:Name="TxtSeparator" 
+                                    <TextBox x:Name="TxtSeparator"
                                              Margin="4 0"
                                              TextChanged="TxtSeparator_OnTextChanged" />
                                 </DockPanel>
-                                <TextBlock x:Name="TxtSeparatorPreview" 
+                                <TextBlock x:Name="TxtSeparatorPreview"
                                            HorizontalAlignment="Right"
                                            Margin="8 0" />
                                 <StackPanel Margin="4">
@@ -256,7 +276,7 @@
                                         <Button Content="..." Margin="4 0 0 0" Click="BtnSelectFilePath_OnClick" />
                                     </DockPanel>
                                 </StackPanel>
-                                <Button x:Name="BtnImportAccounts" 
+                                <Button x:Name="BtnImportAccounts"
                                         Width="90" Height="32"
                                         HorizontalAlignment="Right"
                                         Margin="4 8 4 0"
@@ -276,8 +296,8 @@
                                 <DataTemplate>
                                     <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
                                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="ChevronDoubleUp" />
-                                        <TextBlock VerticalAlignment="Center" FontSize="15" Margin="10 0 0 0" 
-                                   Text="{_:Lang 545}" />
+                                        <TextBlock VerticalAlignment="Center" FontSize="15" Margin="10 0 0 0"
+                                                   Text="{_:Lang 545}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </TabItem.HeaderTemplate>
@@ -285,7 +305,7 @@
                             <StackPanel Margin="4 0" VerticalAlignment="Center">
                                 <TextBox Margin="4"
                                          Controls:TextBoxHelper.ClearTextButton="True"
-                                         Controls:TextBoxHelper.Watermark="{_:Lang 244}" 
+                                         Controls:TextBoxHelper.Watermark="{_:Lang 244}"
                                          x:Name="TxtUsernameIncr"
                                          TextChanged="TxtUsernameIncr_OnTextChanged" />
                                 <PasswordBox Margin="4"
@@ -296,20 +316,20 @@
                                 <DockPanel Margin="4">
                                     <TextBlock Text="{_:Lang 549}" VerticalAlignment="Center" />
                                     <Controls:NumericUpDown x:Name="NudStartIncr"
-                                            Minimum="0" 
-                                            Value="0" 
-                                            Margin="4 0"
-                                            ValueChanged="NudIncr_OnValueChanged"
-                                            Width="144" />
+                                                            Minimum="0"
+                                                            Value="0"
+                                                            Margin="4 0"
+                                                            ValueChanged="NudIncr_OnValueChanged"
+                                                            Width="144" />
                                     <TextBlock Text="{_:Lang 550}" VerticalAlignment="Center" />
                                     <Controls:NumericUpDown x:Name="NudEndIncr"
-                                                            Minimum="1" 
-                                                            Value="10" 
+                                                            Minimum="1"
+                                                            Value="10"
                                                             Margin="4 0 0 0"
                                                             ValueChanged="NudIncr_OnValueChanged" />
                                 </DockPanel>
                                 <TextBlock x:Name="TxtIncrPreview" Margin="4 2 4 6" HorizontalAlignment="Right" />
-                                <Button x:Name="BtnImportAccountsIncr" 
+                                <Button x:Name="BtnImportAccountsIncr"
                                         Width="90" Height="32"
                                         HorizontalAlignment="Right"
                                         Margin="4 0 4 0"
@@ -335,7 +355,7 @@
                 <DataTemplate>
                     <StackPanel Height="22" Margin="0 2 0 0" Orientation="Horizontal">
                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="AccountPlus" />
-                        <TextBlock VerticalAlignment="Center" FontSize="15" 
+                        <TextBlock VerticalAlignment="Center" FontSize="15"
                                    Margin="10 0 0 0" Text="{_:Lang 500}" />
                     </StackPanel>
                 </DataTemplate>
@@ -345,7 +365,7 @@
                 <!-- Accounts list -->
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Name="BtnSelectAll" 
+                        <Button Name="BtnSelectAll"
                                 Click="BtnSelectAll_OnClick"
                                 BorderThickness="0"
                                 Background="Transparent"
@@ -353,7 +373,7 @@
                                 ToolTip="{_:Lang 502}">
                             <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectAll" />
                         </Button>
-                        <Button Name="BtnUnselectAll" 
+                        <Button Name="BtnUnselectAll"
                                 Click="BtnUnselectAll_OnClick"
                                 BorderThickness="0"
                                 Background="Transparent"
@@ -362,7 +382,7 @@
                             <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
                         </Button>
                     </StackPanel>
-                    <ListBox ItemsSource="{Binding AccountsList}" 
+                    <ListBox ItemsSource="{Binding AccountsList}"
                              Name="LbAccounts"
                              SelectionMode="Multiple"
                              Width="150" Height="472"
@@ -370,8 +390,8 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox Content="{Binding Username}"
-                                  Margin="-1 1 0 0"
-                                  IsChecked="{Binding IsSelected, 
+                                          Margin="-1 1 0 0"
+                                          IsChecked="{Binding IsSelected, 
                                                       RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -382,8 +402,8 @@
                 <StackPanel VerticalAlignment="Center">
                     <GroupBox Margin="4 0 4 4" Width="376">
                         <GroupBox.Header>
-                            <CheckBox Name="CbCreateCharacter" 
-                              Content="{_:Lang 504}" />
+                            <CheckBox Name="CbCreateCharacter"
+                                      Content="{_:Lang 504}" />
                         </GroupBox.Header>
                         <StackPanel>
 
@@ -391,8 +411,8 @@
                             <DockPanel Margin="4">
                                 <TextBlock Text="Nom: " VerticalAlignment="Center" />
                                 <TextBox Controls:TextBoxHelper.ClearTextButton="True"
-                                 Controls:TextBoxHelper.Watermark="{_:Lang 505}" 
-                                 Name="TxtName"/>
+                                         Controls:TextBoxHelper.Watermark="{_:Lang 505}"
+                                         Name="TxtName" />
                             </DockPanel>
 
                             <!-- Server -->
@@ -412,22 +432,22 @@
                             <!-- Race -->
                             <DockPanel Margin="4">
                                 <TextBlock Text="Race: " VerticalAlignment="Center" />
-                                <CheckBox Name="CbRandomBreed" 
-                                  Content="{_:Lang 507}"
-                                  Margin="4 0 0 0"
-                                  DockPanel.Dock="Right"/>
-                                <ComboBox Name="CmbRace" 
-                                  SelectionChanged="CmbRace_OnSelectionChanged"
-                                  DisplayMemberPath="ShortNameId" />
+                                <CheckBox Name="CbRandomBreed"
+                                          Content="{_:Lang 507}"
+                                          Margin="4 0 0 0"
+                                          DockPanel.Dock="Right" />
+                                <ComboBox Name="CmbRace"
+                                          SelectionChanged="CmbRace_OnSelectionChanged"
+                                          DisplayMemberPath="ShortNameId" />
                             </DockPanel>
 
                             <!-- Sex -->
                             <DockPanel Margin="4">
                                 <TextBlock Text="Sexe: " VerticalAlignment="Center" />
-                                <CheckBox Name="CbRandomSex" 
-                                  Content="{_:Lang 507}"
-                                  Margin="4 0 0 0"
-                                  DockPanel.Dock="Right"/>
+                                <CheckBox Name="CbRandomSex"
+                                          Content="{_:Lang 507}"
+                                          Margin="4 0 0 0"
+                                          DockPanel.Dock="Right" />
                                 <ComboBox Name="CmbSex" SelectedIndex="0" SelectionChanged="CmbSex_OnSelectionChanged">
                                     <ComboBoxItem>
                                         <DockPanel>
@@ -447,10 +467,10 @@
                             <!-- Head -->
                             <DockPanel Margin="4">
                                 <TextBlock Text="Tête: " VerticalAlignment="Center" />
-                                <CheckBox Name="CbRandomHead" 
+                                <CheckBox Name="CbRandomHead"
                                           Content="{_:Lang 507}"
                                           Margin="4 0 0 0"
-                                          DockPanel.Dock="Right"/>
+                                          DockPanel.Dock="Right" />
                                 <ComboBox Name="CmbHead" VerticalContentAlignment="Center">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -482,20 +502,24 @@
                                 <Rectangle Name="RectColor3" Margin="0 4 4 4"
                                            Width="32" Height="32"
                                            MouseLeftButtonUp="ColorRects_OnMouseLeftButtonUp" />
-                                <Button Name="BtnRandomColors" 
+                                <Button Name="BtnRandomColors"
                                         BorderThickness="0"
                                         Background="Transparent"
                                         Click="BtnRandomColors_OnClick"
                                         ToolTip="Générer des couleurs aléatoirement">
                                     <iconPacks:PackIconMaterial Width="12" Height="12" Kind="DiceMultipleOutline" />
                                 </Button>
-                                <Button Name="BtnRefreshColors" 
+                                <Button Name="BtnRefreshColors"
                                         BorderThickness="0"
                                         Background="Transparent"
                                         Click="BtnRefreshColors_OnClick"
                                         ToolTip="Réinitialiser les couleurs">
                                     <iconPacks:PackIconMaterial Width="12" Height="12" Kind="Refresh" />
                                 </Button>
+                                <CheckBox Name="CbRandomColors"
+                                          Content="{_:Lang 507}"
+                                          Margin="4 0 0 0"
+                                          DockPanel.Dock="Right" />
                             </StackPanel>
 
                             <!-- Configurations -->
@@ -523,24 +547,24 @@
 
                     <DockPanel HorizontalAlignment="Right">
                         <Button Width="104" Height="32"
-                        Name="BtnSave"
-                        Click="BtnSave_OnClick"
-                        HorizontalAlignment="Right"
-                        Background="{StaticResource AccentColorBrush}"
-                        Margin="4 4 2 0">
-                            <StackPanel Orientation="Horizontal" >
-                                <iconPacks:PackIconMaterial Kind="ContentSave" />
+                                Name="BtnSave"
+                                Click="BtnSave_OnClick"
+                                HorizontalAlignment="Right"
+                                Background="{StaticResource AccentColorBrush}"
+                                Margin="4 4 2 0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="CheckBold" />
                                 <TextBlock Margin="10 0 0 0" Text="{_:Lang 362}" />
                             </StackPanel>
                         </Button>
                         <Button Width="160" Height="32"
-                        Name="BtnSaveAndConnect"
-                        Click="BtnSaveAndConnect_OnClick"
-                        HorizontalAlignment="Right"
-                        Background="{StaticResource AccentColorBrush}"
-                        Margin="4 4 4 0">
-                            <StackPanel Orientation="Horizontal" >
-                                <iconPacks:PackIconMaterial Kind="ContentSave" />
+                                Name="BtnSaveAndConnect"
+                                Click="BtnSaveAndConnect_OnClick"
+                                HorizontalAlignment="Right"
+                                Background="{StaticResource AccentColorBrush}"
+                                Margin="4 4 4 0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="CheckBold" />
                                 <TextBlock Margin="10 0 0 0" Text="{_:Lang 514}" />
                             </StackPanel>
                         </Button>
@@ -556,21 +580,21 @@
                 <DataTemplate>
                     <StackPanel Height="22" Margin="0 2 0 0" Orientation="Horizontal">
                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="AccountSwitch" />
-                        <TextBlock VerticalAlignment="Center" FontSize="15" 
+                        <TextBlock VerticalAlignment="Center" FontSize="15"
                                    Margin="10 0 0 0" Text="{_:Lang 558}" />
                     </StackPanel>
                 </DataTemplate>
             </TabItem.HeaderTemplate>
 
             <StackPanel>
-                <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal"
                             Margin="0 8"
-                            HorizontalAlignment="Center" >
-                    <iconPacks:PackIconMaterial Width="18" 
+                            HorizontalAlignment="Center">
+                    <iconPacks:PackIconMaterial Width="18"
                                                 Height="18"
                                                 Kind="Information"
                                                 VerticalAlignment="Center" />
-                    <TextBlock Margin="4 0 0 0" 
+                    <TextBlock Margin="4 0 0 0"
                                Text="Veuillez ne pas copier des configurations entre des personnages de race différente."
                                VerticalAlignment="Center" />
                 </StackPanel>
@@ -594,7 +618,7 @@
                                 <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
                             </Button>
                         </StackPanel>
-                        <ListBox ItemsSource="{Binding AccountsList}" 
+                        <ListBox ItemsSource="{Binding AccountsList}"
                                  Name="LbAccountsCopier"
                                  SelectionMode="Multiple"
                                  Width="160" Height="440"
@@ -628,8 +652,8 @@
                                     Click="BtnCopy_Click"
                                     HorizontalAlignment="Right"
                                     Margin="4 6 4 4">
-                                <StackPanel Orientation="Horizontal" >
-                                    <iconPacks:PackIconMaterial Kind="ContentSave" />
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="CheckBold" />
                                     <TextBlock Margin="10 0 0 0" Text="{_:Lang 570}" />
                                 </StackPanel>
                             </Button>
@@ -646,7 +670,7 @@
                 <DataTemplate>
                     <StackPanel Height="22" Margin="0 2 0 0" Orientation="Horizontal">
                         <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="AccountSettings" />
-                        <TextBlock VerticalAlignment="Center" FontSize="15" 
+                        <TextBlock VerticalAlignment="Center" FontSize="15"
                                    Margin="10 0 0 0" Text="Proxies" />
                     </StackPanel>
                 </DataTemplate>
@@ -655,7 +679,7 @@
             <DockPanel>
                 <!-- Accounts list -->
                 <ListBox x:Name="LbAccountsListProxy"
-                         ItemsSource="{Binding Accounts}"  
+                         ItemsSource="{Binding Accounts}"
                          DisplayMemberPath="Username"
                          Height="500"
                          Width="140" />
@@ -663,14 +687,15 @@
                 <!-- Proxy informations -->
                 <StackPanel Margin="4">
                     <DockPanel Margin="4">
-                        <TextBlock Text="{_:Lang 358}" VerticalAlignment="Center" Margin="0 0 2 0"  />
+                        <TextBlock Text="{_:Lang 358}" VerticalAlignment="Center" Margin="0 0 2 0" />
                         <TextBox Controls:TextBoxHelper.ClearTextButton="True"
                                  Controls:TextBoxHelper.Watermark="{_:Lang 359}"
                                  Name="TxtProxyIp"
                                  Width="180"
                                  Text="{Binding ElementName=LbAccountsListProxy,
                                                 Path=SelectedItem.Proxy.Ip, 
-                                                Mode=OneWay}" />
+                                                Mode=OneWay, 
+                                                UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock Text="{_:Lang 360}" VerticalAlignment="Center" Margin="6 0 2 0" />
                         <TextBox Controls:TextBoxHelper.ClearTextButton="True"
                                  Controls:TextBoxHelper.Watermark="8080"
@@ -678,23 +703,30 @@
                                  MaxLength="5"
                                  Text="{Binding ElementName=LbAccountsListProxy,
                                                 Path=SelectedItem.Proxy.Port, 
-                                                Mode=OneWay}" />
+                                                Mode=OneWay, 
+                                                UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
                     <TextBox Controls:TextBoxHelper.ClearTextButton="True"
-                                Controls:TextBoxHelper.Watermark="{_:Lang 470}"
-                                Name="TxtProxyUsername"
-                                Text="{Binding ElementName=LbAccountsListProxy,
+                             Controls:TextBoxHelper.Watermark="{_:Lang 470}"
+                             Name="TxtProxyUsername"
+                             Text="{Binding ElementName=LbAccountsListProxy,
                                                Path=SelectedItem.Proxy.Username, 
-                                               Mode=OneWay}"
-                                Margin="4" />
+                                               Mode=OneWay, 
+                                               UpdateSourceTrigger=PropertyChanged}"
+                             Margin="4" />
                     <TextBox Controls:TextBoxHelper.ClearTextButton="True"
-                                Controls:TextBoxHelper.Watermark="{_:Lang 471}"
-                                Name="TxtProxyPassword"
-                                Text="{Binding ElementName=LbAccountsListProxy,
+                             Controls:TextBoxHelper.Watermark="{_:Lang 471}"
+                             Name="TxtProxyPassword"
+                             Text="{Binding ElementName=LbAccountsListProxy,
                                                Path=SelectedItem.Proxy.Password, 
-                                               Mode=OneWay}"
-                                Margin="4" />
+                                               Mode=OneWay, 
+                                               UpdateSourceTrigger=PropertyChanged}"
+                             Margin="4" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Width="130" Height="32"
+                                Content="{_:Lang 676}"
+                                Click="BtnResetProxy_Click"
+                                Margin="0 6 8 4" />
                         <Button Width="130" Height="32"
                                 Content="{_:Lang 361}"
                                 Click="BtnTestProxy_Click"
@@ -704,8 +736,8 @@
                                 Background="{StaticResource AccentColorBrush}"
                                 Click="BtnSaveProxy_Click"
                                 Margin="4 6 4 4">
-                            <StackPanel Orientation="Horizontal" >
-                                <iconPacks:PackIconMaterial Kind="ContentSave" />
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="CheckBold" />
                                 <TextBlock Margin="10 0 0 0" Text="{_:Lang 362}" />
                             </StackPanel>
                         </Button>

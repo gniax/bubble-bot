@@ -18,13 +18,17 @@ namespace AccountGenerator.Core
         public ChromiumWebBrowser browser;
         //Progarm property
         private int mLongueurName = 16; // 6-19
+#pragma warning disable CS0414 // The field 'AccountCreation.mLongueurPassword' is assigned but its value is never used
         private int mLongueurPassword = 12;
+#pragma warning restore CS0414 // The field 'AccountCreation.mLongueurPassword' is assigned but its value is never used
         private int mLongueurMailAlias = 10;
 
 
         //Account1
         private bool mAccountCreated1 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError1' is never used
         private string mAccountError1;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError1' is never used
         private string mUsername1;
         private string mPassword1;
         private string mMail1;
@@ -36,7 +40,9 @@ namespace AccountGenerator.Core
         private int mYearDate1;
         //Account2
         private bool mAccountCreated2 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError2' is never used
         private string mAccountError2;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError2' is never used
         private string mUsername2;
         private string mPassword2;
         private string mMail2;
@@ -48,7 +54,9 @@ namespace AccountGenerator.Core
         private int mYearDate2;
         //Account3
         private bool mAccountCreated3 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError3' is never used
         private string mAccountError3;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError3' is never used
         private string mUsername3;
         private string mPassword3;
         private string mMail3;
@@ -153,7 +161,9 @@ namespace AccountGenerator.Core
             mYearDate3 = GetRandomInt(1990, 2000);
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async void CreateAccount()
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             bool browserInit;
             //On charge le navigateur vide
@@ -236,13 +246,17 @@ namespace AccountGenerator.Core
             if (e.Frame.Url.Contains("recaptcha/api2/anchor") && mCapctha == 0)
             {
                 mCapctha = 1;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 StartCaptchaBypass();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
             }
 
             if (e.Frame.Url.Contains("www.dofus.com/fr/mmorpg/jouer?__cf_chl_captcha_tk__="))
             {
                 //await VerifBypassSecondCaptcha();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 CreateAccountMode2();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
 
             }
             if (e.Frame.Url == "https://www.dofus.com/fr/mmorpg/jouer")
@@ -819,8 +833,12 @@ namespace AccountGenerator.Core
                 await MakeSnapshot(6);
                 Thread.Sleep(2000);
                 Console.WriteLine($"page {e.Browser.MainFrame.Url} loaded!");
+#pragma warning disable CS0219 // The variable 'postR' is assigned but its value is never used
                 string postR = "";
+#pragma warning restore CS0219 // The variable 'postR' is assigned but its value is never used
+#pragma warning disable CS0219 // The variable 'postId' is assigned but its value is never used
                 string postId = "";
+#pragma warning restore CS0219 // The variable 'postId' is assigned but its value is never used
                 /*
                 Thread.Sleep(6000);
                 //On commence à récupérer les données captcha 
@@ -979,6 +997,7 @@ namespace AccountGenerator.Core
                     ;
                     //await MakeSnapshot(2);
                     //browser.GetBrowser().GetFrame("").EvaluateScriptAsync(script).ContinueWith(x =>
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                     e.Frame.EvaluateScriptAsync(script).ContinueWith(x =>
                    {
                        var response = x.Result;
@@ -986,6 +1005,7 @@ namespace AccountGenerator.Core
                        Console.WriteLine(startDate);
 
                    });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                     Console.WriteLine("Requête terminer !");
                     Thread.Sleep(15000);
                     Console.WriteLine(e.Frame.Url);

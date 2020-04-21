@@ -13,56 +13,55 @@
                       ShowMaxRestoreButton="False"
                       WindowStartupLocation="CenterOwner"
                       ResizeMode="CanMinimize"
-                      Title="{_:Lang 586}" 
+                      Title="{_:Lang 586}"
                       Height="400" Width="755">
     <DockPanel Margin="4">
         <StackPanel>
-            
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Name="BtnSelectAll" 
-                                Click="BtnSelectAll_OnClick"
-                                BorderThickness="0"
-                                Background="Transparent"
-                                Tag="0"
-                                ToolTip="{_:Lang 502}">
-                <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectAll" />
-            </Button>
-            <Button Name="BtnUnselectAll" 
-                                Click="BtnUnselectAll_OnClick"
-                                BorderThickness="0"
-                                Background="Transparent"
-                                Tag="0"
-                                ToolTip="{_:Lang 503}">
-                <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
-            </Button>
-        </StackPanel>
-        <ListBox x:Name="LbAccounts"
-                 ItemsSource="{Binding Accounts}"  
-                 DisplayMemberPath="Username"
-                 Height="356"
-                 BorderThickness="0.6"
-                 Width="140" 
-                 SelectionMode="Extended"
-                 SelectionChanged="LbAccounts_SelectionChanged"
-                 />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="BtnSelectAll"
+                        Click="BtnSelectAll_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        Tag="0"
+                        ToolTip="{_:Lang 502}">
+                    <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectAll" />
+                </Button>
+                <Button Name="BtnUnselectAll"
+                        Click="BtnUnselectAll_OnClick"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        Tag="0"
+                        ToolTip="{_:Lang 503}">
+                    <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
+                </Button>
+            </StackPanel>
+            <ListBox x:Name="LbAccounts"
+                     ItemsSource="{Binding Accounts}"
+                     DisplayMemberPath="Username"
+                     Height="336"
+                     BorderThickness="0.6"
+                     Width="140"
+                     SelectionMode="Extended"
+                     SelectionChanged="LbAccounts_SelectionChanged" />
         </StackPanel>
 
         <GroupBox Header="{_:Lang 587}">
             <StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                   
-                <CheckBox Margin="4 4 4 8" Content="Activé"
-                          Name="PlanificationActivatedCheckbox"
-                          IsChecked="{Binding ElementName=LbAccounts,
-                                              Path=SelectedItem.PlanificationActivated}"/>
 
-                <CheckBox Margin="16 4 4 8" Content="Démarrer directement le script"
-                          Name="PlanificationForceScriptCheckbox"
-                          IsChecked="{Binding ElementName=LbAccounts,
-                                              Path=SelectedItem.ForceStartScript}"/>
+                    <CheckBox Margin="4 4 4 8" Content="Activé"
+                              Name="PlanificationActivatedCheckbox"
+                              IsChecked="{Binding ElementName=LbAccounts,
+                                              Path=SelectedItem.PlanificationActivated}" />
+
+                    <CheckBox Margin="16 4 4 8" Content="Démarrer directement le script"
+                              Name="PlanificationForceScriptCheckbox"
+                              IsChecked="{Binding ElementName=LbAccounts,
+                                              Path=SelectedItem.ForceStartScript}" />
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
                     <TextBlock Text="00h" Margin="2 0 0 0" />
                     <TextBlock Text="01h" Margin="5 0 0 0" />
@@ -89,7 +88,7 @@
                     <TextBlock Text="22h" Margin="5 0 0 0" />
                     <TextBlock Text="23h" Margin="5 0 0 0" />
                 </StackPanel>
-                
+
                 <ListBox Name="LbPlanification"
                          Height="40"
                          SelectionMode="Single"
@@ -120,10 +119,10 @@
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding .}" Value="True">
-                                                <Setter Property="Background" Value="#0e9341"/>
+                                                <Setter Property="Background" Value="#0e9341" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding .}" Value="False">
-                                                <Setter Property="Background" Value="#bf1e1e"/>
+                                                <Setter Property="Background" Value="#bf1e1e" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -146,30 +145,30 @@
                             Width="300"
                             Visibility="Hidden"
                             Background="{StaticResource AccentColorBrush}">
-                        <StackPanel Orientation="Horizontal" >
+                        <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconMaterial Kind="ContentSave" Margin="0 0 12 0" />
-                        <TextBlock Margin="0 0 0 0" Text="{_:Lang 669}" />
-                    </StackPanel>
+                            <TextBlock Margin="0 0 0 0" Text="{_:Lang 669}" />
+                        </StackPanel>
                         <Button.Triggers>
                             <EventTrigger RoutedEvent="Button.Click">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="Green" 
-                                            Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
-                                            FillBehavior="Stop"
-                                            AutoReverse="True"
-                                            Duration="0:0:2"/>
+                                        <ColorAnimation To="Green"
+                                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                                        FillBehavior="Stop"
+                                                        AutoReverse="True"
+                                                        Duration="0:0:2" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                         </Button.Triggers>
                     </Button>
                 </DockPanel>
-                
+
                 <TextBlock Margin="4 20 0 0" TextWrapping="Wrap"
                            Text="{_:Lang 590}" />
             </StackPanel>
         </GroupBox>
     </DockPanel>
-    
+
 </controls:MetroWindow>

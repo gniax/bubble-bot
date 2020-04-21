@@ -6,7 +6,6 @@ namespace BubbleBot.Converters.Specific
 {
     public class IsSubscribedEnabilityConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return BubbleBotMain.Instance.Server.IsSubscribedToTouch;
@@ -16,6 +15,5 @@ namespace BubbleBot.Converters.Specific
         {
             throw new NotImplementedException();
         }
-
     }
 }

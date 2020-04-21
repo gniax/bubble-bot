@@ -7,14 +7,14 @@ namespace BubbleBot.Converters.Others
 {
     public class NullImageConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => value != null && value.ToString() != "" ? value : DependencyProperty.UnsetValue;
+        {
+            return value != null && value.ToString() != "" ? value : DependencyProperty.UnsetValue;
+        }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
-
     }
 }

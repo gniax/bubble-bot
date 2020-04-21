@@ -382,7 +382,7 @@
 382|Échange non autorisé refusé (joueur ignoré).
 383|Échange non autorisé refusé.
 384|Échange autorisé accepté.
-385|Status
+385|Statut
 386|Disponible
 387|Absent
 388|Privé
@@ -664,3 +664,30 @@
 672|Erreur d'accés Internet, vérifiez la validité de votre Proxy
 673|Erreur d'accés Internet, vérifiez l'état de votre connexion...
 674|Ajout de l'id à la liste des autorisations.
+675|Combat bugué... tentative de débug en accédent à une cellule aléatoirement: {0}
+676|Réinitialiser
+677|Fin de l'abonnement Dofus Touch
+678|Toujours revenir au premier onglet au changeant de compte
+679|Toujours garder le même onglet en changeant de compte
+680|Déconnexion
+681|Charger
+682|Effets
+683|Catégorie
+684|Amulette
+685|Arme
+686|Anneau
+687|Ceinture
+688|Bottes
+689|Bouclier
+690|Chapeau
+691|Cape
+692|Familier
+693|Dofus/Trophée
+694|Monture
+695|Companion
+696|Poids
+697|Prix
+698|Accéder au monstre dans le bestiaire
+699|Accéder à l'objet dans l'encyclopédie
+700|Performances
+701|Afficher et pouvoir accéder aux objets insérés dans les différents canaux de la console.

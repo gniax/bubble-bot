@@ -1,33 +1,23 @@
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Utility;
+using BubbleBot.Utility.Security;
+using Newtonsoft.Json.Linq;
 using WebSocketSharp;
+using WebSocketSharp.Net;
 
 namespace BubbleBot.Core.Network
 {
     public class PrimusWebSocket : IDisposable
     {
-
-        // Properties
-        public Uri Url { get; private set; }
-        public bool Connected { get; private set; }
-        public long? SocketPingTimeout { get; set; }
-        public long? SocketPingInterval { get; set; }
+        private readonly ConcurrentQueue<JObject> _messagesQueue;
+        private Timer _socketIOtimer;
+        private bool _waitingToBeClosed;
 
         // Fields
         private WebSocket _webSocket;
-        private Timer _socketIOtimer;
-        private ConcurrentQueue<JObject> _messagesQueue;
-        private bool _waitingToBeClosed;
-
-
-        // Events
-        public event Action<PrimusWebSocket, Exception> ErrorOccured;
-        public event Action<PrimusWebSocket, JObject> MessageReceived;
-        public event Action<PrimusWebSocket> Opened;
-        public event Action<PrimusWebSocket> Closed;
 
 
         // Constructors
@@ -38,11 +28,42 @@ namespace BubbleBot.Core.Network
             _waitingToBeClosed = false;
         }
 
+        // Properties
+        public Uri Url { get; private set; }
+        public bool Connected { get; private set; }
+        public long? SocketPingTimeout { get; set; }
+        public long? SocketPingInterval { get; set; }
 
-        public async Task OpenAsync(string url, string sid, string proxyUrl = null, string proxyUsername = null, string proxyPassword = null)
+        public void Dispose()
+        {
+            _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _socketIOtimer.Dispose();
+            //webSocket.Dispose(); TODO: Implement this
+
+            Url = null;
+            Connected = false;
+            SocketPingInterval = null;
+            SocketPingTimeout = null;
+            _webSocket = null;
+            _socketIOtimer = null;
+        }
+
+
+        // Events
+        public event Action<PrimusWebSocket, Exception> ErrorOccured;
+        public event Action<PrimusWebSocket, JObject> MessageReceived;
+        public event Action<PrimusWebSocket> Opened;
+        public event Action<PrimusWebSocket> Closed;
+
+
+        public async Task OpenAsync(string url, string sid, string proxyUrl = null, string proxyUsername = null,
+            string proxyPassword = null)
         {
             if (_webSocket != null)
                 RemoveEvents();
+
+            if (url == null || url == "")
+                return;
 
             try
             {
@@ -57,7 +78,8 @@ namespace BubbleBot.Core.Network
         }
 
         public Task OpenAsync()
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 try
                 {
@@ -68,6 +90,7 @@ namespace BubbleBot.Core.Network
                     ErrorOccured?.Invoke(this, e);
                 }
             });
+        }
 
         private async Task ProcessMessages()
         {
@@ -77,10 +100,7 @@ namespace BubbleBot.Core.Network
                 {
                     if (_messagesQueue.Count > 0)
                     {
-                        if (_messagesQueue.TryDequeue(out JObject obj))
-                        {
-                            MessageReceived?.Invoke(this, obj);
-                        }
+                        if (_messagesQueue.TryDequeue(out var obj)) MessageReceived?.Invoke(this, obj);
                     }
                     else if (_waitingToBeClosed)
                     {
@@ -101,7 +121,8 @@ namespace BubbleBot.Core.Network
         }
 
         public Task CloseAsync(string reason)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 try
                 {
@@ -112,9 +133,11 @@ namespace BubbleBot.Core.Network
                     ErrorOccured?.Invoke(this, e);
                 }
             });
+        }
 
         public Task SendAsync(string data)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 try
                 {
@@ -126,6 +149,7 @@ namespace BubbleBot.Core.Network
                     ErrorOccured?.Invoke(this, e);
                 }
             });
+        }
 
         private void RemoveEvents()
         {
@@ -135,16 +159,16 @@ namespace BubbleBot.Core.Network
             _webSocket.OnError -= WebSocket_ErrorOccured;
         }
 
-        private void InitializeWebsocket(string url, string sid, string proxyUrl, string proxyUsername, string proxyPassword)
+        private void InitializeWebsocket(string url, string sid, string proxyUrl, string proxyUsername,
+            string proxyPassword)
         {
-            Url = new Uri(url + "&sid=" + sid + "&t=" + Utility.Security.YeastAPI.GenerateKey() + "&b64=1");
-            _webSocket = new WebSocket(Url.AbsoluteUri);
-            _webSocket.SetCookie(new WebSocketSharp.Net.Cookie("io", sid));
+            Url = new Uri(url + "&sid=" + sid + "&t=" + YeastAPI.GenerateKey() + "&b64=1");
+            Console.WriteLine(Url);
 
-            if (proxyUrl?.Length > 0)
-            {
-                _webSocket.SetProxy(proxyUrl, proxyPassword ?? "", proxyUsername ?? "");
-            }
+            _webSocket = new WebSocket(Url.AbsoluteUri);
+            _webSocket.SetCookie(new Cookie("io", sid));
+
+            if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyPassword ?? "", proxyUsername ?? "");
 
             _waitingToBeClosed = false;
 
@@ -163,7 +187,7 @@ namespace BubbleBot.Core.Network
         }
 
 
-        private void WebSocket_ErrorOccured(object sender, WebSocketSharp.ErrorEventArgs e)
+        private void WebSocket_ErrorOccured(object sender, ErrorEventArgs e)
         {
             ErrorOccured?.Invoke(this, e.Exception);
         }
@@ -194,6 +218,9 @@ namespace BubbleBot.Core.Network
                 return;
             }
 
+            if (e.Data.Contains("primus::server::close"))
+                return;
+
             try
             {
                 var msg = e.Data.Substring(1);
@@ -207,6 +234,7 @@ namespace BubbleBot.Core.Network
             }
             catch (Exception ex)
             {
+                DebugFileWriter.WriteFile("DebugFile.txt", e.Data);
                 ErrorOccured?.Invoke(this, ex);
             }
         }
@@ -231,20 +259,5 @@ namespace BubbleBot.Core.Network
 
             Opened?.Invoke(this);
         }
-
-        public void Dispose()
-        {
-            _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
-            _socketIOtimer.Dispose();
-            //webSocket.Dispose(); TODO: Implement this
-
-            Url = null;
-            Connected = false;
-            SocketPingInterval = null;
-            SocketPingTimeout = null;
-            _webSocket = null;
-            _socketIOtimer = null;
-        }
-
     }
 }

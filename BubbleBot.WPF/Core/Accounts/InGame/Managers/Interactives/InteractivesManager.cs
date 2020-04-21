@@ -1,25 +1,20 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using BubbleBot.Core.Accounts.InGame.Map.Interactives;
 using BubbleBot.Protocol.Messages;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
 {
     public class InteractivesManager : IDisposable
     {
-
         // Fields
         private Account _account;
         private InteractiveElementEntry _interactiveToUse;
-        private int _skillInstanceUid;
         private string _lockCode;
-
-
-        // Events
-        public event Action<bool> UseFinished;
+        private int _skillInstanceUid;
 
 
         // Constructor
@@ -32,9 +27,15 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             _account.Network.RegisterMessage<InteractiveUseErrorMessage>(HandleInteractiveUseErrorMessage);
             _account.Network.RegisterMessage<LockableShowCodeDialogMessage>(HandleLockableShowCodeDialogMessage);
             _account.Network.RegisterMessage<LockableCodeResultMessage>(HandleLockableCodeResultMessage);
-            _account.Network.RegisterMessage<LockableStateUpdateHouseDoorMessage>(HandleLockableStateUpdateHouseDoorMessage);
-            _account.Network.RegisterMessage<LockableStateUpdateStorageMessage>(HandleLockableStateUpdateStorageMessage);
+            _account.Network.RegisterMessage<LockableStateUpdateHouseDoorMessage>(
+                HandleLockableStateUpdateHouseDoorMessage);
+            _account.Network.RegisterMessage<LockableStateUpdateStorageMessage>(
+                HandleLockableStateUpdateStorageMessage);
         }
+
+
+        // Events
+        public event Action<bool> UseFinished;
 
 
         public InteractiveElementEntry GetElementOnCell(short cellId)
@@ -43,7 +44,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             // (not sure if its good to search in stated elements).
             var statedElem = _account.Game.Map.StatedElements.FirstOrDefault(s => s.CellId == cellId);
             if (statedElem != null && statedElem.State == 0)
-                return _account.Game.Map.GetInteractiveElement((int)statedElem.Id);
+                return _account.Game.Map.GetInteractiveElement((int) statedElem.Id);
 
             // Search for a door in the cell
             var door = _account.Game.Map.Doors.FirstOrDefault(d => d.CellId == cellId);
@@ -110,9 +111,12 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
         }
 
         public void CancelUse()
-            => _interactiveToUse = null;
+        {
+            _interactiveToUse = null;
+        }
 
-        public bool MoveToUseInteractive(InteractiveElementEntry interactive, short interactiveCellId, int skillInstanceUid, string lockCode = null)
+        public bool MoveToUseInteractive(InteractiveElementEntry interactive, short interactiveCellId,
+            int skillInstanceUid, string lockCode = null)
         {
             if (_account.IsBusy || _interactiveToUse != null)
                 return false;
@@ -127,7 +131,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             switch (_account.Game.Managers.Movements.MoveToCell(interactiveCellId, true))
             {
                 case MovementRequestResults.MOVED:
-                    _account.Logger.LogDebug(LanguageManager.Translate("128"), LanguageManager.Translate("129", interactiveCellId, interactive.Id));
+                    _account.Logger.LogDebug(LanguageManager.Translate("128"),
+                        LanguageManager.Translate("129", interactiveCellId, interactive.Id));
                     return true;
                 case MovementRequestResults.ALREADY_THERE:
                     UseTheElement();
@@ -144,13 +149,9 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                 return;
 
             if (success)
-            {
                 UseTheElement();
-            }
             else
-            {
                 OnUseFinished(false);
-            }
         }
 
         private void UseTheElement()
@@ -161,7 +162,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             // In case the skill is negative (used like an index)
             if (_skillInstanceUid < 0)
             {
-                int index = (_skillInstanceUid * -1) - 1;
+                var index = _skillInstanceUid * -1 - 1;
 
                 // Check if the index is invalid
                 if (_interactiveToUse.EnabledSkills.Count <= index)
@@ -170,37 +171,45 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                     return;
                 }
 
-                _skillInstanceUid = (int)_interactiveToUse.EnabledSkills[index].InstanceUID;
+                _skillInstanceUid = (int) _interactiveToUse.EnabledSkills[index].InstanceUID;
             }
 
-            _account.Logger.LogDebug(LanguageManager.Translate("128"), LanguageManager.Translate("130", _interactiveToUse.Id));
-            _account.Network.SendMessage(new InteractiveUseRequestMessage(_interactiveToUse.Id, (uint)_skillInstanceUid));
+            _account.Logger.LogDebug(LanguageManager.Translate("128"),
+                LanguageManager.Translate("130", _interactiveToUse.Id));
+            _account.Network.SendMessage(new InteractiveUseRequestMessage(_interactiveToUse.Id,
+                (uint) _skillInstanceUid));
         }
 
         private Task HandleInteractiveUsedMessage(Account account, InteractiveUsedMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (_interactiveToUse == null || message.EntityId != account.Game.Character.Id)
                     return;
 
-                account.Logger.LogInfo(LanguageManager.Translate("128"), LanguageManager.Translate("131", _interactiveToUse.Id));
+                account.Logger.LogInfo(LanguageManager.Translate("128"),
+                    LanguageManager.Translate("131", _interactiveToUse.Id));
 
                 // Only fire this event when we're not using a locked door
                 if (_lockCode == null)
                     OnUseFinished(true);
             });
+        }
 
         private Task HandleInteractiveUseErrorMessage(Account account, InteractiveUseErrorMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (_interactiveToUse == null)
                     return;
 
                 OnUseFinished(false);
             });
+        }
 
         private Task HandleLockableShowCodeDialogMessage(Account account, LockableShowCodeDialogMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 await Task.Delay(1000);
 
@@ -210,9 +219,11 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                 account.Logger.LogDebug(LanguageManager.Translate("128"), LanguageManager.Translate("562"));
                 await account.Network.SendMessageAsync(new LockableUseCodeMessage(_lockCode.PadRight(8, '_')));
             });
+        }
 
         private Task HandleLockableCodeResultMessage(Account account, LockableCodeResultMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (_interactiveToUse == null || _lockCode == null)
                     return;
@@ -223,9 +234,12 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                 account.Logger.LogWarning(LanguageManager.Translate("128"), LanguageManager.Translate("563"));
                 OnUseFinished(false);
             });
+        }
 
-        private Task HandleLockableStateUpdateHouseDoorMessage(Account account, LockableStateUpdateHouseDoorMessage message)
-            => Task.Run(() =>
+        private Task HandleLockableStateUpdateHouseDoorMessage(Account account,
+            LockableStateUpdateHouseDoorMessage message)
+        {
+            return Task.Run(() =>
             {
                 if (_interactiveToUse == null || _lockCode == null)
                     return;
@@ -236,9 +250,11 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                     OnUseFinished(true);
                 }
             });
+        }
 
         private Task HandleLockableStateUpdateStorageMessage(Account account, LockableStateUpdateStorageMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (_interactiveToUse == null || _lockCode == null)
                     return;
@@ -249,6 +265,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                     OnUseFinished(true);
                 }
             });
+        }
 
         private void OnUseFinished(bool success)
         {
@@ -280,11 +297,16 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             }
         }
 
-        ~InteractivesManager() => Dispose(false);
+        ~InteractivesManager()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

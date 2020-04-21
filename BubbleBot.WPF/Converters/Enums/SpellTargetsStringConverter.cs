@@ -1,17 +1,16 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class SpellTargetsStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((SpellTargets)value)
+            switch ((SpellTargets) value)
             {
                 case SpellTargets.ALLY:
                     return LanguageManager.Translate("203");
@@ -28,6 +27,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

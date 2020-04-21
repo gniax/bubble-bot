@@ -40,7 +40,7 @@ namespace BubbleBot.Server.Handlers
 
         public static void HandleMessage(Client client, IServerMessage message)
         {
-            if (message == null)
+            if (message == null || client == null)
                 return;
 
             string msgName = message.GetType().Name;

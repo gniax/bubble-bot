@@ -75,7 +75,7 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
 
         public static Zone ParseZone(string rawZone)
         {
-            char zoneShape = rawZone[0];
+            var zoneShape = rawZone[0];
             var @params = rawZone.Length > 1 ? rawZone.Substring(1).Split(',') : new string[0];
             int zoneSize = 0, zoneMinSize = 0, zoneEfficiencyPercent = 0, zoneMaxEfficiency = 0;
 
@@ -87,13 +87,9 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
                 case 2:
                     zoneSize = int.Parse(@params[0]);
                     if (HasMinSize(zoneShape))
-                    {
                         zoneMinSize = int.Parse(@params[1]);
-                    }
                     else
-                    {
                         zoneEfficiencyPercent = int.Parse(@params[1]);
-                    }
                     break;
                 case 3:
                     zoneSize = int.Parse(@params[0]);
@@ -107,6 +103,7 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
                         zoneEfficiencyPercent = int.Parse(@params[1]);
                         zoneMaxEfficiency = int.Parse(@params[2]);
                     }
+
                     break;
                 case 4:
                     zoneSize = int.Parse(@params[0]);
@@ -116,7 +113,7 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
                     break;
             }
 
-            return new Zone()
+            return new Zone
             {
                 ZoneShape = zoneShape,
                 ZoneSize = zoneSize,
@@ -125,11 +122,14 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
                 ZoneMaxEfficiency = zoneMaxEfficiency
             };
         }
-
     }
 
     public class Zone
     {
+        // Constructor
+        internal Zone()
+        {
+        }
 
         // Properties
         public char ZoneShape { get; internal set; }
@@ -137,11 +137,5 @@ namespace BubbleBot.Core.Pathfinding.Shapes.Zones
         public int ZoneMinSize { get; internal set; }
         public int ZoneEfficiencyPercent { get; internal set; }
         public int ZoneMaxEfficiency { get; internal set; }
-
-
-        // Constructor
-        internal Zone() { }
-
     }
-
 }

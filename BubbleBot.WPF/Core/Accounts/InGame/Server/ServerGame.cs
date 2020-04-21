@@ -1,13 +1,18 @@
+using System;
+using System.Collections.Generic;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
-using System;
-using System.Collections.Generic;
 
 namespace BubbleBot.Core.Accounts.InGame.Server
 {
     public class ServerGame : IDisposable
     {
+        // Constructor
+        internal ServerGame()
+        {
+            Characters = new List<CharacterBaseInformations>();
+        }
 
         // Properties
         public int Id { get; private set; }
@@ -17,13 +22,6 @@ namespace BubbleBot.Core.Accounts.InGame.Server
 
         // Events
         public event Action ServerSelected;
-
-
-        // Constructor
-        internal ServerGame()
-        {
-            Characters = new List<CharacterBaseInformations>();
-        }
 
 
         #region Update
@@ -38,17 +36,14 @@ namespace BubbleBot.Core.Accounts.InGame.Server
 
         public void Update(CharactersListMessage message)
         {
-            if (message.Characters.Count > 0)
-            {
-                Characters.AddRange(message.Characters);
-            }
+            if (message.Characters.Count > 0) Characters.AddRange(message.Characters);
         }
 
         #endregion
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -56,7 +51,6 @@ namespace BubbleBot.Core.Accounts.InGame.Server
             {
                 if (disposing)
                 {
-
                 }
 
                 Name = null;
@@ -67,11 +61,16 @@ namespace BubbleBot.Core.Accounts.InGame.Server
             }
         }
 
-        ~ServerGame() => Dispose(false);
+        ~ServerGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

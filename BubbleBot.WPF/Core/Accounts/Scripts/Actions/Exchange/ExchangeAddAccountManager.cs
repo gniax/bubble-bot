@@ -1,5 +1,5 @@
-﻿using BubbleBot.Configurations.Language;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
 {
@@ -12,6 +12,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
             account.Logger.LogInfo("Exchange", LanguageManager.Translate("674"));
             return ScriptActionResults.DONE;
         }
-
     }
 }

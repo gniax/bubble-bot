@@ -1,9 +1,3 @@
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Accounts.InGame.Managers.Movements;
-using BubbleBot.Core.Pathfinding;
-using BubbleBot.Utility.DofusTouch;
-using BubbleBot.Utility.Extensions;
-using BubbleBot.Views.Accounts.MapViewer;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,12 +7,17 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
+using BubbleBot.Core.Pathfinding;
+using BubbleBot.Utility.DofusTouch;
+using BubbleBot.Utility.Extensions;
+using BubbleBot.Views.Accounts.MapViewer;
 
 namespace BubbleBot.Views.Accounts
 {
     public partial class MapViewerUc
     {
-
         // Fields
         private static List<MapViewerCell> _cellsPoints;
         private static Pen _pen;
@@ -35,9 +34,20 @@ namespace BubbleBot.Views.Accounts
         private static BitmapImage _sunImage;
         private static BitmapImage _phenixImage;
         private static BitmapImage _lockedStorageImage;
-        private short _selectedCellId;
         private List<short> _path;
+        private short _selectedCellId;
         private bool _showCellIds;
+
+
+        // Constructor
+        public MapViewerUc()
+        {
+            InitializeComponent();
+            Initialize();
+
+            DataContextChanged += MapViewerUc_DataContextChanged;
+            MouseLeftButtonUp += MapViewerUc_MouseLeftButtonUp;
+        }
 
 
         // Properties
@@ -50,19 +60,9 @@ namespace BubbleBot.Views.Accounts
                 InvalidateVisual();
             }
         }
+
         private Account Account => BubbleBotMain.Instance.SelectedAccount;
         private bool IsMapValid => Account?.Game?.Map?.Data != null;
-
-
-        // Constructor
-        public MapViewerUc()
-        {
-            InitializeComponent();
-            Initialize();
-
-            DataContextChanged += MapViewerUc_DataContextChanged;
-            MouseLeftButtonUp += MapViewerUc_MouseLeftButtonUp;
-        }
 
 
         private static void Initialize()
@@ -104,25 +104,172 @@ namespace BubbleBot.Views.Accounts
             _cellsPoints = new List<MapViewerCell>(560);
             short cell = 0;
 
-            for (int i = 0; i < DTConstants.MAP_HEIGHT; i++)
+            for (var i = 0; i < DTConstants.MAP_HEIGHT; i++)
+            for (var j = 0; j < DTConstants.MAP_WIDTH * 2; j++)
             {
-                for (int j = 0; j < DTConstants.MAP_WIDTH * 2; j++)
+                if (cell.TryGetCoord(out var x, out var y))
                 {
-                    if (cell.TryGetCoord(out float x, out float y))
+                    var startPtX = x * DTConstants.TileWidth + (y % 2 == 1 ? DTConstants.TileWidth / 2 : 0);
+                    var startPtY = y * DTConstants.TileHeight / 2;
+                    _cellsPoints.Add(new MapViewerCell(new[]
                     {
-                        float startPtX = x * (DTConstants.TileWidth) + (y % 2 == 1 ? (DTConstants.TileWidth) / 2 : 0);
-                        float startPtY = y * (DTConstants.TileHeight) / 2;
-                        _cellsPoints.Add(new MapViewerCell(new[]
-                        {
-                            new Point(startPtX + (DTConstants.TileWidth) / 2, startPtY),
-                            new Point(startPtX + (DTConstants.TileWidth), startPtY + (DTConstants.TileHeight) / 2),
-                            new Point(startPtX + (DTConstants.TileWidth) / 2, startPtY + (DTConstants.TileHeight)),
-                            new Point(startPtX, startPtY + (DTConstants.TileHeight) / 2)
-                        }));
-                    }
-                    cell++;
+                        new Point(startPtX + DTConstants.TileWidth / 2, startPtY),
+                        new Point(startPtX + DTConstants.TileWidth, startPtY + DTConstants.TileHeight / 2),
+                        new Point(startPtX + DTConstants.TileWidth / 2, startPtY + DTConstants.TileHeight),
+                        new Point(startPtX, startPtY + DTConstants.TileHeight / 2)
+                    }));
+                }
+
+                cell++;
+            }
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            for (short i = 0; i < _cellsPoints.Count; i++)
+            {
+                var brush = GetCellBrush(i);
+
+                if (brush == _obstacleCellBrush && !ShowCellIds)
+                {
+                    _cellsPoints[i].DrawObstacle(drawingContext, brush, _pen);
+                }
+                else
+                {
+                    _cellsPoints[i].Draw(drawingContext, brush, _pen);
+
+
+                    if (_path?.Contains(i) == true) _cellsPoints[i].DrawCross(drawingContext, _pen);
+                }
+
+                if (ShowCellIds)
+                {
+                    var fText = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : Brushes.Black,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    drawingContext.DrawText(fText,
+                        new Point(_cellsPoints[i].Points[0].X - fText.Width / 2,
+                            _cellsPoints[i].Points[1].Y - fText.Height / 2));
+                }
+
+                if (IsMapValid)
+                {
+                    // Draw the sun image if this cell has it
+                    if (Account.Game.Map.TeleportableCells.Contains(i))
+                        _cellsPoints[i].DrawImage(drawingContext, _sunImage);
+                    else if (Account.Game.Map.Phenixs.FirstOrDefault(p => p.CellId == i) != null)
+                        _cellsPoints[i].DrawImage(drawingContext, _phenixImage);
+                    else if (Account.Game.Map.LockedStroages.FirstOrDefault(ls => ls.CellId == i) != null)
+                        _cellsPoints[i].DrawImage(drawingContext, _lockedStorageImage);
+
+                    DrawTileContent(drawingContext, i);
                 }
             }
+        }
+
+        private Brush GetCellBrush(short cell)
+        {
+            // In case the cell is currently selected
+            if (cell == _selectedCellId)
+                return _selectedCellBrush;
+
+            // In case the cell is a possible placement
+            if (IsMapValid && Account.IsFighting() &&
+                Account.Game.Fight.PositionsForChallengers?.Contains(cell) == true)
+                return Brushes.Red;
+
+            if (IsMapValid && Account.IsFighting() && Account.Game.Fight.PositionsForDefenders?.Contains(cell) == true)
+                return Brushes.Blue;
+
+            var brush = _losCellBrush;
+
+            if (IsMapValid && Account.Game.Map.Data.Cells[cell].IsObstacle())
+                brush = _obstacleCellBrush;
+            else if (IsMapValid && Account.Game.Map.Data.Cells[cell].IsWalkable(Account.IsFighting()))
+                brush = _walkableCellBrush;
+
+            return brush;
+        }
+
+        private void DrawTileContent(DrawingContext drawingContext, short cellId)
+        {
+            if (Account.IsFighting())
+            {
+                if (Account.Game.Fight.PlayedFighter?.CellId == cellId)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _ourPlayerBrush);
+                else if (Account.Game.Fight.Allies.FirstOrDefault(a => a.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _playersBrush);
+                else if (Account.Game.Fight.Ennemies.FirstOrDefault(e => e.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _monstersGroupsBrush);
+            }
+            else
+            {
+                if (Account.Game.Map.PlayedCharacter?.CellId == cellId)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _ourPlayerBrush);
+                else if (Account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _monstersGroupsBrush);
+                else if (Account.Game.Map.Players.FirstOrDefault(p => p.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _playersBrush);
+                else if (Account.Game.Map.Doors.FirstOrDefault(d => d.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawRectangle(drawingContext, _doorsBrush);
+                else if (Account.Game.Map.StatedElements.FirstOrDefault(se => se.CellId == cellId) != null ||
+                         Account.Game.Map.Zaap?.CellId == cellId || Account.Game.Map.Zaapi?.CellId == cellId)
+                    _cellsPoints[cellId].DrawRectangle(drawingContext, _interactivesBrush);
+                else if (Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == cellId) != null)
+                    _cellsPoints[cellId].DrawPie(drawingContext, _npcsBrush);
+            }
+        }
+
+        private void MapViewerUc_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            // No need to check if the map is not valid or the bot is not inactif
+            if (!IsMapValid || Account.IsBusy)
+                return;
+
+            var pos = e.GetPosition(this);
+
+            for (short i = 0; i < _cellsPoints.Count; i++)
+                if (_cellsPoints[i].IsPointInside(pos))
+                {
+                    if (Account.Game.Map.Data.Cells[i].IsWalkable(false))
+                    {
+                        _selectedCellId = i;
+                        InvalidateVisual();
+
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(200);
+
+                            if (_selectedCellId != -1)
+                            {
+                                _selectedCellId = -1;
+                                Application.Current.Dispatcher.Invoke(InvalidateVisual);
+                            }
+                        });
+
+                        HandleWalkableCellClicked(i);
+                    }
+
+                    break;
+                }
+        }
+
+        private void HandleWalkableCellClicked(short cell)
+        {
+            // Check if we can change the map from this cell
+            if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.LEFT))
+                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.LEFT, cell);
+            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.RIGHT))
+                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.RIGHT, cell);
+            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.TOP))
+                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.TOP, cell);
+            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.BOTTOM))
+                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.BOTTOM, cell);
+            // Otherwise just move to the cell
+            else
+                Console.WriteLine(Account.Game.Managers.Movements.MoveToCell(cell));
         }
 
         #region Invalidation
@@ -186,181 +333,5 @@ namespace BubbleBot.Views.Accounts
         }
 
         #endregion
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-
-            for (short i = 0; i < _cellsPoints.Count; i++)
-            {
-                var brush = GetCellBrush(i);
-
-                if (brush == _obstacleCellBrush && !ShowCellIds)
-                {
-                    _cellsPoints[i].DrawObstacle(drawingContext, brush, _pen);
-                }
-                else
-                {
-                    _cellsPoints[i].Draw(drawingContext, brush, _pen);
-
-
-
-                    if (_path?.Contains(i) == true)
-                    {
-                        _cellsPoints[i].DrawCross(drawingContext, _pen);
-                    }
-                }
-
-                if (ShowCellIds)
-                {
-                    var fText = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
-                    drawingContext.DrawText(fText, new Point(_cellsPoints[i].Points[0].X - fText.Width / 2, _cellsPoints[i].Points[1].Y - fText.Height / 2));
-                }
-
-                if (IsMapValid)
-                {
-                    // Draw the sun image if this cell has it
-                    if (Account.Game.Map.TeleportableCells.Contains(i))
-                    {
-                        _cellsPoints[i].DrawImage(drawingContext, _sunImage);
-                    }
-                    else if (Account.Game.Map.Phenixs.FirstOrDefault(p => p.CellId == i) != null)
-                    {
-                        _cellsPoints[i].DrawImage(drawingContext, _phenixImage);
-                    }
-                    else if (Account.Game.Map.LockedStroages.FirstOrDefault(ls => ls.CellId == i) != null)
-                    {
-                        _cellsPoints[i].DrawImage(drawingContext, _lockedStorageImage);
-                    }
-
-                    DrawTileContent(drawingContext, i);
-                }
-            }
-        }
-
-        private Brush GetCellBrush(short cell)
-        {
-            // In case the cell is currently selected
-            if (cell == _selectedCellId)
-                return _selectedCellBrush;
-
-            // In case the cell is a possible placement
-            if (IsMapValid && Account.IsFighting() && Account.Game.Fight.PositionsForChallengers?.Contains(cell) == true)
-                return Brushes.Red;
-
-            if (IsMapValid && Account.IsFighting() && Account.Game.Fight.PositionsForDefenders?.Contains(cell) == true)
-                return Brushes.Blue;
-
-            var brush = _losCellBrush;
-
-            if (IsMapValid && Account.Game.Map.Data.Cells[cell].IsObstacle())
-                brush = _obstacleCellBrush;
-            else if (IsMapValid && Account.Game.Map.Data.Cells[cell].IsWalkable(Account.IsFighting()))
-                brush = _walkableCellBrush;
-
-            return brush;
-        }
-
-        private void DrawTileContent(DrawingContext drawingContext, short cellId)
-        {
-            if (Account.IsFighting())
-            {
-                if (Account.Game.Fight.PlayedFighter?.CellId == cellId)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _ourPlayerBrush);
-                }
-                else if (Account.Game.Fight.Allies.FirstOrDefault(a => a.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _playersBrush);
-                }
-                else if (Account.Game.Fight.Ennemies.FirstOrDefault(e => e.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _monstersGroupsBrush);
-                }
-            }
-            else
-            {
-                if (Account.Game.Map.PlayedCharacter?.CellId == cellId)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _ourPlayerBrush);
-                }
-                else if (Account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _monstersGroupsBrush);
-                }
-                else if (Account.Game.Map.Players.FirstOrDefault(p => p.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _playersBrush);
-                }
-                else if (Account.Game.Map.Doors.FirstOrDefault(d => d.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawRectangle(drawingContext, _doorsBrush);
-                }
-                else if (Account.Game.Map.StatedElements.FirstOrDefault(se => se.CellId == cellId) != null ||
-                    Account.Game.Map.Zaap?.CellId == cellId || Account.Game.Map.Zaapi?.CellId == cellId)
-                {
-                    _cellsPoints[cellId].DrawRectangle(drawingContext, _interactivesBrush);
-                }
-                else if (Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == cellId) != null)
-                {
-                    _cellsPoints[cellId].DrawPie(drawingContext, _npcsBrush);
-                }
-            }
-        }
-
-        private void MapViewerUc_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            // No need to check if the map is not valid or the bot is not inactif
-            if (!IsMapValid || Account.IsBusy)
-                return;
-
-            var pos = e.GetPosition(this);
-
-            for (short i = 0; i < _cellsPoints.Count; i++)
-            {
-                if (_cellsPoints[i].IsPointInside(pos))
-                {
-                    if (Account.Game.Map.Data.Cells[i].IsWalkable(false))
-                    {
-                        _selectedCellId = i;
-                        InvalidateVisual();
-
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(200);
-
-                            if (_selectedCellId != -1)
-                            {
-                                _selectedCellId = -1;
-                                Application.Current.Dispatcher.Invoke(InvalidateVisual);
-                            }
-                        });
-
-                        HandleWalkableCellClicked(i);
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        private void HandleWalkableCellClicked(short cell)
-        {
-            // Check if we can change the map from this cell
-            if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.LEFT))
-                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.LEFT, cell);
-            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.RIGHT))
-                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.RIGHT, cell);
-            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.TOP))
-                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.TOP, cell);
-            else if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.BOTTOM))
-                Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.BOTTOM, cell);
-            // Otherwise just move to the cell
-            else
-            {
-                Console.WriteLine(Account.Game.Managers.Movements.MoveToCell(cell));
-            }
-        }
-
     }
 }

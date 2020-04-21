@@ -64,7 +64,9 @@ namespace BubbleBot.Server.Clients
             return result;
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task RemoveAccounts(IEnumerable<string> usernames, int clientid = 0)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             try
             {
@@ -146,7 +148,8 @@ namespace BubbleBot.Server.Clients
                 if (!(message is PongMessage))
                     Console.WriteLine("Received {0} from client {1}.", message.GetType().Name, Informations.ToString());
 
-                HandlersManager.HandleMessage(this, message);
+                if (client != null)
+                    HandlersManager.HandleMessage(this, message);
             }
             catch (Exception ex)
             {

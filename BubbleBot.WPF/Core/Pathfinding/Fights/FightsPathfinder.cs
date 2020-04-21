@@ -1,15 +1,14 @@
-using BubbleBot.Core.Accounts.InGame.Fights;
-using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
-using BubbleBot.Protocol.Data.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BubbleBot.Core.Accounts.InGame.Fights;
+using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
+using BubbleBot.Protocol.Data.Maps;
 
 namespace BubbleBot.Core.Pathfinding.Fights
 {
     public class FightsPathfinder
     {
-
         public static FightPath GetPath(short source, short target, Dictionary<short, MoveNode> zone)
         {
             if (!zone.ContainsKey(target))
@@ -44,30 +43,31 @@ namespace BubbleBot.Core.Pathfinding.Fights
                 distance += 1;
             }
 
-            return new FightPath()
+            return new FightPath
             {
                 Reachable = reachable,
                 Unreachable = unreachable,
                 Ap = ap,
                 Mp = mp,
                 ReachableMap = reachableMap,
-                UnreachableMap = unreachableMap,
+                UnreachableMap = unreachableMap
             };
         }
 
         public static Dictionary<short, MoveNode> GetReachableZone(FightGame fight, Map map, short currentCellId)
         {
-            Dictionary<short, MoveNode> zone = new Dictionary<short, MoveNode>();
+            var zone = new Dictionary<short, MoveNode>();
 
             if (fight.PlayedFighter.MovementPoints <= 0)
                 return zone;
 
             var maxDistance = fight.PlayedFighter.MovementPoints;
 
-            List<PathNode> opened = new List<PathNode>();
-            Dictionary<short, PathNode> closed = new Dictionary<short, PathNode>();
+            var opened = new List<PathNode>();
+            var closed = new Dictionary<short, PathNode>();
 
-            var node = new PathNode(currentCellId, fight.PlayedFighter.MovementPoints, fight.PlayedFighter.ActionPoints, 0, 0, 1);
+            var node = new PathNode(currentCellId, fight.PlayedFighter.MovementPoints, fight.PlayedFighter.ActionPoints,
+                0, 0, 1);
             opened.Add(node);
             closed[currentCellId] = node;
 
@@ -79,7 +79,7 @@ namespace BubbleBot.Core.Pathfinding.Fights
                 var neighbours = MapPoint.GetNeighbourCells(cellId, false);
 
                 var tacklers = new List<FighterEntry>();
-                int i = 0;
+                var i = 0;
                 while (i < neighbours.Count)
                 {
                     var tackler = fight.Fighters.FirstOrDefault(f => f.CellId == neighbours[i]?.CellId);
@@ -94,7 +94,8 @@ namespace BubbleBot.Core.Pathfinding.Fights
                     if (tackler != null) tacklers.Add(tackler);
                 }
 
-                GetTackleCost(fight, tacklers, current.AvailableMp, current.AvailableAp, out int mpCost, out int apCost);
+                GetTackleCost(fight, tacklers, current.AvailableMp, current.AvailableAp, out var mpCost,
+                    out var apCost);
                 var availableMp = current.AvailableMp - mpCost - 1;
                 var availableAp = current.AvailableAp - apCost;
                 var tackleMp = current.TackleMp + mpCost;
@@ -123,22 +124,17 @@ namespace BubbleBot.Core.Pathfinding.Fights
                     node = new PathNode(neighbours[i].CellId, availableMp, availableAp, tackleMp, tackleAp, distance);
                     closed[neighbours[i].CellId] = node;
 
-                    if (current.Distance < maxDistance)
-                    {
-                        opened.Add(node);
-                    }
+                    if (current.Distance < maxDistance) opened.Add(node);
                 }
             }
 
-            foreach (short cellKey in zone.Keys)
-            {
-                zone[cellKey].Path = GetPath(currentCellId, cellKey, zone);
-            }
+            foreach (var cellKey in zone.Keys) zone[cellKey].Path = GetPath(currentCellId, cellKey, zone);
 
             return zone;
         }
 
-        private static void GetTackleCost(FightGame fight, List<FighterEntry> tacklers, int mp, int ap, out int mpCost, out int apCost)
+        private static void GetTackleCost(FightGame fight, List<FighterEntry> tacklers, int mp, int ap, out int mpCost,
+            out int apCost)
         {
             mp = Math.Max(0, mp);
             ap = Math.Max(0, ap);
@@ -149,7 +145,7 @@ namespace BubbleBot.Core.Pathfinding.Fights
             if (!CanBeTackled(fight, fight.PlayedFighter) || tacklers.Count == 0)
                 return;
 
-            for (int i = 0; i < tacklers.Count; i++)
+            for (var i = 0; i < tacklers.Count; i++)
             {
                 if (!tacklers[i].Alive)
                     continue;
@@ -162,8 +158,8 @@ namespace BubbleBot.Core.Pathfinding.Fights
                 if (tackleRatio >= 1)
                     continue;
 
-                mpCost += (int)(mp * (1 - tackleRatio) + 0.5);
-                apCost += (int)(ap * (1 - tackleRatio) + 0.5);
+                mpCost += (int) (mp * (1 - tackleRatio) + 0.5);
+                apCost += (int) (ap * (1 - tackleRatio) + 0.5);
             }
         }
 
@@ -185,7 +181,7 @@ namespace BubbleBot.Core.Pathfinding.Fights
         {
             var evade = Math.Max(0, actor.Stats.TackleEvade);
             var block = Math.Max(0, tackler.Stats.TackleBlock);
-            return ((double)evade + 2) / ((double)block + 2) / 2;
+            return ((double) evade + 2) / ((double) block + 2) / 2;
         }
 
         private static bool CanBeTackled(FightGame fight, FighterEntry actor)
@@ -200,6 +196,5 @@ namespace BubbleBot.Core.Pathfinding.Fights
 
             return true;
         }
-
     }
 }

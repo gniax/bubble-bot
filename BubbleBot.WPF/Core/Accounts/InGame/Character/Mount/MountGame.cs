@@ -1,13 +1,19 @@
-using BubbleBot.Protocol.Messages;
 using System;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Mount
 {
     public class MountGame : IDisposable, IClearable
     {
-
         // Fields
         private Account _account;
+
+
+        // Constructor
+        public MountGame(Account account)
+        {
+            _account = account;
+        }
 
 
         // Properties
@@ -15,11 +21,15 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Mount
         public bool IsRiding { get; private set; }
         public uint CurrentRatio { get; private set; }
 
-
-        // Constructor
-        public MountGame(Account account)
+        public void Clear()
         {
-            _account = account;
+            HasMount = false;
+            IsRiding = false;
+        }
+
+        public void Dispose()
+        {
+            _account = null;
         }
 
 
@@ -57,17 +67,5 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Mount
         }
 
         #endregion
-
-        public void Clear()
-        {
-            HasMount = false;
-            IsRiding = false;
-        }
-
-        public void Dispose()
-        {
-            _account = null;
-        }
-
     }
 }

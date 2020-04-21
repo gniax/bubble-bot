@@ -6,7 +6,6 @@ namespace BubbleBot.Converters.Specific
 {
     public class SubscriptionEndDateConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is DateTime endDate && endDate > DateTime.Now)
@@ -19,6 +18,5 @@ namespace BubbleBot.Converters.Specific
         {
             throw new NotImplementedException();
         }
-
     }
 }

@@ -1,18 +1,35 @@
-using BubbleBot.Utility.Security;
-using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
+using BubbleBot.Utility.Security;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Configurations
 {
     public class AccountConfiguration : ViewModelBase
     {
+        private bool _forceStartScript;
 
         // Fields
         private bool _planificationActivated;
-        private bool _forceStartScript;
+
+
+        // Constructor
+        public AccountConfiguration(string username, string password, string server, string character, string nickname,
+            string identifiant, bool isban)
+        {
+            Username = username;
+            Password = password;
+            Server = server;
+            Character = character;
+            Nickname = nickname;
+            Identifiant = identifiant;
+            IsBan = isban;
+            Proxy = new ProxyConfiguration();
+            CharacterCreation = new CharacterCreation();
+            Planification = new ObservableCollection<bool>(Enumerable.Repeat(true, 24));
+        }
 
 
         // Properties
@@ -26,6 +43,7 @@ namespace BubbleBot.Configurations
 
         public ProxyConfiguration Proxy { get; private set; }
         public CharacterCreation CharacterCreation { get; set; }
+
         public bool PlanificationActivated
         {
             get => _planificationActivated;
@@ -35,6 +53,7 @@ namespace BubbleBot.Configurations
                 GlobalConfiguration.Instance.Save();
             }
         }
+
         public bool ForceStartScript
         {
             get => _forceStartScript;
@@ -44,24 +63,11 @@ namespace BubbleBot.Configurations
                 GlobalConfiguration.Instance.Save();
             }
         }
-        public SolidColorBrush UsernameColor => IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
+
+        public SolidColorBrush UsernameColor =>
+            IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
+
         public ObservableCollection<bool> Planification { get; }
-
-
-        // Constructor
-        public AccountConfiguration(string username, string password, string server, string character, string nickname, string identifiant, bool isban)
-        {
-            Username = username;
-            Password = password;
-            Server = server;
-            Character = character;
-            Nickname = nickname;
-            Identifiant = identifiant;
-            IsBan = isban;
-            Proxy = new ProxyConfiguration();
-            CharacterCreation = new CharacterCreation();
-            Planification = new ObservableCollection<bool>(Enumerable.Repeat(true, 24));
-        }
 
 
         public void SetProxy(string ip, ushort port, string username, string password)
@@ -96,7 +102,8 @@ namespace BubbleBot.Configurations
         {
             try
             {
-                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "Bûbbl€Bôt"), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadBoolean());
+                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "Bûbbl€Bôt"),
+                    br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadBoolean());
 
                 acc.Proxy = new ProxyConfiguration
                 {
@@ -115,22 +122,10 @@ namespace BubbleBot.Configurations
                 return null;
             }
         }
-
     }
 
     public class ProxyConfiguration
     {
-
-        // Properties
-        public string Ip { get; set; }
-        public ushort Port { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-
-        public bool IsValid => Ip.Length > 0;
-        public string Url => Ip.Length > 0 ? $"http{Ip}:{Port}" : "";
-
-
         // Constructor
         public ProxyConfiguration()
         {
@@ -140,6 +135,13 @@ namespace BubbleBot.Configurations
             Password = "";
         }
 
-    }
+        // Properties
+        public string Ip { get; set; }
+        public ushort Port { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
 
+        public bool IsValid => Ip.Length > 0;
+        public string Url => Ip.Length > 0 ? $"http{Ip}:{Port}" : "";
+    }
 }

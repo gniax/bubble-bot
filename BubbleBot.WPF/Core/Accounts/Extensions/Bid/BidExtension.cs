@@ -1,53 +1,25 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Protocol.Messages;
-using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Protocol.Messages;
+using GalaSoft.MvvmLight;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Core.Accounts.Extensions.Bid
 {
     public class BidExtension : ViewModelBase, IDisposable
     {
-
         // Fields
         private Account _account;
-        private Timer _timer;
+        private bool _enabled;
         private uint _kamasGained;
         private uint _kamasPaidOnTaxes;
-        private bool _enabled;
-        private bool _waiting;
         private Dictionary<uint, uint[]> _pricesInBid;
-
-
-        // Properties
-        public BidConfiguration Configuration { get; private set; }
-        public uint KamasGained
-        {
-            get => _kamasGained;
-            set => Set(ref _kamasGained, value);
-        }
-        public uint KamasPaidOnTaxes
-        {
-            get => _kamasPaidOnTaxes;
-            set => Set(ref _kamasPaidOnTaxes, value);
-        }
-        public bool Enabled
-        {
-            get => _enabled;
-            set => Set(ref _enabled, value);
-        }
-
-        private bool Running => _enabled && !_waiting && BubbleBotMain.Instance.Server.IsSubscribedToTouch && BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV);
-
-
-        // Events
-        public event Action Started;
-        public event Action Stopped;
-        public event Action StatisticsUpdated;
+        private Timer _timer;
+        private bool _waiting;
 
 
         // Constructor
@@ -63,6 +35,37 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             _account.Network.RegisterMessage<ExchangeBidHouseItemAddOkMessage>(HandleExchangeBidHouseItemAddOkMessage);
             _account.Network.RegisterMessage<TextInformationMessage>(HandleTextInformationMessage);
         }
+
+
+        // Properties
+        public BidConfiguration Configuration { get; private set; }
+
+        public uint KamasGained
+        {
+            get => _kamasGained;
+            set => Set(ref _kamasGained, value);
+        }
+
+        public uint KamasPaidOnTaxes
+        {
+            get => _kamasPaidOnTaxes;
+            set => Set(ref _kamasPaidOnTaxes, value);
+        }
+
+        public bool Enabled
+        {
+            get => _enabled;
+            set => Set(ref _enabled, value);
+        }
+
+        private bool Running => _enabled && !_waiting && BubbleBotMain.Instance.Server.IsSubscribedToTouch &&
+                                BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV);
+
+
+        // Events
+        public event Action Started;
+        public event Action Stopped;
+        public event Action StatisticsUpdated;
 
 
         public void Start()
@@ -112,7 +115,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
                 // Get all the prices and save them
                 _pricesInBid = new Dictionary<uint, uint[]>();
-                foreach (uint gid in Configuration.ObjectsToSell.Select(o => o.GID).Distinct())
+                foreach (var gid in Configuration.ObjectsToSell.Select(o => o.GID).Distinct())
                 {
                     _pricesInBid.Add(gid, _account.Game.Bid.GetItemPrices(gid));
                     await Task.Delay(800);
@@ -125,7 +128,6 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
                 // Open bidseller
                 _account.Game.Bid.StartSelling();
-
             }, TaskCreationOptions.LongRunning);
         }
 
@@ -165,18 +167,19 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             _account.Logger.LogInfo(LanguageManager.Translate("34"), LanguageManager.Translate("38"));
 
             // For every ObjectToSell that we have
-            for (int i = 0; i < Configuration.ObjectsToSell.Count; i++)
+            for (var i = 0; i < Configuration.ObjectsToSell.Count; i++)
             {
                 var objToSell = Configuration.ObjectsToSell[i];
 
                 // Get the items that are already in the bid for this specific ObjectToSell
-                var objsInSale = _account.Game.Bid.ObjectsInSale.Where(o => o.ObjectGID == objToSell.GID && o.Quantity == objToSell.Lot).ToList();
+                var objsInSale = _account.Game.Bid.ObjectsInSale
+                    .Where(o => o.ObjectGID == objToSell.GID && o.Quantity == objToSell.Lot).ToList();
 
                 // Get the price in bid of this specific ObjectToSell
-                uint priceInBid = _pricesInBid[objToSell.GID][LotToIndex(objToSell.Lot)];
+                var priceInBid = _pricesInBid[objToSell.GID][LotToIndex(objToSell.Lot)];
                 // This will hold the price that should our objects have (either modified or added)
-                uint newPrice = priceInBid;
-                bool ours = true;
+                var newPrice = priceInBid;
+                var ours = true;
 
                 // If the price in bid is 0 (sold out), the new price will be the base price
                 if (priceInBid == 0)
@@ -192,7 +195,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                 else
                 {
                     // Get the smallest price in our objects in sale
-                    uint smallestPrice = objsInSale.Min(o => o.ObjectPrice);
+                    var smallestPrice = objsInSale.Min(o => o.ObjectPrice);
 
                     // If the price in the bid is less than the smallest price in our objects in sale, it means it's not ours
                     if (priceInBid < smallestPrice)
@@ -208,34 +211,33 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
                 // Check if we need to modify our objects in sale
                 if (!ours && objsInSale.Count > 0)
-                {
-                    for (int j = 0; j < objsInSale.Count; j++)
+                    for (var j = 0; j < objsInSale.Count; j++)
                     {
-                        _account.Logger.LogDebug(LanguageManager.Translate("34"), LanguageManager.Translate("39", objToSell.Lot, objToSell.Name, newPrice));
+                        _account.Logger.LogDebug(LanguageManager.Translate("34"),
+                            LanguageManager.Translate("39", objToSell.Lot, objToSell.Name, newPrice));
                         if (_account.Game.Bid.EditItemInSalePrice(objsInSale[j].ObjectUID, newPrice))
-                        {
                             await Task.Delay(800);
-                        }
                     }
-                }
 
                 // Check if we need to sell more objects
                 if (objToSell.Quantity - objsInSale.Count > 0)
                 {
                     // Sell as long as we have the enough in the inventory
-                    uint qty = _account.Game.Character.Inventory.GetObjectByGID((int)objToSell.GID)?.Quantity ?? 0;
+                    var qty = _account.Game.Character.Inventory.GetObjectByGID((int) objToSell.GID)?.Quantity ?? 0;
 
-                    for (int j = 0; j < (objToSell.Quantity - objsInSale.Count); j++)
+                    for (var j = 0; j < objToSell.Quantity - objsInSale.Count; j++)
                     {
                         // Check if we don't have the needed quantity in our inventory
                         if (qty < objToSell.Lot)
                         {
-                            _account.Logger.LogWarning(LanguageManager.Translate("34"), LanguageManager.Translate("40", objToSell.Lot, objToSell.Name));
+                            _account.Logger.LogWarning(LanguageManager.Translate("34"),
+                                LanguageManager.Translate("40", objToSell.Lot, objToSell.Name));
                             break;
                         }
 
                         // If we do, try and sell!
-                        _account.Logger.LogDebug(LanguageManager.Translate("34"), LanguageManager.Translate("41", objToSell.Lot, objToSell.Name, newPrice));
+                        _account.Logger.LogDebug(LanguageManager.Translate("34"),
+                            LanguageManager.Translate("41", objToSell.Lot, objToSell.Name, newPrice));
                         if (_account.Game.Bid.SellItem(objToSell.GID, objToSell.Lot, newPrice))
                         {
                             qty -= objToSell.Lot;
@@ -251,7 +253,6 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
             // Check if we need to start a script
             if (Configuration.IsScriptPathValid)
-            {
                 try
                 {
                     _account.Scripts.FromFile(Configuration.ScriptPath);
@@ -262,23 +263,23 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                 {
                     _account.Logger.LogError(LanguageManager.Translate("43"), ex.Message);
                 }
-            }
             // Or just start waiting
             else
-            {
                 SetTimerInterval();
-            }
         }
 
         private Task HandleExchangeBidHouseItemAddOkMessage(Account account, ExchangeBidHouseItemAddOkMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
-                KamasPaidOnTaxes += (uint)Math.Max(1, Math.Round((double)message.ItemInfo.ObjectPrice * 3 / 100));
+                KamasPaidOnTaxes += (uint) Math.Max(1, Math.Round((double) message.ItemInfo.ObjectPrice * 3 / 100));
                 StatisticsUpdated?.Invoke();
             });
+        }
 
         private Task HandleTextInformationMessage(Account account, TextInformationMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (message.MsgId == 65 && message.Parameters.Count > 0)
                 {
@@ -286,11 +287,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                     StatisticsUpdated?.Invoke();
                 }
             });
+        }
 
         private void SetTimerInterval()
         {
             _waiting = true;
-            _account.Logger.LogInfo(LanguageManager.Translate("34"), LanguageManager.Translate("44", Configuration.Interval));
+            _account.Logger.LogInfo(LanguageManager.Translate("34"),
+                LanguageManager.Translate("44", Configuration.Interval));
             _timer.Change(Configuration.Interval * 60000, Configuration.Interval * 60000);
         }
 
@@ -298,13 +301,15 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
         {
             if (newPrice == 0)
             {
-                _account.Logger.LogWarning(LanguageManager.Translate("34"), LanguageManager.Translate("45", objToSell.Lot, objToSell.Name));
+                _account.Logger.LogWarning(LanguageManager.Translate("34"),
+                    LanguageManager.Translate("45", objToSell.Lot, objToSell.Name));
                 return true;
             }
 
             if (newPrice < objToSell.MinPrice)
             {
-                _account.Logger.LogWarning(LanguageManager.Translate("34"), LanguageManager.Translate("46", objToSell.Lot, objToSell.Name, priceInBid, objToSell.MinPrice));
+                _account.Logger.LogWarning(LanguageManager.Translate("34"),
+                    LanguageManager.Translate("46", objToSell.Lot, objToSell.Name, priceInBid, objToSell.MinPrice));
                 return true;
             }
 
@@ -312,7 +317,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
         }
 
         private int LotToIndex(uint lot)
-            => lot == 1 ? 0 : lot == 10 ? 1 : 2;
+        {
+            return lot == 1 ? 0 : lot == 10 ? 1 : 2;
+        }
 
         public void Clear()
         {
@@ -325,7 +332,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -348,11 +355,16 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             }
         }
 
-        ~BidExtension() => Dispose(false);
+        ~BidExtension()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

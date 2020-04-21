@@ -1,7 +1,3 @@
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
-using CefSharp;
-using CefSharp.OffScreen;
 using System;
 using System.Globalization;
 using System.IO;
@@ -9,6 +5,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
+using CefSharp;
+using CefSharp.OffScreen;
 
 #pragma warning disable MSB3270
 
@@ -16,7 +16,6 @@ namespace BubbleBot.WPF
 {
     public partial class App
     {
-
         public static CultureInfo Culture;
         private static Mutex _mutex;
 
@@ -28,7 +27,7 @@ namespace BubbleBot.WPF
             InitializeCefSharp();
 
             // Singleton application
-            _mutex = new Mutex(true, "Bubble Bot", out bool createdNew);
+            _mutex = new Mutex(true, "Bubble Bot", out var createdNew);
             if (!createdNew)
             {
                 Current.Shutdown();
@@ -73,31 +72,31 @@ namespace BubbleBot.WPF
             settings.WindowlessRenderingEnabled = true;
 
             settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-                                                   Environment.Is64BitProcess ? "x64" : "x86",
-                                                   "CefSharp.BrowserSubprocess.exe");
+                Environment.Is64BitProcess ? "x64" : "x86",
+                "CefSharp.BrowserSubprocess.exe");
 
             settings.CefCommandLineArgs.Add("disable-gpu-vsync", "1");
             settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache", "1");
 
             CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
-            Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
+            Cef.Initialize(settings, false, browserProcessHandler: null);
         }
+
         private static Assembly Resolver(object sender, ResolveEventArgs args)
         {
             if (args.Name.StartsWith("CefSharp"))
             {
-                string assemblyName = args.Name.Split(new[] { ',' }, 2)[0] + ".dll";
-                string archSpecificPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-                                                       Environment.Is64BitProcess ? "x64" : "x86",
-                                                       assemblyName);
+                var assemblyName = args.Name.Split(new[] {','}, 2)[0] + ".dll";
+                var archSpecificPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
+                    Environment.Is64BitProcess ? "x64" : "x86",
+                    assemblyName);
 
                 return File.Exists(archSpecificPath)
-                           ? Assembly.LoadFile(archSpecificPath)
-                           : null;
+                    ? Assembly.LoadFile(archSpecificPath)
+                    : null;
             }
 
             return null;
         }
-
     }
 }

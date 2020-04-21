@@ -4,14 +4,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
 {
     public class StartExchangeActionByName : ScriptAction
     {
-        //Property
-        public string PlayerName { get; private set; }
-
         // Constructor
         public StartExchangeActionByName(string playername)
         {
             PlayerName = playername;
         }
+
+        //Property
+        public string PlayerName { get; }
 
         internal override Task<ScriptActionResults> Process(Account account)
         {

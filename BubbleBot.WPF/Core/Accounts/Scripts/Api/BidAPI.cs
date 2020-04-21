@@ -1,8 +1,9 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Bid;
-using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Bid;
+using BubbleBot.Core.Enums;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +11,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class BidAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -32,30 +32,40 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         public uint GetItemPrice(uint gid, uint lot)
-            => _account.Game.Bid.GetItemPrice(gid, lot);
+        {
+            return _account.Game.Bid.GetItemPrice(gid, lot);
+        }
+
+        public int GetAverageItemPrice(uint gid)
+        {
+            return _account.Game.Bid.GetAverageItemPrice(gid);
+        }
 
         public bool BuyItem(uint gid, uint lot)
         {
-            if (_account.State != Enums.AccountStates.BUYING)
+            if (_account.State != AccountStates.BUYING)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new BuyItemAction(gid, lot), true);
             return true;
         }
+
         public bool ExtBuyItem(uint gid, uint lot, uint maxPrice = 0)
         {
-            if (_account.State != Enums.AccountStates.BUYING)
+            if (_account.State != AccountStates.BUYING)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new ExtendBuyItemAction(gid, lot, maxPrice), true);
             return true;
         }
-        public bool AddUserCondition(int ItemEffetId, string ItemCondition, int ItemValue)
+
+        public bool AddItemCondition(uint itemEffetId, string itemCondition, int itemValue)
         {
-            if (_account.State != Enums.AccountStates.BUYING)
+            if (_account.State != AccountStates.BUYING)
                 return false;
 
-            _account.Scripts.ActionsManager.EnqueueAction(new AddUserCondition(ItemEffetId, ItemCondition, ItemValue), true);
+            _account.Scripts.ActionsManager.EnqueueAction(new AddBuyCondition(itemEffetId, itemCondition, itemValue),
+                true);
             return true;
         }
 
@@ -69,33 +79,33 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         public int ItemsInSaleCount()
-            => _account.Game.Bid.ObjectsInSale?.Count ?? 0;
+        {
+            return _account.Game.Bid.ObjectsInSale?.Count ?? 0;
+        }
 
         public List<ObjectInSale> GetItemsInSale()
         {
             var itemsInSale = new List<ObjectInSale>();
 
             // This will automaticly handle the list being null
-            if (_account.State != Enums.AccountStates.SELLING)
+            if (_account.State != AccountStates.SELLING)
                 return itemsInSale;
 
-            for (int i = 0; i < _account.Game.Bid.ObjectsInSale.Count; i++)
-            {
-                itemsInSale.Add(new ObjectInSale()
+            for (var i = 0; i < _account.Game.Bid.ObjectsInSale.Count; i++)
+                itemsInSale.Add(new ObjectInSale
                 {
                     GID = _account.Game.Bid.ObjectsInSale[i].ObjectGID,
                     UID = _account.Game.Bid.ObjectsInSale[i].ObjectUID,
                     Lot = _account.Game.Bid.ObjectsInSale[i].Quantity,
                     Price = _account.Game.Bid.ObjectsInSale[i].ObjectPrice
                 });
-            }
 
             return itemsInSale;
         }
 
         public bool SellItem(uint gid, uint lot, uint price)
         {
-            if (_account.State != Enums.AccountStates.SELLING)
+            if (_account.State != AccountStates.SELLING)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new SellItemAction(gid, lot, price), true);
@@ -104,7 +114,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool RemoveItemInSale(uint uid)
         {
-            if (_account.State != Enums.AccountStates.SELLING)
+            if (_account.State != AccountStates.SELLING)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new RemoveItemInSaleAction(uid), true);
@@ -113,7 +123,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool EditItemInSalePrice(uint uid, uint newPrice)
         {
-            if (_account.State != Enums.AccountStates.SELLING)
+            if (_account.State != AccountStates.SELLING)
                 return false;
 
             if (newPrice == 0)
@@ -125,7 +135,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -138,26 +148,26 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~BidAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 
     [MoonSharpUserData]
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public struct ObjectInSale
     {
-
         // Properties
         public uint GID { get; internal set; }
         public uint UID { get; internal set; }
         public uint Lot { get; internal set; }
         public uint Price { get; internal set; }
-
     }
-
 }

@@ -4,16 +4,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
     public class DelayAction : ScriptAction
     {
-
-        // Properties
-        public int Milliseconds { get; private set; }
-
-
         // Constructor
         public DelayAction(int ms)
         {
             Milliseconds = ms;
         }
+
+        // Properties
+        public int Milliseconds { get; }
 
 
         internal override async Task<ScriptActionResults> Process(Account account)
@@ -21,6 +19,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             await Task.Delay(Milliseconds);
             return ScriptActionResults.DONE;
         }
-
     }
 }

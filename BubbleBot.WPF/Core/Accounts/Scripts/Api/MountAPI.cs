@@ -1,7 +1,7 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Mount;
-using MoonSharp.Interpreter;
 using System;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Mount;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -9,7 +9,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class MountAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -22,13 +21,19 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public bool HasMount()
-            => _account.Game.Character.Mount.HasMount;
+        {
+            return _account.Game.Character.Mount.HasMount;
+        }
 
         public bool IsRiding()
-            => _account.Game.Character.Mount.IsRiding;
+        {
+            return _account.Game.Character.Mount.IsRiding;
+        }
 
         public uint CurrentRatio()
-            => _account.Game.Character.Mount.CurrentRatio;
+        {
+            return _account.Game.Character.Mount.CurrentRatio;
+        }
 
         public bool ToggleRiding()
         {
@@ -53,7 +58,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -67,12 +72,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~MountAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

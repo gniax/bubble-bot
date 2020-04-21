@@ -1,19 +1,18 @@
-using BubbleBot.Core.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using BubbleBot.Core.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class AccountStatesImageConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string color = "green";
+            var color = "green";
 
-            switch ((AccountStates)value)
+            switch ((AccountStates) value)
             {
                 case AccountStates.DISCONNECTED:
                     color = "red";
@@ -33,6 +32,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

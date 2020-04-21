@@ -1,17 +1,21 @@
-﻿using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Enums;
-using BubbleBot.Server.Messages;
-using Microsoft.Win32;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Enums;
+using BubbleBot.Server.Messages;
+using BubbleBot.WPF.Views;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 
 namespace BubbleBot.Views
 {
     public partial class QuickActionsWindow
     {
-
         // Constructor
         public QuickActionsWindow()
         {
@@ -20,6 +24,22 @@ namespace BubbleBot.Views
             DataContext = BubbleBotMain.Instance;
         }
 
+        public void ConnectAccounts(IEnumerable<Account> accounts)
+        {
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                foreach (var account in accounts)
+                    try
+                    {
+                        await Task.Run(account.Connect);
+                    }
+                    catch (Exception ex)
+                    {
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("1", account.AccountConfig.Username, ex.Message));
+                    }
+            });
+        }
 
         private void BtnSelectAll_OnClick(object sender, RoutedEventArgs e)
         {
@@ -33,34 +53,27 @@ namespace BubbleBot.Views
 
         private void BtnConnecAllAccounts_OnClick(object sender, RoutedEventArgs e)
         {
+            var accountsToConnect = new List<Account>();
             foreach (Account account in LbAccounts.SelectedItems)
             {
-                try
-                {
-                    if (account.State == AccountStates.DISCONNECTED)
-                    {
-                        // We don't need to await this
-                        Task.Run(account.Connect);
-                    }
-                }
-                catch { }
+                if (account.State == AccountStates.DISCONNECTED) accountsToConnect.Add(account);
             }
+
+            if (accountsToConnect.Count > 0) ConnectAccounts(accountsToConnect);
         }
 
         private void BtnDisconnecAllAccounts_OnClick(object sender, RoutedEventArgs e)
         {
             foreach (Account account in LbAccounts.SelectedItems)
-            {
                 try
                 {
                     if (account.Network.Connected)
-                    {
                         // We don't need to await this
                         Task.Run(() => account.Network.Disconnect("CLIENT_CLOSING"));
-                    }
                 }
-                catch { }
-            }
+                catch
+                {
+                }
         }
 
         private void BtnLoadScriptOnAllAccounts_OnClick(object sender, RoutedEventArgs e)
@@ -77,12 +90,13 @@ namespace BubbleBot.Views
 
                 var result = ofd.ShowDialog();
                 if (result.HasValue && result.Value)
-                {
-                    BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 0,
-                        new[] { ofd.FileName, File.ReadAllText(ofd.FileName) }));
-                }
+                    BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(
+                        LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 0,
+                        new[] {ofd.FileName, File.ReadAllText(ofd.FileName)}));
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         private void BtnStartScriptOnAllAccounts_OnClick(object sender, RoutedEventArgs e)
@@ -90,16 +104,14 @@ namespace BubbleBot.Views
             if (LbAccounts.SelectedItems.Count == 0)
                 return;
 
-            BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 1, new string[0]));
+            BubbleBotMain.Instance.Server.SendMessage(new QuickActionRequestMessage(
+                LbAccounts.SelectedItems.Cast<Account>().Select(a => a.AccountConfig.Username).ToArray(), 1,
+                new string[0]));
         }
 
         private void BtnStopScriptOnAllAccounts_OnClick(object sender, RoutedEventArgs e)
         {
-            foreach (Account account in LbAccounts.SelectedItems)
-            {
-                account.Scripts.StopScript();
-            }
+            foreach (Account account in LbAccounts.SelectedItems) account.Scripts.StopScript();
         }
-
     }
 }

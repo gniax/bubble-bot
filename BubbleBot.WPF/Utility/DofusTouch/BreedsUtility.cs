@@ -1,13 +1,12 @@
-using BubbleBot.Protocol.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using BubbleBot.Protocol.Data;
 
 namespace BubbleBot.Utility.DofusTouch
 {
     public static class BreedsUtility
     {
-
         // Properties
         public static List<Breeds> Breeds { get; private set; }
 
@@ -18,19 +17,24 @@ namespace BubbleBot.Utility.DofusTouch
         }
 
         public static IEnumerable<string> GetBreedHeads(int breedId, int sex)
-            => Enumerable.Range(1, 8).Select(o => $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/cosmetics/{breedId}{sex}_{o}.png");
+        {
+            return Enumerable.Range(1, 8).Select(o =>
+                $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/cosmetics/{breedId}{sex}_{o}.png");
+        }
 
         public static Color[] GetBreedBaseColors(Breeds breed, int sex)
-            => (sex == 0
+        {
+            return (sex == 0
                 ? breed.MaleColors.Select(ParseIndexedColor)
                 : breed.FemaleColors.Select(ParseIndexedColor)).ToArray();
+        }
 
         private static Color ParseIndexedColor(int indexedColor)
         {
             var index = (indexedColor & 0xF000000) >> 24;
-            var red = (byte)((indexedColor & 0xFF0000) >> 16);
-            var green = (byte)((indexedColor & 0x00FF00) >> 8);
-            var blue = (byte)(indexedColor & 0x0000FF);
+            var red = (byte) ((indexedColor & 0xFF0000) >> 16);
+            var green = (byte) ((indexedColor & 0x00FF00) >> 8);
+            var blue = (byte) (indexedColor & 0x0000FF);
             return Color.FromArgb(255, red, green, blue);
         }
 
@@ -45,7 +49,8 @@ namespace BubbleBot.Utility.DofusTouch
         }
 
         public static int GetCosmeticId(int breedId, bool sex, int headOrder)
-            => (1 + (breedId - 1) * 8 * 2 + (sex ? 1 : 0) * 8) + headOrder;
-
+        {
+            return 1 + (breedId - 1) * 8 * 2 + (sex ? 1 : 0) * 8 + headOrder;
+        }
     }
 }

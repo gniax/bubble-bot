@@ -1,28 +1,19 @@
-using BubbleBot.Protocol.Data;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 {
     public class JobsGame : IDisposable
     {
-
         // Fields
         private Account _account;
         private bool _jobsInitialized;
-
-
-        // Properties
-        public ObservableCollection<JobEntry> Jobs { get; private set; }
-
-
-        // Events
-        public event Action JobsUpdated;
 
 
         // Constructor
@@ -34,11 +25,23 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
         }
 
 
+        // Properties
+        public ObservableCollection<JobEntry> Jobs { get; private set; }
+
+
+        // Events
+        public event Action JobsUpdated;
+
+
         public bool HasCollectSkill(int id)
-            => Jobs.FirstOrDefault(j => j.CollectSkills.FirstOrDefault(s => s.InteractiveId == id) != null) != null;
+        {
+            return Jobs.FirstOrDefault(j => j.CollectSkills.FirstOrDefault(s => s.InteractiveId == id) != null) != null;
+        }
 
         public IEnumerable<int> GetCollectSkillsIds()
-            => Jobs.SelectMany(job => job.CollectSkills.Select(s => s.InteractiveId));
+        {
+            return Jobs.SelectMany(job => job.CollectSkills.Select(s => s.InteractiveId));
+        }
 
         #region Updates
 
@@ -49,11 +52,11 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
                 _jobsInitialized = false;
 
                 Jobs.Clear();
-                var jobsData = DataManager.GetEnumerable<Protocol.Data.Jobs>(message.JobsDescription.Select(f => (int)f.JobId));
-                for (int i = 0; i < message.JobsDescription.Count; i++)
-                {
-                    Jobs.Add(new JobEntry(message.JobsDescription[i], jobsData.FirstOrDefault(f => f.Id == message.JobsDescription[i].JobId)));
-                }
+                var jobsData =
+                    DataManager.GetEnumerable<Protocol.Data.Jobs>(message.JobsDescription.Select(f => (int) f.JobId));
+                for (var i = 0; i < message.JobsDescription.Count; i++)
+                    Jobs.Add(new JobEntry(message.JobsDescription[i],
+                        jobsData.FirstOrDefault(f => f.Id == message.JobsDescription[i].JobId)));
 
                 _jobsInitialized = true;
             });
@@ -67,10 +70,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
             while (!_jobsInitialized)
                 await Task.Delay(50);
 
-            for (int i = 0; i < message.ExperiencesUpdate.Count; i++)
-            {
-                Jobs.FirstOrDefault(j => j.Id == message.ExperiencesUpdate[i].JobId)?.Update(message.ExperiencesUpdate[i]);
-            }
+            for (var i = 0; i < message.ExperiencesUpdate.Count; i++)
+                Jobs.FirstOrDefault(j => j.Id == message.ExperiencesUpdate[i].JobId)
+                    ?.Update(message.ExperiencesUpdate[i]);
 
             JobsUpdated?.Invoke();
         }
@@ -86,7 +88,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -99,11 +101,16 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
             }
         }
 
-        ~JobsGame() => Dispose(false);
+        ~JobsGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

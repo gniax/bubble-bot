@@ -1,9 +1,3 @@
-using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Accounts.Scripts.Actions;
-using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
-using BubbleBot.Core.Enums;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,20 +6,24 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Accounts.Scripts.Actions;
+using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
+using BubbleBot.Core.Enums;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Messages;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Groups
 {
     public class Group : IEntity, IDisposable
     {
+        private readonly string _groupId;
 
         // Fields
         private Grouping _grouping;
         private Dictionary<Account, ManualResetEvent> _membersAccountsFinished;
-        private string _groupId = null;
-
-        // Properties
-        public Account Chief { get; private set; }
-        public ObservableCollection<Account> Members { get; private set; }
 
 
         // Constructor
@@ -45,6 +43,10 @@ namespace BubbleBot.Core.Groups
             Chief.RecaptchaResolved += Account_RecaptchaResolved;
         }
 
+        // Properties
+        public Account Chief { get; private set; }
+        public ObservableCollection<Account> Members { get; private set; }
+
         public string GenerateGroupId(int size)
         {
             // Characters except I, l, O, 1, and 0 to decrease confusion when hand typing tokens
@@ -56,10 +58,7 @@ namespace BubbleBot.Core.Groups
             data = new byte[size];
             crypto.GetNonZeroBytes(data);
             var result = new StringBuilder(size);
-            foreach (var b in data)
-            {
-                result.Append(chars[b % (chars.Length)]);
-            }
+            foreach (var b in data) result.Append(chars[b % chars.Length]);
             return result.ToString();
         }
 
@@ -82,25 +81,19 @@ namespace BubbleBot.Core.Groups
         {
             Task.Run(Chief.Connect);
 
-            for (int i = 0; i < Members.Count; i++)
-            {
-                Task.Run(Members[i].Connect);
-            }
+            for (var i = 0; i < Members.Count; i++) Task.Run(Members[i].Connect);
         }
 
         public async Task Disconnect(string reason)
         {
             await Chief.Network.Disconnect(reason);
 
-            for (int i = 0; i < Members.Count; i++)
-            {
-                await Members[i].Network.Disconnect(reason);
-            }
+            for (var i = 0; i < Members.Count; i++) await Members[i].Network.Disconnect(reason);
         }
 
         public void MembersCleaningAndClearing()
         {
-            for (int i = 0; i < Members.Count; i++)
+            for (var i = 0; i < Members.Count; i++)
             {
                 Members[i].Game.Managers.Gathers.CancelGather();
                 Members[i].Game.Managers.Interactives.CancelUse();
@@ -118,37 +111,51 @@ namespace BubbleBot.Core.Groups
             Chief.Logger.LogInfo("Grouping", LanguageManager.Translate("569"));
         }
 
+        private async void Account_RecaptchaResolved(Account account, bool success)
+        {
+            if (!success)
+                return;
+
+            // Check if this was the last member that got the captcha
+            // If yes, we need to re-start the script
+            if (IsAnyoneBusy())
+                return;
+
+            await Task.Delay(2000);
+            Chief.Logger.LogInfo(LanguageManager.Translate("165"), LanguageManager.Translate("481"));
+            Chief.Scripts.StartScript();
+        }
+
         #region Checkings
 
         public bool IsAnyoneBusy()
-            => Chief.IsBusy || Members.Any(m => m.IsBusy);
+        {
+            return Chief.IsBusy || Members.Any(m => m.IsBusy);
+        }
 
         public bool IsAnyoneFullWeight()
         {
-            int maxPods = Chief.Scripts.ScriptManager.GetGlobalOr(LanguageManager.Translate("145"), MoonSharp.Interpreter.DataType.Number, 90);
+            var maxPods =
+                Chief.Scripts.ScriptManager.GetGlobalOr(LanguageManager.Translate("145"), DataType.Number, 90);
 
             if (Chief.Game.Character.Inventory.WeightPercent >= maxPods)
                 return true;
 
-            for (int i = 0; i < Members.Count; i++)
-            {
+            for (var i = 0; i < Members.Count; i++)
                 if (Members[i].Game.Character.Inventory.WeightPercent >= maxPods)
                     return true;
-            }
 
             return false;
         }
 
         public bool IsEveryoneAliveAndKicking()
         {
-            if (Chief.Game.Character.LifeStatus != Protocol.Enums.PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            if (Chief.Game.Character.LifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
                 return false;
 
-            for (int i = 0; i < Members.Count; i++)
-            {
-                if (Members[i].Game.Character.LifeStatus != Protocol.Enums.PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            for (var i = 0; i < Members.Count; i++)
+                if (Members[i].Game.Character.LifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
                     return false;
-            }
 
             return true;
         }
@@ -158,16 +165,15 @@ namespace BubbleBot.Core.Groups
             var checkings = new Task[Members.Count + 1];
             checkings[0] = Chief.Scripts.ApplyCheckings();
 
-            for (int i = 0; i < Members.Count; i++)
-            {
-                checkings[i + 1] = Members[i].Scripts.ApplyCheckings();
-            }
+            for (var i = 0; i < Members.Count; i++) checkings[i + 1] = Members[i].Scripts.ApplyCheckings();
 
             await Task.WhenAll(checkings);
         }
 
         public bool IsGroupMember(int playerId)
-            => Members.FirstOrDefault(m => m.Game.Character.Id == playerId) != null;
+        {
+            return Members.FirstOrDefault(m => m.Game.Character.Id == playerId) != null;
+        }
 
         #endregion
 
@@ -188,19 +194,22 @@ namespace BubbleBot.Core.Groups
             if (Chief.State != AccountStates.FIGHTING)
                 return;
 
-            for (int i = 0; i < Members.Count; i++)
+            for (var i = 0; i < Members.Count; i++)
             {
                 if (Members[i].State == AccountStates.FIGHTING)
                     continue;
 
                 // Send a join request to the member
                 Console.WriteLine("{0} sending fight join request", Members[i].AccountConfig.Username);
-                Members[i].Network.SendMessage(new GameFightJoinRequestMessage(Chief.Game.Character.Id, Chief.Game.Fight.FightId));
+                Members[i].Network
+                    .SendMessage(new GameFightJoinRequestMessage(Chief.Game.Character.Id, Chief.Game.Fight.FightId));
             }
         }
 
         private void Chief_FightIdReceived()
-            => SignalMembersToJoinFight();
+        {
+            SignalMembersToJoinFight();
+        }
 
         #endregion
 
@@ -213,31 +222,24 @@ namespace BubbleBot.Core.Groups
             {
                 // We will also set the manual reset events so that the chief continues the script after the fight
                 // Since the members don't get this action, ActionSFinished never gets fired
-                for (int i = 0; i < Members.Count; i++)
-                {
-                    _membersAccountsFinished[Members[i]].Set();
-                }
+                for (var i = 0; i < Members.Count; i++) _membersAccountsFinished[Members[i]].Set();
 
                 return;
             }
 
-            for (int i = 0; i < Members.Count; i++)
-            {
+            for (var i = 0; i < Members.Count; i++)
                 Members[i].Scripts.ActionsManager.EnqueueAction(action, startDequeuingActions);
-            }
 
             // Reset all the ManualResetEvents of the members if this action will start dequeuing actions
             if (startDequeuingActions)
-            {
-                for (int i = 0; i < Members.Count; i++)
-                {
+                for (var i = 0; i < Members.Count; i++)
                     _membersAccountsFinished[Members[i]].Reset();
-                }
-            }
         }
 
         public void WaitForAllActionsFinished()
-            => WaitHandle.WaitAll(_membersAccountsFinished.Values.ToArray());
+        {
+            WaitHandle.WaitAll(_membersAccountsFinished.Values.ToArray());
+        }
 
         private void Member_ActionsFinished(Account account, bool mapChanged)
         {
@@ -246,21 +248,6 @@ namespace BubbleBot.Core.Groups
         }
 
         #endregion
-
-        private async void Account_RecaptchaResolved(Account account, bool success)
-        {
-            if (!success)
-                return;
-
-            // Check if this was the last member that got the captcha
-            // If yes, we need to re-start the script
-            if (IsAnyoneBusy())
-                return;
-
-            await Task.Delay(2000);
-            Chief.Logger.LogInfo(LanguageManager.Translate("165"), LanguageManager.Translate("481"));
-            Chief.Scripts.StartScript();
-        }
 
         #region IDisposable Support
 
@@ -275,10 +262,7 @@ namespace BubbleBot.Core.Groups
                     _grouping.Dispose();
                     Chief.Dispose();
 
-                    for (int i = 0; i < Members.Count; i++)
-                    {
-                        Members[i].Dispose();
-                    }
+                    for (var i = 0; i < Members.Count; i++) Members[i].Dispose();
                 }
 
                 _grouping = null;
@@ -293,9 +277,10 @@ namespace BubbleBot.Core.Groups
         }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

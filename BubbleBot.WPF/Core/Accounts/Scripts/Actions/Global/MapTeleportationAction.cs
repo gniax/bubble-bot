@@ -2,7 +2,7 @@
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
-    class MapTeleportationAction : ScriptAction
+    internal class MapTeleportationAction : ScriptAction
     {
         internal override async Task<ScriptActionResults> Process(Account account)
         {

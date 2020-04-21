@@ -1,16 +1,15 @@
-using BubbleBot.Core.Accounts;
-using BubbleBot.Protocol.Messages;
-using BubbleBot.Utility.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Protocol.Messages;
+using BubbleBot.Utility.Extensions;
 
 namespace BubbleBot.Core.Frames
 {
     public static class FramesManager
     {
-
         // Fields
         private static Dictionary<string, List<MethodInfo>> _methods;
 
@@ -22,7 +21,9 @@ namespace BubbleBot.Core.Frames
 
             // Function that checks if a method is a message handler (e.g. HandleMessageName(account, message)
             bool IsMethodValid(MethodInfo method)
-                => method.IsPublic && method.IsStatic && method.ReturnType == typeof(Task);
+            {
+                return method.IsPublic && method.IsStatic && method.ReturnType == typeof(Task);
+            }
 
             foreach (var type in Assembly.GetEntryAssembly().GetTypes())
             {
@@ -37,7 +38,7 @@ namespace BubbleBot.Core.Frames
                     if (parameters.Length != 2 || parameters[1].ParameterType.Name.Length < 8)
                         continue;
 
-                    string messageName = parameters[1].ParameterType.Name;
+                    var messageName = parameters[1].ParameterType.Name;
 
                     if (!_methods.ContainsKey(messageName))
                         _methods.Add(messageName, new List<MethodInfo>());
@@ -49,16 +50,15 @@ namespace BubbleBot.Core.Frames
 
         public static void HandleMessage(Account account, Message message)
         {
-            string msgName = message.GetType().Name;
+            var msgName = message.GetType().Name;
 
             if (!_methods.ContainsKey(msgName))
                 return;
 
             foreach (var method in _methods[msgName])
-            {
                 try
                 {
-                    (method.Invoke(null, new object[] { account, message }) as Task).ContinueWith(
+                    (method.Invoke(null, new object[] {account, message}) as Task).ContinueWith(
                         c => c.Exception.InnerException.SendCrashReport(),
                         TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
                 }
@@ -66,8 +66,6 @@ namespace BubbleBot.Core.Frames
                 {
                     account.Logger.LogError("FramesManager", $"Error while invoking method {method.Name}");
                 }
-            }
         }
-
     }
 }

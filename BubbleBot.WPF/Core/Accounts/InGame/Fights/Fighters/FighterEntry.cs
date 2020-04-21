@@ -1,12 +1,17 @@
+using System.Linq;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
-using System.Linq;
 
 namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters
 {
     public class FighterEntry
     {
+        // Constructor
+        public FighterEntry(GameFightFighterInformations infos)
+        {
+            Update(infos);
+        }
 
         // Properties
         public int ContextualId { get; private set; }
@@ -19,48 +24,40 @@ namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters
         public int ActionPoints { get; private set; }
         public int MovementPoints { get; private set; }
 
-        public int LifePercent => (int)((double)LifePoints / MaxLifePoints) / 100;
-
-
-        // Constructor
-        public FighterEntry(GameFightFighterInformations infos)
-        {
-            Update(infos);
-        }
+        public int LifePercent => (int) ((double) LifePoints / MaxLifePoints) / 100;
 
 
         public string GetName()
         {
             if (this is FightMonsterEntry fme)
                 return fme.Name;
-            else
-                return (this as FightPlayerEntry).Name;
+            return (this as FightPlayerEntry).Name;
         }
 
         #region Updates
 
         public void Update(IdentifiedEntityDispositionInformations infos)
         {
-            CellId = (short)infos.CellId;
+            CellId = (short) infos.CellId;
         }
 
         public void Update(GameFightFighterInformations infos)
         {
             ContextualId = infos.ContextualId;
             Alive = infos.Alive;
-            CellId = (short)infos.Disposition.CellId;
-            Team = (TeamEnum)infos.TeamId;
+            CellId = (short) infos.Disposition.CellId;
+            Team = (TeamEnum) infos.TeamId;
             Stats = infos.Stats;
-            LifePoints = (int)Stats.LifePoints;
-            MaxLifePoints = (int)Stats.MaxLifePoints;
+            LifePoints = (int) Stats.LifePoints;
+            MaxLifePoints = (int) Stats.MaxLifePoints;
             ActionPoints = Stats.ActionPoints;
             MovementPoints = Stats.MovementPoints;
         }
 
         public void Update(CharacterCharacteristicsInformations stats)
         {
-            LifePoints = (int)stats.LifePoints;
-            MaxLifePoints = (int)stats.MaxLifePoints;
+            LifePoints = (int) stats.LifePoints;
+            MaxLifePoints = (int) stats.MaxLifePoints;
             ActionPoints = stats.ActionPointsCurrent;
             MovementPoints = stats.MovementPointsCurrent;
         }
@@ -91,32 +88,29 @@ namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters
 
         public void Update(GameMapMovementMessage message)
         {
-            CellId = (short)message.KeyMovements.Last();
+            CellId = (short) message.KeyMovements.Last();
         }
 
         public void Update(GameActionFightTeleportOnSameMapMessage message)
         {
-            CellId = (short)message.CellId;
+            CellId = (short) message.CellId;
         }
 
         public void Update(GameActionFightSlideMessage message)
         {
-            CellId = (short)message.EndCellId;
+            CellId = (short) message.EndCellId;
         }
 
         public void Update(GameActionFightLifePointsLostMessage message)
         {
-            LifePoints -= (int)message.Loss;
-            MaxLifePoints -= (int)message.PermanentDamages;
+            LifePoints -= (int) message.Loss;
+            MaxLifePoints -= (int) message.PermanentDamages;
         }
 
         public void Update(GameActionFightLifePointsGainMessage message)
         {
-            LifePoints += (int)message.Delta;
-            if (LifePoints > MaxLifePoints)
-            {
-                LifePoints = MaxLifePoints;
-            }
+            LifePoints += (int) message.Delta;
+            if (LifePoints > MaxLifePoints) LifePoints = MaxLifePoints;
         }
 
         public void Update(GameFightTurnEndMessage message)
@@ -134,6 +128,5 @@ namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters
         }
 
         #endregion
-
     }
 }

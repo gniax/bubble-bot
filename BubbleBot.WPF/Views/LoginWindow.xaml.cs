@@ -1,17 +1,17 @@
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Server;
 using BubbleBot.Server.Enums;
 using BubbleBot.Server.Messages;
 using BubbleBot.WPF.Views;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace BubbleBot.Views
 {
     public partial class LoginWindow
     {
-
         // Constructor
         public LoginWindow()
         {
@@ -70,23 +70,30 @@ namespace BubbleBot.Views
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                string msg = "";
+                var msg = "";
 
-                switch ((LoginResults)message.Reason)
+                switch ((LoginResults) message.Reason)
                 {
                     case LoginResults.UNAUTHORIZED:
-                        msg = LanguageManager.Translate("401"); break;
+                        msg = LanguageManager.Translate("401");
+                        break;
                     case LoginResults.NOT_FOUND:
-                        msg = LanguageManager.Translate("402"); break;
+                        msg = LanguageManager.Translate("402");
+                        break;
                     case LoginResults.AWAITING_ACTIVATION:
-                        msg = LanguageManager.Translate("403"); break;
+                        msg = LanguageManager.Translate("403");
+                        break;
                     case LoginResults.BANNED:
-                        msg = LanguageManager.Translate("404"); break;
+                        msg = LanguageManager.Translate("404");
+                        break;
                     case LoginResults.WRONG_PASSWORD:
-                        msg = LanguageManager.Translate("405"); break;
+                        msg = LanguageManager.Translate("405");
+                        break;
                     case LoginResults.TOO_MANY_INSTANCES:
-                        msg = LanguageManager.Translate("400"); break;
+                        msg = LanguageManager.Translate("400");
+                        break;
                 }
+
                 SetAlert(msg, Visibility.Visible);
                 btnConnect.IsEnabled = true;
                 txtUsername.IsEnabled = true;
@@ -94,11 +101,11 @@ namespace BubbleBot.Views
             });
         }
 
-        private void UsernameOrPassword_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void UsernameOrPassword_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                btnConnect.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                btnConnect.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 e.Handled = true;
             }
         }
@@ -108,6 +115,5 @@ namespace BubbleBot.Views
             tbAlert.Text = text;
             spAlert.Visibility = visibility;
         }
-
     }
 }

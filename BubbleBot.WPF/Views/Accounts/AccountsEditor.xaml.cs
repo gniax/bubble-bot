@@ -1,22 +1,20 @@
-﻿using BubbleBot.Configurations;
+﻿using System.Windows;
+using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
-using System.Windows;
 
 namespace BubbleBot.Views.Accounts
 {
     /// <summary>
-    /// Logique d'interaction pour AccountsEditor.xaml
+    ///     Logique d'interaction pour AccountsEditor.xaml
     /// </summary>
     public partial class AccountsEditor
     {
-        private AccountConfiguration Account { get; set; }
-
         public AccountsEditor(AccountConfiguration account)
         {
             InitializeComponent();
             Account = account;
 
-            this.Title = LanguageManager.Translate("636", Account.Username);
+            Title = LanguageManager.Translate("636", Account.Username);
             txtPassword.Password = Account.Password;
             txtUsername.Text = Account.Username;
             cmbServer.SelectedIndex = getServerIndex(Account.Server);
@@ -24,6 +22,8 @@ namespace BubbleBot.Views.Accounts
             txtGroup.Text = Account.Identifiant;
             txtPseudo.Text = Account.Nickname;
         }
+
+        private AccountConfiguration Account { get; }
 
         private void btnConfirmation_Click(object sender, RoutedEventArgs e)
         {
@@ -38,7 +38,7 @@ namespace BubbleBot.Views.Accounts
             Account.Nickname = txtPseudo.Text;
             GlobalConfiguration.Instance.Save();
             GlobalConfiguration.Instance.RaisePropertyChanged("AccountsList");
-            this.Close();
+            Close();
         }
 
         private int getServerIndex(string serverName)

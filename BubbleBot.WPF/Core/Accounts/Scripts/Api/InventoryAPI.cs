@@ -1,9 +1,9 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Inventory;
-using BubbleBot.Protocol.Enums;
-using MoonSharp.Interpreter;
 using System;
 using System.Linq;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Inventory;
+using BubbleBot.Protocol.Enums;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -11,7 +11,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class InventoryAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -24,19 +23,29 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public int Pods()
-            => _account.Game.Character.Inventory.Weight;
+        {
+            return _account.Game.Character.Inventory.Weight;
+        }
 
         public int PodsMax()
-            => _account.Game.Character.Inventory.MaxWeight;
+        {
+            return _account.Game.Character.Inventory.MaxWeight;
+        }
 
         public int PodsP()
-            => _account.Game.Character.Inventory.WeightPercent;
+        {
+            return _account.Game.Character.Inventory.WeightPercent;
+        }
 
         public int ItemCount(int gid)
-            => _account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
+        {
+            return _account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int) o.Quantity);
+        }
 
         public int ItemWeight(int gid)
-           => _account.Game.Character.Inventory.GetObjectByGID(gid)?.RealWeight ?? 0;
+        {
+            return _account.Game.Character.Inventory.GetObjectByGID(gid)?.RealWeight ?? 0;
+        }
 
         public bool UseItem(int gid, uint quantity = 1)
         {
@@ -94,7 +103,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -108,12 +117,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~InventoryAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

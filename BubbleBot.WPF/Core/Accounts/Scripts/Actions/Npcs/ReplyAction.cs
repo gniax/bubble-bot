@@ -1,20 +1,18 @@
-using BubbleBot.Configurations.Language;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 {
     public class ReplyAction : ScriptAction
     {
-
-        // Properties
-        public int ReplyId { get; private set; }
-
-
         // Constructor
         public ReplyAction(int replyId)
         {
             ReplyId = replyId;
         }
+
+        // Properties
+        public int ReplyId { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -27,6 +25,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 
             return ProcessingResult;
         }
-
     }
 }

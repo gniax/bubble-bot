@@ -1,21 +1,19 @@
-using BubbleBot.Configurations.Language;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Gather
 {
     public class GatherAction : ScriptAction
     {
-
-        // Properties
-        public List<int> Elements { get; private set; }
-
-
         // Constructor
         public GatherAction(List<int> elements)
         {
             Elements = elements;
         }
+
+        // Properties
+        public List<int> Elements { get; }
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
@@ -33,6 +31,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Gather
 
             return DoneResult;
         }
-
     }
 }

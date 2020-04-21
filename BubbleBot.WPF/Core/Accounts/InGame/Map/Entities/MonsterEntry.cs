@@ -5,22 +5,11 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
 {
     public class MonsterEntry
     {
-
-        // Properties
-        public int GenericId { get; private set; }
-        public byte Grade { get; private set; }
-        public string Name { get; private set; }
-        public int Level { get; private set; }
-        public bool Boss { get; private set; }
-        public bool MiniBoss { get; private set; }
-        public bool QuestMonster { get; private set; }
-
-
         // Constructor
         public MonsterEntry(MonsterInGroupLightInformations infos)
         {
             GenericId = infos.CreatureGenericId;
-            Grade = (byte)infos.Grade;
+            Grade = (byte) infos.Grade;
 
             var m = DataManager.Get<Monsters>(GenericId);
             Name = m.NameId;
@@ -30,5 +19,13 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
             QuestMonster = m.IsQuestMonster;
         }
 
+        // Properties
+        public int GenericId { get; }
+        public byte Grade { get; }
+        public string Name { get; }
+        public int Level { get; }
+        public bool Boss { get; }
+        public bool MiniBoss { get; }
+        public bool QuestMonster { get; }
     }
 }

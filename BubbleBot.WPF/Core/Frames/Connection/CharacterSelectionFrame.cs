@@ -1,18 +1,18 @@
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Server.Messages;
 using BubbleBot.Utility.DofusTouch;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Frames.Connection
 {
     public static class CharacterSelectionFrame
     {
-
         public static Task HandleCharactersListMessage(Account account, CharactersListMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 account.Game.Server.Update(message);
 
@@ -24,20 +24,22 @@ namespace BubbleBot.Core.Frames.Connection
 
                 if (message.Characters.Count > 0)
                 {
-                    var character = string.IsNullOrEmpty(account.AccountConfig.Character) ?
-                                    message.Characters[0] :
-                                    message.Characters.FirstOrDefault(c => c.Name == account.AccountConfig.Character);
+                    var character = string.IsNullOrEmpty(account.AccountConfig.Character)
+                        ? message.Characters[0]
+                        : message.Characters.FirstOrDefault(c => c.Name == account.AccountConfig.Character);
 
 
                     // In case the character the user wants wasn't found
                     if (character == null)
                     {
-                        account.Logger.LogError("CharacterSelectionFrame", LanguageManager.Translate("78", account.AccountConfig.Character));
+                        account.Logger.LogError("CharacterSelectionFrame",
+                            LanguageManager.Translate("78", account.AccountConfig.Character));
                     }
                     else
                     {
-                        account.Logger.LogDebug("CharacterSelectionFrame", LanguageManager.Translate("79", character.Name, character.Level));
-                        await account.Network.SendMessageAsync(new CharacterSelectionMessage((int)character.Id));
+                        account.Logger.LogDebug("CharacterSelectionFrame",
+                            LanguageManager.Translate("79", character.Name, character.Level));
+                        await account.Network.SendMessageAsync(new CharacterSelectionMessage((int) character.Id));
                     }
                 }
                 else
@@ -45,14 +47,23 @@ namespace BubbleBot.Core.Frames.Connection
                     account.Logger.LogError("CharacterSelectionFrame", LanguageManager.Translate("80"));
                 }
             });
+        }
 
-        public static Task HandleCharacterNameSuggestionSuccessMessage(Account account, CharacterNameSuggestionSuccessMessage message)
-            => Task.Run(() => account.Extensions.CharacterCreation.Update(message));
+        public static Task HandleCharacterNameSuggestionSuccessMessage(Account account,
+            CharacterNameSuggestionSuccessMessage message)
+        {
+            return Task.Run(() => account.Extensions.CharacterCreation.Update(message));
+        }
 
         public static Task HandleCharacterCreationResultMessage(Account account, CharacterCreationResultMessage message)
-            => Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
-        public static Task HandleCharacterSelectedSuccessMessage(Account account, CharacterSelectedSuccessMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () => await account.Extensions.CharacterCreation.Update(message));
+        }
+
+        public static Task HandleCharacterSelectedSuccessMessage(Account account,
+            CharacterSelectedSuccessMessage message)
+        {
+            return Task.Run(async () =>
             {
                 account.Game.Character.Update(message);
 
@@ -68,12 +79,15 @@ namespace BubbleBot.Core.Frames.Connection
                 await account.Network.SendMessageAsync(new ClientKeyMessage(FlashKeyGenerator.GetRandomFlashKey()));
                 await account.Network.SendMessageAsync(new GameContextCreateRequestMessage());
 
-                BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccesMessage(account.AccountConfig.Username, (int)account.Game.Character.Id, account.Game.Character.Name,
+                BubbleBotMain.Instance.Server.SendMessage(new BotSelectedSuccessMessage(account.AccountConfig.Username,
+                    (int) account.Game.Character.Id, account.Game.Character.Name,
                     account.Game.Server.Name, account.Game.Character.Breed.ToString(), account.Game.Character.Level));
             });
+        }
 
         public static Task HandleGameContextCreateMessage(Account account, GameContextCreateMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 if (!account.FramesData.Initialized && message.Context == 1)
                 {
@@ -81,9 +95,12 @@ namespace BubbleBot.Core.Frames.Connection
                     account.FramesData.Initialized = true;
                 }
             });
+        }
 
         public static Task HandleCharacterSelectedForceMessage(Account account, CharacterSelectedForceMessage message)
-            => Task.Run(async () => await account.Network.SendMessageAsync(new CharacterSelectedForceReadyMessage()));
-
+        {
+            return Task.Run(
+                async () => await account.Network.SendMessageAsync(new CharacterSelectedForceReadyMessage()));
+        }
     }
 }

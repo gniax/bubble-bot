@@ -1,14 +1,13 @@
-using BubbleBot.Core.Accounts;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BubbleBot.Core.Accounts;
 
 namespace BubbleBot.Core.Commands
 {
     public class CommandsManager : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -27,14 +26,10 @@ namespace BubbleBot.Core.Commands
 
             // Command
             if (input[0] == '/')
-            {
                 await HandleCommand(input.Substring(1).Split(' ')).ConfigureAwait(false);
-            }
             // Plain text
             else
-            {
                 await _account.Game.Chat.SendMessage(input).ConfigureAwait(false);
-            }
         }
 
         private async Task HandleCommand(string[] input)
@@ -51,7 +46,9 @@ namespace BubbleBot.Core.Commands
             foreach (var handler in handlers)
             {
                 var handlerParameters = handler.GetParameters();
-                bool needsAccount = handlerParameters.Length > 0 ? handlerParameters[0].ParameterType == typeof(Account) : false;
+                var needsAccount = handlerParameters.Length > 0
+                    ? handlerParameters[0].ParameterType == typeof(Account)
+                    : false;
 
                 // Check if this handler can actually handle this input
                 if (handlerParameters.Length - (needsAccount ? 1 : 0) > args.Length)
@@ -65,16 +62,13 @@ namespace BubbleBot.Core.Commands
                 }
 
                 // Otherwise we need to execute the handler with the parameters he wants
-                object[] parameters = new object[handler.GetParameters().Length];
+                var parameters = new object[handler.GetParameters().Length];
 
                 // If the handler needs the account (must be as the first parameter on the handler)
-                if (handlerParameters[0].ParameterType == typeof(Account))
-                {
-                    parameters[0] = _account;
-                }
+                if (handlerParameters[0].ParameterType == typeof(Account)) parameters[0] = _account;
 
                 // Set the other parameters as strings
-                for (int i = 1; i < handlerParameters.Length; i++)
+                for (var i = 1; i < handlerParameters.Length; i++)
                 {
                     // Check for a remainder attribute
                     if (handlerParameters[i].GetCustomAttribute<RemainerAttribute>() != null)
@@ -94,7 +88,7 @@ namespace BubbleBot.Core.Commands
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -105,11 +99,16 @@ namespace BubbleBot.Core.Commands
             }
         }
 
-        ~CommandsManager() => Dispose(false);
+        ~CommandsManager()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Configurations;
@@ -9,29 +13,23 @@ using BubbleBot.Protocol.Messages.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Utility;
 using BubbleBot.Utility.DofusTouch;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 {
     public class CharacterCreatorExtension : IClearable, IDisposable
     {
-
         // Fields
         private Account _account;
-        private TaskCompletionSource<string> _nameTcs;
         private bool _created;
-        private bool _inTutorial;
+        private int _currentItemIndex;
         private QuestActiveDetailedInformations _currentStep;
         private uint _currentStepNumber;
-        private int _currentItemIndex;
+        private bool _inTutorial;
+        public bool _mapchanged;
+        private TaskCompletionSource<string> _nameTcs;
 
         // Properties
-        public bool _terminated = false;
-        public bool _mapchanged = false;
-        public bool IsDoingTutorial => _inTutorial && _currentStep != null;
+        public bool _terminated;
 
 
         // Constructor
@@ -45,9 +43,21 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             _account.Game.Managers.Movements.MovementFinished += Movements_MovementFinished;
         }
 
+        public bool IsDoingTutorial => _inTutorial && _currentStep != null;
+
+        public void Clear()
+        {
+            _created = false;
+            _inTutorial = false;
+            _nameTcs = null;
+            _currentStep = null;
+            _currentStepNumber = 0;
+            _currentItemIndex = 0;
+        }
+
         public static void ActionStartTutorial(Account account)
         {
-            CharacterCreatorExtension ext = account.Extensions.CharacterCreation;
+            var ext = account.Extensions.CharacterCreation;
             ext._inTutorial = true;
             account.Network.SendMessage(new QuestStepInfoRequestMessage(TutorialHelper.QuestTutorialId));
         }
@@ -58,7 +68,8 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial)
                 return;
 
-            _account.Logger.LogDebug(LanguageManager.Translate("516"), LanguageManager.Translate("517", _currentStepNumber));
+            _account.Logger.LogDebug(LanguageManager.Translate("516"),
+                LanguageManager.Translate("517", _currentStepNumber));
 
             switch (_currentStepNumber)
             {
@@ -72,7 +83,8 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                     break;
                 // Step 3: Equip first item
                 case 3:
-                    _account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.FirstEquipItem));
+                    _account.Game.Character.Inventory.EquipObject(
+                        _account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.FirstEquipItem));
                     break;
                 // Step 4: Change map to the right
                 case 4:
@@ -84,13 +96,18 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                     break;
                 // Step 6: Change fight placement
                 case 6:
-                    var cells = _account.Game.Fight.PositionsForChallengers.Except(new[] { _account.Game.Fight.PlayedFighter.CellId }).ToArray();
-                    _account.Network.SendMessage(new GameFightPlacementPositionRequestMessage((uint)cells[Randomize.GetRandomInt(0, cells.Length)]));
+                    var cells = _account.Game.Fight.PositionsForChallengers
+                        .Except(new[] {_account.Game.Fight.PlayedFighter.CellId}).ToArray();
+                    _account.Network.SendMessage(
+                        new GameFightPlacementPositionRequestMessage(
+                            (uint) cells[Randomize.GetRandomInt(0, cells.Length)]));
                     break;
                 // Step 11: Equip second items
                 case 11:
                     _currentItemIndex = 0;
-                    _account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.SecondEquipItems[_currentItemIndex]));
+                    _account.Game.Character.Inventory.EquipObject(
+                        _account.Game.Character.Inventory.GetObjectByGID(
+                            TutorialHelper.SecondEquipItems[_currentItemIndex]));
                     break;
                 // Step 12: Change map to the right
                 case 12:
@@ -104,11 +121,11 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial)
                 return;
 
-            _account.Logger.LogDebug(LanguageManager.Translate("516"), LanguageManager.Translate("518", _currentStepNumber));
-            for (int i = 0; i < _currentStep.Objectives.Count; i++)
-            {
-                _account.Network.SendMessage(new QuestObjectiveValidationMessage(_currentStep.QuestId, _currentStep.Objectives[i].ObjectiveId));
-            }
+            _account.Logger.LogDebug(LanguageManager.Translate("516"),
+                LanguageManager.Translate("518", _currentStepNumber));
+            for (var i = 0; i < _currentStep.Objectives.Count; i++)
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(_currentStep.QuestId,
+                    _currentStep.Objectives[i].ObjectiveId));
         }
 
         private void Npcs_QuestionReceived()
@@ -118,9 +135,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
             // Step 2: Reply to npc
             if (_currentStepNumber == 2 || _currentStepNumber == 10 || _currentStepNumber == 14)
-            {
                 _account.Game.Npcs.Reply(-1);
-            }
         }
 
         private async void Inventory_ObjectEquipped(uint gid)
@@ -145,14 +160,16 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                 else
                 {
                     await Task.Delay(600);
-                    _account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.SecondEquipItems[_currentItemIndex]));
+                    _account.Game.Character.Inventory.EquipObject(
+                        _account.Game.Character.Inventory.GetObjectByGID(
+                            TutorialHelper.SecondEquipItems[_currentItemIndex]));
                 }
             }
         }
 
         private async void Map_MapChanged()
         {
-            if (_terminated == true && _mapchanged == false)
+            if (_terminated && _mapchanged == false)
                 _mapchanged = true;
             if (!IsDoingTutorial)
                 return;
@@ -182,9 +199,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
             // Step 12: Start fight
             if (_currentStepNumber == 12 && _account.Game.Map.Id == TutorialHelper.TutorialMapIdThirdBeforeFight)
-            {
                 _account.Game.Managers.Movements.MoveToCell(_account.Game.Map.MonstersGroups.First().CellId);
-            }
         }
 
         private void Movements_MovementFinished(bool success)
@@ -195,19 +210,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             var mg = _account.Game.Map.MonstersGroups.FirstOrDefault();
 
             if (mg != null && mg.CellId == _account.Game.Map.PlayedCharacter.CellId)
-            {
                 _account.Network.SendMessage(new GameRolePlayAttackMonsterRequestMessage(mg.Id));
-            }
-        }
-
-        public void Clear()
-        {
-            _created = false;
-            _inTutorial = false;
-            _nameTcs = null;
-            _currentStep = null;
-            _currentStepNumber = 0;
-            _currentItemIndex = 0;
         }
 
         #region Updates
@@ -229,14 +232,21 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                 {
                     if (!string.IsNullOrEmpty(_account.AccountConfig.CharacterCreation.ParametersToCopy))
                     {
-                        File.Copy(Path.Combine(Configuration.ConfigurationsPath, _account.AccountConfig.CharacterCreation.ParametersToCopy),
-                            Path.Combine(Configuration.ConfigurationsPath, $"{_account.AccountConfig.Username}.config"), overwrite: true);
+                        File.Copy(
+                            Path.Combine(Configuration.ConfigurationsPath,
+                                _account.AccountConfig.CharacterCreation.ParametersToCopy),
+                            Path.Combine(Configuration.ConfigurationsPath, $"{_account.AccountConfig.Username}.config"),
+                            true);
                         _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("519"));
                     }
+
                     if (!string.IsNullOrEmpty(_account.AccountConfig.CharacterCreation.FightsConfigurationToCopy))
                     {
-                        File.Copy(Path.Combine(FightsConfiguration.ConfigurationsPath, _account.AccountConfig.CharacterCreation.FightsConfigurationToCopy),
-                            Path.Combine(FightsConfiguration.ConfigurationsPath, $"{_account.AccountConfig.Username}.fconfig"), overwrite: true);
+                        File.Copy(
+                            Path.Combine(FightsConfiguration.ConfigurationsPath,
+                                _account.AccountConfig.CharacterCreation.FightsConfigurationToCopy),
+                            Path.Combine(FightsConfiguration.ConfigurationsPath,
+                                $"{_account.AccountConfig.Username}.fconfig"), true);
                         _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("520"));
                     }
                 }
@@ -245,16 +255,23 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                     _account.Logger.LogError(LanguageManager.Translate("516"), ex.ToString());
                 }
 
-                _account.Logger.LogDebug(LanguageManager.Translate("516"), LanguageManager.Translate("521", message.Characters[0].Name));
-                _account.Network.SendMessage(new CharacterFirstSelectionMessage((int)message.Characters[0].Id, true));
+                _account.Logger.LogDebug(LanguageManager.Translate("516"),
+                    LanguageManager.Translate("521", message.Characters[0].Name));
+                _account.Network.SendMessage(new CharacterFirstSelectionMessage((int) message.Characters[0].Id, true));
                 return;
             }
 
             _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("522"));
-            string name = _account.AccountConfig.CharacterCreation.Name;
-            int breed = _account.AccountConfig.CharacterCreation.Breed == -1 ? Randomize.GetRandomInt(1, BreedsUtility.Breeds.Max(b => b.Id) + 1) : _account.AccountConfig.CharacterCreation.Breed;
-            bool sex = (_account.AccountConfig.CharacterCreation.Sex == -1 ? Randomize.GetRandomInt(0, 2) : _account.AccountConfig.CharacterCreation.Sex) == 1;
-            int headOrder = _account.AccountConfig.CharacterCreation.Head == -1 ? Randomize.GetRandomInt(0, 8) : _account.AccountConfig.CharacterCreation.Head;
+            var name = _account.AccountConfig.CharacterCreation.Name;
+            var breed = _account.AccountConfig.CharacterCreation.Breed == -1
+                ? Randomize.GetRandomInt(1, BreedsUtility.Breeds.Max(b => b.Id) + 1)
+                : _account.AccountConfig.CharacterCreation.Breed;
+            var sex = (_account.AccountConfig.CharacterCreation.Sex == -1
+                ? Randomize.GetRandomInt(0, 2)
+                : _account.AccountConfig.CharacterCreation.Sex) == 1;
+            var headOrder = _account.AccountConfig.CharacterCreation.Head == -1
+                ? Randomize.GetRandomInt(0, 8)
+                : _account.AccountConfig.CharacterCreation.Head;
 
             // If the user wanted a random name, use DT's random name generator
             if (name == "")
@@ -269,7 +286,9 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
             await Task.Delay(1000);
             // Send the character creation request message, take in consideration random stuff to generate
-            _account.Network.SendMessage(new CharacterCreationRequestMessage(name, breed, sex, (uint)BreedsUtility.GetCosmeticId(breed, sex, headOrder), _account.AccountConfig.CharacterCreation.Colors));
+            _account.Network.SendMessage(new CharacterCreationRequestMessage(name, breed, sex,
+                (uint) BreedsUtility.GetCosmeticId(breed, sex, headOrder),
+                _account.AccountConfig.CharacterCreation.Colors));
         }
 
         public void Update(CharacterNameSuggestionSuccessMessage message)
@@ -279,7 +298,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
         public async Task Update(CharacterCreationResultMessage message)
         {
-            var result = (CharacterCreationResultEnum)message.Result;
+            var result = (CharacterCreationResultEnum) message.Result;
 
             if (result == CharacterCreationResultEnum.OK)
             {
@@ -316,7 +335,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!_inTutorial)
                 return;
 
-            if (_currentStep != null && _currentStep.StepId == ((QuestActiveDetailedInformations)message.Infos).StepId)
+            if (_currentStep != null && _currentStep.StepId == ((QuestActiveDetailedInformations) message.Infos).StepId)
                 return;
 
             _currentStep = message.Infos as QuestActiveDetailedInformations;
@@ -331,7 +350,8 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial || message.QuestId != TutorialHelper.QuestTutorialId)
                 return;
 
-            _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("528", _currentStepNumber));
+            _account.Logger.LogInfo(LanguageManager.Translate("516"),
+                LanguageManager.Translate("528", _currentStepNumber));
             _account.Network.SendMessage(new QuestStepInfoRequestMessage(TutorialHelper.QuestTutorialId));
         }
 
@@ -351,10 +371,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial)
                 return;
 
-            if (_currentStepNumber == 5 || _currentStepNumber == 12)
-            {
-                ValidateCurrentStep();
-            }
+            if (_currentStepNumber == 5 || _currentStepNumber == 12) ValidateCurrentStep();
         }
 
         public async Task Update(GameEntitiesDispositionMessage message)
@@ -375,10 +392,7 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial || message.SourceId != _account.Game.Character.Id)
                 return;
 
-            if (_currentStepNumber == 8)
-            {
-                ValidateCurrentStep();
-            }
+            if (_currentStepNumber == 8) ValidateCurrentStep();
         }
 
         public void Update(QuestValidatedMessage message)
@@ -386,7 +400,8 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             if (!IsDoingTutorial || message.QuestId != TutorialHelper.QuestTutorialId)
                 return;
 
-            _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("528", _currentStepNumber));
+            _account.Logger.LogInfo(LanguageManager.Translate("516"),
+                LanguageManager.Translate("528", _currentStepNumber));
             _account.Logger.LogInfo(LanguageManager.Translate("516"), LanguageManager.Translate("529"));
             _account.AccountConfig.CharacterCreation.CompleteTutorial = false;
             _terminated = true;
@@ -411,7 +426,9 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
         }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
     }

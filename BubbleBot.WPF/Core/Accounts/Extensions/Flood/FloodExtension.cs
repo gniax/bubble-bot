@@ -1,30 +1,25 @@
-using BubbleBot.Core.Accounts.InGame.Map.Entities;
-using BubbleBot.Protocol.Enums;
-using BubbleBot.Utility;
-using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using BubbleBot.Core.Accounts.InGame.Map.Entities;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Utility;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.Extensions.Flood
 {
     public class FloodExtension : ViewModelBase, IDisposable
     {
-
         // Fields
-        private static string[] _smileys = new[] { ":p", ":D", ":)", ":]", ":')", ":'D", ":3", "^^", ":'p", "x)", ";)" };
+        private static readonly string[] _smileys =
+            {":p", ":D", ":)", ":]", ":')", ":'D", ":3", "^^", ":'p", "x)", ";)"};
+
         private Account _account;
-        private Timer _seekChannelTimer;
-        private Timer _salesChannelTimer;
         private Timer _generalChannelTimer;
         private bool _running;
-
-
-        // Properties
-        public FloodConfiguration Configuration { get; private set; }
-
-        private bool Running => _running && BubbleBotMain.Instance.Server.IsSubscribedToTouch;
+        private Timer _salesChannelTimer;
+        private Timer _seekChannelTimer;
 
 
         // Constructor
@@ -40,6 +35,12 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
             _account.Game.Map.PlayerJoined += Map_PlayerJoined;
             _account.Game.Map.PlayerLeft += Map_PlayerLeft;
         }
+
+
+        // Properties
+        public FloodConfiguration Configuration { get; private set; }
+
+        private bool Running => _running && BubbleBotMain.Instance.Server.IsSubscribedToTouch;
 
 
         public void Start()
@@ -149,10 +150,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
         }
 
         private List<FloodSentence> GetSentences(ChatActivableChannelsEnum channel)
-            => Configuration.Sentences.Where(s => s.Channel == channel).ToList();
+        {
+            return Configuration.Sentences.Where(s => s.Channel == channel).ToList();
+        }
 
         private List<FloodSentence> GetPrivateSentences(bool onPlayerJoined, bool onPlayerLeft)
-            => Configuration.Sentences.Where(s =>
+        {
+            return Configuration.Sentences.Where(s =>
             {
                 if (onPlayerJoined && !s.OnPlayerJoined)
                     return false;
@@ -162,16 +166,21 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
 
                 return true;
             }).ToList();
+        }
 
         private string GetRandomNumber()
-            => $"{Randomize.GetRandomInt(0, 10)}{Randomize.GetRandomInt(0, 10)}{Randomize.GetRandomInt(0, 10)}";
+        {
+            return $"{Randomize.GetRandomInt(0, 10)}{Randomize.GetRandomInt(0, 10)}{Randomize.GetRandomInt(0, 10)}";
+        }
 
         private string GetRandomSmiley()
-            => _smileys[Randomize.GetRandomInt(0, _smileys.Length)];
+        {
+            return _smileys[Randomize.GetRandomInt(0, _smileys.Length)];
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -196,12 +205,15 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
         }
 
         ~FloodExtension()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

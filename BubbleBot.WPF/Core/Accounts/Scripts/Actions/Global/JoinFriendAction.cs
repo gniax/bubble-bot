@@ -1,21 +1,18 @@
-using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
     public class JoinFriendAction : ScriptAction
     {
-
-        // Properties
-        public string Name { get; private set; }
-
-
-
         // Constructor
         public JoinFriendAction(string name)
         {
             Name = name;
         }
+
+        // Properties
+        public string Name { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -26,6 +23,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             account.Network.SendMessage(new FriendJoinRequestMessage(Name));
             return DoneResult;
         }
-
     }
 }

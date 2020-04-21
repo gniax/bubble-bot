@@ -1,24 +1,23 @@
+using System;
+using System.Windows;
+using System.Windows.Controls;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Extensions.Flood;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Server.Messages;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace BubbleBot.Views.Accounts
 {
     public partial class AccountFloodUc : UserControl
     {
-
-        // Properties
-        private Account Account => BubbleBotMain.Instance.SelectedAccount;
-
-
         // Constructor
         public AccountFloodUc()
         {
             InitializeComponent();
         }
+
+        // Properties
+        private Account Account => BubbleBotMain.Instance.SelectedAccount;
 
 
         private void CmbChannel_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -27,25 +26,18 @@ namespace BubbleBot.Views.Accounts
                 return;
 
             if (cmbChannel.SelectedIndex == 3)
-            {
                 spPrivateChannelOptions.Visibility = Visibility.Visible;
-            }
             else
-            {
                 spPrivateChannelOptions.Visibility = Visibility.Collapsed;
-            }
         }
 
-        private void TsActivate_IsCheckedChanged(object sender, System.EventArgs e)
+        private void TsActivate_IsCheckedChanged(object sender, EventArgs e)
         {
             if (tsActivate.IsChecked.Value)
-            {
-                BubbleBotMain.Instance.Server.SendMessage(new StartFloodExtensionRequestMessage(Account.AccountConfig.Username));
-            }
+                BubbleBotMain.Instance.Server.SendMessage(
+                    new StartFloodExtensionRequestMessage(Account.AccountConfig.Username));
             else
-            {
                 Account.Extensions.Flood.Stop();
-            }
         }
 
         private void BtnAddSentence_Click(object sender, RoutedEventArgs e)
@@ -53,7 +45,9 @@ namespace BubbleBot.Views.Accounts
             if (txtSentence.Text.Length == 0 || cmbChannel.SelectedItem == null)
                 return;
 
-            Account.Extensions.Flood.Configuration.Sentences.Add(new FloodSentence(txtSentence.Text, GetSentenceChannel(cmbChannel.SelectedIndex), cbOnPlayerJoined.IsChecked.Value, cbOnPlayerLeft.IsChecked.Value));
+            Account.Extensions.Flood.Configuration.Sentences.Add(new FloodSentence(txtSentence.Text,
+                GetSentenceChannel(cmbChannel.SelectedIndex), cbOnPlayerJoined.IsChecked.Value,
+                cbOnPlayerLeft.IsChecked.Value));
             Account.Extensions.Flood.Configuration.Save();
         }
 
@@ -82,6 +76,5 @@ namespace BubbleBot.Views.Accounts
                     return ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE;
             }
         }
-
     }
 }

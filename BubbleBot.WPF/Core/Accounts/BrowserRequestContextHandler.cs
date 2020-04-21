@@ -1,12 +1,12 @@
-﻿using CefSharp;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CefSharp;
 
 namespace BubbleBot.Core.Accounts
 {
     public class BrowserRequestContextHandler : IRequestContextHandler
     {
-        private string Host;
-        private string Service;
+        private readonly string Host;
+        private readonly string Service;
 
         public BrowserRequestContextHandler(string host, string service)
         {
@@ -14,25 +14,36 @@ namespace BubbleBot.Core.Accounts
             Service = service;
         }
 
-        private IResourceRequestHandler GetResourceRequestHandler(IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
+        IResourceRequestHandler IRequestContextHandler.GetResourceRequestHandler(IBrowser browser, IFrame frame,
+            IRequest request, bool isNavigation, bool isDownload, string requestInitiator,
+            ref bool disableDefaultHandling)
         {
-            IResourceRequestHandler result = default(IResourceRequestHandler);
+            return GetResourceRequestHandler(browser, frame, request, isNavigation, isDownload, requestInitiator,
+                ref disableDefaultHandling);
+        }
+
+        bool IRequestContextHandler.OnBeforePluginLoad(string mimeType, string url, bool isMainFrame,
+            string topOriginUrl, WebPluginInfo pluginInfo, ref PluginPolicy pluginPolicy)
+        {
+            return OnBeforePluginLoad(mimeType, url, isMainFrame, topOriginUrl, pluginInfo, ref pluginPolicy);
+        }
+
+        void IRequestContextHandler.OnRequestContextInitialized(IRequestContext requestContext)
+        {
+            OnRequestContextInitialized(requestContext);
+        }
+
+        private IResourceRequestHandler GetResourceRequestHandler(IBrowser browser, IFrame frame, IRequest request,
+            bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
+        {
+            IResourceRequestHandler result = default;
             return result;
         }
 
-        IResourceRequestHandler IRequestContextHandler.GetResourceRequestHandler(IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
-        {
-            return GetResourceRequestHandler(browser, frame, request, isNavigation, isDownload, requestInitiator, ref disableDefaultHandling);
-        }
-
-        private bool OnBeforePluginLoad(string mimeType, string url, bool isMainFrame, string topOriginUrl, WebPluginInfo pluginInfo, ref PluginPolicy pluginPolicy)
+        private bool OnBeforePluginLoad(string mimeType, string url, bool isMainFrame, string topOriginUrl,
+            WebPluginInfo pluginInfo, ref PluginPolicy pluginPolicy)
         {
             return false;
-        }
-
-        bool IRequestContextHandler.OnBeforePluginLoad(string mimeType, string url, bool isMainFrame, string topOriginUrl, WebPluginInfo pluginInfo, ref PluginPolicy pluginPolicy)
-        {
-            return OnBeforePluginLoad(mimeType, url, isMainFrame, topOriginUrl, pluginInfo, ref pluginPolicy);
         }
 
         private void OnRequestContextInitialized(IRequestContext requestContext)
@@ -40,12 +51,7 @@ namespace BubbleBot.Core.Accounts
             var v = new Dictionary<string, object>();
             v["mode"] = "fixed_servers";
             v["server"] = "http://" + Host + ':' + Service;
-            requestContext.SetPreference("proxy", v, out string error);
-        }
-
-        void IRequestContextHandler.OnRequestContextInitialized(IRequestContext requestContext)
-        {
-            this.OnRequestContextInitialized(requestContext);
+            requestContext.SetPreference("proxy", v, out var error);
         }
     }
 }

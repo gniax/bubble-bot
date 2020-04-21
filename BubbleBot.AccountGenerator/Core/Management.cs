@@ -19,7 +19,9 @@ namespace AccountGenerator.Core
     {
         //Les fichier de config du programme 
         private static string proxyFile = @"\proxy.txt";
+#pragma warning disable CS0414 // The field 'ManagementGeneration.configFile' is assigned but its value is never used
         private static string configFile = @"\config.txt";
+#pragma warning restore CS0414 // The field 'ManagementGeneration.configFile' is assigned but its value is never used
         private static string outputFile = @"\account.txt";
         private static string debugFile = @"\debug.txt";
         private static string mailFile = @"\credentials.json";
@@ -97,7 +99,9 @@ namespace AccountGenerator.Core
             }
 
         }
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task debugOutput(string debugtxt)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             _semaphoreDebugFile.Wait();
             if (File.Exists(Directory.GetCurrentDirectory() + debugFile))
@@ -143,7 +147,9 @@ namespace AccountGenerator.Core
                     else
                     {
                         //      Console.WriteLine("Lancement proxy toute thread...");
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                         ProxyChecker(proxyList.ElementAt(counterProxy));
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                         counterProxy++;
                     }
                 }
@@ -160,7 +166,9 @@ namespace AccountGenerator.Core
                     {
                         if (proxyFailled > 0)
                         {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                             ProxyChecker(proxyList.ElementAt(counterProxy));
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                             counterProxy++;
                             proxyFailled--;
                         }
@@ -300,7 +308,9 @@ namespace AccountGenerator.Core
 
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task outputAccount(string name, string password)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             _semaphoreFile.Wait();
             if (File.Exists(Directory.GetCurrentDirectory() + outputFile))
@@ -322,7 +332,9 @@ namespace AccountGenerator.Core
 
 
         #region PROXY_MANAGEMENT
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task AddCertifiedProxy(string proxyVerifier)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             _semaphoreProxy.Wait();
             proxyCertified.Add(proxyVerifier);
@@ -361,7 +373,9 @@ namespace AccountGenerator.Core
                         proxyOpen = true;
                         break;
                     }
+#pragma warning disable CS0168 // The variable 'ex' is declared but never used
                     catch (Exception ex)
+#pragma warning restore CS0168 // The variable 'ex' is declared but never used
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Echec connexion au proxy, tentative restante: {0}", nbTries - 1);
@@ -434,7 +448,9 @@ namespace AccountGenerator.Core
             allUrlValidation = new List<string>();
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task MailVerification(bool modedate)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
 
             List<string> tempUrlValidation = new List<string>();
