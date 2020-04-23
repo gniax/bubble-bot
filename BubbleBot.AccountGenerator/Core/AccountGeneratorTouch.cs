@@ -293,7 +293,7 @@ namespace AccountGenerator.Core
                 headerGuest = JsonConvert.SerializeObject(takeInfo85.Result);
                // Console.WriteLine(headerGuest);
                 await outDebugSafe(headerGuest);
-
+                
                 //"x-password: ttvA89QbSG79\r\ncontent-type: application/json\r\nx-duration: 81.073999\r\n"
                 if (headerGuest.Contains("x-password"))
                 {
@@ -310,7 +310,7 @@ namespace AccountGenerator.Core
                 }
 
             }
-
+            //ankama_captcha_incorrect
             if (getHeader == false)
             {
                 JavascriptResponse takeInfo85250 = await browser.GetMainFrame().EvaluateScriptAsync("request.response;");
