@@ -5,18 +5,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class UseLockedHouseAction : ScriptAction
     {
-
-        // Properties
-        public short DoorCellId { get; }
-        public string LockCode { get; }
-
-
         // Constructor
         public UseLockedHouseAction(short doorCellId, string lockCode)
         {
             DoorCellId = doorCellId;
             LockCode = lockCode;
         }
+
+        // Properties
+        public short DoorCellId { get; }
+        public string LockCode { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -29,6 +27,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 
             return ProcessingResult;
         }
-
     }
 }

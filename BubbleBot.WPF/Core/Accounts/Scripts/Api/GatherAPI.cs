@@ -1,8 +1,8 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Gather;
-using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Gather;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +10,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class GatherAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -50,7 +49,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -64,12 +63,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~GatherAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

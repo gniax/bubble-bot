@@ -1,27 +1,26 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class ObjectItemToSellInBid : ObjectItemToSell
-	{
+    public class ObjectItemToSellInBid : ObjectItemToSell
+    {
 
-		// Properties
-		public uint UnsoldDelay { get; set; }
+        // Properties
+        public uint UnsoldDelay { get; set; }
 
 
-		// Constructors
-		public ObjectItemToSellInBid() { }
+        // Constructors
+        public ObjectItemToSellInBid() { }
 
-		public ObjectItemToSellInBid(uint objectGID = 0, uint objectUID = 0, uint quantity = 0, uint objectPrice = 0, uint unsoldDelay = 0, List<ObjectEffect> effects = null)
-		{
-			ObjectGID = objectGID;
-			ObjectUID = objectUID;
-			Quantity = quantity;
-			ObjectPrice = objectPrice;
-			UnsoldDelay = unsoldDelay;
-			Effects = effects;
-		}
+        public ObjectItemToSellInBid(uint objectGID = 0, uint objectUID = 0, uint quantity = 0, uint objectPrice = 0, uint unsoldDelay = 0, List<ObjectEffect> effects = null)
+        {
+            ObjectGID = objectGID;
+            ObjectUID = objectUID;
+            Quantity = quantity;
+            ObjectPrice = objectPrice;
+            UnsoldDelay = unsoldDelay;
+            Effects = effects;
+        }
 
-	}
+    }
 }

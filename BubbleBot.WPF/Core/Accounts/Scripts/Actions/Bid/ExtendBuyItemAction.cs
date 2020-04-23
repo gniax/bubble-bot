@@ -1,37 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
 {
     public class ExtendBuyItemAction : ScriptAction
     {
-
-        // Properties
-        public uint GID { get; private set; }
-        public uint Lot { get; private set; }
-        public uint MaxPrice { get; private set; }
-
         // Constructor
-        public ExtendBuyItemAction(uint gid, uint lot,uint maxPrice = 0)
+        public ExtendBuyItemAction(uint gid, uint lot, uint maxPrice = 0)
         {
             GID = gid;
             Lot = lot;
             MaxPrice = maxPrice;
         }
 
+        // Properties
+        public uint GID { get; }
+        public uint Lot { get; }
+        public uint MaxPrice { get; }
+
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.Bid.ExtendedBuyItem(GID, Lot, MaxPrice))
-            {
-                await Task.Delay(1500);
-            }
+            if (account.Game.Bid.ExtendedBuyItem(GID, Lot, MaxPrice)) await Task.Delay(1500);
 
             return ScriptActionResults.DONE;
         }
-
-
     }
 }

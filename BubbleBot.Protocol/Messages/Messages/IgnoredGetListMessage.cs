@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class IgnoredGetListMessage : Message
-	{
+    public class IgnoredGetListMessage : Message
+    {
 
-		// Constructors
-		public IgnoredGetListMessage() { }
+        // Constructors
+        public IgnoredGetListMessage() { }
 
 
-	}
+    }
 }

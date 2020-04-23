@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectAveragePricesMessage : Message
-	{
+    public class ObjectAveragePricesMessage : Message
+    {
 
-		// Properties
-		public List<uint> Ids { get; set; }
-		public List<uint> AvgPrices { get; set; }
+        // Properties
+        public List<uint> Ids { get; set; }
+        public List<uint> AvgPrices { get; set; }
 
 
-		// Constructors
-		public ObjectAveragePricesMessage() { }
+        // Constructors
+        public ObjectAveragePricesMessage() { }
 
-		public ObjectAveragePricesMessage(List<uint> ids = null, List<uint> avgPrices = null)
-		{
-			Ids = ids;
-			AvgPrices = avgPrices;
-		}
+        public ObjectAveragePricesMessage(List<uint> ids = null, List<uint> avgPrices = null)
+        {
+            Ids = ids;
+            AvgPrices = avgPrices;
+        }
 
-	}
+    }
 }

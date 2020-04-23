@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AchievementFinishedInformationMessage : AchievementFinishedMessage
-	{
+    public class AchievementFinishedInformationMessage : AchievementFinishedMessage
+    {
 
-		// Properties
-		public string Name { get; set; }
-		public uint PlayerId { get; set; }
+        // Properties
+        public string Name { get; set; }
+        public uint PlayerId { get; set; }
 
 
-		// Constructors
-		public AchievementFinishedInformationMessage() { }
+        // Constructors
+        public AchievementFinishedInformationMessage() { }
 
-		public AchievementFinishedInformationMessage(uint id = 0, uint finishedlevel = 0, string name = "", uint playerId = 0)
-		{
-			Id = id;
-			Finishedlevel = finishedlevel;
-			Name = name;
-			PlayerId = playerId;
-		}
+        public AchievementFinishedInformationMessage(uint id = 0, uint finishedlevel = 0, string name = "", uint playerId = 0)
+        {
+            Id = id;
+            Finishedlevel = finishedlevel;
+            Name = name;
+            PlayerId = playerId;
+        }
 
-	}
+    }
 }

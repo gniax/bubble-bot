@@ -1,7 +1,7 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Exchange;
-using MoonSharp.Interpreter;
 using System;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Exchange;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -9,7 +9,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class ExchangeAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -22,41 +21,63 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public int WeightP()
-            => _account.Game.Exchange.WeightPercent;
+        {
+            return _account.Game.Exchange.WeightPercent;
+        }
 
         public int TargetWeightP()
-            => _account.Game.Exchange.RemoteWeightPercent;
+        {
+            return _account.Game.Exchange.RemoteWeightPercent;
+        }
 
         public void StartExchange(uint playerId)
-            => _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int)playerId), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int) playerId), true);
+        }
 
         public void AddAccountManagerId()
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangeAddAccountManager(),true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangeAddAccountManager(), true);
+        }
 
         public void StartExchangeByName(string playerName)
-            => _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeActionByName(playerName), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeActionByName(playerName), true);
+        }
 
         public void SendReady()
-            => _account.Scripts.ActionsManager.EnqueueAction(new SendReadyAction(), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new SendReadyAction(), true);
+        }
 
         public void PutItem(int gid, uint qty)
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutItemAction(gid, qty), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutItemAction(gid, qty), true);
+        }
 
         public void RemoveItem(int gid, uint qty)
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveItemAction(gid, qty), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveItemAction(gid, qty), true);
+        }
 
         public void PutAllItems()
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutAllItemsAction(), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutAllItemsAction(), true);
+        }
 
         public void PutKamas(uint qty)
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutKamasAction(qty), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutKamasAction(qty), true);
+        }
 
         public void RemoveKamas(uint qty)
-            => _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveKamasAction(qty), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveKamasAction(qty), true);
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -70,12 +91,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~ExchangeAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

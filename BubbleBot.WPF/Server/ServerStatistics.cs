@@ -1,27 +1,13 @@
-using GalaSoft.MvvmLight;
 using BubbleBot.Server.Messages;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Server
 {
     public class ServerStatistics : ViewModelBase
     {
-
         // Fields
         private int _accountsConnected;
         private int _botsConnected;
-
-
-        // Properties
-        public int AccountsConnected
-        {
-            get => _accountsConnected;
-            set => Set(ref _accountsConnected, value);
-        }
-        public int BotsConnected
-        {
-            get => _botsConnected;
-            set => Set(ref _botsConnected, value);
-        }
 
 
         // Constructor
@@ -31,11 +17,24 @@ namespace BubbleBot.Server
         }
 
 
+        // Properties
+        public int AccountsConnected
+        {
+            get => _accountsConnected;
+            set => Set(ref _accountsConnected, value);
+        }
+
+        public int BotsConnected
+        {
+            get => _botsConnected;
+            set => Set(ref _botsConnected, value);
+        }
+
+
         private void HandleServerStatisticsMessage(ServerStatisticsMessage message)
         {
             AccountsConnected = message.AccountsCount;
             BotsConnected = message.BotsCount;
         }
-
     }
 }

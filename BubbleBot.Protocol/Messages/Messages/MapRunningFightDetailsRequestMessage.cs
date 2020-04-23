@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MapRunningFightDetailsRequestMessage : Message
-	{
+    public class MapRunningFightDetailsRequestMessage : Message
+    {
 
-		// Properties
-		public uint FightId { get; set; }
+        // Properties
+        public uint FightId { get; set; }
 
 
-		// Constructors
-		public MapRunningFightDetailsRequestMessage() { }
+        // Constructors
+        public MapRunningFightDetailsRequestMessage() { }
 
-		public MapRunningFightDetailsRequestMessage(uint fightId = 0)
-		{
-			FightId = fightId;
-		}
+        public MapRunningFightDetailsRequestMessage(uint fightId = 0)
+        {
+            FightId = fightId;
+        }
 
-	}
+    }
 }

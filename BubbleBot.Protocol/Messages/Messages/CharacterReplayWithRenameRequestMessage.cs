@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterReplayWithRenameRequestMessage : CharacterReplayRequestMessage
-	{
+    public class CharacterReplayWithRenameRequestMessage : CharacterReplayRequestMessage
+    {
 
-		// Properties
-		public string Name { get; set; }
+        // Properties
+        public string Name { get; set; }
 
 
-		// Constructors
-		public CharacterReplayWithRenameRequestMessage() { }
+        // Constructors
+        public CharacterReplayWithRenameRequestMessage() { }
 
-		public CharacterReplayWithRenameRequestMessage(uint characterId = 0, string name = "")
-		{
-			CharacterId = characterId;
-			Name = name;
-		}
+        public CharacterReplayWithRenameRequestMessage(uint characterId = 0, string name = "")
+        {
+            CharacterId = characterId;
+            Name = name;
+        }
 
-	}
+    }
 }

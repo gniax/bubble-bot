@@ -4,16 +4,6 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 {
     public class ObjectToSellEntry
     {
-
-        // Properties
-        public string Name { get; private set; }
-        public uint GID { get; private set; }
-        public uint Lot { get; private set; }
-        public uint Quantity { get; private set; }
-        public uint MinPrice { get; private set; }
-        public uint BasePrice { get; private set; }
-
-
         // Constructor
         public ObjectToSellEntry(string name, uint gid, uint lot, uint qty, uint minPrice, uint basePrice)
         {
@@ -24,6 +14,14 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             MinPrice = minPrice;
             BasePrice = basePrice;
         }
+
+        // Properties
+        public string Name { get; }
+        public uint GID { get; }
+        public uint Lot { get; }
+        public uint Quantity { get; }
+        public uint MinPrice { get; }
+        public uint BasePrice { get; }
 
 
         public void Save(BinaryWriter bw)
@@ -37,7 +35,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
         }
 
         public static ObjectToSellEntry Load(BinaryReader br)
-            => new ObjectToSellEntry(br.ReadString(), br.ReadUInt32(), br.ReadUInt32(), br.ReadUInt32(), br.ReadUInt32(), br.ReadUInt32());
-
+        {
+            return new ObjectToSellEntry(br.ReadString(), br.ReadUInt32(), br.ReadUInt32(), br.ReadUInt32(),
+                br.ReadUInt32(), br.ReadUInt32());
+        }
     }
 }

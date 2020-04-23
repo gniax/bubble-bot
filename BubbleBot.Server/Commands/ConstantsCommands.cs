@@ -1,12 +1,11 @@
-﻿using System;
+﻿using BubbleBot.Server.Messages;
+using BubbleBot.Server.Utility;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using BubbleBot.Server.Messages;
-using BubbleBot.Server.Utility;
 
 namespace BubbleBot.Server.Commands
 {
@@ -19,7 +18,7 @@ namespace BubbleBot.Server.Commands
             string releaseDir = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Release");
 
             var filesHashes = new Dictionary<string, string>();
-            if(!Directory.Exists(releaseDir))
+            if (!Directory.Exists(releaseDir))
             {
                 Directory.CreateDirectory(releaseDir);
             }
@@ -32,7 +31,7 @@ namespace BubbleBot.Server.Commands
 
             Constants.FilesHashes = filesHashes;
             if (args != null)
-                if(args.Length != 0)
+                if (args.Length != 0)
                     Console.WriteLine("Files hashes refreshed !");
         }
 

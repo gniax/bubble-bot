@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismsListRegisterMessage : Message
-	{
+    public class PrismsListRegisterMessage : Message
+    {
 
-		// Properties
-		public uint Listen { get; set; }
+        // Properties
+        public uint Listen { get; set; }
 
 
-		// Constructors
-		public PrismsListRegisterMessage() { }
+        // Constructors
+        public PrismsListRegisterMessage() { }
 
-		public PrismsListRegisterMessage(uint listen = 0)
-		{
-			Listen = listen;
-		}
+        public PrismsListRegisterMessage(uint listen = 0)
+        {
+            Listen = listen;
+        }
 
-	}
+    }
 }

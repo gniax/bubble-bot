@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobCrafterDirectoryListRequestMessage : Message
-	{
+    public class JobCrafterDirectoryListRequestMessage : Message
+    {
 
-		// Properties
-		public uint JobId { get; set; }
+        // Properties
+        public uint JobId { get; set; }
 
 
-		// Constructors
-		public JobCrafterDirectoryListRequestMessage() { }
+        // Constructors
+        public JobCrafterDirectoryListRequestMessage() { }
 
-		public JobCrafterDirectoryListRequestMessage(uint jobId = 0)
-		{
-			JobId = jobId;
-		}
+        public JobCrafterDirectoryListRequestMessage(uint jobId = 0)
+        {
+            JobId = jobId;
+        }
 
-	}
+    }
 }

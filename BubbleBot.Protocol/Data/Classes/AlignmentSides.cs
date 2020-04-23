@@ -1,22 +1,21 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class AlignmentSides : IData
-	{
+    public class AlignmentSides : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
-		[JsonProperty("nameId")]
-		public string NameId { get; set; }
-		[JsonProperty("canConquest")]
-		public bool CanConquest { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("nameId")]
+        public string NameId { get; set; }
+        [JsonProperty("canConquest")]
+        public bool CanConquest { get; set; }
 
 
-		//Constructor
-		internal AlignmentSides() {}
+        //Constructor
+        internal AlignmentSides() { }
 
-	}
+    }
 }

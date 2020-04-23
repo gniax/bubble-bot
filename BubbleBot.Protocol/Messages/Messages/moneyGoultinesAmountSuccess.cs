@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BubbleBot.Protocol.Messages.Messages
+﻿namespace BubbleBot.Protocol.Messages.Messages
 {
     public class moneyGoultinesAmountSuccess : Message
     {

@@ -6,7 +6,6 @@ namespace BubbleBot.Views
 {
     public partial class OptionsWindow
     {
-
         // Constructor
         public OptionsWindow()
         {
@@ -21,6 +20,5 @@ namespace BubbleBot.Views
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
-
     }
 }

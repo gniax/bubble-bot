@@ -1,11 +1,10 @@
-using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
     public class LeaveDialogAction : ScriptAction
     {
-
         internal override Task<ScriptActionResults> Process(Account account)
         {
             if (account.IsInDialog())
@@ -16,6 +15,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 
             return DoneResult;
         }
-
     }
 }

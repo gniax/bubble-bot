@@ -1,43 +1,44 @@
-using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Core.Accounts.Extensions.Bid;
-using BubbleBot.Protocol.Data;
-using BubbleBot.Server.Messages;
-using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Accounts.Extensions.Bid;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Server.Messages;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 
 namespace BubbleBot.Views.Accounts
 {
     public partial class AccountBidUc : UserControl
     {
-
-        // Properties
-        private Account Account => BubbleBotMain.Instance.SelectedAccount;
-
-
         // Constructor
         public AccountBidUc()
         {
             InitializeComponent();
         }
 
+        // Properties
+        private Account Account => BubbleBotMain.Instance.SelectedAccount;
+
 
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var obj = DataManager.Get<Items>((int)nudGID.Value.Value);
+            var obj = DataManager.Get<Items>((int) nudGID.Value.Value);
 
             if (obj == null)
             {
-                var window = Window.GetWindow(this) as MahApps.Metro.Controls.MetroWindow;
+                var window = Window.GetWindow(this) as MetroWindow;
                 await window.ShowMessageAsync(LanguageManager.Translate("249"), "Objet introuvable.");
                 return;
             }
 
-            int lot = cmbLot.SelectedIndex == 0 ? 1 : cmbLot.SelectedIndex == 1 ? 10 : 100;
-            Account.Extensions.Bid.Configuration.ObjectsToSell.Add(new ObjectToSellEntry(obj.NameId, (uint)obj.Id, (uint)lot, (uint)nudQuantity.Value.Value, (uint)nudMinPrice.Value.Value, (uint)nudBasePrice.Value.Value));
+            var lot = cmbLot.SelectedIndex == 0 ? 1 : cmbLot.SelectedIndex == 1 ? 10 : 100;
+            Account.Extensions.Bid.Configuration.ObjectsToSell.Add(new ObjectToSellEntry(obj.NameId, (uint) obj.Id,
+                (uint) lot, (uint) nudQuantity.Value.Value, (uint) nudMinPrice.Value.Value,
+                (uint) nudBasePrice.Value.Value));
             Account.Extensions.Bid.Configuration.Save();
         }
 
@@ -49,10 +50,7 @@ namespace BubbleBot.Views.Accounts
                 ofd.Filter = "Lua file (.lua) | *.lua";
 
                 var result = ofd.ShowDialog();
-                if (result.HasValue && result.Value)
-                {
-                    Account.Extensions.Bid.Configuration.ScriptPath = ofd.FileName;
-                }
+                if (result.HasValue && result.Value) Account.Extensions.Bid.Configuration.ScriptPath = ofd.FileName;
             }
             catch (Exception ex)
             {
@@ -62,7 +60,8 @@ namespace BubbleBot.Views.Accounts
 
         private void BtnEnable_Click(object sender, RoutedEventArgs e)
         {
-            BubbleBotMain.Instance.Server.SendMessage(new StartBidExtensionRequestMessage(Account.AccountConfig.Username));
+            BubbleBotMain.Instance.Server.SendMessage(
+                new StartBidExtensionRequestMessage(Account.AccountConfig.Username));
         }
 
         private void BtnDisable_Click(object sender, RoutedEventArgs e)
@@ -85,6 +84,5 @@ namespace BubbleBot.Views.Accounts
             Account.Extensions.Bid.Configuration.ObjectsToSell.Remove(lvObjects.SelectedItem as ObjectToSellEntry);
             Account.Extensions.Bid.Configuration.Save();
         }
-
     }
 }

@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextDestroyMessage : Message
-	{
+    public class GameContextDestroyMessage : Message
+    {
 
-		// Constructors
-		public GameContextDestroyMessage() { }
+        // Constructors
+        public GameContextDestroyMessage() { }
 
 
-	}
+    }
 }

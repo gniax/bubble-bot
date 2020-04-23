@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Server.Utility
 {
@@ -29,11 +25,11 @@ namespace BubbleBot.Server.Utility
     public class Spinner
     {
         static string[,] sequence = null;
-        private int totalSequences = 0;
+        private readonly int totalSequences = 0;
         private int counter = 0;
         private string displayMsg = "";
         private int sequenceCode;
-        private readonly int Delay;
+        private int Delay;
         private bool active;
         private readonly Thread thread;
 

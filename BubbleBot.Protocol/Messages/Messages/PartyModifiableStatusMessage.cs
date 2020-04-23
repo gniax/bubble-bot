@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyModifiableStatusMessage : AbstractPartyMessage
-	{
+    public class PartyModifiableStatusMessage : AbstractPartyMessage
+    {
 
-		// Properties
-		public bool Enabled { get; set; }
+        // Properties
+        public bool Enabled { get; set; }
 
 
-		// Constructors
-		public PartyModifiableStatusMessage() { }
+        // Constructors
+        public PartyModifiableStatusMessage() { }
 
-		public PartyModifiableStatusMessage(uint partyId = 0, bool enabled = false)
-		{
-			PartyId = partyId;
-			Enabled = enabled;
-		}
+        public PartyModifiableStatusMessage(uint partyId = 0, bool enabled = false)
+        {
+            PartyId = partyId;
+            Enabled = enabled;
+        }
 
-	}
+    }
 }

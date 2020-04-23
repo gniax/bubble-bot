@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class FriendSpouseJoinRequestMessage : Message
-	{
+    public class FriendSpouseJoinRequestMessage : Message
+    {
 
-		// Constructors
-		public FriendSpouseJoinRequestMessage() { }
+        // Constructors
+        public FriendSpouseJoinRequestMessage() { }
 
 
-	}
+    }
 }

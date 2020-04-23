@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightDropCharacterMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightDropCharacterMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public int TargetId { get; set; }
-		public int CellId { get; set; }
+        // Properties
+        public int TargetId { get; set; }
+        public int CellId { get; set; }
 
 
-		// Constructors
-		public GameActionFightDropCharacterMessage() { }
+        // Constructors
+        public GameActionFightDropCharacterMessage() { }
 
-		public GameActionFightDropCharacterMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, int cellId = 0)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			TargetId = targetId;
-			CellId = cellId;
-		}
+        public GameActionFightDropCharacterMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, int cellId = 0)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            TargetId = targetId;
+            CellId = cellId;
+        }
 
-	}
+    }
 }

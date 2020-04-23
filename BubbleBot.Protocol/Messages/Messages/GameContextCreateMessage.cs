@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextCreateMessage : Message
-	{
+    public class GameContextCreateMessage : Message
+    {
 
-		// Properties
-		public uint Context { get; set; }
+        // Properties
+        public uint Context { get; set; }
 
 
-		// Constructors
-		public GameContextCreateMessage() { }
+        // Constructors
+        public GameContextCreateMessage() { }
 
-		public GameContextCreateMessage(uint context = 1)
-		{
-			Context = context;
-		}
+        public GameContextCreateMessage(uint context = 1)
+        {
+            Context = context;
+        }
 
-	}
+    }
 }

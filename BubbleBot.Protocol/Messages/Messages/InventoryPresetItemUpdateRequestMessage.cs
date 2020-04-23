@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class InventoryPresetItemUpdateRequestMessage : Message
-	{
+    public class InventoryPresetItemUpdateRequestMessage : Message
+    {
 
-		// Properties
-		public uint PresetId { get; set; }
-		public uint Position { get; set; }
-		public uint ObjUid { get; set; }
+        // Properties
+        public uint PresetId { get; set; }
+        public uint Position { get; set; }
+        public uint ObjUid { get; set; }
 
 
-		// Constructors
-		public InventoryPresetItemUpdateRequestMessage() { }
+        // Constructors
+        public InventoryPresetItemUpdateRequestMessage() { }
 
-		public InventoryPresetItemUpdateRequestMessage(uint presetId = 0, uint position = 63, uint objUid = 0)
-		{
-			PresetId = presetId;
-			Position = position;
-			ObjUid = objUid;
-		}
+        public InventoryPresetItemUpdateRequestMessage(uint presetId = 0, uint position = 63, uint objUid = 0)
+        {
+            PresetId = presetId;
+            Position = position;
+            ObjUid = objUid;
+        }
 
-	}
+    }
 }

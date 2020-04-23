@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ValidateSpellForgetMessage : Message
-	{
+    public class ValidateSpellForgetMessage : Message
+    {
 
-		// Properties
-		public uint SpellId { get; set; }
+        // Properties
+        public uint SpellId { get; set; }
 
 
-		// Constructors
-		public ValidateSpellForgetMessage() { }
+        // Constructors
+        public ValidateSpellForgetMessage() { }
 
-		public ValidateSpellForgetMessage(uint spellId = 0)
-		{
-			SpellId = spellId;
-		}
+        public ValidateSpellForgetMessage(uint spellId = 0)
+        {
+            SpellId = spellId;
+        }
 
-	}
+    }
 }

@@ -1,27 +1,28 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 {
     public class ExtendScriptGame : IClearable, IDisposable
     {
-
-        // Fields
-        private Account _account;
         private const string configurationsPath = @"Parameters\ExtendScript\";
         private const string configurationsFolder = @"Parameters\ExtendScript";
         private const string FileExtension = ".EScript";
+
+        // Fields
+        private Account _account;
         public string FilePath = "";
 
         // Constructor
         public ExtendScriptGame(Account account)
         {
             _account = account;
+        }
+
+        public void Clear()
+        {
         }
 
         public bool CreateFile(string filename)
@@ -32,16 +33,12 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(configurationsFolder);
 
-            if (File.Exists(configurationsPath + filename + FileExtension))
-            {
-                return false;
-            }
-            else
-            {
-                File.Create(configurationsPath + filename + FileExtension);
-                return true;
-            }
+            if (File.Exists(configurationsPath + filename + FileExtension)) return false;
+
+            File.Create(configurationsPath + filename + FileExtension);
+            return true;
         }
+
         public bool DeleteFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
@@ -55,32 +52,31 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 File.Delete(configurationsPath + filename + FileExtension);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
+
         public bool EditValueInt(string filename, string name, int value)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
-            int nbtry = 0;
-            int maxNbtry = 200;
-            
+            var nbtry = 0;
+            var maxNbtry = 200;
+
             while (nbtry < maxNbtry)
-            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
                     {
                         //Ditcionary contenant toute les variables et valeurs 
-                        Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
-                        Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+                        var AllValueInt = new Dictionary<string, int>();
+                        var AllValueString = new Dictionary<string, string>();
 
-                        int nbvariablesint = 0;
-                        int nbvariablesstring = 0;
+                        var nbvariablesint = 0;
+                        var nbvariablesstring = 0;
 
-                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        using (var br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                         {
                             //Search the amount of var int
                             try
@@ -91,6 +87,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             {
                                 nbvariablesint = 0;
                             }
+
                             //Search the amount of var string
                             try
                             {
@@ -103,25 +100,23 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                             //for each var , take the value 
                             if (nbvariablesint > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesint; i++)
+                                for (var i = 0; i < nbvariablesint; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    int tmpValue = br.ReadInt32();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadInt32();
                                     AllValueInt.Add(tmpVar, tmpValue);
                                 }
-                            }
+
                             if (nbvariablesstring > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesstring; i++)
+                                for (var i = 0; i < nbvariablesstring; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    string tmpValue = br.ReadString();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadString();
                                     AllValueString.Add(tmpVar, tmpValue);
                                 }
-                            }
+
                             br.Close();
                         }
 
@@ -133,14 +128,14 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                         }
 
                         // _account.Logger.LogError("AI", "Ecriture du fichier.");
-                        using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                        using (var bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
                         {
                             bw.Write(nbvariablesint);
                             bw.Write(nbvariablesstring);
 
                             foreach (var obj in AllValueInt)
-                            {
-                                if (obj.Key == name)    //if the variable already exist just change value 
+                                if (obj.Key == name) //if the variable already exist just change value 
                                 {
                                     bw.Write(name);
                                     bw.Write(value);
@@ -150,7 +145,6 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                                     bw.Write(obj.Key);
                                     bw.Write(obj.Value);
                                 }
-                            }
 
                             //write the list of var 
                             foreach (var obj in AllValueString)
@@ -161,6 +155,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                             bw.Close();
                         }
+
                         return true;
                     }
                 }
@@ -169,73 +164,65 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                     Task.Delay(500);
                     nbtry++;
                 }
-            }
+
             return true;
         }
+
         public bool EditValueString(string filename, string name, string value)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
 
-            int nbtry = 0;
-            int maxNbtry = 200;
+            var nbtry = 0;
+            var maxNbtry = 200;
 
             while (nbtry < maxNbtry)
-            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
                     {
                         //Ditcionary contenant toute les variables et valeurs 
-                        Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
-                        Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+                        var AllValueInt = new Dictionary<string, int>();
+                        var AllValueString = new Dictionary<string, string>();
 
-                        int nbvariablesint = 0;
-                        int nbvariablesstring = 0;
+                        var nbvariablesint = 0;
+                        var nbvariablesstring = 0;
 
-                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        using (var br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                         {
-
                             //Search the amount of var
                             try
                             {
                                 nbvariablesint = br.ReadInt32();
-                            }
-                            catch (Exception e)
-                            {
-                                nbvariablesint = 0;
-                            }
-                            try
-                            {
                                 nbvariablesstring = br.ReadInt32();
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
+                                Console.WriteLine("Exception ex: {0}", ex.Message);
+                                nbvariablesint = 0;
                                 nbvariablesstring = 0;
                             }
 
                             //for each var , take the value 
                             if (nbvariablesint > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesint; i++)
+                                for (var i = 0; i < nbvariablesint; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    int tmpValue = br.ReadInt32();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadInt32();
                                     AllValueInt.Add(tmpVar, tmpValue);
                                 }
-                            }
 
                             if (nbvariablesstring > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesstring; i++)
+                                for (var i = 0; i < nbvariablesstring; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    string tmpValue = br.ReadString();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadString();
                                     AllValueString.Add(tmpVar, tmpValue);
                                 }
-                            }
+
                             br.Close();
                         }
 
@@ -247,7 +234,8 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                         }
 
                         // _account.Logger.LogError("AI", "Ecriture du fichier.");
-                        using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                        using (var bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
                         {
                             bw.Write(nbvariablesint);
                             bw.Write(nbvariablesstring);
@@ -260,8 +248,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                             //write the list of var 
                             foreach (var obj in AllValueString)
-                            {
-                                if (obj.Key == name)    //if the variable already exist just change value 
+                                if (obj.Key == name) //if the variable already exist just change value 
                                 {
                                     bw.Write(name);
                                     bw.Write(value);
@@ -271,9 +258,10 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                                     bw.Write(obj.Key);
                                     bw.Write(obj.Value);
                                 }
-                            }
+
                             bw.Close();
                         }
+
                         return true;
                     }
                 }
@@ -282,91 +270,76 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                     Task.Delay(500);
                     nbtry++;
                 }
-            }
-        return true;
+
+            return true;
         }
+
         public bool DeleteVariable(string filename, string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
-            int nbtry = 0;
-            int maxNbtry = 200;
+            var nbtry = 0;
+            var maxNbtry = 200;
 
             while (nbtry < maxNbtry)
-            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
                     {
                         //Ditcionary contenant toute les variables et valeurs 
-                        Dictionary<string, int> AllValueInt = new Dictionary<string, int>();
-                        Dictionary<string, string> AllValueString = new Dictionary<string, string>();
+                        var AllValueInt = new Dictionary<string, int>();
+                        var AllValueString = new Dictionary<string, string>();
 
-                        int nbvariablesint = 0;
-                        int nbvariablesstring = 0;
+                        var nbvariablesint = 0;
+                        var nbvariablesstring = 0;
 
-                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        using (var br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                         {
-
                             //Search the amount of var
                             try
                             {
                                 nbvariablesint = br.ReadInt32();
-                            }
-                            catch (Exception e)
-                            {
-                                nbvariablesint = 0;
-                            }
-                            try
-                            {
                                 nbvariablesstring = br.ReadInt32();
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
+                                Console.WriteLine("Exception ex: {0}", ex.Message);
+                                nbvariablesint = 0;
                                 nbvariablesstring = 0;
                             }
 
                             //for each var , take the value 
                             if (nbvariablesint > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesint; i++)
+                                for (var i = 0; i < nbvariablesint; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    int tmpValue = br.ReadInt32();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadInt32();
                                     if (tmpVar != name)
-                                    {
                                         AllValueInt.Add(tmpVar, tmpValue);
-                                    }
                                     else
-                                    {
                                         nbvariablesint--;
-                                    }
                                 }
-                            }
 
                             if (nbvariablesstring > 0)
-                            {
                                 //byte c = br.ReadByte();
-                                for (int i = 0; i < nbvariablesstring; i++)
+                                for (var i = 0; i < nbvariablesstring; i++)
                                 {
-                                    string tmpVar = br.ReadString();
-                                    string tmpValue = br.ReadString();
+                                    var tmpVar = br.ReadString();
+                                    var tmpValue = br.ReadString();
                                     if (tmpVar != name)
-                                    {
-                                         AllValueString.Add(tmpVar, tmpValue);
-                                    }
+                                        AllValueString.Add(tmpVar, tmpValue);
                                     else
-                                    {
                                         nbvariablesstring--;
-                                    }
                                 }
-                            }
+
                             br.Close();
                         }
 
                         // _account.Logger.LogError("AI", "Ecriture du fichier.");
-                        using (BinaryWriter bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                        using (var bw = new BinaryWriter(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
                         {
                             bw.Write(nbvariablesint);
                             bw.Write(nbvariablesstring);
@@ -386,6 +359,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                             bw.Close();
                         }
+
                         return true;
                     }
                 }
@@ -394,92 +368,28 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                     Task.Delay(500);
                     nbtry++;
                 }
-            }
+
             return true;
         }
 
-         public int GetValueInt(string filename , string name)
+        public int GetValueInt(string filename, string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return 0;
 
-            int nbtry = 0;
-            int maxNbtry = 200;
+            var nbtry = 0;
+            var maxNbtry = 200;
 
             while (nbtry < maxNbtry)
-            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
                     {
-                        int nbvariablesint = 0;
-                        int nbvariablesstring = 0;
+                        var nbvariablesint = 0;
+                        var nbvariablesstring = 0;
 
-                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                        {
-                            //Get nb int var 
-                            try
-                            {
-                                nbvariablesint = br.ReadInt32();
-                            }
-                            catch 
-                            {
-                                 nbvariablesint = 0;
-                            }
-                            //Get nb string var 
-                            try
-                            {
-                                nbvariablesstring = br.ReadInt32();
-                            }
-                            catch
-                            {
-                                nbvariablesstring = 0;
-                            }
-
-                            if (nbvariablesint > 0)
-                            {
-                                for (int i = 0; i < nbvariablesint; i++)
-                                {
-                                    string tmpvalname = br.ReadString();
-                                    int tmpval = br.ReadInt32();
-                                    if (tmpvalname == name)
-                                    {
-                                        br.Close();
-                                        return tmpval;
-                                    }
-                                }
-                            }
-                            br.Close();
-                        }
-                        return 0;
-                    }
-                }
-                catch
-                {
-                    Task.Delay(700);
-                    nbtry++;
-                }
-            }
-            return 0;
-        }
-
-        public string GetValueString(string filename, string name)
-        {
-            if (string.IsNullOrEmpty(filename))
-                return "";
-            int nbtry = 0;
-            int maxNbtry = 200;
-
-            while (nbtry < maxNbtry)
-            {
-                try
-                {
-                    if (File.Exists(configurationsPath + filename + FileExtension))
-                    {
-                        int nbvariablesint = 0;
-                        int nbvariablesstring = 0;
-
-                        using (BinaryReader br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        using (var br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                         {
                             //Get nb int var 
                             try
@@ -490,6 +400,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             {
                                 nbvariablesint = 0;
                             }
+
                             //Get nb string var 
                             try
                             {
@@ -501,29 +412,92 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                             }
 
                             if (nbvariablesint > 0)
-                            {
-                                for (int i = 0; i < nbvariablesint; i++)
+                                for (var i = 0; i < nbvariablesint; i++)
                                 {
-                                    br.ReadString();
-                                    br.ReadInt32();
-                                }
-                            }
-
-                            if (nbvariablesstring > 0)
-                            {
-                                for (int i = 0; i < nbvariablesstring; i++)
-                                {
-                                    string tmpvalname = br.ReadString();
-                                    string tmpval = br.ReadString();
+                                    var tmpvalname = br.ReadString();
+                                    var tmpval = br.ReadInt32();
                                     if (tmpvalname == name)
                                     {
                                         br.Close();
                                         return tmpval;
                                     }
                                 }
-                            }
+
                             br.Close();
                         }
+
+                        return 0;
+                    }
+                }
+                catch
+                {
+                    Task.Delay(700);
+                    nbtry++;
+                }
+
+            return 0;
+        }
+
+        public string GetValueString(string filename, string name)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return "";
+            var nbtry = 0;
+            var maxNbtry = 200;
+
+            while (nbtry < maxNbtry)
+                try
+                {
+                    if (File.Exists(configurationsPath + filename + FileExtension))
+                    {
+                        var nbvariablesint = 0;
+                        var nbvariablesstring = 0;
+
+                        using (var br = new BinaryReader(File.Open(configurationsPath + filename + FileExtension,
+                            FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        {
+                            //Get nb int var 
+                            try
+                            {
+                                nbvariablesint = br.ReadInt32();
+                            }
+                            catch
+                            {
+                                nbvariablesint = 0;
+                            }
+
+                            //Get nb string var 
+                            try
+                            {
+                                nbvariablesstring = br.ReadInt32();
+                            }
+                            catch
+                            {
+                                nbvariablesstring = 0;
+                            }
+
+                            if (nbvariablesint > 0)
+                                for (var i = 0; i < nbvariablesint; i++)
+                                {
+                                    br.ReadString();
+                                    br.ReadInt32();
+                                }
+
+                            if (nbvariablesstring > 0)
+                                for (var i = 0; i < nbvariablesstring; i++)
+                                {
+                                    var tmpvalname = br.ReadString();
+                                    var tmpval = br.ReadString();
+                                    if (tmpvalname == name)
+                                    {
+                                        br.Close();
+                                        return tmpval;
+                                    }
+                                }
+
+                            br.Close();
+                        }
+
                         return "";
                     }
                 }
@@ -532,18 +506,13 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                     Task.Delay(500);
                     nbtry++;
                 }
-            }
+
             return "";
-        }
-
-        public void Clear()
-        {
-
         }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -551,19 +520,24 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             {
                 if (disposing)
                 {
-
                 }
 
                 _account = null;
-               // _FileSemaphore = null;
+                // _FileSemaphore = null;
 
                 disposedValue = true;
             }
         }
 
-        ~ExtendScriptGame() => Dispose(false);
+        ~ExtendScriptGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
     }

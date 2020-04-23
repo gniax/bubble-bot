@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class MimicryObjectPreviewMessage : Message
-	{
+    public class MimicryObjectPreviewMessage : Message
+    {
 
-		// Properties
-		public ObjectItem Result { get; set; }
+        // Properties
+        public ObjectItem Result { get; set; }
 
 
-		// Constructors
-		public MimicryObjectPreviewMessage() { }
+        // Constructors
+        public MimicryObjectPreviewMessage() { }
 
-		public MimicryObjectPreviewMessage(ObjectItem result = null)
-		{
-			Result = result;
-		}
+        public MimicryObjectPreviewMessage(ObjectItem result = null)
+        {
+            Result = result;
+        }
 
-	}
+    }
 }

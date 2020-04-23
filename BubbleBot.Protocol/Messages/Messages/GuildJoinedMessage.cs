@@ -1,26 +1,25 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildJoinedMessage : Message
-	{
+    public class GuildJoinedMessage : Message
+    {
 
-		// Properties
-		public GuildInformations GuildInfo { get; set; }
-		public uint MemberRights { get; set; }
-		public bool Enabled { get; set; }
+        // Properties
+        public GuildInformations GuildInfo { get; set; }
+        public uint MemberRights { get; set; }
+        public bool Enabled { get; set; }
 
 
-		// Constructors
-		public GuildJoinedMessage() { }
+        // Constructors
+        public GuildJoinedMessage() { }
 
-		public GuildJoinedMessage(GuildInformations guildInfo = null, uint memberRights = 0, bool enabled = false)
-		{
-			GuildInfo = guildInfo;
-			MemberRights = memberRights;
-			Enabled = enabled;
-		}
+        public GuildJoinedMessage(GuildInformations guildInfo = null, uint memberRights = 0, bool enabled = false)
+        {
+            GuildInfo = guildInfo;
+            MemberRights = memberRights;
+            Enabled = enabled;
+        }
 
-	}
+    }
 }

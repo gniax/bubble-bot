@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class DungeonPartyFinderRoomContentMessage : Message
-	{
+    public class DungeonPartyFinderRoomContentMessage : Message
+    {
 
-		// Properties
-		public List<DungeonPartyFinderPlayer> Players { get; set; }
-		public uint DungeonId { get; set; }
+        // Properties
+        public List<DungeonPartyFinderPlayer> Players { get; set; }
+        public uint DungeonId { get; set; }
 
 
-		// Constructors
-		public DungeonPartyFinderRoomContentMessage() { }
+        // Constructors
+        public DungeonPartyFinderRoomContentMessage() { }
 
-		public DungeonPartyFinderRoomContentMessage(uint dungeonId = 0, List<DungeonPartyFinderPlayer> players = null)
-		{
-			DungeonId = dungeonId;
-			Players = players;
-		}
+        public DungeonPartyFinderRoomContentMessage(uint dungeonId = 0, List<DungeonPartyFinderPlayer> players = null)
+        {
+            DungeonId = dungeonId;
+            Players = players;
+        }
 
-	}
+    }
 }

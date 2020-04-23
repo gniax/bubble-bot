@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChallengeTargetUpdateMessage : Message
-	{
+    public class ChallengeTargetUpdateMessage : Message
+    {
 
-		// Properties
-		public uint ChallengeId { get; set; }
-		public int TargetId { get; set; }
+        // Properties
+        public uint ChallengeId { get; set; }
+        public int TargetId { get; set; }
 
 
-		// Constructors
-		public ChallengeTargetUpdateMessage() { }
+        // Constructors
+        public ChallengeTargetUpdateMessage() { }
 
-		public ChallengeTargetUpdateMessage(uint challengeId = 0, int targetId = 0)
-		{
-			ChallengeId = challengeId;
-			TargetId = targetId;
-		}
+        public ChallengeTargetUpdateMessage(uint challengeId = 0, int targetId = 0)
+        {
+            ChallengeId = challengeId;
+            TargetId = targetId;
+        }
 
-	}
+    }
 }

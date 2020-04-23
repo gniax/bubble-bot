@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class MapObstacleUpdateMessage : Message
-	{
+    public class MapObstacleUpdateMessage : Message
+    {
 
-		// Properties
-		public List<MapObstacle> Obstacles { get; set; }
+        // Properties
+        public List<MapObstacle> Obstacles { get; set; }
 
 
-		// Constructors
-		public MapObstacleUpdateMessage() { }
+        // Constructors
+        public MapObstacleUpdateMessage() { }
 
-		public MapObstacleUpdateMessage(List<MapObstacle> obstacles = null)
-		{
-			Obstacles = obstacles;
-		}
+        public MapObstacleUpdateMessage(List<MapObstacle> obstacles = null)
+        {
+            Obstacles = obstacles;
+        }
 
-	}
+    }
 }

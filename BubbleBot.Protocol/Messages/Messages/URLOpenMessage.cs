@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class URLOpenMessage : Message
-	{
+    public class URLOpenMessage : Message
+    {
 
-		// Properties
-		public uint UrlId { get; set; }
+        // Properties
+        public uint UrlId { get; set; }
 
 
-		// Constructors
-		public URLOpenMessage() { }
+        // Constructors
+        public URLOpenMessage() { }
 
-		public URLOpenMessage(uint urlId = 0)
-		{
-			UrlId = urlId;
-		}
+        public URLOpenMessage(uint urlId = 0)
+        {
+            UrlId = urlId;
+        }
 
-	}
+    }
 }

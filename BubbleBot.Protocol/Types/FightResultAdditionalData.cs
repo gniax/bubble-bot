@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightResultAdditionalData
-	{
+    public class FightResultAdditionalData
+    {
 
-		// Constructors
-		public FightResultAdditionalData() { }
+        // Constructors
+        public FightResultAdditionalData() { }
 
 
-	}
+    }
 }

@@ -1,30 +1,27 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class DungeonPartyFinderPlayer
-	{
+    public class DungeonPartyFinderPlayer
+    {
 
-		// Properties
-		public uint PlayerId { get; set; }
-		public string PlayerName { get; set; }
-		public int Breed { get; set; }
-		public bool Sex { get; set; }
-		public uint Level { get; set; }
+        // Properties
+        public uint PlayerId { get; set; }
+        public string PlayerName { get; set; }
+        public int Breed { get; set; }
+        public bool Sex { get; set; }
+        public uint Level { get; set; }
 
 
-		// Constructors
-		public DungeonPartyFinderPlayer() { }
+        // Constructors
+        public DungeonPartyFinderPlayer() { }
 
-		public DungeonPartyFinderPlayer(uint playerId = 0, string playerName = "", int breed = 0, bool sex = false, uint level = 0)
-		{
-			PlayerId = playerId;
-			PlayerName = playerName;
-			Breed = breed;
-			Sex = sex;
-			Level = level;
-		}
+        public DungeonPartyFinderPlayer(uint playerId = 0, string playerName = "", int breed = 0, bool sex = false, uint level = 0)
+        {
+            PlayerId = playerId;
+            PlayerName = playerName;
+            Breed = breed;
+            Sex = sex;
+            Level = level;
+        }
 
-	}
+    }
 }

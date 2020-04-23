@@ -9,7 +9,7 @@
 
 
         // Constructor
-       public kpiStartSessionMessage(string accountSessionId = "", bool isSubscriber = false)
+        public kpiStartSessionMessage(string accountSessionId = "", bool isSubscriber = false)
         {
             AccountSessionId = accountSessionId;
             IsSubscriber = isSubscriber;

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicPongMessage : Message
-	{
+    public class BasicPongMessage : Message
+    {
 
-		// Properties
-		public bool Quiet { get; set; }
+        // Properties
+        public bool Quiet { get; set; }
 
 
-		// Constructors
-		public BasicPongMessage() { }
+        // Constructors
+        public BasicPongMessage() { }
 
-		public BasicPongMessage(bool quiet = false)
-		{
-			Quiet = quiet;
-		}
+        public BasicPongMessage(bool quiet = false)
+        {
+            Quiet = quiet;
+        }
 
-	}
+    }
 }

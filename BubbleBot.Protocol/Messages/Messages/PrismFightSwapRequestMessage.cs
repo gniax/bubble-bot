@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismFightSwapRequestMessage : Message
-	{
+    public class PrismFightSwapRequestMessage : Message
+    {
 
-		// Properties
-		public uint SubAreaId { get; set; }
-		public uint TargetId { get; set; }
+        // Properties
+        public uint SubAreaId { get; set; }
+        public uint TargetId { get; set; }
 
 
-		// Constructors
-		public PrismFightSwapRequestMessage() { }
+        // Constructors
+        public PrismFightSwapRequestMessage() { }
 
-		public PrismFightSwapRequestMessage(uint subAreaId = 0, uint targetId = 0)
-		{
-			SubAreaId = subAreaId;
-			TargetId = targetId;
-		}
+        public PrismFightSwapRequestMessage(uint subAreaId = 0, uint targetId = 0)
+        {
+            SubAreaId = subAreaId;
+            TargetId = targetId;
+        }
 
-	}
+    }
 }

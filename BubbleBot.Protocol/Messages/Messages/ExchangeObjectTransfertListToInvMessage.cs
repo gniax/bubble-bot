@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeObjectTransfertListToInvMessage : Message
-	{
+    public class ExchangeObjectTransfertListToInvMessage : Message
+    {
 
-		// Properties
-		public List<uint> Ids { get; set; }
+        // Properties
+        public List<uint> Ids { get; set; }
 
 
-		// Constructors
-		public ExchangeObjectTransfertListToInvMessage() { }
+        // Constructors
+        public ExchangeObjectTransfertListToInvMessage() { }
 
-		public ExchangeObjectTransfertListToInvMessage(List<uint> ids = null)
-		{
-			Ids = ids;
-		}
+        public ExchangeObjectTransfertListToInvMessage(List<uint> ids = null)
+        {
+            Ids = ids;
+        }
 
-	}
+    }
 }

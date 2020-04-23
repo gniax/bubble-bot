@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightTemporarySpellImmunityEffect : AbstractFightDispellableEffect
-	{
+    public class FightTemporarySpellImmunityEffect : AbstractFightDispellableEffect
+    {
 
-		// Properties
-		public int ImmuneSpellId { get; set; }
+        // Properties
+        public int ImmuneSpellId { get; set; }
 
 
-		// Constructors
-		public FightTemporarySpellImmunityEffect() { }
+        // Constructors
+        public FightTemporarySpellImmunityEffect() { }
 
-		public FightTemporarySpellImmunityEffect(uint uid = 0, int targetId = 0, int turnDuration = 0, uint dispelable = 1, uint spellId = 0, uint parentBoostUid = 0, int immuneSpellId = 0)
-		{
-			Uid = uid;
-			TargetId = targetId;
-			TurnDuration = turnDuration;
-			Dispelable = dispelable;
-			SpellId = spellId;
-			ParentBoostUid = parentBoostUid;
-			ImmuneSpellId = immuneSpellId;
-		}
+        public FightTemporarySpellImmunityEffect(uint uid = 0, int targetId = 0, int turnDuration = 0, uint dispelable = 1, uint spellId = 0, uint parentBoostUid = 0, int immuneSpellId = 0)
+        {
+            Uid = uid;
+            TargetId = targetId;
+            TurnDuration = turnDuration;
+            Dispelable = dispelable;
+            SpellId = spellId;
+            ParentBoostUid = parentBoostUid;
+            ImmuneSpellId = immuneSpellId;
+        }
 
-	}
+    }
 }

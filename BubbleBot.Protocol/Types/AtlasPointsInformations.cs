@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class AtlasPointsInformations
-	{
+    public class AtlasPointsInformations
+    {
 
-		// Properties
-		public List<MapCoordinatesExtended> Coords { get; set; }
-		public uint Type { get; set; }
+        // Properties
+        public List<MapCoordinatesExtended> Coords { get; set; }
+        public uint Type { get; set; }
 
 
-		// Constructors
-		public AtlasPointsInformations() { }
+        // Constructors
+        public AtlasPointsInformations() { }
 
-		public AtlasPointsInformations(uint type = 0, List<MapCoordinatesExtended> coords = null)
-		{
-			Type = type;
-			Coords = coords;
-		}
+        public AtlasPointsInformations(uint type = 0, List<MapCoordinatesExtended> coords = null)
+        {
+            Type = type;
+            Coords = coords;
+        }
 
-	}
+    }
 }

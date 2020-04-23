@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyPledgeLoyaltyRequestMessage : AbstractPartyMessage
-	{
+    public class PartyPledgeLoyaltyRequestMessage : AbstractPartyMessage
+    {
 
-		// Properties
-		public bool Loyal { get; set; }
+        // Properties
+        public bool Loyal { get; set; }
 
 
-		// Constructors
-		public PartyPledgeLoyaltyRequestMessage() { }
+        // Constructors
+        public PartyPledgeLoyaltyRequestMessage() { }
 
-		public PartyPledgeLoyaltyRequestMessage(uint partyId = 0, bool loyal = false)
-		{
-			PartyId = partyId;
-			Loyal = loyal;
-		}
+        public PartyPledgeLoyaltyRequestMessage(uint partyId = 0, bool loyal = false)
+        {
+            PartyId = partyId;
+            Loyal = loyal;
+        }
 
-	}
+    }
 }

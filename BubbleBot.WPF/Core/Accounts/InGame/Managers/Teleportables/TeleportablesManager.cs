@@ -11,15 +11,10 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
 {
     public class TeleportablesManager : IDisposable
     {
-
         // Fields
         private Account _account;
-        private Teleportables _teleportable;
         private uint _destinationMapId;
-
-
-        // Events
-        public event Action<bool> UseFinished;
+        private Teleportables _teleportable;
 
 
         // Constructor
@@ -33,6 +28,10 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
             map.MapChanged += Map_MapChanged;
             interactives.UseFinished += Interactives_UseFinished;
         }
+
+
+        // Events
+        public event Action<bool> UseFinished;
 
 
         public bool SaveZaap()
@@ -49,8 +48,9 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
                 return false;
             }
 
-            return _account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaap.Element, _account.Game.Map.Zaap.CellId,
-                (int)_account.Game.Map.Zaap.Element.EnabledSkills.FirstOrDefault(s => s.Id == 44).InstanceUID);
+            return _account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaap.Element,
+                _account.Game.Map.Zaap.CellId,
+                (int) _account.Game.Map.Zaap.Element.EnabledSkills.FirstOrDefault(s => s.Id == 44).InstanceUID);
         }
 
         public bool UseZaap(uint destinationMapId)
@@ -67,7 +67,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
                 return false;
             }
 
-            if (!_account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaap.Element, _account.Game.Map.Zaap.CellId, -1))
+            if (!_account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaap.Element,
+                _account.Game.Map.Zaap.CellId, -1))
                 return false;
 
             _teleportable = Teleportables.ZAAP;
@@ -89,7 +90,8 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
                 return false;
             }
 
-            if (!_account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaapi.Element, _account.Game.Map.Zaapi.CellId, -1))
+            if (!_account.Game.Managers.Interactives.MoveToUseInteractive(_account.Game.Map.Zaapi.Element,
+                _account.Game.Map.Zaapi.CellId, -1))
                 return false;
 
             _teleportable = Teleportables.ZAAPI;
@@ -110,13 +112,15 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
 
             if (!success)
             {
-                _account.Logger.LogWarning("TeleportablesManager", LanguageManager.Translate("540", _teleportable.ToString().ToLower()));
+                _account.Logger.LogWarning("TeleportablesManager",
+                    LanguageManager.Translate("540", _teleportable.ToString().ToLower()));
                 OnUseFinished(false);
             }
         }
 
         private Task HandleZaapListMessage(Account account, ZaapListMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 await Task.Delay(1000);
 
@@ -125,17 +129,21 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
 
                 if (!message.MapIds.Contains(_destinationMapId))
                 {
-                    _account.Logger.LogWarning("TeleportablesManager", LanguageManager.Translate("541", _destinationMapId, _teleportable.ToString().ToLower()));
+                    _account.Logger.LogWarning("TeleportablesManager",
+                        LanguageManager.Translate("541", _destinationMapId, _teleportable.ToString().ToLower()));
                     OnUseFinished(false);
                     return;
                 }
 
                 _account.Logger.LogDebug("TeleportablesManager", LanguageManager.Translate("542", _destinationMapId));
-                await _account.Network.SendMessageAsync(new TeleportRequestMessage((uint)_teleportable, _destinationMapId));
+                await _account.Network.SendMessageAsync(new TeleportRequestMessage((uint) _teleportable,
+                    _destinationMapId));
             });
+        }
 
         public Task HandleTeleportDestinationsListMessage(Account account, TeleportDestinationsListMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 await Task.Delay(1000);
 
@@ -144,21 +152,25 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
 
                 if (!message.MapIds.Contains(_destinationMapId))
                 {
-                    _account.Logger.LogWarning("TeleportablesManager", LanguageManager.Translate("541", _destinationMapId, _teleportable.ToString().ToLower()));
+                    _account.Logger.LogWarning("TeleportablesManager",
+                        LanguageManager.Translate("541", _destinationMapId, _teleportable.ToString().ToLower()));
                     OnUseFinished(false);
                     return;
                 }
 
                 _account.Logger.LogDebug("TeleportablesManager", LanguageManager.Translate("542", _destinationMapId));
-                await _account.Network.SendMessageAsync(new TeleportRequestMessage((uint)_teleportable, _destinationMapId));
+                await _account.Network.SendMessageAsync(new TeleportRequestMessage((uint) _teleportable,
+                    _destinationMapId));
             });
+        }
 
         private void Map_MapChanged()
         {
             if (_teleportable == Teleportables.NONE || _destinationMapId == 0)
                 return;
 
-            _account.Logger.LogInfo("TeleportablesManager", LanguageManager.Translate("543", _teleportable.ToString().PureCapitalize()));
+            _account.Logger.LogInfo("TeleportablesManager",
+                LanguageManager.Translate("543", _teleportable.ToString().PureCapitalize()));
             OnUseFinished(true);
         }
 
@@ -182,9 +194,11 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Teleportables
             }
         }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,8 +1,9 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Storage;
-using MoonSharp.Interpreter;
 using System;
 using System.Linq;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Storage;
+using BubbleBot.Core.Enums;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +11,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class StorageAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -23,14 +23,18 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public int ItemCount(int gid)
-            => (int)_account.Game.Storage.Objects.Where(o => o.GID == gid).Sum(o => o.Quantity);
+        {
+            return (int) _account.Game.Storage.Objects.Where(o => o.GID == gid).Sum(o => o.Quantity);
+        }
 
         public int Kamas()
-            => _account.Game.Storage.Kamas;
+        {
+            return _account.Game.Storage.Kamas;
+        }
 
         public bool PutItem(int gid, uint quantity)
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
             if (_account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => o.Quantity) == 0)
@@ -51,25 +55,25 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool PutKamas(uint quantity)
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
-            _account.Scripts.ActionsManager.EnqueueAction(new StoragePutKamasAction((int)quantity), true);
+            _account.Scripts.ActionsManager.EnqueueAction(new StoragePutKamasAction((int) quantity), true);
             return true;
         }
 
         public bool GetKamas(uint quantity)
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
-            _account.Scripts.ActionsManager.EnqueueAction(new StorageGetKamasAction((int)quantity), true);
+            _account.Scripts.ActionsManager.EnqueueAction(new StorageGetKamasAction((int) quantity), true);
             return true;
         }
 
         public bool PutAllItems()
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new StoragePutAllItemsAction(), true);
@@ -78,7 +82,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool GetAllItems()
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new StorageGetAllItemsAction(), true);
@@ -87,7 +91,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool PutExistingItems()
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new StoragePutExistingItemsAction(), true);
@@ -96,7 +100,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public bool GetExistingItems()
         {
-            if (_account.State != Enums.AccountStates.STORAGE)
+            if (_account.State != AccountStates.STORAGE)
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new StorageGetExistingItemsAction(), true);
@@ -105,7 +109,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -119,12 +123,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~StorageAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -26,7 +26,7 @@ namespace BubbleBot.Website.Models
         public List<ExtensionBought> ExtensionsBought { get; set; }
 
         public string AvatarUrl => string.IsNullOrEmpty(Avatar) ? BubbleBot.Api.Program.Constants.WebsiteIpAddress + $"/uploads/avatars/default.jpg" : BubbleBot.Api.Program.Constants.WebsiteIpAddress + $"/uploads/avatars/{Avatar}";
-        public bool IsSubscribedToTouch =>TouchEndDate != null && DateTime.Now < TouchEndDate.Value;
+        public bool IsSubscribedToTouch => TouchEndDate != null && DateTime.Now < TouchEndDate.Value;
 
 
         // Constructors

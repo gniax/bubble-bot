@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFightPlayersEnemyRemoveMessage : Message
-	{
+    public class GuildFightPlayersEnemyRemoveMessage : Message
+    {
 
-		// Properties
-		public double FightId { get; set; }
-		public uint PlayerId { get; set; }
+        // Properties
+        public double FightId { get; set; }
+        public uint PlayerId { get; set; }
 
 
-		// Constructors
-		public GuildFightPlayersEnemyRemoveMessage() { }
+        // Constructors
+        public GuildFightPlayersEnemyRemoveMessage() { }
 
-		public GuildFightPlayersEnemyRemoveMessage(double fightId = 0, uint playerId = 0)
-		{
-			FightId = fightId;
-			PlayerId = playerId;
-		}
+        public GuildFightPlayersEnemyRemoveMessage(double fightId = 0, uint playerId = 0)
+        {
+            FightId = fightId;
+            PlayerId = playerId;
+        }
 
-	}
+    }
 }

@@ -1,27 +1,26 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ZaapListMessage : TeleportDestinationsListMessage
-	{
+    public class ZaapListMessage : TeleportDestinationsListMessage
+    {
 
-		// Properties
-		public uint SpawnMapId { get; set; }
+        // Properties
+        public uint SpawnMapId { get; set; }
 
 
-		// Constructors
-		public ZaapListMessage() { }
+        // Constructors
+        public ZaapListMessage() { }
 
-		public ZaapListMessage(uint teleporterType = 0, uint spawnMapId = 0, List<uint> mapIds = null, List<uint> subAreaIds = null, List<uint> costs = null, List<uint> destTeleporterType = null)
-		{
-			TeleporterType = teleporterType;
-			SpawnMapId = spawnMapId;
-			MapIds = mapIds;
-			SubAreaIds = subAreaIds;
-			Costs = costs;
-			DestTeleporterType = destTeleporterType;
-		}
+        public ZaapListMessage(uint teleporterType = 0, uint spawnMapId = 0, List<uint> mapIds = null, List<uint> subAreaIds = null, List<uint> costs = null, List<uint> destTeleporterType = null)
+        {
+            TeleporterType = teleporterType;
+            SpawnMapId = spawnMapId;
+            MapIds = mapIds;
+            SubAreaIds = subAreaIds;
+            Costs = costs;
+            DestTeleporterType = destTeleporterType;
+        }
 
-	}
+    }
 }

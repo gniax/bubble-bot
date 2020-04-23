@@ -5,15 +5,8 @@ namespace BubbleBot.Utility
 {
     public class TimerWrapper : IDisposable
     {
-
         // Fields
         private Timer _timer;
-
-
-        // Properties
-        public bool Enabled { get; private set; }
-        public int Interval { get; set; }
-
 
 
         // Constructor
@@ -21,6 +14,17 @@ namespace BubbleBot.Utility
         {
             Interval = interval;
             _timer = new Timer(callback, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+
+        // Properties
+        public bool Enabled { get; private set; }
+        public int Interval { get; set; }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+            _timer = null;
         }
 
 
@@ -41,12 +45,5 @@ namespace BubbleBot.Utility
             Enabled = false;
             _timer?.Change(Timeout.Infinite, Timeout.Infinite);
         }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
-            _timer = null;
-        }
-
     }
 }

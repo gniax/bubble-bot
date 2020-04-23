@@ -5,21 +5,19 @@ namespace BubbleBot.Configurations.Language
 {
     public class LangExtension : MarkupExtension
     {
-
-        // Properties
-        [ConstructorArgument("key")]
-        public string Key { get; set; }
-
-
         // Constructor
         public LangExtension(string key)
         {
             Key = key;
         }
 
+        // Properties
+        [ConstructorArgument("key")] public string Key { get; set; }
+
 
         public override object ProvideValue(IServiceProvider serviceProvider)
-            => LanguageManager.Translate(Key);
-
+        {
+            return LanguageManager.Translate(Key);
+        }
     }
 }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextReadyMessage : Message
-	{
+    public class GameContextReadyMessage : Message
+    {
 
-		// Properties
-		public uint MapId { get; set; }
+        // Properties
+        public uint MapId { get; set; }
 
 
-		// Constructors
-		public GameContextReadyMessage() { }
+        // Constructors
+        public GameContextReadyMessage() { }
 
-		public GameContextReadyMessage(uint mapId = 0)
-		{
-			MapId = mapId;
-		}
+        public GameContextReadyMessage(uint mapId = 0)
+        {
+            MapId = mapId;
+        }
 
-	}
+    }
 }

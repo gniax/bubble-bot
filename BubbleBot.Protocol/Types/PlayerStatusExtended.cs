@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class PlayerStatusExtended : PlayerStatus
-	{
+    public class PlayerStatusExtended : PlayerStatus
+    {
 
-		// Properties
-		public string Message { get; set; }
+        // Properties
+        public string Message { get; set; }
 
 
-		// Constructors
-		public PlayerStatusExtended() { }
+        // Constructors
+        public PlayerStatusExtended() { }
 
-		public PlayerStatusExtended(uint statusId = 1, string message = "")
-		{
-			StatusId = statusId;
-			Message = message;
-		}
+        public PlayerStatusExtended(uint statusId = 1, string message = "")
+        {
+            StatusId = statusId;
+            Message = message;
+        }
 
-	}
+    }
 }

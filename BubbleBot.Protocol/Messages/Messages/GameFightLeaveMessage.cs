@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightLeaveMessage : Message
-	{
+    public class GameFightLeaveMessage : Message
+    {
 
-		// Properties
-		public int CharId { get; set; }
+        // Properties
+        public int CharId { get; set; }
 
 
-		// Constructors
-		public GameFightLeaveMessage() { }
+        // Constructors
+        public GameFightLeaveMessage() { }
 
-		public GameFightLeaveMessage(int charId = 0)
-		{
-			CharId = charId;
-		}
+        public GameFightLeaveMessage(int charId = 0)
+        {
+            CharId = charId;
+        }
 
-	}
+    }
 }

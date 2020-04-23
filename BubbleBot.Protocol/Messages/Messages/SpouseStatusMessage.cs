@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SpouseStatusMessage : Message
-	{
+    public class SpouseStatusMessage : Message
+    {
 
-		// Properties
-		public bool HasSpouse { get; set; }
+        // Properties
+        public bool HasSpouse { get; set; }
 
 
-		// Constructors
-		public SpouseStatusMessage() { }
+        // Constructors
+        public SpouseStatusMessage() { }
 
-		public SpouseStatusMessage(bool hasSpouse = false)
-		{
-			HasSpouse = hasSpouse;
-		}
+        public SpouseStatusMessage(bool hasSpouse = false)
+        {
+            HasSpouse = hasSpouse;
+        }
 
-	}
+    }
 }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AcquaintanceSearchMessage : Message
-	{
+    public class AcquaintanceSearchMessage : Message
+    {
 
-		// Properties
-		public string Nickname { get; set; }
+        // Properties
+        public string Nickname { get; set; }
 
 
-		// Constructors
-		public AcquaintanceSearchMessage() { }
+        // Constructors
+        public AcquaintanceSearchMessage() { }
 
-		public AcquaintanceSearchMessage(string nickname = "")
-		{
-			Nickname = nickname;
-		}
+        public AcquaintanceSearchMessage(string nickname = "")
+        {
+            Nickname = nickname;
+        }
 
-	}
+    }
 }

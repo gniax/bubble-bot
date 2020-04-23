@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextRemoveElementMessage : Message
-	{
+    public class GameContextRemoveElementMessage : Message
+    {
 
-		// Properties
-		public int Id { get; set; }
+        // Properties
+        public int Id { get; set; }
 
 
-		// Constructors
-		public GameContextRemoveElementMessage() { }
+        // Constructors
+        public GameContextRemoveElementMessage() { }
 
-		public GameContextRemoveElementMessage(int id = 0)
-		{
-			Id = id;
-		}
+        public GameContextRemoveElementMessage(int id = 0)
+        {
+            Id = id;
+        }
 
-	}
+    }
 }

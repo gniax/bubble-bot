@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -13,21 +14,13 @@ namespace BubbleBot.Updates
     [SuppressMessage("ReSharper", "UseObjectOrCollectionInitializer")]
     public class Updater
     {
+        private readonly Dictionary<string, string> _downloadDestinations;
+        private readonly List<string> _filesToDownload;
 
         // Fields
         private readonly WebClient _webClient;
-        private readonly List<string> _filesToDownload;
-        private bool _updating;
         private int _currentFileIndex;
-        private readonly Dictionary<string, string> _downloadDestinations;
-
-
-        // Events
-        public event Action<int> UpdateStarted;
-        public event Action<string> FileDownloadStarted;
-        public event Action<int> FileDownloadProgress;
-        public event Action UpdateFailed;
-        public event Action UpdateFinished;
+        private bool _updating;
 
 
         // Constructor
@@ -43,16 +36,23 @@ namespace BubbleBot.Updates
         }
 
 
+        // Events
+        public event Action<int> UpdateStarted;
+        public event Action<string> FileDownloadStarted;
+        public event Action<int> FileDownloadProgress;
+        public event Action UpdateFailed;
+        public event Action UpdateFinished;
+
+
         public bool CheckForUpdates(Dictionary<string, string> upToDateFiles)
         {
             if (_updating)
                 return false;
 
             // Check for temp files that need to be deleted
-            foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "*.bbtemp", SearchOption.AllDirectories))
-            {
-                File.Delete(file);
-            }
+            foreach (var file in Directory.GetFiles(
+                Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "*.bbtemp",
+                SearchOption.AllDirectories)) File.Delete(file);
 
             _filesToDownload.Clear();
             _downloadDestinations.Clear();
@@ -89,8 +89,8 @@ namespace BubbleBot.Updates
             // Otherwise
             else
             {
-                string fileToDownload = _filesToDownload[_currentFileIndex];
-                string destPath = Path.GetTempFileName();
+                var fileToDownload = _filesToDownload[_currentFileIndex];
+                var destPath = Path.GetTempFileName();
                 _downloadDestinations.Add(fileToDownload, destPath);
                 _webClient.DownloadFileAsync(new Uri(fileToDownload, UriKind.Relative), destPath);
                 FileDownloadStarted?.Invoke(fileToDownload);
@@ -102,7 +102,7 @@ namespace BubbleBot.Updates
             if (!_updating)
                 return;
 
-            int i = 0;
+            var i = 0;
 
             // Key: original file name
             // Value: temp destination of downloaded file
@@ -115,11 +115,8 @@ namespace BubbleBot.Updates
                     i++;
                 }
 
-                string directoryPath = Path.GetDirectoryName(kvp.Key);
-                if (!string.IsNullOrEmpty(directoryPath))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(kvp.Key));
-                }
+                var directoryPath = Path.GetDirectoryName(kvp.Key);
+                if (!string.IsNullOrEmpty(directoryPath)) Directory.CreateDirectory(Path.GetDirectoryName(kvp.Key));
 
                 File.Move(kvp.Value, kvp.Key);
             }
@@ -135,7 +132,7 @@ namespace BubbleBot.Updates
             FileDownloadProgress?.Invoke(e.ProgressPercentage);
         }
 
-        private async void _webClient_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private async void _webClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (!_updating)
                 return;
@@ -153,21 +150,16 @@ namespace BubbleBot.Updates
         private bool IsUpdateNeeded(Dictionary<string, string> upToDateFiles)
         {
             foreach (var kvp in upToDateFiles)
-            {
                 if (File.Exists(kvp.Key))
                 {
                     // File to update
-                    if (kvp.Value != GetSha512HashFromFile(kvp.Key))
-                    {
-                        _filesToDownload.Add(kvp.Key);
-                    }
+                    if (kvp.Value != GetSha512HashFromFile(kvp.Key)) _filesToDownload.Add(kvp.Key);
                 }
                 else
                 {
                     // File to download
                     _filesToDownload.Add(kvp.Key);
                 }
-            }
 
             return _filesToDownload.Count > 0;
         }
@@ -185,6 +177,5 @@ namespace BubbleBot.Updates
 
             return hashString.ToString();
         }
-
     }
 }

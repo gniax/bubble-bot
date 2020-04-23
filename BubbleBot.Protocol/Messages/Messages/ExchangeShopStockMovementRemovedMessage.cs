@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeShopStockMovementRemovedMessage : Message
-	{
+    public class ExchangeShopStockMovementRemovedMessage : Message
+    {
 
-		// Properties
-		public uint ObjectId { get; set; }
+        // Properties
+        public uint ObjectId { get; set; }
 
 
-		// Constructors
-		public ExchangeShopStockMovementRemovedMessage() { }
+        // Constructors
+        public ExchangeShopStockMovementRemovedMessage() { }
 
-		public ExchangeShopStockMovementRemovedMessage(uint objectId = 0)
-		{
-			ObjectId = objectId;
-		}
+        public ExchangeShopStockMovementRemovedMessage(uint objectId = 0)
+        {
+            ObjectId = objectId;
+        }
 
-	}
+    }
 }

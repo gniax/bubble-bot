@@ -1,26 +1,25 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class LivingObjectMessageRequestMessage : Message
-	{
+    public class LivingObjectMessageRequestMessage : Message
+    {
 
-		// Properties
-		public List<string> Parameters { get; set; }
-		public uint MsgId { get; set; }
-		public uint LivingObject { get; set; }
+        // Properties
+        public List<string> Parameters { get; set; }
+        public uint MsgId { get; set; }
+        public uint LivingObject { get; set; }
 
 
-		// Constructors
-		public LivingObjectMessageRequestMessage() { }
+        // Constructors
+        public LivingObjectMessageRequestMessage() { }
 
-		public LivingObjectMessageRequestMessage(uint msgId = 0, uint livingObject = 0, List<string> parameters = null)
-		{
-			MsgId = msgId;
-			LivingObject = livingObject;
-			Parameters = parameters;
-		}
+        public LivingObjectMessageRequestMessage(uint msgId = 0, uint livingObject = 0, List<string> parameters = null)
+        {
+            MsgId = msgId;
+            LivingObject = livingObject;
+            Parameters = parameters;
+        }
 
-	}
+    }
 }

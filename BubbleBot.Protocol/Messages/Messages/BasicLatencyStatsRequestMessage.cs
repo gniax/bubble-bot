@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicLatencyStatsRequestMessage : Message
-	{
+    public class BasicLatencyStatsRequestMessage : Message
+    {
 
-		// Constructors
-		public BasicLatencyStatsRequestMessage() { }
+        // Constructors
+        public BasicLatencyStatsRequestMessage() { }
 
 
-	}
+    }
 }

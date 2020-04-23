@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ChallengeTargetsListMessage : Message
-	{
+    public class ChallengeTargetsListMessage : Message
+    {
 
-		// Properties
-		public List<int> TargetIds { get; set; }
-		public List<int> TargetCells { get; set; }
+        // Properties
+        public List<int> TargetIds { get; set; }
+        public List<int> TargetCells { get; set; }
 
 
-		// Constructors
-		public ChallengeTargetsListMessage() { }
+        // Constructors
+        public ChallengeTargetsListMessage() { }
 
-		public ChallengeTargetsListMessage(List<int> targetIds = null, List<int> targetCells = null)
-		{
-			TargetIds = targetIds;
-			TargetCells = targetCells;
-		}
+        public ChallengeTargetsListMessage(List<int> targetIds = null, List<int> targetCells = null)
+        {
+            TargetIds = targetIds;
+            TargetCells = targetCells;
+        }
 
-	}
+    }
 }

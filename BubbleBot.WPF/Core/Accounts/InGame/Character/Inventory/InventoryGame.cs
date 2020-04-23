@@ -1,25 +1,32 @@
-using GalaSoft.MvvmLight;
-using BubbleBot.Protocol.Data;
-using BubbleBot.Protocol.Enums;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Messages;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 {
     public class InventoryGame : ViewModelBase, IDisposable
     {
-
         // Fields
         private Account _account;
-        private ConcurrentDictionary<uint, ObjectEntry> _objects;
-        private int _kamas;
-        private short _weight;
-        private short _maxWeight;
         private short _fallbackMaxWeight;
+        private int _kamas;
+        private short _maxWeight;
+        private ConcurrentDictionary<uint, ObjectEntry> _objects;
+        private short _weight;
+
+
+        // Constructor
+        internal InventoryGame(Account account)
+        {
+            _account = account;
+            _objects = new ConcurrentDictionary<uint, ObjectEntry>();
+        }
 
 
         // Properties
@@ -28,6 +35,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             get => _kamas;
             set => Set(ref _kamas, value);
         }
+
         public short Weight
         {
             get => _weight;
@@ -37,6 +45,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                 RaisePropertyChanged("WeightPercent");
             }
         }
+
         public short MaxWeight
         {
             get => _maxWeight;
@@ -52,8 +61,11 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
         public IEnumerable<ObjectEntry> Consumables => Objects.Where(o => o.Type == ObjectTypes.CONSUMABLE);
         public IEnumerable<ObjectEntry> Resources => Objects.Where(o => o.Type == ObjectTypes.RESSOURCES);
         public IEnumerable<ObjectEntry> QuestObjects => Objects.Where(o => o.Type == ObjectTypes.QUEST_OBJECT);
-        public int WeightPercent => MaxWeight == 0 ? 0 : (int)(((double)Weight / MaxWeight) * 100);
-        public bool HasFishingRod => Objects.FirstOrDefault(o => o.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON && o.IsFishingRod) != null;
+        public int WeightPercent => MaxWeight == 0 ? 0 : (int) ((double) Weight / MaxWeight * 100);
+
+        public bool HasFishingRod => Objects.FirstOrDefault(o =>
+            o.Position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON &&
+            o.IsFishingRod) != null;
 
         // Events
         public event Action<bool> InventoryUpdated;
@@ -61,28 +73,30 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
         public event Action<uint> ObjectEquipped;
 
 
-        // Constructor
-        internal InventoryGame(Account account)
+        public int GetWeaponRange()
         {
-            _account = account;
-            _objects = new ConcurrentDictionary<uint, ObjectEntry>();
+            return GetObjectInPosition(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)?.Range ?? 0;
         }
 
-
-        public int GetWeaponRange()
-            => GetObjectInPosition(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)?.Range ?? 0;
-
         public ObjectEntry GetObjectByUID(int uid)
-            => Objects.FirstOrDefault(f => f.UID == uid);
+        {
+            return Objects.FirstOrDefault(f => f.UID == uid);
+        }
 
         public ObjectEntry GetObjectByGID(int gid)
-            => Objects.FirstOrDefault(f => f.GID == gid);
+        {
+            return Objects.FirstOrDefault(f => f.GID == gid);
+        }
 
         public ObjectEntry GetObjectInPosition(CharacterInventoryPositionEnum position)
-            => Objects.FirstOrDefault(o => o.Position == position);
+        {
+            return Objects.FirstOrDefault(o => o.Position == position);
+        }
 
         public IEnumerable<ObjectEntry> GetObjectsByGID(int gid)
-            => Objects.Where(f => f.GID == gid);
+        {
+            return Objects.Where(f => f.GID == gid);
+        }
 
         public bool EquipObject(ObjectEntry obj)
         {
@@ -96,18 +110,17 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                 return false;
 
             // Check if a possible position is empty
-            for (int i = 0; i < possiblePositions.Count; i++)
-            {
+            for (var i = 0; i < possiblePositions.Count; i++)
                 if (GetObjectInPosition(possiblePositions[i]) == null)
                 {
-                    _account.Network.SendMessage(new ObjectSetPositionMessage(obj.UID, (uint)possiblePositions[i], 1));
-                    _account.Logger.LogInfo(LanguageManager.Translate("113"), LanguageManager.Translate("109", obj.Name));
+                    _account.Network.SendMessage(new ObjectSetPositionMessage(obj.UID, (uint) possiblePositions[i], 1));
+                    _account.Logger.LogInfo(LanguageManager.Translate("113"),
+                        LanguageManager.Translate("109", obj.Name));
                     return true;
                 }
-            }
 
             // If we didn't find an empty place, just equip it in the first possible position
-            _account.Network.SendMessage(new ObjectSetPositionMessage(obj.UID, (uint)possiblePositions[0], 1));
+            _account.Network.SendMessage(new ObjectSetPositionMessage(obj.UID, (uint) possiblePositions[0], 1));
             _account.Logger.LogInfo(LanguageManager.Translate("113"), LanguageManager.Translate("109", obj.Name));
             return true;
         }
@@ -136,9 +149,8 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             }
             else
             {
-                qty = qty == 0 ?
-                      obj.Quantity :
-                      qty > obj.Quantity ? obj.Quantity : qty;
+                qty = qty == 0 ? obj.Quantity :
+                    qty > obj.Quantity ? obj.Quantity : qty;
 
                 _account.Network.SendMessage(new ObjectUseMultipleMessage(obj.UID, qty));
             }
@@ -151,9 +163,8 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             if (obj == null)
                 return;
 
-            qty = qty == 0 ?
-                  obj.Quantity :
-                  qty > obj.Quantity ? obj.Quantity : qty;
+            qty = qty == 0 ? obj.Quantity :
+                qty > obj.Quantity ? obj.Quantity : qty;
 
             _account.Network.SendMessage(new ObjectDropMessage(obj.UID, qty > obj.Quantity ? obj.Quantity : qty));
             _account.Logger.LogInfo(LanguageManager.Translate("113"), LanguageManager.Translate("112", qty, obj.Name));
@@ -164,9 +175,8 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             if (obj == null)
                 return;
 
-            qty = qty == 0 ?
-                  obj.Quantity :
-                  qty > obj.Quantity ? obj.Quantity : qty;
+            qty = qty == 0 ? obj.Quantity :
+                qty > obj.Quantity ? obj.Quantity : qty;
 
             _account.Network.SendMessage(new ObjectDeleteMessage(obj.UID, qty));
             _account.Logger.LogInfo(LanguageManager.Translate("113"), LanguageManager.Translate("114", qty, obj.Name));
@@ -176,16 +186,15 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
         {
             try
             {
-                int inventoryItemPods = 0;
-                foreach(var item in _account.Game.Character.Inventory.Equipements)
-                {
-                    if(item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
-                    {
-                        inventoryItemPods += (int)item.WeightBoost;
-                    }
-                }
-                MaxWeight = (short)(1000 + (5 * _account.Game.Character.Jobs.Jobs.Sum(j => j.Level)) + (1000 * _account.Game.Character.Jobs.Jobs.Count(j => j.Level == 100)) +
-                                    (5 * _account.Game.Character.Stats.Strength.Total) + inventoryItemPods); 
+                var inventoryItemPods = 0;
+                foreach (var item in _account.Game.Character.Inventory.Equipements)
+                    if (item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                        inventoryItemPods += (int) item.WeightBoost;
+
+                if (_account.Game.Character.Stats.Strength != null)
+                    MaxWeight = (short) (1000 + 5 * _account.Game.Character.Jobs.Jobs.Sum(j => j.Level) +
+                                         1000 * _account.Game.Character.Jobs.Jobs.Count(j => j.Level == 100) +
+                                         5 * _account.Game.Character.Stats.Strength.Total + inventoryItemPods);
             }
             catch
             {
@@ -193,18 +202,26 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             }
         }
 
+        private void RaiseINPCs()
+        {
+            RaisePropertyChanged("Equipements");
+            RaisePropertyChanged("Consumables");
+            RaisePropertyChanged("Resources");
+            RaisePropertyChanged("QuestObjects");
+        }
+
         #region Updates
 
         public void Update(InventoryContentMessage message)
         {
             _objects.Clear();
-            Kamas = (int)message.Kamas;
+            Kamas = (int) message.Kamas;
 
-            var items = DataManager.GetList<Items>(message.Objects.Select(f => (int)f.ObjectGID));
-            for (int i = 0; i < message.Objects.Count; i++)
-            {
-                _objects.TryAdd(message.Objects[i].ObjectUID, new ObjectEntry(message.Objects[i], items.FirstOrDefault(f => f.Id == message.Objects[i].ObjectGID)));
-            }
+            var items = DataManager.GetList<Items>(message.Objects.Select(f => (int) f.ObjectGID));
+            for (var i = 0; i < message.Objects.Count; i++)
+                _objects.TryAdd(message.Objects[i].ObjectUID,
+                    new ObjectEntry(message.Objects[i],
+                        items.FirstOrDefault(f => f.Id == message.Objects[i].ObjectGID)));
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -213,10 +230,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
         public void Update(ObjectAddedMessage message)
         {
             var obj = new ObjectEntry(message.Object);
-            if (_objects.TryAdd(message.Object.ObjectUID, obj))
-            {
-                ObjectGained?.Invoke(obj.GID);
-            }
+            if (_objects.TryAdd(message.Object.ObjectUID, obj)) ObjectGained?.Invoke(obj.GID);
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -224,11 +238,10 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectsAddedMessage message)
         {
-            var items = DataManager.GetList<Items>(message.Object.Select(f => (int)f.ObjectGID));
-            for (int i = 0; i < message.Object.Count; i++)
-            {
-                _objects.TryAdd(message.Object[i].ObjectUID, new ObjectEntry(message.Object[i], items.FirstOrDefault(f => f.Id == message.Object[i].ObjectGID)));
-            }
+            var items = DataManager.GetList<Items>(message.Object.Select(f => (int) f.ObjectGID));
+            for (var i = 0; i < message.Object.Count; i++)
+                _objects.TryAdd(message.Object[i].ObjectUID,
+                    new ObjectEntry(message.Object[i], items.FirstOrDefault(f => f.Id == message.Object[i].ObjectGID)));
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -236,7 +249,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectDeletedMessage message)
         {
-            _objects.TryRemove(message.ObjectUID, out ObjectEntry value);
+            _objects.TryRemove(message.ObjectUID, out var value);
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -244,10 +257,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectsDeletedMessage message)
         {
-            for (int i = 0; i < message.ObjectUID.Count; i++)
-            {
-                _objects.TryRemove(message.ObjectUID[i], out ObjectEntry value);
-            }
+            for (var i = 0; i < message.ObjectUID.Count; i++) _objects.TryRemove(message.ObjectUID[i], out var value);
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -255,10 +265,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectModifiedMessage message)
         {
-            if (_objects.TryGetValue(message.Object.ObjectUID, out ObjectEntry obj))
-            {
-                obj.Update(message.Object);
-            }
+            if (_objects.TryGetValue(message.Object.ObjectUID, out var obj)) obj.Update(message.Object);
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -266,7 +273,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectMovementMessage message)
         {
-            if (_objects.TryGetValue(message.ObjectUID, out ObjectEntry obj))
+            if (_objects.TryGetValue(message.ObjectUID, out var obj))
             {
                 obj.Update(message);
 
@@ -280,7 +287,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectQuantityMessage message)
         {
-            if (_objects.TryGetValue(message.ObjectUID, out ObjectEntry obj))
+            if (_objects.TryGetValue(message.ObjectUID, out var obj))
             {
                 obj.UpdateQuantity(message.Quantity);
                 ObjectGained?.Invoke(obj.GID);
@@ -292,13 +299,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectsQuantityMessage message)
         {
-            for (int i = 0; i < message.ObjectsUIDAndQty.Count; i++)
-            {
-                if (_objects.TryGetValue(message.ObjectsUIDAndQty[i].ObjectUID, out ObjectEntry obj))
-                {
+            for (var i = 0; i < message.ObjectsUIDAndQty.Count; i++)
+                if (_objects.TryGetValue(message.ObjectsUIDAndQty[i].ObjectUID, out var obj))
                     obj.UpdateQuantity(message.ObjectsUIDAndQty[i].Quantity);
-                }
-            }
 
             RaiseINPCs();
             InventoryUpdated?.Invoke(true);
@@ -306,8 +309,8 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(InventoryWeightMessage message)
         {
-            Weight = (short)message.Weight;
-            _fallbackMaxWeight = (short)message.WeightMax;
+            Weight = (short) message.Weight;
+            _fallbackMaxWeight = (short) message.WeightMax;
             ResetMaxWeight();
 
             InventoryUpdated?.Invoke(false);
@@ -321,21 +324,13 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(CharacterStatsListMessage message)
         {
-            Kamas = (int)message.Stats.Kamas;
+            Kamas = (int) message.Stats.Kamas;
             ResetMaxWeight();
 
             InventoryUpdated?.Invoke(false);
         }
 
         #endregion
-
-        private void RaiseINPCs()
-        {
-            RaisePropertyChanged("Equipements");
-            RaisePropertyChanged("Consumables");
-            RaisePropertyChanged("Resources");
-            RaisePropertyChanged("QuestObjects");
-        }
 
         #region IDisposable Support
 
@@ -347,7 +342,6 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             {
                 if (disposing)
                 {
-
                 }
 
                 _objects.Clear();
@@ -358,11 +352,16 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             }
         }
 
-        ~InventoryGame() => Dispose(false);
+        ~InventoryGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

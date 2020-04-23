@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyInvitationRequestMessage : Message
-	{
+    public class PartyInvitationRequestMessage : Message
+    {
 
-		// Properties
-		public string Name { get; set; }
+        // Properties
+        public string Name { get; set; }
 
 
-		// Constructors
-		public PartyInvitationRequestMessage() { }
+        // Constructors
+        public PartyInvitationRequestMessage() { }
 
-		public PartyInvitationRequestMessage(string name = "")
-		{
-			Name = name;
-		}
+        public PartyInvitationRequestMessage(string name = "")
+        {
+            Name = name;
+        }
 
-	}
+    }
 }

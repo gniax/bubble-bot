@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceInvitationStateRecrutedMessage : Message
-	{
+    public class AllianceInvitationStateRecrutedMessage : Message
+    {
 
-		// Properties
-		public uint InvitationState { get; set; }
+        // Properties
+        public uint InvitationState { get; set; }
 
 
-		// Constructors
-		public AllianceInvitationStateRecrutedMessage() { }
+        // Constructors
+        public AllianceInvitationStateRecrutedMessage() { }
 
-		public AllianceInvitationStateRecrutedMessage(uint invitationState = 0)
-		{
-			InvitationState = invitationState;
-		}
+        public AllianceInvitationStateRecrutedMessage(uint invitationState = 0)
+        {
+            InvitationState = invitationState;
+        }
 
-	}
+    }
 }

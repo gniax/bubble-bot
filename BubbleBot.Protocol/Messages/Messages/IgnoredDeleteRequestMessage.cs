@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class IgnoredDeleteRequestMessage : Message
-	{
+    public class IgnoredDeleteRequestMessage : Message
+    {
 
-		// Properties
-		public uint AccountId { get; set; }
-		public bool Session { get; set; }
+        // Properties
+        public uint AccountId { get; set; }
+        public bool Session { get; set; }
 
 
-		// Constructors
-		public IgnoredDeleteRequestMessage() { }
+        // Constructors
+        public IgnoredDeleteRequestMessage() { }
 
-		public IgnoredDeleteRequestMessage(uint accountId = 0, bool session = false)
-		{
-			AccountId = accountId;
-			Session = session;
-		}
+        public IgnoredDeleteRequestMessage(uint accountId = 0, bool session = false)
+        {
+            AccountId = accountId;
+            Session = session;
+        }
 
-	}
+    }
 }

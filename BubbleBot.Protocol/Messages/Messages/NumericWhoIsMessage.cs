@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NumericWhoIsMessage : Message
-	{
+    public class NumericWhoIsMessage : Message
+    {
 
-		// Properties
-		public uint PlayerId { get; set; }
-		public uint AccountId { get; set; }
+        // Properties
+        public uint PlayerId { get; set; }
+        public uint AccountId { get; set; }
 
 
-		// Constructors
-		public NumericWhoIsMessage() { }
+        // Constructors
+        public NumericWhoIsMessage() { }
 
-		public NumericWhoIsMessage(uint playerId = 0, uint accountId = 0)
-		{
-			PlayerId = playerId;
-			AccountId = accountId;
-		}
+        public NumericWhoIsMessage(uint playerId = 0, uint accountId = 0)
+        {
+            PlayerId = playerId;
+            AccountId = accountId;
+        }
 
-	}
+    }
 }

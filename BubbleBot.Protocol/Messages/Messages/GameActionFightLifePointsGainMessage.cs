@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightLifePointsGainMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightLifePointsGainMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public int TargetId { get; set; }
-		public uint Delta { get; set; }
+        // Properties
+        public int TargetId { get; set; }
+        public uint Delta { get; set; }
 
 
-		// Constructors
-		public GameActionFightLifePointsGainMessage() { }
+        // Constructors
+        public GameActionFightLifePointsGainMessage() { }
 
-		public GameActionFightLifePointsGainMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, uint delta = 0)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			TargetId = targetId;
-			Delta = delta;
-		}
+        public GameActionFightLifePointsGainMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, uint delta = 0)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            TargetId = targetId;
+            Delta = delta;
+        }
 
-	}
+    }
 }

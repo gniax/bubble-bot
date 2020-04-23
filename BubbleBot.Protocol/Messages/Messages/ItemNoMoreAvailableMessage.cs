@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ItemNoMoreAvailableMessage : Message
-	{
+    public class ItemNoMoreAvailableMessage : Message
+    {
 
-		// Constructors
-		public ItemNoMoreAvailableMessage() { }
+        // Constructors
+        public ItemNoMoreAvailableMessage() { }
 
 
-	}
+    }
 }

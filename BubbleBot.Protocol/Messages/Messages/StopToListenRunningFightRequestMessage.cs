@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class StopToListenRunningFightRequestMessage : Message
-	{
+    public class StopToListenRunningFightRequestMessage : Message
+    {
 
-		// Constructors
-		public StopToListenRunningFightRequestMessage() { }
+        // Constructors
+        public StopToListenRunningFightRequestMessage() { }
 
 
-	}
+    }
 }

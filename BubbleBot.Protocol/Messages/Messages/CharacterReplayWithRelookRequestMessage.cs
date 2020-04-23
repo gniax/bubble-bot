@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterReplayWithRelookRequestMessage : CharacterReplayRequestMessage
-	{
+    public class CharacterReplayWithRelookRequestMessage : CharacterReplayRequestMessage
+    {
 
-		// Properties
-		public uint CosmeticId { get; set; }
+        // Properties
+        public uint CosmeticId { get; set; }
 
 
-		// Constructors
-		public CharacterReplayWithRelookRequestMessage() { }
+        // Constructors
+        public CharacterReplayWithRelookRequestMessage() { }
 
-		public CharacterReplayWithRelookRequestMessage(uint characterId = 0, uint cosmeticId = 0)
-		{
-			CharacterId = characterId;
-			CosmeticId = cosmeticId;
-		}
+        public CharacterReplayWithRelookRequestMessage(uint characterId = 0, uint cosmeticId = 0)
+        {
+            CharacterId = characterId;
+            CosmeticId = cosmeticId;
+        }
 
-	}
+    }
 }

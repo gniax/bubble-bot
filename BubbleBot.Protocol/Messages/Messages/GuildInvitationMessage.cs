@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildInvitationMessage : Message
-	{
+    public class GuildInvitationMessage : Message
+    {
 
-		// Properties
-		public uint TargetId { get; set; }
+        // Properties
+        public uint TargetId { get; set; }
 
 
-		// Constructors
-		public GuildInvitationMessage() { }
+        // Constructors
+        public GuildInvitationMessage() { }
 
-		public GuildInvitationMessage(uint targetId = 0)
-		{
-			TargetId = targetId;
-		}
+        public GuildInvitationMessage(uint targetId = 0)
+        {
+            TargetId = targetId;
+        }
 
-	}
+    }
 }

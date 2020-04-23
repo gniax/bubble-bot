@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ClientKeyMessage : Message
-	{
+    public class ClientKeyMessage : Message
+    {
 
-		// Properties
-		public string Key { get; set; }
+        // Properties
+        public string Key { get; set; }
 
 
-		// Constructors
-		public ClientKeyMessage() { }
+        // Constructors
+        public ClientKeyMessage() { }
 
-		public ClientKeyMessage(string key = "")
-		{
-			Key = key;
-		}
+        public ClientKeyMessage(string key = "")
+        {
+            Key = key;
+        }
 
-	}
+    }
 }

@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeBuyOkMessage : Message
-	{
+    public class ExchangeBuyOkMessage : Message
+    {
 
-		// Constructors
-		public ExchangeBuyOkMessage() { }
+        // Constructors
+        public ExchangeBuyOkMessage() { }
 
 
-	}
+    }
 }

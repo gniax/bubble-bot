@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MimicryObjectEraseRequestMessage : Message
-	{
+    public class MimicryObjectEraseRequestMessage : Message
+    {
 
-		// Properties
-		public uint HostUID { get; set; }
-		public uint HostPos { get; set; }
+        // Properties
+        public uint HostUID { get; set; }
+        public uint HostPos { get; set; }
 
 
-		// Constructors
-		public MimicryObjectEraseRequestMessage() { }
+        // Constructors
+        public MimicryObjectEraseRequestMessage() { }
 
-		public MimicryObjectEraseRequestMessage(uint hostUID = 0, uint hostPos = 0)
-		{
-			HostUID = hostUID;
-			HostPos = hostPos;
-		}
+        public MimicryObjectEraseRequestMessage(uint hostUID = 0, uint hostPos = 0)
+        {
+            HostUID = hostUID;
+            HostPos = hostPos;
+        }
 
-	}
+    }
 }

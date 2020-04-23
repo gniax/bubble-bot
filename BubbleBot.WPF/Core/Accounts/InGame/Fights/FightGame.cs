@@ -1,65 +1,30 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BubbleBot.Protocol.Messages;
-using BubbleBot.Protocol.Enums;
-using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
-using BubbleBot.Protocol.Types;
 using System.Linq;
-using BubbleBot.Protocol.Data;
+using System.Threading.Tasks;
+using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
+using BubbleBot.Core.Enums;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Shapes;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using BubbleBot.Core.Enums;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Messages;
+using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Accounts.InGame.Fights
 {
     public class FightGame : IClearable, IDisposable
     {
-
         // Fields
         private Account _account;
-        private ConcurrentDictionary<int, FighterEntry> _fighters;
-        private ConcurrentDictionary<int, FighterEntry> _ennemies;
         private ConcurrentDictionary<int, FighterEntry> _allies;
         private Dictionary<int, int> _effectsDurations;
+        private ConcurrentDictionary<int, FighterEntry> _ennemies;
+        private ConcurrentDictionary<int, FighterEntry> _fighters;
         private Dictionary<int, int> _spellsIntervals;
         private Dictionary<int, int> _totalSpellLaunchs;
         private Dictionary<int, Dictionary<int, int>> _totalSpellLaunchsInCells;
-
-
-        // Properties
-        public FightTypeEnum Type { get; private set; }
-        public bool IsFightStarted { get; private set; }
-        public List<FightOptionsEnum> Options { get; private set; }
-        public FightPlayerEntry PlayedFighter { get; private set; }
-        public bool IsOurTurn { get; private set; }
-        public int RoundNumber { get; private set; }
-        public List<short> PositionsForChallengers { get; private set; }
-        public List<short> PositionsForDefenders { get; private set; }
-        public uint FightId { get; private set; }
-
-        public IEnumerable<FighterEntry> Allies => _allies.Values.Where(a => a.Alive);
-        public IEnumerable<FighterEntry> Ennemies => _ennemies.Values.Where(e => e.Alive && e.Stats.InvisibilityState != 1);
-        public IEnumerable<FightMonsterEntry> Monsters => Ennemies.OfType<FightMonsterEntry>();
-        public IEnumerable<FighterEntry> Fighters => _fighters.Values.Where(f => f.Alive);
-        public int InvocationsCount => Fighters.Count(f => f.Stats.Summoner == PlayedFighter.ContextualId);
-        public int AliveEnnemiesCount => Ennemies.Count(f => f.Alive);
-        public List<short> OccupiedCells => Fighters.Select(f => f.CellId).ToList();
-
-
-        // Events
-        public event Action FightJoined;
-        public event Action FightIdReceived;
-        public event Action FightStarted;
-        public event Action FightEnded;
-        public event Action SpectatorJoined;
-        public event Action TurnStarted;
-        public event Action TurnEnded;
-        public event Action FightersUpdated;
-        public event Action FighterStatsUpdated;
-        public event Action PossiblePositionsReceived;
-        public event Action<List<short>> PlayedFighterMoving;
 
 
         // Constructor
@@ -78,22 +43,104 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         }
 
 
+        // Properties
+        public FightTypeEnum Type { get; private set; }
+        public bool IsFightStarted { get; private set; }
+        public List<FightOptionsEnum> Options { get; private set; }
+        public FightPlayerEntry PlayedFighter { get; private set; }
+        public int LatestReceivedDamageRoundId { get; set; }
+        public bool IsOurTurn { get; private set; }
+        public int RoundNumber { get; private set; }
+        public List<short> PositionsForChallengers { get; private set; }
+        public List<short> PositionsForDefenders { get; private set; }
+        public uint FightId { get; private set; }
+        public IEnumerable<FighterEntry> Allies => _allies.Values.Where(a => a.Alive);
+
+        public IEnumerable<FighterEntry> Ennemies =>
+            _ennemies.Values.Where(e => e.Alive && e.Stats.InvisibilityState != 1);
+
+        public IEnumerable<FightMonsterEntry> Monsters => Ennemies.OfType<FightMonsterEntry>();
+        public IEnumerable<FighterEntry> Fighters => _fighters.Values.Where(f => f.Alive);
+        public int InvocationsCount => Fighters.Count(f => f.Stats.Summoner == PlayedFighter.ContextualId);
+        public int AliveEnnemiesCount => Ennemies.Count(f => f.Alive);
+        public List<short> OccupiedCells => Fighters.Select(f => f.CellId).ToList();
+
+        public void Clear()
+        {
+            _fighters.Clear();
+            _ennemies.Clear();
+            _allies.Clear();
+            _effectsDurations.Clear();
+            _spellsIntervals.Clear();
+            _totalSpellLaunchs.Clear();
+            _totalSpellLaunchsInCells.Clear();
+
+            IsFightStarted = false;
+            Options.Clear();
+            PlayedFighter = null;
+            IsOurTurn = false;
+            LatestReceivedDamageRoundId = 0;
+            RoundNumber = 0;
+            FightId = 0;
+            PositionsForChallengers?.Clear();
+            PositionsForDefenders?.Clear();
+        }
+
+
+        // Events
+        public event Action FightJoined;
+        public event Action FightIdReceived;
+        public event Action FightStarted;
+        public event Action FightEnded;
+        public event Action SpectatorJoined;
+        public event Action TurnStarted;
+        public event Action TurnEnded;
+        public event Action FightersUpdated;
+        public event Action FighterStatsUpdated;
+        public event Action PossiblePositionsReceived;
+        public event Action<List<short>> PlayedFighterMoving;
+
+        private void SortFighters()
+        {
+            if (PlayedFighter == null)
+                return;
+
+            foreach (var fighter in Fighters)
+            {
+                if (_allies.ContainsKey(fighter.ContextualId) || _ennemies.ContainsKey(fighter.ContextualId))
+                    continue;
+
+                if (fighter.Team == PlayedFighter.Team)
+                    _allies.TryAdd(fighter.ContextualId, fighter);
+                else
+                    _ennemies.TryAdd(fighter.ContextualId, fighter);
+            }
+        }
+
+        private void AddFighter(GameFightFighterInformations informations)
+        {
+            if (informations is GameFightCharacterInformations || informations is GameFightMutantInformations)
+                _fighters.TryAdd(informations.ContextualId, new FightPlayerEntry(informations));
+            else if (informations is GameFightMonsterInformations mInfos)
+                _fighters.TryAdd(mInfos.ContextualId, new FightMonsterEntry(mInfos, informations));
+            //Console.WriteLine(mInfos.CreatureGenericId);
+        }
+
+
         #region Public Methods
 
         public async Task ToggleOption(FightOptionsEnum option)
         {
-            if (_account.State != Enums.AccountStates.FIGHTING)
+            if (_account.State != AccountStates.FIGHTING)
                 return;
 
             if (!Options.Contains(option))
-            {
-                await _account.Network.SendMessageAsync(new GameFightOptionToggleMessage((uint)option));
-            }
+                await _account.Network.SendMessageAsync(new GameFightOptionToggleMessage((uint) option));
         }
 
         public async Task LaunchSpell(int spellId, short cellId)
         {
-            if (_account.State != Enums.AccountStates.FIGHTING)
+            if (_account.State != AccountStates.FIGHTING)
                 return;
 
             // TODO: Check why DT always sends CastRequest
@@ -103,21 +150,20 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             //}
             //else
             //{
-            await _account.Network.SendMessageAsync(new GameActionFightCastRequestMessage((uint)spellId, cellId));
+            await _account.Network.SendMessageAsync(new GameActionFightCastRequestMessage((uint) spellId, cellId));
             //}
         }
 
         public bool HasState(int stateId)
-            => _effectsDurations.ContainsKey(stateId);
+        {
+            return _effectsDurations.ContainsKey(stateId);
+        }
 
         public FighterEntry GetFighter(int id)
         {
-            if (PlayedFighter != null && PlayedFighter.ContextualId == id)
-            {
-                return PlayedFighter;
-            }
+            if (PlayedFighter != null && PlayedFighter.ContextualId == id) return PlayedFighter;
 
-            return _fighters.TryGetValue(id, out FighterEntry fighter) ? fighter : null;
+            return _fighters.TryGetValue(id, out var fighter) ? fighter : null;
         }
 
         public FighterEntry GetFighterInCell(short cell)
@@ -127,7 +173,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         }
 
         public bool IsCellFree(short cellId)
-            => GetFighterInCell(cellId) == null;
+        {
+            return GetFighterInCell(cellId) == null;
+        }
 
         public FighterEntry GetNearestEnnemy(short cellId = -1, Func<FighterEntry, bool> filter = null)
         {
@@ -155,7 +203,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public FighterEntry GetWeakestEnnemy()
         {
-            int lp = -1;
+            var lp = -1;
             FighterEntry ennemy = null;
 
             foreach (var ennemyEntry in Ennemies)
@@ -199,7 +247,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public FighterEntry GetWeakestAlly()
         {
-            int lp = -1;
+            var lp = -1;
             FighterEntry ally = null;
 
             foreach (var allyEntry in Allies)
@@ -219,23 +267,28 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public IEnumerable<FighterEntry> GetHandToHandEnnemies(short cellId = -1)
         {
-            MapPoint charMp = MapPoint.FromCellId(cellId == -1 ? PlayedFighter.CellId : cellId);
+            var charMp = MapPoint.FromCellId(cellId == -1 ? PlayedFighter.CellId : cellId);
             return Ennemies.Where(e => e.Alive && charMp.DistanceToCell(MapPoint.FromCellId(e.CellId)) == 1);
         }
 
         public IEnumerable<FighterEntry> GetHandToHandAllies(short cellId = -1)
         {
-            MapPoint charMp = MapPoint.FromCellId(cellId == -1 ? PlayedFighter.CellId : cellId);
+            var charMp = MapPoint.FromCellId(cellId == -1 ? PlayedFighter.CellId : cellId);
             return Allies.Where(a => a.Alive && charMp.DistanceToCell(MapPoint.FromCellId(a.CellId)) == 1);
         }
 
         public bool IsHandToHandWithAnEnnemy(short cellId = -1)
-            => GetHandToHandEnnemies(cellId).Count() > 0;
+        {
+            return GetHandToHandEnnemies(cellId).Count() > 0;
+        }
 
         public bool IsHandToHandWithAnAlly(short cellId = -1)
-            => GetHandToHandAllies(cellId).Count() > 0;
+        {
+            return GetHandToHandAllies(cellId).Count() > 0;
+        }
 
-        public List<MapPoint> GetSpellZone(int spellId, short fromCellId, short targetCellId, SpellLevels spellLevel = null)
+        public List<MapPoint> GetSpellZone(int spellId, short fromCellId, short targetCellId,
+            SpellLevels spellLevel = null)
         {
             if (spellLevel == null)
             {
@@ -268,7 +321,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             if (PlayedFighter.ActionPoints < spellLevel.ApCost)
                 return SpellInabilityReasons.ACTION_POINTS;
 
-            if (spellLevel.MaxCastPerTurn > 0 && _totalSpellLaunchs.ContainsKey(spellId) && _totalSpellLaunchs[spellId] >= spellLevel.MaxCastPerTurn)
+            if (spellLevel.MaxCastPerTurn > 0 && _totalSpellLaunchs.ContainsKey(spellId) &&
+                _totalSpellLaunchs[spellId] >= spellLevel.MaxCastPerTurn)
                 return SpellInabilityReasons.TOO_MANY_LAUNCHS;
 
             if (_spellsIntervals.ContainsKey(spellId))
@@ -277,7 +331,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             if (spellLevel.InitialCooldown > 0 && RoundNumber <= spellLevel.InitialCooldown)
                 return SpellInabilityReasons.COOLDOWN;
 
-            if (spellLevel.Effects.Count > 0 && spellLevel.Effects[0].Value<int>("effectId") == 181 && InvocationsCount >= _account.Game.Character.Stats.SummonableCreaturesBoost.Total)
+            if (spellLevel.Effects.Count > 0 && spellLevel.Effects[0].Value<int>("effectId") == 181 &&
+                InvocationsCount >= _account.Game.Character.Stats.SummonableCreaturesBoost.Total)
                 return SpellInabilityReasons.TOO_MANY_INVOCATIONS;
 
             if (spellLevel.StatesRequired.Any(f => !_effectsDurations.ContainsKey(f)))
@@ -300,13 +355,14 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
 
             if (spellLevel.MaxCastPerTarget > 0 && _totalSpellLaunchsInCells.ContainsKey(spellId) &&
-                _totalSpellLaunchsInCells[spellId].ContainsKey(targetCellId) && _totalSpellLaunchsInCells[spellId][targetCellId] >= spellLevel.MaxCastPerTarget)
+                _totalSpellLaunchsInCells[spellId].ContainsKey(targetCellId) &&
+                _totalSpellLaunchsInCells[spellId][targetCellId] >= spellLevel.MaxCastPerTarget)
                 return SpellInabilityReasons.TOO_MANY_LAUNCHS_ON_CELL;
 
             if (spellLevel.NeedFreeCell && !IsCellFree(targetCellId))
                 return SpellInabilityReasons.NEED_FREE_CELL;
 
-            if (spellLevel.NeedTakenCell && IsCellFree(targetCellId))// && characterCellId != targetCellId))
+            if (spellLevel.NeedTakenCell && IsCellFree(targetCellId)) // && characterCellId != targetCellId))
                 return SpellInabilityReasons.NEED_TAKEN_CELL;
 
             // TODO: Not 100% sure this works flawlessly
@@ -318,9 +374,10 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public List<short> GetSpellRange(short characterCellId, SpellLevels spellLevel)
         {
-            List<short> range = new List<short>();
+            var range = new List<short>();
 
-            foreach (var mp in SpellShapes.GetSpellRange(characterCellId, spellLevel, _account.Game.Character.Stats.Range.Total))
+            foreach (var mp in SpellShapes.GetSpellRange(characterCellId, spellLevel,
+                _account.Game.Character.Stats.Range.Total))
             {
                 if (mp == null || range.Contains(mp.CellId))
                     continue;
@@ -333,44 +390,21 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             }
 
             if (spellLevel.CastTestLos)
-            {
-                for (int i = range.Count - 1; i >= 0; i--)
-                {
-                    if (Dofus1Line.IsLineObstructed(_account.Game.Map.Data, characterCellId, range[i], OccupiedCells, spellLevel.CastInDiagonal))
+                for (var i = range.Count - 1; i >= 0; i--)
+                    if (Dofus1Line.IsLineObstructed(_account.Game.Map.Data, characterCellId, range[i], OccupiedCells,
+                        spellLevel.CastInDiagonal))
                         range.RemoveAt(i);
-                }
-            }
 
             return range;
         }
 
         #endregion
 
-        public void Clear()
-        {
-            _fighters.Clear();
-            _ennemies.Clear();
-            _allies.Clear();
-            _effectsDurations.Clear();
-            _spellsIntervals.Clear();
-            _totalSpellLaunchs.Clear();
-            _totalSpellLaunchsInCells.Clear();
-
-            IsFightStarted = false;
-            Options.Clear();
-            PlayedFighter = null;
-            IsOurTurn = false;
-            RoundNumber = 0;
-            FightId = 0;
-            PositionsForChallengers?.Clear();
-            PositionsForDefenders?.Clear();
-        }
-
         #region Updates
 
         public void Update(GameFightJoinMessage message)
         {
-            Type = (FightTypeEnum)message.FightType;
+            Type = (FightTypeEnum) message.FightType;
             IsFightStarted = message.IsFightStarted;
 
             _account.State = AccountStates.FIGHTING;
@@ -379,8 +413,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public void Update(GameFightPlacementPossiblePositionsMessage message)
         {
-            PositionsForChallengers = message.PositionsForChallengers.Select(c => (short)c).ToList();
-            PositionsForDefenders = message.PositionsForDefenders.Select(c => (short)c).ToList();
+            PositionsForChallengers = message.PositionsForChallengers.Select(c => (short) c).ToList();
+            PositionsForDefenders = message.PositionsForDefenders.Select(c => (short) c).ToList();
 
             PossiblePositionsReceived?.Invoke();
         }
@@ -403,13 +437,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         public void Update(GameFightShowFighterMessage message)
         {
             if (message.Informations.ContextualId == _account.Game.Character.Id)
-            {
                 PlayedFighter = new FightPlayerEntry(message.Informations);
-            }
             else
-            {
                 AddFighter(message.Informations);
-            }
 
             SortFighters();
             FightersUpdated?.Invoke();
@@ -417,7 +447,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public void Update(GameFightUpdateTeamMessage message)
         {
-            if (_account.State == AccountStates.FIGHTING && message.Team.LeaderId == _account.Game.Character.Id && FightId == 0)
+            if (_account.State == AccountStates.FIGHTING && message.Team.LeaderId == _account.Game.Character.Id &&
+                FightId == 0)
             {
                 FightId = message.FightId;
                 FightIdReceived?.Invoke();
@@ -426,15 +457,10 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public void Update(GameFightOptionStateUpdateMessage message)
         {
-            FightOptionsEnum option = (FightOptionsEnum)message.Option;
+            var option = (FightOptionsEnum) message.Option;
             if (!message.State && Options.Contains(option))
-            {
                 Options.Remove(option);
-            }
-            else if (message.State && !Options.Contains(option))
-            {
-                Options.Add(option);
-            }
+            else if (message.State && !Options.Contains(option)) Options.Add(option);
         }
 
         public void Update(GameEntitiesDispositionMessage message)
@@ -469,8 +495,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
             if (PlayedFighter != null)
             {
-                _account.Game.Character.Stats.MaxLifePoints = (uint)PlayedFighter?.MaxLifePoints;
-                _account.Game.Character.Stats.LifePoints = (uint)PlayedFighter?.LifePoints;
+                _account.Game.Character.Stats.MaxLifePoints = (uint) PlayedFighter?.MaxLifePoints;
+                _account.Game.Character.Stats.LifePoints = (uint) PlayedFighter?.LifePoints;
             }
 
             FighterStatsUpdated?.Invoke();
@@ -500,13 +526,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 fighter.Update(message);
 
                 if (fighter.ContextualId == PlayedFighter?.ContextualId)
-                {
-                    PlayedFighterMoving?.Invoke(message.KeyMovements.Select(c => (short)c).ToList());
-                }
+                    PlayedFighterMoving?.Invoke(message.KeyMovements.Select(c => (short) c).ToList());
                 else
-                {
                     FightersUpdated?.Invoke();
-                }
             }
         }
 
@@ -531,8 +553,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             // Trigger update event if its our character
             if (message.TargetId == PlayedFighter?.ContextualId)
             {
-                _account.Game.Character.Stats.MaxLifePoints = (uint)PlayedFighter?.MaxLifePoints;
-                _account.Game.Character.Stats.LifePoints = (uint)PlayedFighter?.LifePoints;
+                LatestReceivedDamageRoundId = RoundNumber;
+                _account.Game.Character.Stats.MaxLifePoints = (uint) PlayedFighter?.MaxLifePoints;
+                _account.Game.Character.Stats.LifePoints = (uint) PlayedFighter?.LifePoints;
                 FighterStatsUpdated?.Invoke();
             }
         }
@@ -544,8 +567,8 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             // Trigger update event if its our character
             if (message.TargetId == PlayedFighter.ContextualId)
             {
-                _account.Game.Character.Stats.MaxLifePoints = (uint)PlayedFighter?.MaxLifePoints;
-                _account.Game.Character.Stats.LifePoints = (uint)PlayedFighter?.LifePoints;
+                _account.Game.Character.Stats.MaxLifePoints = (uint) PlayedFighter?.MaxLifePoints;
+                _account.Game.Character.Stats.LifePoints = (uint) PlayedFighter?.LifePoints;
                 FighterStatsUpdated?.Invoke();
             }
         }
@@ -559,9 +582,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             else
             {
                 var fighter = GetFighter(message.CharId);
-                _fighters.TryRemove(fighter.ContextualId, out FighterEntry f);
-                if (Allies.Contains(fighter)) _allies.TryRemove(fighter.ContextualId, out FighterEntry a);
-                else if (Ennemies.Contains(fighter)) _ennemies.TryRemove(fighter.ContextualId, out FighterEntry e);
+                _fighters.TryRemove(fighter.ContextualId, out var f);
+                if (Allies.Contains(fighter)) _allies.TryRemove(fighter.ContextualId, out var a);
+                else if (Ennemies.Contains(fighter)) _ennemies.TryRemove(fighter.ContextualId, out var e);
             }
         }
 
@@ -585,18 +608,18 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 _totalSpellLaunchsInCells.Clear();
 
                 // Effects
-                for (int i = _effectsDurations.Count - 1; i >= 0; i--)
+                for (var i = _effectsDurations.Count - 1; i >= 0; i--)
                 {
-                    int key = _effectsDurations.ElementAt(i).Key;
+                    var key = _effectsDurations.ElementAt(i).Key;
                     _effectsDurations[key]--;
                     if (_effectsDurations[key] == 0)
                         _effectsDurations.Remove(key);
                 }
 
                 // Spells
-                for (int i = _spellsIntervals.Count - 1; i >= 0; i--)
+                for (var i = _spellsIntervals.Count - 1; i >= 0; i--)
                 {
-                    int key = _spellsIntervals.ElementAt(i).Key;
+                    var key = _spellsIntervals.ElementAt(i).Key;
                     _spellsIntervals[key]--;
                     if (_spellsIntervals[key] == 0)
                         _spellsIntervals.Remove(key);
@@ -623,17 +646,14 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             }
             else if (message.Effect is FightTemporaryBoostEffect ftbe)
             {
-                if (ftbe.TargetId == PlayedFighter?.ContextualId)
-                {
-                    PlayedFighter.Update(message.ActionId, ftbe);
-                }
+                if (ftbe.TargetId == PlayedFighter?.ContextualId) PlayedFighter.Update(message.ActionId, ftbe);
             }
         }
 
         public void Update(GameFightEndMessage message)
         {
             Clear();
-            _account.State = Enums.AccountStates.NONE;
+            _account.State = AccountStates.NONE;
 
             FightEnded?.Invoke();
         }
@@ -642,13 +662,11 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         {
             if (PlayedFighter?.ContextualId == message.SourceId)
             {
-                var spell = DataManager.Get<Spells>((int)message.SpellId);
-                var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[(int)message.SpellLevel - 1]);
+                var spell = DataManager.Get<Spells>((int) message.SpellId);
+                var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[(int) message.SpellLevel - 1]);
 
                 if (spellLevel.MinCastInterval > 0 && !_spellsIntervals.ContainsKey(spell.Id))
-                {
                     _spellsIntervals.Add(spell.Id, spellLevel.MinCastInterval);
-                }
 
                 if (!_totalSpellLaunchs.ContainsKey(spell.Id))
                     _totalSpellLaunchs.Add(spell.Id, 0);
@@ -662,9 +680,9 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 }
                 else
                 {
-                    _totalSpellLaunchsInCells.Add(spell.Id, new Dictionary<int, int>()
+                    _totalSpellLaunchsInCells.Add(spell.Id, new Dictionary<int, int>
                     {
-                        { message.DestinationCellId, 1 }
+                        {message.DestinationCellId, 1}
                     });
                 }
             }
@@ -672,44 +690,10 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public void Update(GameFightNewRoundMessage message)
         {
-            RoundNumber = (int)message.RoundNumber;
+            RoundNumber = (int) message.RoundNumber;
         }
 
         #endregion
-
-        private void SortFighters()
-        {
-            if (PlayedFighter == null)
-                return;
-
-            foreach (var fighter in Fighters)
-            {
-                if (_allies.ContainsKey(fighter.ContextualId) || _ennemies.ContainsKey(fighter.ContextualId))
-                    continue;
-
-                if (fighter.Team == PlayedFighter.Team)
-                {
-                    _allies.TryAdd(fighter.ContextualId, fighter);
-                }
-                else
-                {
-                    _ennemies.TryAdd(fighter.ContextualId, fighter);
-                }
-            }
-        }
-
-        private void AddFighter(GameFightFighterInformations informations)
-        {
-            if (informations is GameFightCharacterInformations || informations is GameFightMutantInformations)
-            {
-                _fighters.TryAdd(informations.ContextualId, new FightPlayerEntry(informations));
-            }
-            else if (informations is GameFightMonsterInformations mInfos)
-            {
-                _fighters.TryAdd(mInfos.ContextualId, new FightMonsterEntry(mInfos, informations));
-                //Console.WriteLine(mInfos.CreatureGenericId);
-            }
-        }
 
         #region IDisposable Support
 
@@ -736,11 +720,16 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             }
         }
 
-        ~FightGame() => Dispose(false);
+        ~FightGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

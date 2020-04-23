@@ -1,22 +1,14 @@
-using BubbleBot.Server;
-using BubbleBot.Server.Messages;
 using System.Windows;
-using BubbleBot.Server.Enums;
-using BubbleBot.WPF.Views;
-using BubbleBot.Configurations;
-using System.Windows.Controls;
 using BubbleBot.Configurations.Language;
-using BubbleBot.Protocol.Messages;
 using BubbleBot.Core.Accounts;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Views
 {
     public partial class NicknameWindow
     {
-        public Account _account { get; set; }
-        public string AccountName { get; set; }
-        public string Information { get; set; }
-        public string nickname = null;
+        public string nickname;
+
         public NicknameWindow(Account account)
         {
             InitializeComponent();
@@ -24,8 +16,12 @@ namespace BubbleBot.Views
             _account = account;
             AccountName = LanguageManager.Translate("601", _account.AccountConfig.Username);
             Information = string.Format(LanguageManager.Translate("603"));
-
         }
+
+        public Account _account { get; set; }
+        public string AccountName { get; set; }
+        public string Information { get; set; }
+
         private void SetAlert(string text, Visibility visibility)
         {
             tbAlert.Text = text;
@@ -46,7 +42,7 @@ namespace BubbleBot.Views
         {
             SetAlert("", Visibility.Hidden);
             nickname = txtNickname.Text;
-            this.Close();
+            Close();
         }
     }
 }

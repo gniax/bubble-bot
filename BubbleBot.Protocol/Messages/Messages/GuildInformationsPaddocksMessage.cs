@@ -1,24 +1,24 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildInformationsPaddocksMessage : Message
-	{
+    public class GuildInformationsPaddocksMessage : Message
+    {
 
-		// Properties
-		public List<PaddockContentInformations> PaddocksInformations { get; set; }
-		public uint NbPaddockMax { get; set; }
+        // Properties
+        public List<PaddockContentInformations> PaddocksInformations { get; set; }
+        public uint NbPaddockMax { get; set; }
 
 
-		// Constructors
-		public GuildInformationsPaddocksMessage() { }
+        // Constructors
+        public GuildInformationsPaddocksMessage() { }
 
-		public GuildInformationsPaddocksMessage(uint nbPaddockMax = 0, List<PaddockContentInformations> paddocksInformations = null)
-		{
-			NbPaddockMax = nbPaddockMax;
-			PaddocksInformations = paddocksInformations;
-		}
+        public GuildInformationsPaddocksMessage(uint nbPaddockMax = 0, List<PaddockContentInformations> paddocksInformations = null)
+        {
+            NbPaddockMax = nbPaddockMax;
+            PaddocksInformations = paddocksInformations;
+        }
 
-	}
+    }
 }

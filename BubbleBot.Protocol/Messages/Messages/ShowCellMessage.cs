@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ShowCellMessage : Message
-	{
+    public class ShowCellMessage : Message
+    {
 
-		// Properties
-		public int SourceId { get; set; }
-		public uint CellId { get; set; }
+        // Properties
+        public int SourceId { get; set; }
+        public uint CellId { get; set; }
 
 
-		// Constructors
-		public ShowCellMessage() { }
+        // Constructors
+        public ShowCellMessage() { }
 
-		public ShowCellMessage(int sourceId = 0, uint cellId = 0)
-		{
-			SourceId = sourceId;
-			CellId = cellId;
-		}
+        public ShowCellMessage(int sourceId = 0, uint cellId = 0)
+        {
+            SourceId = sourceId;
+            CellId = cellId;
+        }
 
-	}
+    }
 }

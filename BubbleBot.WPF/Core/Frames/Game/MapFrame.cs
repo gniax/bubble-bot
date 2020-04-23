@@ -1,48 +1,73 @@
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Messages;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Frames.Game
 {
     public static class MapFrame
     {
-
         public static Task HandleCurrentMapMessage(Account account, CurrentMapMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
-                if (account.State != AccountStates.RECAPTCHA)
-                {
-                    account.State = AccountStates.NONE;
-                }
+                if (account.Network.ConnectTimeout != null)
+                    account.Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
 
-                await account.Network.SendMessageAsync(new MapInformationsRequestMessage(message.MapId)).ConfigureAwait(false);
+                if (account.State != AccountStates.RECAPTCHA) account.State = AccountStates.NONE;
+
+                await account.Network.SendMessageAsync(new MapInformationsRequestMessage(message.MapId))
+                    .ConfigureAwait(false);
             });
+        }
 
-        public static Task HandleMapComplementaryInformationsDataMessage(Account account, MapComplementaryInformationsDataMessage message)
-            => Task.Factory.StartNew(async () => await account.Game.Map.Update(message).ConfigureAwait(false), TaskCreationOptions.LongRunning);
+        public static Task HandleMapComplementaryInformationsDataMessage(Account account,
+            MapComplementaryInformationsDataMessage message)
+        {
+            return Task.Factory.StartNew(async () => await account.Game.Map.Update(message).ConfigureAwait(false),
+                TaskCreationOptions.LongRunning);
+        }
 
-        public static Task HandleMapComplementaryInformationsDataInHouseMessage(Account account, MapComplementaryInformationsDataInHouseMessage message)
-            => Task.Run(async () => await HandleMapComplementaryInformationsDataMessage(account, message).ConfigureAwait(false));
+        public static Task HandleMapComplementaryInformationsDataInHouseMessage(Account account,
+            MapComplementaryInformationsDataInHouseMessage message)
+        {
+            return Task.Run(async () =>
+                await HandleMapComplementaryInformationsDataMessage(account, message).ConfigureAwait(false));
+        }
 
-        public static Task HandleMapComplementaryInformationsWithCoordsMessage(Account account, MapComplementaryInformationsWithCoordsMessage message)
-            => Task.Run(async () => await HandleMapComplementaryInformationsDataMessage(account, message).ConfigureAwait(false));
+        public static Task HandleMapComplementaryInformationsWithCoordsMessage(Account account,
+            MapComplementaryInformationsWithCoordsMessage message)
+        {
+            return Task.Run(async () =>
+                await HandleMapComplementaryInformationsDataMessage(account, message).ConfigureAwait(false));
+        }
 
         public static Task HandleStatedMapUpdateMessage(Account account, StatedMapUpdateMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleInteractiveMapUpdateMessage(Account account, InteractiveMapUpdateMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleStatedElementUpdatedMessage(Account account, StatedElementUpdatedMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
-        public static Task HandleInteractiveElementUpdatedMessage(Account account, InteractiveElementUpdatedMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        public static Task HandleInteractiveElementUpdatedMessage(Account account,
+            InteractiveElementUpdatedMessage message)
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleGameMapMovementMessage(Account account, GameMapMovementMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 if (account.State == AccountStates.FIGHTING)
                     return;
@@ -51,21 +76,34 @@ namespace BubbleBot.Core.Frames.Game
                 account.Game.Managers.Movements.Update(message);
                 account.Extensions.CharacterCreation.Update(message);
             });
+        }
 
-        public static Task HandleGameContextRemoveElementMessage(Account account, GameContextRemoveElementMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        public static Task HandleGameContextRemoveElementMessage(Account account,
+            GameContextRemoveElementMessage message)
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleTeleportOnSameMapmessage(Account account, TeleportOnSameMapMessage message)
-            => Task.Run(() => account.Game.Map.Players.FirstOrDefault(p => p.Id == message.TargetId)?.Update(message));
+        {
+            return Task.Run(() =>
+                account.Game.Map.Players.FirstOrDefault(p => p.Id == message.TargetId)?.Update(message));
+        }
 
-        public static Task HandleGameContextRemoveMultipleElementsMessage(Account account, GameContextRemoveMultipleElementsMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        public static Task HandleGameContextRemoveMultipleElementsMessage(Account account,
+            GameContextRemoveMultipleElementsMessage message)
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleGameRolePlayShowActorMessage(Account account, GameRolePlayShowActorMessage message)
-            => Task.Run(() => account.Game.Map.Update(message));
+        {
+            return Task.Run(() => account.Game.Map.Update(message));
+        }
 
         public static Task HandleGameMapNoMovementMessage(Account account, GameMapNoMovementMessage message)
-            => Task.Run(async () =>
+        {
+            return Task.Run(async () =>
             {
                 if (account.State == AccountStates.FIGHTING || account.State == AccountStates.RECAPTCHA)
                     return;
@@ -73,6 +111,6 @@ namespace BubbleBot.Core.Frames.Game
                 account.State = AccountStates.NONE;
                 await account.Game.Managers.Movements.Update(message);
             });
-
+        }
     }
 }

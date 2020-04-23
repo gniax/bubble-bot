@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class GameRolePlayNpcQuestFlag
-	{
+    public class GameRolePlayNpcQuestFlag
+    {
 
-		// Properties
-		public List<uint> QuestsToValidId { get; set; }
-		public List<uint> QuestsToStartId { get; set; }
+        // Properties
+        public List<uint> QuestsToValidId { get; set; }
+        public List<uint> QuestsToStartId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayNpcQuestFlag() { }
+        // Constructors
+        public GameRolePlayNpcQuestFlag() { }
 
-		public GameRolePlayNpcQuestFlag(List<uint> questsToValidId = null, List<uint> questsToStartId = null)
-		{
-			QuestsToValidId = questsToValidId;
-			QuestsToStartId = questsToStartId;
-		}
+        public GameRolePlayNpcQuestFlag(List<uint> questsToValidId = null, List<uint> questsToStartId = null)
+        {
+            QuestsToValidId = questsToValidId;
+            QuestsToStartId = questsToStartId;
+        }
 
-	}
+    }
 }

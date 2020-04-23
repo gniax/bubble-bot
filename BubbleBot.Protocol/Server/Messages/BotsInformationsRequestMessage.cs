@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace BubbleBot.Server.Messages
 {
@@ -20,12 +19,12 @@ namespace BubbleBot.Server.Messages
 
         public void Serialize(BinaryWriter writer)
         {
-            
+
         }
 
         public void Deserialize(BinaryReader reader)
         {
-            
+
         }
 
     }

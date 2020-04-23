@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class TaxCollectorStaticExtendedInformations : TaxCollectorStaticInformations
-	{
+    public class TaxCollectorStaticExtendedInformations : TaxCollectorStaticInformations
+    {
 
-		// Properties
-		public AllianceInformations AllianceIdentity { get; set; }
+        // Properties
+        public AllianceInformations AllianceIdentity { get; set; }
 
 
-		// Constructors
-		public TaxCollectorStaticExtendedInformations() { }
+        // Constructors
+        public TaxCollectorStaticExtendedInformations() { }
 
-		public TaxCollectorStaticExtendedInformations(uint firstNameId = 0, uint lastNameId = 0, GuildInformations guildIdentity = null, AllianceInformations allianceIdentity = null)
-		{
-			FirstNameId = firstNameId;
-			LastNameId = lastNameId;
-			GuildIdentity = guildIdentity;
-			AllianceIdentity = allianceIdentity;
-		}
+        public TaxCollectorStaticExtendedInformations(uint firstNameId = 0, uint lastNameId = 0, GuildInformations guildIdentity = null, AllianceInformations allianceIdentity = null)
+        {
+            FirstNameId = firstNameId;
+            LastNameId = lastNameId;
+            GuildIdentity = guildIdentity;
+            AllianceIdentity = allianceIdentity;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class HelloConnectMessage : Message
-	{
+    public class HelloConnectMessage : Message
+    {
 
-		// Properties
-		public List<int> Key { get; set; }
-		public string Salt { get; set; }
+        // Properties
+        public List<int> Key { get; set; }
+        public string Salt { get; set; }
 
 
-		// Constructors
-		public HelloConnectMessage() { }
+        // Constructors
+        public HelloConnectMessage() { }
 
-		public HelloConnectMessage(string salt = "", List<int> key = null)
-		{
-			Salt = salt;
-			Key = key;
-		}
+        public HelloConnectMessage(string salt = "", List<int> key = null)
+        {
+            Salt = salt;
+            Key = key;
+        }
 
-	}
+    }
 }

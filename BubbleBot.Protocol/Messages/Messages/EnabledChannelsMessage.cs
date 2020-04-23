@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class EnabledChannelsMessage : Message
-	{
+    public class EnabledChannelsMessage : Message
+    {
 
-		// Properties
-		public List<uint> Channels { get; set; }
-		public List<uint> Disallowed { get; set; }
+        // Properties
+        public List<uint> Channels { get; set; }
+        public List<uint> Disallowed { get; set; }
 
 
-		// Constructors
-		public EnabledChannelsMessage() { }
+        // Constructors
+        public EnabledChannelsMessage() { }
 
-		public EnabledChannelsMessage(List<uint> channels = null, List<uint> disallowed = null)
-		{
-			Channels = channels;
-			Disallowed = disallowed;
-		}
+        public EnabledChannelsMessage(List<uint> channels = null, List<uint> disallowed = null)
+        {
+            Channels = channels;
+            Disallowed = disallowed;
+        }
 
-	}
+    }
 }

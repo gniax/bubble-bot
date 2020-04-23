@@ -1,26 +1,26 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class PaddockToSellListMessage : Message
-	{
+    public class PaddockToSellListMessage : Message
+    {
 
-		// Properties
-		public List<PaddockInformationsForSell> PaddockList { get; set; }
-		public uint PageIndex { get; set; }
-		public uint TotalPage { get; set; }
+        // Properties
+        public List<PaddockInformationsForSell> PaddockList { get; set; }
+        public uint PageIndex { get; set; }
+        public uint TotalPage { get; set; }
 
 
-		// Constructors
-		public PaddockToSellListMessage() { }
+        // Constructors
+        public PaddockToSellListMessage() { }
 
-		public PaddockToSellListMessage(uint pageIndex = 0, uint totalPage = 0, List<PaddockInformationsForSell> paddockList = null)
-		{
-			PageIndex = pageIndex;
-			TotalPage = totalPage;
-			PaddockList = paddockList;
-		}
+        public PaddockToSellListMessage(uint pageIndex = 0, uint totalPage = 0, List<PaddockInformationsForSell> paddockList = null)
+        {
+            PageIndex = pageIndex;
+            TotalPage = totalPage;
+            PaddockList = paddockList;
+        }
 
-	}
+    }
 }

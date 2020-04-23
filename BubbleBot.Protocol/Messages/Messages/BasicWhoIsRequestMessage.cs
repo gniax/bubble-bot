@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicWhoIsRequestMessage : Message
-	{
+    public class BasicWhoIsRequestMessage : Message
+    {
 
-		// Properties
-		public bool Verbose { get; set; }
-		public string Search { get; set; }
+        // Properties
+        public bool Verbose { get; set; }
+        public string Search { get; set; }
 
 
-		// Constructors
-		public BasicWhoIsRequestMessage() { }
+        // Constructors
+        public BasicWhoIsRequestMessage() { }
 
-		public BasicWhoIsRequestMessage(bool verbose = false, string search = "")
-		{
-			Verbose = verbose;
-			Search = search;
-		}
+        public BasicWhoIsRequestMessage(bool verbose = false, string search = "")
+        {
+            Verbose = verbose;
+            Search = search;
+        }
 
-	}
+    }
 }

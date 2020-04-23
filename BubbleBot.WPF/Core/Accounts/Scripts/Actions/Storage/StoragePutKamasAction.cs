@@ -4,27 +4,21 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
 {
     public class StoragePutKamasAction : ScriptAction
     {
-
-        // Properties
-        public int Amount { get; private set; }
-
-
         // Constructor
         public StoragePutKamasAction(int amount)
         {
             Amount = amount;
         }
 
+        // Properties
+        public int Amount { get; }
+
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.Storage.PutKamas(Amount))
-            {
-                await Task.Delay(1000);
-            }
+            if (account.Game.Storage.PutKamas(Amount)) await Task.Delay(1000);
 
             return ScriptActionResults.DONE;
         }
-
     }
 }

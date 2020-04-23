@@ -1,4 +1,4 @@
-1|Erreur lors du chargement du compte {0}.\nMessage: {1}
+1|Erreur lors du chargement du compte {0}.                                           Message: {0}
 2|Message: {0}
 3|Lancer le script
 4|Arrêter le script
@@ -356,7 +356,7 @@
 356|Le proxy ne semble pas être fonctionnel.
 357|Succès
 358|Adresse IP: 
-359|p. ex: 127.0.0.1
+359|ex: 127.0.0.1
 360|Port: 
 361|Tester le proxy
 362|Sauvegarder
@@ -382,7 +382,7 @@
 382|Échange non autorisé refusé (joueur ignoré).
 383|Échange non autorisé refusé.
 384|Échange autorisé accepté.
-385|Status
+385|Statut
 386|Disponible
 387|Absent
 388|Privé
@@ -587,7 +587,7 @@
 587|Planification	
 588|Connecter	
 589|Déconnecter
-590|Cliquez sur les heures pour les configurer. Si vous déconnectez le compte manuellement (depuis le bot), le planificateur est désactivé. Si le compte se déconnecte inopinément (heure verte), le planificateur va le reconnecter en relançant le script (si le script était lancé avant la déconnexion).
+590|Cliquez sur les heures pour les configurer. Si vous déconnectez le compte manuellement (depuis le bot), le planificateur est désactivé. Si le compte se déconnecte inopinément (heure verte), le planificateur va le reconnecter en relançant le script (si le script était lancé avant la déconnexion). Si vous sélectionnez plusieurs comptes, pensez à appuyer sur le bouton de validation.
 591|Vitesse de combat
 592|Suicidaire
 593|Rapide
@@ -608,7 +608,7 @@
 613|Puisque "reconnect()" est > 30 minutes => Tentative de reconnexion dans 5 minutes...
 614|Reconnexion dans {0}s.
 615|Génération du pseudo du compte : {0}
-616|Attente de {0} secondes pour la reconnexion et le relancement du script...
+616|Tentative de reconnexion et relancement du script si activé...
 617|Erreur de reconnexion
 618|Achat réussi, pensez à reconnecter le compte pour activer l'abonnement ...
 619|Erreur lors de l'achat de l'abonnement : sûrement dû au réseau, réessayez ...
@@ -640,7 +640,7 @@
 648|Achat de l'item (gid: {0}, lot: {1}, prix: {2}).
 649|Aucun item n'a été trouvé avec les conditions choisies.
 650|Génération du pseudo échouée : réessayez
-651|Déconnecter le bot lorsqu'un autre est banni >>> Reconnexion après :
+651|Déconnecter le bot lorsqu'un autre est banni >> Reconnexion après :
 652|secondes (laissez 0 pour ne pas activer la reconnexion)
 653|Le bot {0} du serveur {1} à été banni. Déconnexion du compte...
 654|Security
@@ -648,3 +648,46 @@
 656|Echec de la complétion du tutoriel ... Nouvelle tentative avec la création d'un nouveau personnage...
 657| Retrait invendu au bout de {0} secondes.
 658|Le délais de remise en vente doit être supérieur ou égale à 0.
+659|Démarrage du script lorsque le Captcha est terminé ! (Timeout: 5 minutes)
+660|Format d'exportation
+661|Balises disponibles:
+662|username:password
+663|Erreur: {0} balise(s) introuvable... Vérifiez le séparateur ou l'orthographe...
+664|Erreur lors du traitement des données d'un compte...
+665|Exportation de Compte en Texte
+666|Séparateur disponible: 
+667|username ; password ; ip ; port ; id ; pxy-user ; pxy-pass 
+668|:
+669|Appliquer aux comptes sélectionnés
+670|Cloudflare a banni temporairement votre IP (TOO_MANY_REQUESTS) ! 
+671|Reconnectez-vous dans {0} secondes...
+672|Erreur d'accés Internet, vérifiez la validité de votre Proxy
+673|Erreur d'accés Internet, vérifiez l'état de votre connexion...
+674|Ajout de l'id à la liste des autorisations.
+675|Combat bugué... tentative de débug en accédent à une cellule aléatoirement: {0}
+676|Réinitialiser
+677|Fin de l'abonnement Dofus Touch
+678|Toujours revenir au premier onglet au changeant de compte
+679|Toujours garder le même onglet en changeant de compte
+680|Déconnexion
+681|Charger
+682|Effets
+683|Catégorie
+684|Amulette
+685|Arme
+686|Anneau
+687|Ceinture
+688|Bottes
+689|Bouclier
+690|Chapeau
+691|Cape
+692|Familier
+693|Dofus/Trophée
+694|Monture
+695|Companion
+696|Poids
+697|Prix
+698|Accéder au monstre dans le bestiaire
+699|Accéder à l'objet dans l'encyclopédie
+700|Performances
+701|Afficher et pouvoir accéder aux objets insérés dans les différents canaux de la console.

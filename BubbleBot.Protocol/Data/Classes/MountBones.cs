@@ -1,18 +1,17 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class MountBones : IData
-	{
+    public class MountBones : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
 
-		//Constructor
-		internal MountBones() {}
+        //Constructor
+        internal MountBones() { }
 
-	}
+    }
 }

@@ -1,19 +1,18 @@
-using BubbleBot.Protocol.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using BubbleBot.Protocol.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class PlayerStatusEnumImageConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string image = "circle_green";
+            var image = "circle_green";
 
-            switch ((PlayerStatusEnum)value)
+            switch ((PlayerStatusEnum) value)
             {
                 case PlayerStatusEnum.PLAYER_STATUS_AFK:
                     image = "Clock-24";
@@ -33,6 +32,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

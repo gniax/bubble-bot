@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ServerStatusUpdateMessage : Message
-	{
+    public class ServerStatusUpdateMessage : Message
+    {
 
-		// Properties
-		public GameServerInformations Server { get; set; }
+        // Properties
+        public GameServerInformations Server { get; set; }
 
 
-		// Constructors
-		public ServerStatusUpdateMessage() { }
+        // Constructors
+        public ServerStatusUpdateMessage() { }
 
-		public ServerStatusUpdateMessage(GameServerInformations server = null)
-		{
-			Server = server;
-		}
+        public ServerStatusUpdateMessage(GameServerInformations server = null)
+        {
+            Server = server;
+        }
 
-	}
+    }
 }

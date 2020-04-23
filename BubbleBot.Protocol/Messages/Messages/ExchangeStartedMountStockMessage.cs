@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeStartedMountStockMessage : Message
-	{
+    public class ExchangeStartedMountStockMessage : Message
+    {
 
-		// Properties
-		public List<ObjectItem> ObjectsInfos { get; set; }
+        // Properties
+        public List<ObjectItem> ObjectsInfos { get; set; }
 
 
-		// Constructors
-		public ExchangeStartedMountStockMessage() { }
+        // Constructors
+        public ExchangeStartedMountStockMessage() { }
 
-		public ExchangeStartedMountStockMessage(List<ObjectItem> objectsInfos = null)
-		{
-			ObjectsInfos = objectsInfos;
-		}
+        public ExchangeStartedMountStockMessage(List<ObjectItem> objectsInfos = null)
+        {
+            ObjectsInfos = objectsInfos;
+        }
 
-	}
+    }
 }

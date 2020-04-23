@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class DungeonEnteredMessage : Message
-	{
+    public class DungeonEnteredMessage : Message
+    {
 
-		// Properties
-		public uint DungeonId { get; set; }
+        // Properties
+        public uint DungeonId { get; set; }
 
 
-		// Constructors
-		public DungeonEnteredMessage() { }
+        // Constructors
+        public DungeonEnteredMessage() { }
 
-		public DungeonEnteredMessage(uint dungeonId = 0)
-		{
-			DungeonId = dungeonId;
-		}
+        public DungeonEnteredMessage(uint dungeonId = 0)
+        {
+            DungeonId = dungeonId;
+        }
 
-	}
+    }
 }

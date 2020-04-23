@@ -1,13 +1,12 @@
-using BubbleBot.Protocol.Enums;
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
+using BubbleBot.Protocol.Enums;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Chat
 {
     public class ChatGame : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -19,12 +18,13 @@ namespace BubbleBot.Core.Accounts.InGame.Chat
         }
 
 
-        public async Task SendMessage(string message, ChatActivableChannelsEnum channel = ChatActivableChannelsEnum.CHANNEL_GLOBAL)
+        public async Task SendMessage(string message,
+            ChatActivableChannelsEnum channel = ChatActivableChannelsEnum.CHANNEL_GLOBAL)
         {
             if (string.IsNullOrEmpty(message))
                 return;
 
-            await _account.Network.SendMessageAsync(new ChatClientMultiMessage(message, (uint)channel));
+            await _account.Network.SendMessageAsync(new ChatClientMultiMessage(message, (uint) channel));
         }
 
         public async Task SendMessageTo(string message, string receiver)
@@ -37,7 +37,7 @@ namespace BubbleBot.Core.Accounts.InGame.Chat
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -45,7 +45,6 @@ namespace BubbleBot.Core.Accounts.InGame.Chat
             {
                 if (disposing)
                 {
-
                 }
 
                 _account = null;
@@ -54,11 +53,16 @@ namespace BubbleBot.Core.Accounts.InGame.Chat
             }
         }
 
-        ~ChatGame() => Dispose(false);
+        ~ChatGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

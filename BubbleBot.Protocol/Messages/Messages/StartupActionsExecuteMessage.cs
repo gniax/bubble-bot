@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class StartupActionsExecuteMessage : Message
-	{
+    public class StartupActionsExecuteMessage : Message
+    {
 
-		// Constructors
-		public StartupActionsExecuteMessage() { }
+        // Constructors
+        public StartupActionsExecuteMessage() { }
 
 
-	}
+    }
 }

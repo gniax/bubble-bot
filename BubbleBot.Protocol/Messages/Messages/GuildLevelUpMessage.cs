@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildLevelUpMessage : Message
-	{
+    public class GuildLevelUpMessage : Message
+    {
 
-		// Properties
-		public uint NewLevel { get; set; }
+        // Properties
+        public uint NewLevel { get; set; }
 
 
-		// Constructors
-		public GuildLevelUpMessage() { }
+        // Constructors
+        public GuildLevelUpMessage() { }
 
-		public GuildLevelUpMessage(uint newLevel = 0)
-		{
-			NewLevel = newLevel;
-		}
+        public GuildLevelUpMessage(uint newLevel = 0)
+        {
+            NewLevel = newLevel;
+        }
 
-	}
+    }
 }

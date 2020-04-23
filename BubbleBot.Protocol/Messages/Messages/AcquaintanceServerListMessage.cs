@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class AcquaintanceServerListMessage : Message
-	{
+    public class AcquaintanceServerListMessage : Message
+    {
 
-		// Properties
-		public List<int> Servers { get; set; }
+        // Properties
+        public List<int> Servers { get; set; }
 
 
-		// Constructors
-		public AcquaintanceServerListMessage() { }
+        // Constructors
+        public AcquaintanceServerListMessage() { }
 
-		public AcquaintanceServerListMessage(List<int> servers = null)
-		{
-			Servers = servers;
-		}
+        public AcquaintanceServerListMessage(List<int> servers = null)
+        {
+            Servers = servers;
+        }
 
-	}
+    }
 }

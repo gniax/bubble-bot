@@ -1,186 +1,35 @@
-using GalaSoft.MvvmLight;
-using BubbleBot.Core.Enums;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using BubbleBot.Core.Enums;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.Configurations
 {
     public class Configuration : ViewModelBase, IDisposable
     {
-
         // Fields
         public const string ConfigurationsPath = "Parameters";
-        private bool _loaded;
+        private bool _acceptAchivements;
         private Account _account;
-        private bool _showGeneralMessages;
-        private bool _showPartyMessages;
-        private bool _showGuildMessages;
+        private bool _autoMount;
+        private bool _autoRegenAccepted;
+        private int _banReconnectionDelay;
+        private bool _disconnectOnBan;
+        private bool _disconnectUponFightsLimit;
+        private bool _ignoreNonAuthorizedTrades;
+        private bool _loaded;
         private bool _showAllianceMessages;
+        private bool _showFightMessages;
+        private bool _showGeneralMessages;
+        private bool _showGuildMessages;
+        private bool _showNoobMessages;
+        private bool _showPartyMessages;
         private bool _showSaleMessages;
         private bool _showSeekMessages;
-        private bool _showNoobMessages;
-        private bool _autoRegenAccepted;
-        private bool _acceptAchivements;
-        private BoostableStats _statToBoost;
-        private bool _ignoreNonAuthorizedTrades;
-        private bool _disconnectUponFightsLimit;
         private bool _speedHack;
-        private bool _disconnectOnBan;
-        private int _banReconnectionDelay;
-        private bool _autoMount;
-
-
-        // Properties
-        public bool ShowGeneralMessages
-        {
-            get => _showGeneralMessages;
-            set
-            {
-                Set(ref _showGeneralMessages, value);
-                Save();
-            }
-        }
-        public bool ShowPartyMessages
-        {
-            get => _showPartyMessages;
-            set
-            {
-                Set(ref _showPartyMessages, value);
-                Save();
-            }
-        }
-        public bool ShowGuildMessages
-        {
-            get => _showGuildMessages;
-            set
-            {
-                Set(ref _showGuildMessages, value);
-                Save();
-            }
-        }
-        public bool ShowAllianceMessages
-        {
-            get => _showAllianceMessages;
-            set
-            {
-                Set(ref _showAllianceMessages, value);
-                Save();
-            }
-        }
-        public bool ShowSaleMessages
-        {
-            get => _showSaleMessages;
-            set
-            {
-                Set(ref _showSaleMessages, value);
-                Save();
-            }
-        }
-        public bool ShowSeekMessages
-        {
-            get => _showSeekMessages;
-            set
-            {
-                Set(ref _showSeekMessages, value);
-                Save();
-            }
-        }
-        public bool ShowNoobMessages
-        {
-            get => _showNoobMessages;
-            set
-            {
-                Set(ref _showNoobMessages, value);
-                Save();
-            }
-        }
-        public bool AutoRegenAccepted
-        {
-            get => _autoRegenAccepted;
-            set
-            {
-                Set(ref _autoRegenAccepted, value);
-                Save();
-            }
-        }
-        public bool AcceptAchievements
-        {
-            get => _acceptAchivements;
-            set
-            {
-                Set(ref _acceptAchivements, value);
-                Save();
-            }
-        }
-        public BoostableStats StatToBoost
-        {
-            get => _statToBoost;
-            set
-            {
-                Set(ref _statToBoost, value);
-                Save();
-            }
-        }
-        public ObservableCollection<SpellToBoostEntry> SpellsToBoost { get; private set; }
-        public ObservableCollection<int> AuthorizedTradesFrom { get; private set; }
-        public bool IgnoreNonAuthorizedTrades
-        {
-            get => _ignoreNonAuthorizedTrades;
-            set
-            {
-                Set(ref _ignoreNonAuthorizedTrades, value);
-                Save();
-            }
-        }
-        public bool DisconnectUponFightsLimit
-        {
-            get => _disconnectUponFightsLimit;
-            set
-            {
-                Set(ref _disconnectUponFightsLimit, value);
-                Save();
-            }
-        }
-        public bool SpeedHack
-        {
-            get => _speedHack;
-            set
-            {
-                Set(ref _speedHack, value);
-                Save();
-            }
-        }
-        public int BanReconnectionDelay
-        {
-            get => _banReconnectionDelay;
-            set
-            {
-                Set(ref _banReconnectionDelay, value);
-                Save();
-            }
-        }
-        public bool DisconnectOnBan
-        {
-            get => _disconnectOnBan;
-            set
-            {
-                Set(ref _disconnectOnBan, value);
-                Save();
-            }
-        }
-        public bool AutoMount
-        {
-            get => _autoMount;
-            set
-            {
-                Set(ref _autoMount, value);
-                Save();
-            }
-        }
-
-        private string ConfigFilePath => Path.Combine(ConfigurationsPath, $"{_account.AccountConfig.Username}.config");
+        private BoostableStats _statToBoost;
 
 
         // Constructor
@@ -190,6 +39,7 @@ namespace BubbleBot.Core.Accounts.Configurations
 
             ShowGeneralMessages = true;
             ShowPartyMessages = true;
+            ShowFightMessages = true;
             ShowGuildMessages = true;
             ShowAllianceMessages = true;
             ShowSaleMessages = true;
@@ -209,18 +59,196 @@ namespace BubbleBot.Core.Accounts.Configurations
         }
 
 
+        // Properties
+        public bool ShowGeneralMessages
+        {
+            get => _showGeneralMessages;
+            set
+            {
+                Set(ref _showGeneralMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowPartyMessages
+        {
+            get => _showPartyMessages;
+            set
+            {
+                Set(ref _showPartyMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowFightMessages
+        {
+            get => _showFightMessages;
+            set
+            {
+                Set(ref _showFightMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowGuildMessages
+        {
+            get => _showGuildMessages;
+            set
+            {
+                Set(ref _showGuildMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowAllianceMessages
+        {
+            get => _showAllianceMessages;
+            set
+            {
+                Set(ref _showAllianceMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowSaleMessages
+        {
+            get => _showSaleMessages;
+            set
+            {
+                Set(ref _showSaleMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowSeekMessages
+        {
+            get => _showSeekMessages;
+            set
+            {
+                Set(ref _showSeekMessages, value);
+                Save();
+            }
+        }
+
+        public bool ShowNoobMessages
+        {
+            get => _showNoobMessages;
+            set
+            {
+                Set(ref _showNoobMessages, value);
+                Save();
+            }
+        }
+
+        public bool AutoRegenAccepted
+        {
+            get => _autoRegenAccepted;
+            set
+            {
+                Set(ref _autoRegenAccepted, value);
+                Save();
+            }
+        }
+
+        public bool AcceptAchievements
+        {
+            get => _acceptAchivements;
+            set
+            {
+                Set(ref _acceptAchivements, value);
+                Save();
+            }
+        }
+
+        public BoostableStats StatToBoost
+        {
+            get => _statToBoost;
+            set
+            {
+                Set(ref _statToBoost, value);
+                Save();
+            }
+        }
+
+        public ObservableCollection<SpellToBoostEntry> SpellsToBoost { get; private set; }
+        public ObservableCollection<int> AuthorizedTradesFrom { get; private set; }
+
+        public bool IgnoreNonAuthorizedTrades
+        {
+            get => _ignoreNonAuthorizedTrades;
+            set
+            {
+                Set(ref _ignoreNonAuthorizedTrades, value);
+                Save();
+            }
+        }
+
+        public bool DisconnectUponFightsLimit
+        {
+            get => _disconnectUponFightsLimit;
+            set
+            {
+                Set(ref _disconnectUponFightsLimit, value);
+                Save();
+            }
+        }
+
+        public bool SpeedHack
+        {
+            get => _speedHack;
+            set
+            {
+                Set(ref _speedHack, value);
+                Save();
+            }
+        }
+
+        public int BanReconnectionDelay
+        {
+            get => _banReconnectionDelay;
+            set
+            {
+                Set(ref _banReconnectionDelay, value);
+                Save();
+            }
+        }
+
+        public bool DisconnectOnBan
+        {
+            get => _disconnectOnBan;
+            set
+            {
+                Set(ref _disconnectOnBan, value);
+                Save();
+            }
+        }
+
+        public bool AutoMount
+        {
+            get => _autoMount;
+            set
+            {
+                Set(ref _autoMount, value);
+                Save();
+            }
+        }
+
+        private string ConfigFilePath => Path.Combine(ConfigurationsPath, $"{_account.AccountConfig.Username}.config");
+
+
         public void Load()
         {
             _loaded = false;
 
             if (File.Exists(ConfigFilePath))
-            {
                 try
                 {
-                    using (BinaryReader br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                    using (var br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
+                        FileShare.ReadWrite)))
                     {
                         ShowGeneralMessages = br.ReadBoolean();
                         ShowPartyMessages = br.ReadBoolean();
+                        ShowFightMessages = br.ReadBoolean();
                         ShowGuildMessages = br.ReadBoolean();
                         ShowAllianceMessages = br.ReadBoolean();
                         ShowSaleMessages = br.ReadBoolean();
@@ -228,23 +256,19 @@ namespace BubbleBot.Core.Accounts.Configurations
                         ShowNoobMessages = br.ReadBoolean();
                         AutoRegenAccepted = br.ReadBoolean();
                         AcceptAchievements = br.ReadBoolean();
-                        StatToBoost = (BoostableStats)br.ReadByte();
+                        StatToBoost = (BoostableStats) br.ReadByte();
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             SpellsToBoost.Clear();
-                            byte count = br.ReadByte();
-                            for (int i = 0; i < count; i++)
-                            {
-                                SpellsToBoost.Add(new SpellToBoostEntry(br.ReadInt32(), br.ReadString(), br.ReadByte()));
-                            }
+                            var count = br.ReadByte();
+                            for (var i = 0; i < count; i++)
+                                SpellsToBoost.Add(new SpellToBoostEntry(br.ReadInt32(), br.ReadString(),
+                                    br.ReadByte()));
 
                             AuthorizedTradesFrom.Clear();
                             count = br.ReadByte();
-                            for (int i = 0; i < count; i++)
-                            {
-                                AuthorizedTradesFrom.Add(br.ReadInt32());
-                            }
+                            for (var i = 0; i < count; i++) AuthorizedTradesFrom.Add(br.ReadInt32());
                         });
 
                         IgnoreNonAuthorizedTrades = br.ReadBoolean();
@@ -255,8 +279,9 @@ namespace BubbleBot.Core.Accounts.Configurations
                         AutoMount = br.ReadBoolean();
                     }
                 }
-                catch {}
-            }
+                catch
+                {
+                }
 
             _loaded = true;
         }
@@ -272,10 +297,12 @@ namespace BubbleBot.Core.Accounts.Configurations
 
             try
             {
-                using (BinaryWriter bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                using (var bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
+                    FileShare.ReadWrite)))
                 {
                     bw.Write(ShowGeneralMessages);
                     bw.Write(ShowPartyMessages);
+                    bw.Write(ShowFightMessages);
                     bw.Write(ShowGuildMessages);
                     bw.Write(ShowAllianceMessages);
                     bw.Write(ShowSaleMessages);
@@ -283,9 +310,9 @@ namespace BubbleBot.Core.Accounts.Configurations
                     bw.Write(ShowNoobMessages);
                     bw.Write(AutoRegenAccepted);
                     bw.Write(AcceptAchievements);
-                    bw.Write((byte)StatToBoost);
+                    bw.Write((byte) StatToBoost);
 
-                    bw.Write((byte)SpellsToBoost.Count);
+                    bw.Write((byte) SpellsToBoost.Count);
                     foreach (var spellToBoost in SpellsToBoost)
                     {
                         bw.Write(spellToBoost.Id);
@@ -293,11 +320,8 @@ namespace BubbleBot.Core.Accounts.Configurations
                         bw.Write(spellToBoost.Level);
                     }
 
-                    bw.Write((byte)AuthorizedTradesFrom.Count);
-                    foreach (var atf in AuthorizedTradesFrom)
-                    {
-                        bw.Write(atf);
-                    }
+                    bw.Write((byte) AuthorizedTradesFrom.Count);
+                    foreach (var atf in AuthorizedTradesFrom) bw.Write(atf);
 
                     bw.Write(IgnoreNonAuthorizedTrades);
                     bw.Write(DisconnectUponFightsLimit);
@@ -307,7 +331,9 @@ namespace BubbleBot.Core.Accounts.Configurations
                     bw.Write(AutoMount);
                 }
             }
-            catch {}
+            catch
+            {
+            }
         }
 
         #region IDisposable Support
@@ -325,12 +351,12 @@ namespace BubbleBot.Core.Accounts.Configurations
                 _disposedValue = true;
             }
         }
-        
+
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
-
 }

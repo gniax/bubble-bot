@@ -1,20 +1,19 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class SoundUiHook : IData
-	{
+    public class SoundUiHook : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
-		[JsonProperty("name")]
-		public string Name { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
 
-		//Constructor
-		internal SoundUiHook() {}
+        //Constructor
+        internal SoundUiHook() { }
 
-	}
+    }
 }

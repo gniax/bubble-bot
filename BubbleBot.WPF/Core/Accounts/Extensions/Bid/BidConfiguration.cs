@@ -1,21 +1,28 @@
-using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using BubbleBot.Configurations.Language;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.Extensions.Bid
 {
     public class BidConfiguration : ViewModelBase, IDisposable
     {
-
         // Fields
         private const string configurationsPath = @"Parameters\Bid";
         private Account _account;
-        private bool _loaded;
         private int _interval;
+        private bool _loaded;
         private string _scriptPath;
+
+
+        // Constructor
+        public BidConfiguration(Account account)
+        {
+            _account = account;
+            ObjectsToSell = new ObservableCollection<ObjectToSellEntry>();
+        }
 
 
         // Properties
@@ -28,6 +35,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                 Save();
             }
         }
+
         public string ScriptPath
         {
             get => _scriptPath;
@@ -37,18 +45,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                 Save();
             }
         }
-        public ObservableCollection<ObjectToSellEntry> ObjectsToSell { get; private set; }
 
-        private string ConfigFilePath => Path.Combine(configurationsPath, LanguageManager.Translate("68", _account.AccountConfig.Username, _account.Game.Character.Name));
+        public ObservableCollection<ObjectToSellEntry> ObjectsToSell { get; }
+
+        private string ConfigFilePath => Path.Combine(configurationsPath,
+            LanguageManager.Translate("68", _account.AccountConfig.Username, _account.Game.Character.Name));
+
         public bool IsScriptPathValid => !string.IsNullOrEmpty(ScriptPath);
-
-
-        // Constructor
-        public BidConfiguration(Account account)
-        {
-            _account = account;
-            ObjectsToSell = new ObservableCollection<ObjectToSellEntry>();
-        }
 
 
         public void Load()
@@ -56,8 +59,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             _loaded = false;
 
             if (File.Exists(ConfigFilePath))
-            {
-                using (BinaryReader br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                using (var br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
+                    FileShare.ReadWrite)))
                 {
                     Interval = br.ReadInt32();
                     ScriptPath = br.ReadString();
@@ -65,16 +68,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         ObjectsToSell.Clear();
-                        byte c = br.ReadByte();
-                        for (int i = 0; i < c; i++)
+                        var c = br.ReadByte();
+                        for (var i = 0; i < c; i++)
                             ObjectsToSell.Add(ObjectToSellEntry.Load(br));
                     });
                 }
-            }
             else
-            {
                 Interval = 10;
-            }
 
             _loaded = true;
         }
@@ -88,12 +88,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(configurationsPath);
 
-            using (BinaryWriter bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite)))
+            using (var bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
+                FileShare.ReadWrite)))
             {
                 bw.Write(Interval);
                 bw.Write(ScriptPath ?? "");
 
-                bw.Write((byte)ObjectsToSell.Count);
+                bw.Write((byte) ObjectsToSell.Count);
                 foreach (var obj in ObjectsToSell)
                     obj.Save(bw);
             }
@@ -101,7 +102,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -114,11 +115,16 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
             }
         }
 
-        ~BidConfiguration() => Dispose(false);
+        ~BidConfiguration()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

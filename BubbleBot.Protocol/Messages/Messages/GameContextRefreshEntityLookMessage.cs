@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextRefreshEntityLookMessage : Message
-	{
+    public class GameContextRefreshEntityLookMessage : Message
+    {
 
-		// Properties
-		public int Id { get; set; }
-		public EntityLook Look { get; set; }
+        // Properties
+        public int Id { get; set; }
+        public EntityLook Look { get; set; }
 
 
-		// Constructors
-		public GameContextRefreshEntityLookMessage() { }
+        // Constructors
+        public GameContextRefreshEntityLookMessage() { }
 
-		public GameContextRefreshEntityLookMessage(int id = 0, EntityLook look = null)
-		{
-			Id = id;
-			Look = look;
-		}
+        public GameContextRefreshEntityLookMessage(int id = 0, EntityLook look = null)
+        {
+            Id = id;
+            Look = look;
+        }
 
-	}
+    }
 }

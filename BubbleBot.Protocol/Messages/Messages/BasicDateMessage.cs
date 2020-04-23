@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class BasicDateMessage : Message
-	{
+    public class BasicDateMessage : Message
+    {
 
-		// Properties
-		public uint Day { get; set; }
-		public uint Month { get; set; }
-		public uint Year { get; set; }
+        // Properties
+        public uint Day { get; set; }
+        public uint Month { get; set; }
+        public uint Year { get; set; }
 
 
-		// Constructors
-		public BasicDateMessage() { }
+        // Constructors
+        public BasicDateMessage() { }
 
-		public BasicDateMessage(uint day = 0, uint month = 0, uint year = 0)
-		{
-			Day = day;
-			Month = month;
-			Year = year;
-		}
+        public BasicDateMessage(uint day = 0, uint month = 0, uint year = 0)
+        {
+            Day = day;
+            Month = month;
+            Year = year;
+        }
 
-	}
+    }
 }

@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using BubbleBot.Core.Accounts.InGame.Fights;
@@ -5,23 +11,16 @@ using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Fights;
 using BubbleBot.Protocol.Data;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {
     public class SpellsManager : IDisposable
     {
-
         // Fields
         private Account _account;
+        private byte _ennemiesTouched;
         private int _spellIdToCast;
         private short _targetCellId;
-        private byte _ennemiesTouched;
 
 
         // Constructor
@@ -38,7 +37,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             // Check if we have an AOE spell we need to cast
             if (_spellIdToCast != -1 && _spellIdToCast == spell.SpellId)
             {
-                _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("62", spell.SpellName, _ennemiesTouched, _targetCellId));
+                _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                    LanguageManager.Translate("62", spell.SpellName, _ennemiesTouched, _targetCellId));
                 await _account.Game.Fight.LaunchSpell(spell.SpellId, _targetCellId);
 
                 _spellIdToCast = -1;
@@ -57,33 +57,20 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return SpellCastingResults.NOT_CASTED;
 
             // Simple spell
-            if (spell.Target == SpellTargets.EMPTY_CELL)
-            {
-                return (await CastSpellOnEmptyCell(spell));
-            }
+            if (spell.Target == SpellTargets.EMPTY_CELL) return await CastSpellOnEmptyCell(spell);
 
-            if (!spell.HandToHand && !spell.AOE)
-            {
-                return (await CastSimpleSpell(spell));
-            }
+            if (!spell.HandToHand && !spell.AOE) return await CastSimpleSpell(spell);
 
             // HandToHand Spell and we're h2h with someone
             if (spell.HandToHand && !spell.AOE && _account.Game.Fight.IsHandToHandWithAnEnnemy())
-            {
-                return (await CastSimpleSpell(spell));
-            }
+                return await CastSimpleSpell(spell);
 
             // HandToHand spell and we're not h2h with someone
             if (spell.HandToHand && !spell.AOE && !_account.Game.Fight.IsHandToHandWithAnEnnemy())
-            {
-                return (await MoveToCastSimpleSpell(spell, GetNearestTarget(spell)));
-            }
+                return await MoveToCastSimpleSpell(spell, GetNearestTarget(spell));
 
             // AOE spell (even HandToHand)
-            if (spell.AOE)
-            {
-                return (await CastAOESpell(spell));
-            }
+            if (spell.AOE) return await CastAOESpell(spell);
 
             return SpellCastingResults.NOT_CASTED;
         }
@@ -97,22 +84,20 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return SpellCastingResults.NOT_CASTED;
 
             var spellEntry = _account.Game.Character.GetSpell(spell.SpellId);
-            Spells spellData = DataManager.Get<Spells>(spell.SpellId);
-            SpellLevels spellLevel = DataManager.Get<SpellLevels>(spellData.SpellLevels[spellEntry.Level - 1]);
+            var spellData = DataManager.Get<Spells>(spell.SpellId);
+            var spellLevel = DataManager.Get<SpellLevels>(spellData.SpellLevels[spellEntry.Level - 1]);
 
             // Get all the possible ranges
-            Stopwatch sw = Stopwatch.StartNew();
-            List<RangeNodeEntry> entries = new List<RangeNodeEntry>();
+            var sw = Stopwatch.StartNew();
+            var entries = new List<RangeNodeEntry>();
             RangeNodeEntry entry;
 
             // Include our current cell
             entry = GetRangeNodeEntry(_account.Game.Fight.PlayedFighter.CellId, null, spell, spellLevel);
-            if (entry.TouchedEnnemiesByCell.Count > 0)
-            {
-                entries.Add(entry);
-            }
+            if (entry.TouchedEnnemiesByCell.Count > 0) entries.Add(entry);
 
-            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data, _account.Game.Fight.PlayedFighter.CellId))
+            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data,
+                _account.Game.Fight.PlayedFighter.CellId))
             {
                 if (!kvp.Value.Reachable)
                     continue;
@@ -121,10 +106,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                     continue;
 
                 entry = GetRangeNodeEntry(kvp.Key, kvp.Value, spell, spellLevel);
-                if (entry.TouchedEnnemiesByCell.Count > 0)
-                {
-                    entries.Add(entry);
-                }
+                if (entry.TouchedEnnemiesByCell.Count > 0) entries.Add(entry);
             }
 
             // Get a cell where we can hit the most
@@ -133,10 +115,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             short fromCellId = -1;
             KeyValuePair<short, MoveNode>? node = null;
             byte touchedEnnemies = 0;
-            int usedMps = 99;
+            var usedMps = 99;
 
-            for (int i = 0; i < entries.Count; i++)
-            {
+            for (var i = 0; i < entries.Count; i++)
                 foreach (var kvp in entries[i].TouchedEnnemiesByCell)
                 {
                     // Check for HandToHand
@@ -144,51 +125,47 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                         continue;
 
                     // Check if we can cast the spell first
-                    if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, entries[i].FromCellId, kvp.Key) != SpellInabilityReasons.NONE)
+                    if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, entries[i].FromCellId, kvp.Key) !=
+                        SpellInabilityReasons.NONE)
                         continue;
 
                     // >= in case a cell uses less pm
                     if (kvp.Value >= touchedEnnemies)
-                    {
                         // If its the same number of touched ennemies, check for the amount of mp we will use
                         //if (kvp.Value > touchedEnnemies || (kvp.Value == touchedEnnemies && entries[i].MpUsed < usedMps))
-                        if (kvp.Value > touchedEnnemies || (kvp.Value == touchedEnnemies && entries[i].MpUsed <= usedMps))
+                        if (kvp.Value > touchedEnnemies || kvp.Value == touchedEnnemies && entries[i].MpUsed <= usedMps)
                         {
                             touchedEnnemies = kvp.Value;
                             cellId = kvp.Key;
                             fromCellId = entries[i].FromCellId;
                             usedMps = entries[i].MpUsed;
                             if (entries[i].Node != null)
-                            {
                                 node = new KeyValuePair<short, MoveNode>(fromCellId, entries[i].Node);
-                            }
                         }
-                    }
                 }
-            }
 
             if (cellId != -1)
             {
                 // If node is null, it means that the chosen cellId is within range, so we don't have to move
                 if (node == null)
                 {
-                    _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("62", spell.SpellName, touchedEnnemies, cellId));
+                    _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                        LanguageManager.Translate("62", spell.SpellName, touchedEnnemies, cellId));
                     await _account.Game.Fight.LaunchSpell(spell.SpellId, cellId);
                     return SpellCastingResults.CASTED;
                 }
                 // We need to move
-                else
-                {
-                    _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("63", fromCellId, spell.SpellName));
 
-                    // Set the spell to cast
-                    _spellIdToCast = spell.SpellId;
-                    _targetCellId = cellId;
-                    _ennemiesTouched = touchedEnnemies;
+                _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                    LanguageManager.Translate("63", fromCellId, spell.SpellName));
 
-                    await _account.Game.Managers.Movements.MoveToCellInFight(node);
-                    return SpellCastingResults.MOVED;
-                }
+                // Set the spell to cast
+                _spellIdToCast = spell.SpellId;
+                _targetCellId = cellId;
+                _ennemiesTouched = touchedEnnemies;
+
+                await _account.Game.Managers.Movements.MoveToCellInFight(node);
+                return SpellCastingResults.MOVED;
             }
 
             return SpellCastingResults.NOT_CASTED;
@@ -197,16 +174,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         private RangeNodeEntry GetRangeNodeEntry(short fromCellId, MoveNode node, Spell spell, SpellLevels spellLevel)
         {
             // Calculate touched ennemies for every cell in SpellRange
-            Dictionary<short, byte> touchedEnnemiesByCell = new Dictionary<short, byte>();
+            var touchedEnnemiesByCell = new Dictionary<short, byte>();
             var range = _account.Game.Fight.GetSpellRange(fromCellId, spellLevel);
 
-            for (int i = 0; i < range.Count; i++)
+            for (var i = 0; i < range.Count; i++)
             {
-                byte tec = GetTouchedEnnemiesCount(fromCellId, range[i], spell, spellLevel);
-                if (tec > 0)
-                {
-                    touchedEnnemiesByCell.Add(range[i], tec);
-                }
+                var tec = GetTouchedEnnemiesCount(fromCellId, range[i], spell, spellLevel);
+                if (tec > 0) touchedEnnemiesByCell.Add(range[i], tec);
             }
 
             return new RangeNodeEntry(fromCellId, touchedEnnemiesByCell, node);
@@ -219,8 +193,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             var zone = _account.Game.Fight.GetSpellZone(spell.SpellId, fromCellId, targetCellId, spellLevel);
 
             if (zone != null)
-            {
-                for (int i = 0; i < zone.Count; i++)
+                for (var i = 0; i < zone.Count; i++)
                 {
                     // Check self
                     if (spell.CarefulAOE && zone[i].CellId == fromCellId)
@@ -228,23 +201,14 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
                     // Check ally
                     if (spell.AvoidAllies)
-                    {
                         foreach (var ally in _account.Game.Fight.Allies)
-                        {
                             if (ally.CellId == zone[i].CellId)
                                 return 0;
-                        }
-                    }
 
                     foreach (var ennemy in _account.Game.Fight.Ennemies)
-                    {
                         if (ennemy.CellId == zone[i].CellId)
-                        {
                             n++;
-                        }
-                    }
                 }
-            }
 
             return n;
         }
@@ -258,24 +222,23 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             if (target != null)
             {
-                var sir = _account.Game.Fight.CanLaunchSpell(spell.SpellId, _account.Game.Fight.PlayedFighter.CellId, target.CellId);
+                var sir = _account.Game.Fight.CanLaunchSpell(spell.SpellId, _account.Game.Fight.PlayedFighter.CellId,
+                    target.CellId);
 
                 if (sir == SpellInabilityReasons.NONE)
                 {
-                    _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("64", spell.SpellName, target.CellId));
+                    _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                        LanguageManager.Translate("64", spell.SpellName, target.CellId));
                     await _account.Game.Fight.LaunchSpell(spell.SpellId, target.CellId);
                     return SpellCastingResults.CASTED;
                 }
 
-                if (sir == SpellInabilityReasons.NOT_IN_RANGE)
-                {
-                    return (await MoveToCastSimpleSpell(spell, target));
-                }
+                if (sir == SpellInabilityReasons.NOT_IN_RANGE) return await MoveToCastSimpleSpell(spell, target);
             }
             // A spell on an empty cell is a LanguageManager.Translate("65") case
             else if (spell.Target == SpellTargets.EMPTY_CELL)
             {
-                return (await CastSpellOnEmptyCell(spell));
+                return await CastSpellOnEmptyCell(spell);
             }
 
             return SpellCastingResults.NOT_CASTED;
@@ -285,9 +248,10 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
         {
             // We'll move to cast the spell (if we can) with the least number of MP possible
             KeyValuePair<short, MoveNode>? node = null;
-            int pmUsed = 99;
+            var pmUsed = 99;
 
-            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data, _account.Game.Fight.PlayedFighter.CellId))
+            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data,
+                _account.Game.Fight.PlayedFighter.CellId))
             {
                 if (!kvp.Value.Reachable)
                     continue;
@@ -300,7 +264,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 if (spell.HandToHand && !_account.Game.Fight.IsHandToHandWithAnEnnemy(kvp.Key))
                     continue;
 
-                if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, kvp.Key, target.CellId) != SpellInabilityReasons.NONE)
+                if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, kvp.Key, target.CellId) !=
+                    SpellInabilityReasons.NONE)
                     continue;
 
                 if (kvp.Value.Path.Reachable.Count <= pmUsed)
@@ -312,7 +277,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             if (node != null)
             {
-                _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("63", node.Value.Key, spell.SpellName));
+                _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                    LanguageManager.Translate("63", node.Value.Key, spell.SpellName));
                 await _account.Game.Managers.Movements.MoveToCellInFight(node);
                 return SpellCastingResults.MOVED;
             }
@@ -330,34 +296,36 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return SpellCastingResults.NOT_CASTED;
 
             var spellEntry = _account.Game.Character.GetSpell(spell.SpellId);
-            Spells spellData = DataManager.Get<Spells>(spell.SpellId);
-            SpellLevels spellLevel = DataManager.Get<SpellLevels>(spellData.SpellLevels[spellEntry.Level - 1]);
+            var spellData = DataManager.Get<Spells>(spell.SpellId);
+            var spellLevel = DataManager.Get<SpellLevels>(spellData.SpellLevels[spellEntry.Level - 1]);
 
             var range = _account.Game.Fight.GetSpellRange(_account.Game.Fight.PlayedFighter.CellId, spellLevel);
-            for (int i = 0; i < range.Count; i++)
-            {
-                if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, _account.Game.Fight.PlayedFighter.CellId, range[i]) == SpellInabilityReasons.NONE)
+            for (var i = 0; i < range.Count; i++)
+                if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, _account.Game.Fight.PlayedFighter.CellId,
+                    range[i]) == SpellInabilityReasons.NONE)
                 {
-                    if (spell.HandToHand && MapPoint.FromCellId(range[i]).DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId)) != 1)
+                    if (spell.HandToHand && MapPoint.FromCellId(range[i])
+                        .DistanceToCell(MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId)) != 1)
                         continue;
 
-                    _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("64", spell.SpellName, range[i]));
+                    _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                        LanguageManager.Translate("64", spell.SpellName, range[i]));
                     await _account.Game.Fight.LaunchSpell(spell.SpellId, range[i]);
                     return SpellCastingResults.CASTED;
                 }
-            }
 
             // We need to move
-            return (await MoveToCastSpellOnEmptyCell(spell, spellLevel));
+            return await MoveToCastSpellOnEmptyCell(spell, spellLevel);
         }
 
         private async Task<SpellCastingResults> MoveToCastSpellOnEmptyCell(Spell spell, SpellLevels spellLevel)
         {
             // We'll move to cast the spell (if we can) with the least number of MP possible
             KeyValuePair<short, MoveNode>? node = null;
-            int pmUsed = 99;
+            var pmUsed = 99;
 
-            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data, _account.Game.Fight.PlayedFighter.CellId))
+            foreach (var kvp in FightsPathfinder.GetReachableZone(_account.Game.Fight, _account.Game.Map.Data,
+                _account.Game.Fight.PlayedFighter.CellId))
             {
                 if (!kvp.Value.Reachable)
                     continue;
@@ -371,9 +339,10 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 //    continue;
 
                 var range = _account.Game.Fight.GetSpellRange(kvp.Key, spellLevel);
-                for (int i = 0; i < range.Count; i++)
+                for (var i = 0; i < range.Count; i++)
                 {
-                    if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, kvp.Key, range[i]) != SpellInabilityReasons.NONE)
+                    if (_account.Game.Fight.CanLaunchSpell(spell.SpellId, kvp.Key, range[i]) !=
+                        SpellInabilityReasons.NONE)
                         continue;
 
                     if (kvp.Value.Path.Reachable.Count < pmUsed)
@@ -386,7 +355,8 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
             if (node != null)
             {
-                _account.Logger.LogDebug(LanguageManager.Translate("52"), LanguageManager.Translate("63", node.Value.Key, spell.SpellName));
+                _account.Logger.LogDebug(LanguageManager.Translate("52"),
+                    LanguageManager.Translate("63", node.Value.Key, spell.SpellName));
                 await _account.Game.Managers.Movements.MoveToCellInFight(node);
                 return SpellCastingResults.MOVED;
             }
@@ -411,9 +381,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return fighter.LifePercent <= spell.TargetHp && IsResistanceGood(spell, fighter);
             }
 
-            return spell.Target == SpellTargets.ENNEMY ?
-                _account.Game.Fight.GetNearestEnnemy(-1, Filter) :
-                _account.Game.Fight.GetNearestAlly(Filter);
+            return spell.Target == SpellTargets.ENNEMY
+                ? _account.Game.Fight.GetNearestEnnemy(-1, Filter)
+                : _account.Game.Fight.GetNearestAlly(Filter);
         }
 
         private bool IsDistanceGood(Spell spell)
@@ -423,12 +393,13 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return true;
 
             var nearestEnnemy = _account.Game.Fight.GetNearestEnnemy();
-            
+
             if (nearestEnnemy == null)
                 return false;
 
-            MapPoint mp = MapPoint.FromCellId(nearestEnnemy.CellId);
-            return MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId).DistanceToCell(mp) <= spell.DistanceToClosestMonster;
+            var mp = MapPoint.FromCellId(nearestEnnemy.CellId);
+            return MapPoint.FromCellId(_account.Game.Fight.PlayedFighter.CellId).DistanceToCell(mp) <=
+                   spell.DistanceToClosestMonster;
         }
 
         private bool IsResistanceGood(Spell spell, FighterEntry fighter)
@@ -450,7 +421,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -458,7 +429,6 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             {
                 if (disposing)
                 {
-
                 }
 
                 _account = null;
@@ -467,21 +437,25 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             }
         }
 
-        ~SpellsManager() => Dispose(false);
+        ~SpellsManager()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 
     internal struct RangeNodeEntry
     {
-
         // Properties
-        public short FromCellId { get; private set; }
-        public Dictionary<short, byte> TouchedEnnemiesByCell { get; private set; }
-        public MoveNode Node { get; private set; }
+        public short FromCellId { get; }
+        public Dictionary<short, byte> TouchedEnnemiesByCell { get; }
+        public MoveNode Node { get; }
 
         public int MpUsed => Node?.Path.Reachable.Count ?? 0;
 
@@ -492,7 +466,5 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             TouchedEnnemiesByCell = touchedEnnemiesByCell;
             Node = node;
         }
-
     }
-
 }

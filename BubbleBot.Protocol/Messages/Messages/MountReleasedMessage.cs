@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountReleasedMessage : Message
-	{
+    public class MountReleasedMessage : Message
+    {
 
-		// Properties
-		public double MountId { get; set; }
+        // Properties
+        public double MountId { get; set; }
 
 
-		// Constructors
-		public MountReleasedMessage() { }
+        // Constructors
+        public MountReleasedMessage() { }
 
-		public MountReleasedMessage(double mountId = 0)
-		{
-			MountId = mountId;
-		}
+        public MountReleasedMessage(double mountId = 0)
+        {
+            MountId = mountId;
+        }
 
-	}
+    }
 }

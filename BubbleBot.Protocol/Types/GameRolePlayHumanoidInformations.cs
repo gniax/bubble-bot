@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class GameRolePlayHumanoidInformations : GameRolePlayNamedActorInformations
-	{
+    public class GameRolePlayHumanoidInformations : GameRolePlayNamedActorInformations
+    {
 
-		// Properties
-		public HumanInformations HumanoidInfo { get; set; }
-		public uint AccountId { get; set; }
+        // Properties
+        public HumanInformations HumanoidInfo { get; set; }
+        public uint AccountId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayHumanoidInformations() { }
+        // Constructors
+        public GameRolePlayHumanoidInformations() { }
 
-		public GameRolePlayHumanoidInformations(int contextualId = 0, EntityLook look = null, EntityDispositionInformations disposition = null, string name = "", HumanInformations humanoidInfo = null, uint accountId = 0)
-		{
-			ContextualId = contextualId;
-			Look = look;
-			Disposition = disposition;
-			Name = name;
-			HumanoidInfo = humanoidInfo;
-			AccountId = accountId;
-		}
+        public GameRolePlayHumanoidInformations(int contextualId = 0, EntityLook look = null, EntityDispositionInformations disposition = null, string name = "", HumanInformations humanoidInfo = null, uint accountId = 0)
+        {
+            ContextualId = contextualId;
+            Look = look;
+            Disposition = disposition;
+            Name = name;
+            HumanoidInfo = humanoidInfo;
+            AccountId = accountId;
+        }
 
-	}
+    }
 }

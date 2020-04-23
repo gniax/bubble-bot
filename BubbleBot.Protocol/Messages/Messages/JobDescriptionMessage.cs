@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobDescriptionMessage : Message
-	{
+    public class JobDescriptionMessage : Message
+    {
 
-		// Properties
-		public List<JobDescription> JobsDescription { get; set; }
+        // Properties
+        public List<JobDescription> JobsDescription { get; set; }
 
 
-		// Constructors
-		public JobDescriptionMessage() { }
+        // Constructors
+        public JobDescriptionMessage() { }
 
-		public JobDescriptionMessage(List<JobDescription> jobsDescription = null)
-		{
-			JobsDescription = jobsDescription;
-		}
+        public JobDescriptionMessage(List<JobDescription> jobsDescription = null)
+        {
+            JobsDescription = jobsDescription;
+        }
 
-	}
+    }
 }

@@ -1,19 +1,18 @@
-using BubbleBot.Server;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using BubbleBot.Server;
 
 namespace BubbleBot.Converters.Enums
 {
     public class ServerConnectionStatesConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string color = "red";
+            var color = "red";
 
-            switch ((ServerConnectionStates)value)
+            switch ((ServerConnectionStates) value)
             {
                 case ServerConnectionStates.CONNECTED:
                     color = "green";
@@ -22,7 +21,7 @@ namespace BubbleBot.Converters.Enums
                     color = "orange";
                     break;
             }
-            
+
             return new BitmapImage(new Uri($"pack://application:,,,/Resources/circle_{color}.png"));
         }
 
@@ -30,6 +29,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

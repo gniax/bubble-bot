@@ -1,8 +1,6 @@
-﻿using BubbleBot.Api.Extensions;
-using BubbleBot.Website.Models;
+﻿using BubbleBot.Website.Models;
 using BubbleBot.Website.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -38,19 +36,19 @@ namespace BubbleBot.Api.Controllers
             if (user == null)
                 return Json(new { success = false, errorId = error });
 
-                return Json(new
+            return Json(new
+            {
+                success = true,
+                user = new
                 {
-                    success = true,
-                    user = new
-                    {
-                        id = user.Id,
-                        name = user.Username,
-                        avatar = user.AvatarUrl,
-                    },
-                    subscribed = user.IsSubscribedToTouch,
-                    touchEndDate = user.TouchEndDate,
-                    extensions = user.GetCurrentExtensions()
-                });
+                    id = user.Id,
+                    name = user.Username,
+                    avatar = user.AvatarUrl,
+                },
+                subscribed = user.IsSubscribedToTouch,
+                touchEndDate = user.TouchEndDate,
+                extensions = user.GetCurrentExtensions()
+            });
         }
 
         [HttpGet("register")]
@@ -84,7 +82,7 @@ namespace BubbleBot.Api.Controllers
         [HttpPatch("characters/{id}")]
         public void BotUpdateInfos(int id, string token, int user_id, int character_id, string account, string name, string server, string breed, byte level,
                           byte percent_energy, byte percent_pods, int kamas, int map_id, string map_pos, string state, string group_id, byte group_chief, string script_name)
-        {   
+        {
             if (token != _token)
                 return;
 

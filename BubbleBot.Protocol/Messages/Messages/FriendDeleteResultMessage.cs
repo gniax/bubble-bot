@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class FriendDeleteResultMessage : Message
-	{
+    public class FriendDeleteResultMessage : Message
+    {
 
-		// Properties
-		public bool Success { get; set; }
-		public string Name { get; set; }
+        // Properties
+        public bool Success { get; set; }
+        public string Name { get; set; }
 
 
-		// Constructors
-		public FriendDeleteResultMessage() { }
+        // Constructors
+        public FriendDeleteResultMessage() { }
 
-		public FriendDeleteResultMessage(bool success = false, string name = "")
-		{
-			Success = success;
-			Name = name;
-		}
+        public FriendDeleteResultMessage(bool success = false, string name = "")
+        {
+            Success = success;
+            Name = name;
+        }
 
-	}
+    }
 }

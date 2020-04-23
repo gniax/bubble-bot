@@ -4,16 +4,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
 {
     public class StartExchangeAction : ScriptAction
     {
-
-        // Properties
-        public int PlayerId { get; private set; }
-
-
         // Constructor
         public StartExchangeAction(int playerId)
         {
             PlayerId = playerId;
         }
+
+        // Properties
+        public int PlayerId { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -23,6 +21,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
 
             return DoneResult;
         }
-
     }
 }

@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TeleportToBuddyAnswerMessage : Message
-	{
+    public class TeleportToBuddyAnswerMessage : Message
+    {
 
-		// Properties
-		public uint DungeonId { get; set; }
-		public uint BuddyId { get; set; }
-		public bool Accept { get; set; }
+        // Properties
+        public uint DungeonId { get; set; }
+        public uint BuddyId { get; set; }
+        public bool Accept { get; set; }
 
 
-		// Constructors
-		public TeleportToBuddyAnswerMessage() { }
+        // Constructors
+        public TeleportToBuddyAnswerMessage() { }
 
-		public TeleportToBuddyAnswerMessage(uint dungeonId = 0, uint buddyId = 0, bool accept = false)
-		{
-			DungeonId = dungeonId;
-			BuddyId = buddyId;
-			Accept = accept;
-		}
+        public TeleportToBuddyAnswerMessage(uint dungeonId = 0, uint buddyId = 0, bool accept = false)
+        {
+            DungeonId = dungeonId;
+            BuddyId = buddyId;
+            Accept = accept;
+        }
 
-	}
+    }
 }

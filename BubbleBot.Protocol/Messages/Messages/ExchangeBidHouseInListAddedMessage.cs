@@ -1,28 +1,28 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeBidHouseInListAddedMessage : Message
-	{
+    public class ExchangeBidHouseInListAddedMessage : Message
+    {
 
-		// Properties
-		public List<ObjectEffect> Effects { get; set; }
-		public List<uint> Prices { get; set; }
-		public int ItemUID { get; set; }
-		public int ObjGenericId { get; set; }
+        // Properties
+        public List<ObjectEffect> Effects { get; set; }
+        public List<uint> Prices { get; set; }
+        public int ItemUID { get; set; }
+        public int ObjGenericId { get; set; }
 
 
-		// Constructors
-		public ExchangeBidHouseInListAddedMessage() { }
+        // Constructors
+        public ExchangeBidHouseInListAddedMessage() { }
 
-		public ExchangeBidHouseInListAddedMessage(int itemUID = 0, int objGenericId = 0, List<ObjectEffect> effects = null, List<uint> prices = null)
-		{
-			ItemUID = itemUID;
-			ObjGenericId = objGenericId;
-			Effects = effects;
-			Prices = prices;
-		}
+        public ExchangeBidHouseInListAddedMessage(int itemUID = 0, int objGenericId = 0, List<ObjectEffect> effects = null, List<uint> prices = null)
+        {
+            ItemUID = itemUID;
+            ObjGenericId = objGenericId;
+            Effects = effects;
+            Prices = prices;
+        }
 
-	}
+    }
 }

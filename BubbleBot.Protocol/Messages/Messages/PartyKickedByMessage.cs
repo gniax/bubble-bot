@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyKickedByMessage : AbstractPartyMessage
-	{
+    public class PartyKickedByMessage : AbstractPartyMessage
+    {
 
-		// Properties
-		public uint KickerId { get; set; }
+        // Properties
+        public uint KickerId { get; set; }
 
 
-		// Constructors
-		public PartyKickedByMessage() { }
+        // Constructors
+        public PartyKickedByMessage() { }
 
-		public PartyKickedByMessage(uint partyId = 0, uint kickerId = 0)
-		{
-			PartyId = partyId;
-			KickerId = kickerId;
-		}
+        public PartyKickedByMessage(uint partyId = 0, uint kickerId = 0)
+        {
+            PartyId = partyId;
+            KickerId = kickerId;
+        }
 
-	}
+    }
 }

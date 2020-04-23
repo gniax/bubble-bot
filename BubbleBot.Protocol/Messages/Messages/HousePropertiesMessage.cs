@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class HousePropertiesMessage : Message
-	{
+    public class HousePropertiesMessage : Message
+    {
 
-		// Properties
-		public HouseInformations Properties { get; set; }
+        // Properties
+        public HouseInformations Properties { get; set; }
 
 
-		// Constructors
-		public HousePropertiesMessage() { }
+        // Constructors
+        public HousePropertiesMessage() { }
 
-		public HousePropertiesMessage(HouseInformations properties = null)
-		{
-			Properties = properties;
-		}
+        public HousePropertiesMessage(HouseInformations properties = null)
+        {
+            Properties = properties;
+        }
 
-	}
+    }
 }

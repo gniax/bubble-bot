@@ -1,20 +1,18 @@
-using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using System.Threading.Tasks;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class MoveToCellAction : ScriptAction
     {
-
-        // Properties
-        public short CellId { get; private set; }
-
-
         // Constructor
         public MoveToCellAction(short cellId)
         {
             CellId = cellId;
         }
+
+        // Properties
+        public short CellId { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -30,6 +28,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
                     return FailedResult;
             }
         }
-
     }
 }

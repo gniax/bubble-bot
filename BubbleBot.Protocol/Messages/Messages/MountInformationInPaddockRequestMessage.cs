@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountInformationInPaddockRequestMessage : Message
-	{
+    public class MountInformationInPaddockRequestMessage : Message
+    {
 
-		// Properties
-		public int MapRideId { get; set; }
+        // Properties
+        public int MapRideId { get; set; }
 
 
-		// Constructors
-		public MountInformationInPaddockRequestMessage() { }
+        // Constructors
+        public MountInformationInPaddockRequestMessage() { }
 
-		public MountInformationInPaddockRequestMessage(int mapRideId = 0)
-		{
-			MapRideId = mapRideId;
-		}
+        public MountInformationInPaddockRequestMessage(int mapRideId = 0)
+        {
+            MapRideId = mapRideId;
+        }
 
-	}
+    }
 }

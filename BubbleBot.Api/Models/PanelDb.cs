@@ -72,7 +72,9 @@ namespace BubbleBot.Website.Models
             // 2 : email exists
             // 3 : both exists
         }
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task<int> GetUserId(string username)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
             => Users.FirstOrDefault(u => u.Username == username).Id;
 
         public SubscriptionPlan GetSubscriptionPlan(int id)

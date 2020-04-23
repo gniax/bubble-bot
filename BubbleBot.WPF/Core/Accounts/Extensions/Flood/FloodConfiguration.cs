@@ -1,55 +1,21 @@
-using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using BubbleBot.Configurations.Language;
+using GalaSoft.MvvmLight;
 
 namespace BubbleBot.Core.Accounts.Extensions.Flood
 {
     public class FloodConfiguration : ViewModelBase, IDisposable
     {
-
         // Fields
         private const string configurationsPath = @"Parameters\Flood";
         private Account _account;
-        private bool _loaded;
-        private short _seekChannelInterval;
-        private short _salesChannelInterval;
         private short _generalChannelInterval;
-
-
-        // Properties
-        public ObservableCollection<FloodSentence> Sentences { get; private set; }
-        public short SeekChannelInterval
-        {
-            get => _seekChannelInterval;
-            set
-            {
-                Set(ref _seekChannelInterval, value);
-                Save();
-            }
-        }
-        public short SalesChannelInterval
-        {
-            get => _salesChannelInterval;
-            set
-            {
-                Set(ref _salesChannelInterval, value);
-                Save();
-            }
-        }
-        public short GeneralChannelInterval
-        {
-            get => _generalChannelInterval;
-            set
-            {
-                Set(ref _generalChannelInterval, value);
-                Save();
-            }
-        }
-
-        private string ConfigFilePath => Path.Combine(configurationsPath, LanguageManager.Translate("68", _account.AccountConfig.Username, _account.Game.Character.Name));
+        private bool _loaded;
+        private short _salesChannelInterval;
+        private short _seekChannelInterval;
 
 
         // Constructor
@@ -64,13 +30,50 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
         }
 
 
+        // Properties
+        public ObservableCollection<FloodSentence> Sentences { get; }
+
+        public short SeekChannelInterval
+        {
+            get => _seekChannelInterval;
+            set
+            {
+                Set(ref _seekChannelInterval, value);
+                Save();
+            }
+        }
+
+        public short SalesChannelInterval
+        {
+            get => _salesChannelInterval;
+            set
+            {
+                Set(ref _salesChannelInterval, value);
+                Save();
+            }
+        }
+
+        public short GeneralChannelInterval
+        {
+            get => _generalChannelInterval;
+            set
+            {
+                Set(ref _generalChannelInterval, value);
+                Save();
+            }
+        }
+
+        private string ConfigFilePath => Path.Combine(configurationsPath,
+            LanguageManager.Translate("68", _account.AccountConfig.Username, _account.Game.Character.Name));
+
+
         public void Load()
         {
             _loaded = false;
 
             if (File.Exists(ConfigFilePath))
-            {
-                using (BinaryReader br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                using (var br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
+                    FileShare.ReadWrite)))
                 {
                     SeekChannelInterval = br.ReadInt16();
                     SalesChannelInterval = br.ReadInt16();
@@ -80,11 +83,10 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
                     {
                         Sentences.Clear();
                         int count = br.ReadByte();
-                        for (int i = 0; i < count; i++)
+                        for (var i = 0; i < count; i++)
                             Sentences.Add(FloodSentence.Load(br));
                     });
                 }
-            }
 
             _loaded = true;
         }
@@ -98,21 +100,22 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(configurationsPath);
 
-            using (BinaryWriter bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite)))
+            using (var bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
+                FileShare.ReadWrite)))
             {
                 bw.Write(SeekChannelInterval);
                 bw.Write(SalesChannelInterval);
                 bw.Write(GeneralChannelInterval);
 
-                bw.Write((byte)Sentences.Count);
-                for (int i = 0; i < Sentences.Count; i++)
+                bw.Write((byte) Sentences.Count);
+                for (var i = 0; i < Sentences.Count; i++)
                     Sentences[i].Save(bw);
             }
         }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -124,11 +127,16 @@ namespace BubbleBot.Core.Accounts.Extensions.Flood
             }
         }
 
-        ~FloodConfiguration() => Dispose(false);
+        ~FloodConfiguration()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

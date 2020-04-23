@@ -1,14 +1,12 @@
-using BubbleBot.Protocol.Messages;
 using System;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
-using BubbleBot;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.Extensions.Exchanges
 {
     public class RoleplayExtension : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -20,22 +18,19 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
 
             _account.Game.Exchange.ExchangeRequested += Exchange_ExchangeRequested;
             _account.Game.Exchange.RemoteReady += Exchange_RemoteReady;
-            _account.Network.RegisterMessage<GameRolePlayPlayerFightFriendlyRequestedMessage>(HandleGameRolePlayPlayerFightFriendlyRequestedMessage);
+            _account.Network.RegisterMessage<GameRolePlayPlayerFightFriendlyRequestedMessage>(
+                HandleGameRolePlayPlayerFightFriendlyRequestedMessage);
         }
 
 
         private void Exchange_ExchangeRequested(int from)
         {
-            bool defautAuthorized = false;
+            var defautAuthorized = false;
 
             //Si un personnage du bot ajoute sont id il est accepter pour echange
-            foreach(uint playerIdTmp in Account.AuthorizeByDefautTrade)
-            {
-                if(playerIdTmp == from)
-                {
+            foreach (var playerIdTmp in _account.Game.Exchange.AuthorizedPlayersList)
+                if (playerIdTmp == from)
                     defautAuthorized = true;
-                }
-            }
 
             // If this character isn't authorized to trade us, refuse it
             if (!_account.Configuration.AuthorizedTradesFrom.Contains(from) && defautAuthorized == false)
@@ -70,24 +65,28 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
             _account.Game.Exchange.SendReady();
         }
 
-        private Task HandleGameRolePlayPlayerFightFriendlyRequestedMessage(Account account, GameRolePlayPlayerFightFriendlyRequestedMessage message)
-            => Task.Run(async () =>
+        private Task HandleGameRolePlayPlayerFightFriendlyRequestedMessage(Account account,
+            GameRolePlayPlayerFightFriendlyRequestedMessage message)
+        {
+            return Task.Run(async () =>
             {
                 if (message.TargetId != account.Game.Character.Id)
                     return;
 
                 await Task.Delay(1000);
 
-                var player = account.Game.Map.GetPlayer((int)message.SourceId);
+                var player = account.Game.Map.GetPlayer((int) message.SourceId);
 
                 if (player != null)
                 {
-                    await account.Network.SendMessageAsync(new GameRolePlayPlayerFightFriendlyAnswerMessage((int)message.FightId));
+                    await account.Network.SendMessageAsync(
+                        new GameRolePlayPlayerFightFriendlyAnswerMessage((int) message.FightId));
                     _account.Network.SendMessage(new IgnoredAddRequestMessage(player.Name, true));
                     _account.Network.SendMessage(new LeaveDialogRequestMessage());
                     account.Logger.LogWarning(LanguageManager.Translate("553"), LanguageManager.Translate("554"));
                 }
             });
+        }
 
         #region IDisposable Support
 
@@ -104,9 +103,10 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
         }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

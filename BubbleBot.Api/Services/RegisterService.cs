@@ -1,9 +1,8 @@
-﻿using System;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using BubbleBot.Api;
+﻿using BubbleBot.Api;
 using BubbleBot.Api.Extensions;
 using BubbleBot.Website.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Website.Services
 {
@@ -30,7 +29,7 @@ namespace BubbleBot.Website.Services
                 return false;
 
             int res = _panelDb.UserExists(username, email);
-            switch(res)
+            switch (res)
             {
                 case 1: // Username exists
                     error = 1;

@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismsInfoValidMessage : Message
-	{
+    public class PrismsInfoValidMessage : Message
+    {
 
-		// Properties
-		public List<PrismFightersInformation> Fights { get; set; }
+        // Properties
+        public List<PrismFightersInformation> Fights { get; set; }
 
 
-		// Constructors
-		public PrismsInfoValidMessage() { }
+        // Constructors
+        public PrismsInfoValidMessage() { }
 
-		public PrismsInfoValidMessage(List<PrismFightersInformation> fights = null)
-		{
-			Fights = fights;
-		}
+        public PrismsInfoValidMessage(List<PrismFightersInformation> fights = null)
+        {
+            Fights = fights;
+        }
 
-	}
+    }
 }

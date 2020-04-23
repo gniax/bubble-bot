@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class EmoteListMessage : Message
-	{
+    public class EmoteListMessage : Message
+    {
 
-		// Properties
-		public List<uint> EmoteIds { get; set; }
+        // Properties
+        public List<uint> EmoteIds { get; set; }
 
 
-		// Constructors
-		public EmoteListMessage() { }
+        // Constructors
+        public EmoteListMessage() { }
 
-		public EmoteListMessage(List<uint> emoteIds = null)
-		{
-			EmoteIds = emoteIds;
-		}
+        public EmoteListMessage(List<uint> emoteIds = null)
+        {
+            EmoteIds = emoteIds;
+        }
 
-	}
+    }
 }

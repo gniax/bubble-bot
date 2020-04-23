@@ -4,14 +4,6 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs.Skills
 {
     public class CollectSkillEntry
     {
-
-        // Properties
-        public uint Id { get; private set; }
-        public int InteractiveId { get; private set; }
-        public string Name { get; private set; }
-        public int ParentJobId { get; private set; }
-
-
         // Constructor
         public CollectSkillEntry(SkillActionDescriptionCollect skill, Protocol.Data.Skills skillData)
         {
@@ -21,5 +13,10 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs.Skills
             ParentJobId = skillData.ParentJobId;
         }
 
+        // Properties
+        public uint Id { get; }
+        public int InteractiveId { get; }
+        public string Name { get; }
+        public int ParentJobId { get; }
     }
 }

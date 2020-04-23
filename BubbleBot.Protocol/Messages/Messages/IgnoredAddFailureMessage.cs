@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class IgnoredAddFailureMessage : Message
-	{
+    public class IgnoredAddFailureMessage : Message
+    {
 
-		// Properties
-		public uint Reason { get; set; }
+        // Properties
+        public uint Reason { get; set; }
 
 
-		// Constructors
-		public IgnoredAddFailureMessage() { }
+        // Constructors
+        public IgnoredAddFailureMessage() { }
 
-		public IgnoredAddFailureMessage(uint reason = 0)
-		{
-			Reason = reason;
-		}
+        public IgnoredAddFailureMessage(uint reason = 0)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

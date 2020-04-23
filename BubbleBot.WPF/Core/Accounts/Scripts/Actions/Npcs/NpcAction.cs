@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 
@@ -6,12 +5,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 {
     public class NpcAction : ScriptAction
     {
-
-        // Properties
-        public int NpcId { get; private set; }
-        public uint ActionIndex { get; private set; }
-
-
         // Constructor
         public NpcAction(int npcId, uint actionIndex)
         {
@@ -19,17 +12,20 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
             ActionIndex = actionIndex;
         }
 
+        // Properties
+        public int NpcId { get; }
+        public uint ActionIndex { get; }
+
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            if (!account.Game.Npcs.UseNpc(NpcId, (int)ActionIndex))
+            if (!account.Game.Npcs.UseNpc(NpcId, (int) ActionIndex))
             {
                 account.Scripts.StopScript(LanguageManager.Translate("178", NpcId, ActionIndex));
                 return FailedResult;
             }
-            
+
             return ProcessingResult;
         }
-
     }
 }

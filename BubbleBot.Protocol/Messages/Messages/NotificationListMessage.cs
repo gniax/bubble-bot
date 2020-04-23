@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class NotificationListMessage : Message
-	{
+    public class NotificationListMessage : Message
+    {
 
-		// Properties
-		public List<int> Flags { get; set; }
+        // Properties
+        public List<int> Flags { get; set; }
 
 
-		// Constructors
-		public NotificationListMessage() { }
+        // Constructors
+        public NotificationListMessage() { }
 
-		public NotificationListMessage(List<int> flags = null)
-		{
-			Flags = flags;
-		}
+        public NotificationListMessage(List<int> flags = null)
+        {
+            Flags = flags;
+        }
 
-	}
+    }
 }

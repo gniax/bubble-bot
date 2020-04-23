@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Windows;
-using System.Linq;
-using System.Net;
-using System.IO;
-using CefSharp.OffScreen;
+﻿using AccountGenerator.Core;
 using CefSharp;
+using CefSharp.OffScreen;
+using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
-using System.Threading;
-using System.Diagnostics;
-using AccountGenerator.Core;
 
 
 
@@ -63,8 +54,8 @@ namespace AccountGenerator
             while (programex)
             {
                 a = Console.ReadLine();
-                
-                if(a=="/h")
+
+                if (a == "/h")
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("-------------------------------------------------------------------------");
@@ -80,11 +71,11 @@ namespace AccountGenerator
                 {
                     Console.WriteLine("Lancement du programme...");
                     ManagementGeneration debug = new ManagementGeneration();
-                    debug.GeneratorManagement();
+                    debug.GeneratorManagement().ConfigureAwait(false);
                 }
                 if (a == "/p")
                 {
-                    string getP="";
+                    string getP = "";
                     while (true)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -159,7 +150,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     ACCOUNT_MAIL = getP;
                                 }
-                                else if(getP == "2")
+                                else if (getP == "2")
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     Console.WriteLine("Choisir Anti-captcha key: ");
@@ -167,7 +158,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     API_KEY = getP;
                                 }
-                                else if(getP == ".")
+                                else if (getP == ".")
                                 {
                                     break;
                                 }
@@ -196,7 +187,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     Int32.TryParse(getP, out PROGRAM_MODE);
                                 }
-                                else if(getP == "1")
+                                else if (getP == "1")
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     Console.WriteLine("Nombre maximum de thread simultanée: ");
@@ -204,7 +195,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     Int32.TryParse(getP, out MAX_THREAD);
                                 }
-                                else if(getP == "2")
+                                else if (getP == "2")
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     Console.WriteLine("Nombre de tentative maximum pour la creation de compte: ");
@@ -212,7 +203,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     Int32.TryParse(getP, out MAX_TRYBASIC);
                                 }
-                                else if(getP == "3")
+                                else if (getP == "3")
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     Console.WriteLine("Nombre de tentative maximum pour la verification du proxy: ");
@@ -220,7 +211,7 @@ namespace AccountGenerator
                                     getP = Console.ReadLine();
                                     Int32.TryParse(getP, out MAX_TRYPROXY);
                                 }
-                                else if(getP == ".")
+                                else if (getP == ".")
                                 {
                                     break;
                                 }
@@ -234,7 +225,7 @@ namespace AccountGenerator
                     return;
                 }
             }
-        
+
         }
 
 
@@ -275,8 +266,8 @@ namespace AccountGenerator
             return null;
         }
 
-        
-        private static void myDebug(string texte = "", int numaccount = 0,int numperso = 0,int msgtype = 0)
+
+        private static void myDebug(string texte = "", int numaccount = 0, int numperso = 0, int msgtype = 0)
         {
 
         }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobUnlearntMessage : Message
-	{
+    public class JobUnlearntMessage : Message
+    {
 
-		// Properties
-		public uint JobId { get; set; }
+        // Properties
+        public uint JobId { get; set; }
 
 
-		// Constructors
-		public JobUnlearntMessage() { }
+        // Constructors
+        public JobUnlearntMessage() { }
 
-		public JobUnlearntMessage(uint jobId = 0)
-		{
-			JobId = jobId;
-		}
+        public JobUnlearntMessage(uint jobId = 0)
+        {
+            JobId = jobId;
+        }
 
-	}
+    }
 }

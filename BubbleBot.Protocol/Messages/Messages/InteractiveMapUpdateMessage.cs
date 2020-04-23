@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class InteractiveMapUpdateMessage : Message
-	{
+    public class InteractiveMapUpdateMessage : Message
+    {
 
-		// Properties
-		public List<InteractiveElement> InteractiveElements { get; set; }
+        // Properties
+        public List<InteractiveElement> InteractiveElements { get; set; }
 
 
-		// Constructors
-		public InteractiveMapUpdateMessage() { }
+        // Constructors
+        public InteractiveMapUpdateMessage() { }
 
-		public InteractiveMapUpdateMessage(List<InteractiveElement> interactiveElements = null)
-		{
-			InteractiveElements = interactiveElements;
-		}
+        public InteractiveMapUpdateMessage(List<InteractiveElement> interactiveElements = null)
+        {
+            InteractiveElements = interactiveElements;
+        }
 
-	}
+    }
 }

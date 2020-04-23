@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class AlternativeMonstersInGroupLightInformations
-	{
+    public class AlternativeMonstersInGroupLightInformations
+    {
 
-		// Properties
-		public List<MonsterInGroupLightInformations> Monsters { get; set; }
-		public int PlayerCount { get; set; }
+        // Properties
+        public List<MonsterInGroupLightInformations> Monsters { get; set; }
+        public int PlayerCount { get; set; }
 
 
-		// Constructors
-		public AlternativeMonstersInGroupLightInformations() { }
+        // Constructors
+        public AlternativeMonstersInGroupLightInformations() { }
 
-		public AlternativeMonstersInGroupLightInformations(int playerCount = 0, List<MonsterInGroupLightInformations> monsters = null)
-		{
-			PlayerCount = playerCount;
-			Monsters = monsters;
-		}
+        public AlternativeMonstersInGroupLightInformations(int playerCount = 0, List<MonsterInGroupLightInformations> monsters = null)
+        {
+            PlayerCount = playerCount;
+            Monsters = monsters;
+        }
 
-	}
+    }
 }

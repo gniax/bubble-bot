@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class DisplayNumericalValueWithAgeBonusMessage : DisplayNumericalValueMessage
-	{
+    public class DisplayNumericalValueWithAgeBonusMessage : DisplayNumericalValueMessage
+    {
 
-		// Properties
-		public int ValueOfBonus { get; set; }
+        // Properties
+        public int ValueOfBonus { get; set; }
 
 
-		// Constructors
-		public DisplayNumericalValueWithAgeBonusMessage() { }
+        // Constructors
+        public DisplayNumericalValueWithAgeBonusMessage() { }
 
-		public DisplayNumericalValueWithAgeBonusMessage(int entityId = 0, int value = 0, uint type = 0, int valueOfBonus = 0)
-		{
-			EntityId = entityId;
-			Value = value;
-			Type = type;
-			ValueOfBonus = valueOfBonus;
-		}
+        public DisplayNumericalValueWithAgeBonusMessage(int entityId = 0, int value = 0, uint type = 0, int valueOfBonus = 0)
+        {
+            EntityId = entityId;
+            Value = value;
+            Type = type;
+            ValueOfBonus = valueOfBonus;
+        }
 
-	}
+    }
 }

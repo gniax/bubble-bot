@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NicknameRefusedMessage : Message
-	{
+    public class NicknameRefusedMessage : Message
+    {
 
-		// Properties
-		public uint Reason { get; set; }
+        // Properties
+        public uint Reason { get; set; }
 
 
-		// Constructors
-		public NicknameRefusedMessage() { }
+        // Constructors
+        public NicknameRefusedMessage() { }
 
-		public NicknameRefusedMessage(uint reason = 99)
-		{
-			Reason = reason;
-		}
+        public NicknameRefusedMessage(uint reason = 99)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

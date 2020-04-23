@@ -1,23 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayShowActorWithEventMessage : GameRolePlayShowActorMessage
-	{
+    public class GameRolePlayShowActorWithEventMessage : GameRolePlayShowActorMessage
+    {
 
-		// Properties
-		public uint ActorEventId { get; set; }
+        // Properties
+        public uint ActorEventId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayShowActorWithEventMessage() { }
+        // Constructors
+        public GameRolePlayShowActorWithEventMessage() { }
 
-		public GameRolePlayShowActorWithEventMessage(GameRolePlayActorInformations informations = null, uint actorEventId = 0)
-		{
-			Informations = informations;
-			ActorEventId = actorEventId;
-		}
+        public GameRolePlayShowActorWithEventMessage(GameRolePlayActorInformations informations = null, uint actorEventId = 0)
+        {
+            Informations = informations;
+            ActorEventId = actorEventId;
+        }
 
-	}
+    }
 }

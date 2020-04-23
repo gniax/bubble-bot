@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterCreationResultMessage : Message
-	{
+    public class CharacterCreationResultMessage : Message
+    {
 
-		// Properties
-		public uint Result { get; set; }
+        // Properties
+        public uint Result { get; set; }
 
 
-		// Constructors
-		public CharacterCreationResultMessage() { }
+        // Constructors
+        public CharacterCreationResultMessage() { }
 
-		public CharacterCreationResultMessage(uint result = 1)
-		{
-			Result = result;
-		}
+        public CharacterCreationResultMessage(uint result = 1)
+        {
+            Result = result;
+        }
 
-	}
+    }
 }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NpcDialogReplyMessage : Message
-	{
+    public class NpcDialogReplyMessage : Message
+    {
 
-		// Properties
-		public uint ReplyId { get; set; }
+        // Properties
+        public uint ReplyId { get; set; }
 
 
-		// Constructors
-		public NpcDialogReplyMessage() { }
+        // Constructors
+        public NpcDialogReplyMessage() { }
 
-		public NpcDialogReplyMessage(uint replyId = 0)
-		{
-			ReplyId = replyId;
-		}
+        public NpcDialogReplyMessage(uint replyId = 0)
+        {
+            ReplyId = replyId;
+        }
 
-	}
+    }
 }

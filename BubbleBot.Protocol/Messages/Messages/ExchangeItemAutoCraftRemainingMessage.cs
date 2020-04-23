@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeItemAutoCraftRemainingMessage : Message
-	{
+    public class ExchangeItemAutoCraftRemainingMessage : Message
+    {
 
-		// Properties
-		public uint Count { get; set; }
+        // Properties
+        public uint Count { get; set; }
 
 
-		// Constructors
-		public ExchangeItemAutoCraftRemainingMessage() { }
+        // Constructors
+        public ExchangeItemAutoCraftRemainingMessage() { }
 
-		public ExchangeItemAutoCraftRemainingMessage(uint count = 0)
-		{
-			Count = count;
-		}
+        public ExchangeItemAutoCraftRemainingMessage(uint count = 0)
+        {
+            Count = count;
+        }
 
-	}
+    }
 }

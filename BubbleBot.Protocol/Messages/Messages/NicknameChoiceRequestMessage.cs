@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NicknameChoiceRequestMessage : Message
-	{
+    public class NicknameChoiceRequestMessage : Message
+    {
 
-		// Properties
-		public string Nickname { get; set; }
+        // Properties
+        public string Nickname { get; set; }
 
 
-		// Constructors
-		public NicknameChoiceRequestMessage() { }
+        // Constructors
+        public NicknameChoiceRequestMessage() { }
 
-		public NicknameChoiceRequestMessage(string nickname = "")
-		{
-			Nickname = nickname;
-		}
+        public NicknameChoiceRequestMessage(string nickname = "")
+        {
+            Nickname = nickname;
+        }
 
-	}
+    }
 }

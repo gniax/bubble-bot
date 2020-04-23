@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MapFightCountMessage : Message
-	{
+    public class MapFightCountMessage : Message
+    {
 
-		// Properties
-		public uint FightCount { get; set; }
+        // Properties
+        public uint FightCount { get; set; }
 
 
-		// Constructors
-		public MapFightCountMessage() { }
+        // Constructors
+        public MapFightCountMessage() { }
 
-		public MapFightCountMessage(uint fightCount = 0)
-		{
-			FightCount = fightCount;
-		}
+        public MapFightCountMessage(uint fightCount = 0)
+        {
+            FightCount = fightCount;
+        }
 
-	}
+    }
 }

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CompassResetMessage : Message
-	{
+    public class CompassResetMessage : Message
+    {
 
-		// Properties
-		public uint Type { get; set; }
+        // Properties
+        public uint Type { get; set; }
 
 
-		// Constructors
-		public CompassResetMessage() { }
+        // Constructors
+        public CompassResetMessage() { }
 
-		public CompassResetMessage(uint type = 0)
-		{
-			Type = type;
-		}
+        public CompassResetMessage(uint type = 0)
+        {
+            Type = type;
+        }
 
-	}
+    }
 }

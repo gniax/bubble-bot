@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class OnConnectionEventMessage : Message
-	{
+    public class OnConnectionEventMessage : Message
+    {
 
-		// Properties
-		public uint EventType { get; set; }
+        // Properties
+        public uint EventType { get; set; }
 
 
-		// Constructors
-		public OnConnectionEventMessage() { }
+        // Constructors
+        public OnConnectionEventMessage() { }
 
-		public OnConnectionEventMessage(uint eventType = 0)
-		{
-			EventType = eventType;
-		}
+        public OnConnectionEventMessage(uint eventType = 0)
+        {
+            EventType = eventType;
+        }
 
-	}
+    }
 }

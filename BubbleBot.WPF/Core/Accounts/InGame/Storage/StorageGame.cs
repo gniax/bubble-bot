@@ -1,20 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.InGame.Storage
 {
     public class StorageGame : IDisposable
     {
-
         // Fields
         private Account _account;
+
+
+        // Constructor
+        public StorageGame(Account account)
+        {
+            _account = account;
+
+            Objects = new List<ObjectEntry>();
+        }
 
 
         // Properties
@@ -28,15 +36,6 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
         public event Action StorageLeft;
 
 
-        // Constructor
-        public StorageGame(Account account)
-        {
-            _account = account;
-
-            Objects = new List<ObjectEntry>();
-        }
-
-
         public bool PutItem(int gid, int quantity)
         {
             if (_account.State != AccountStates.STORAGE || quantity < 0)
@@ -47,12 +46,12 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             if (item == null)
                 return false;
 
-            quantity = quantity == 0 ?
-                       (int)item.Quantity :
-                       (quantity > item.Quantity ? (int)item.Quantity : quantity);
+            quantity = quantity == 0 ? (int) item.Quantity :
+                quantity > item.Quantity ? (int) item.Quantity : quantity;
 
             _account.Network.SendMessage(new ExchangeObjectMoveMessage(item.UID, quantity));
-            _account.Logger.LogInfo(LanguageManager.Translate("132"), LanguageManager.Translate("118", quantity, item.Name));
+            _account.Logger.LogInfo(LanguageManager.Translate("132"),
+                LanguageManager.Translate("118", quantity, item.Name));
             return true;
         }
 
@@ -66,12 +65,12 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             if (item == null)
                 return false;
 
-            quantity = quantity == 0 ?
-                       (int)item.Quantity :
-                       (quantity > item.Quantity ? (int)item.Quantity : quantity);
+            quantity = quantity == 0 ? (int) item.Quantity :
+                quantity > item.Quantity ? (int) item.Quantity : quantity;
 
             _account.Network.SendMessage(new ExchangeObjectMoveMessage(item.UID, quantity * -1));
-            _account.Logger.LogInfo(LanguageManager.Translate("132"), LanguageManager.Translate("119", quantity, item.Name));
+            _account.Logger.LogInfo(LanguageManager.Translate("132"),
+                LanguageManager.Translate("119", quantity, item.Name));
             return true;
         }
 
@@ -80,9 +79,8 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             if (_account.State != AccountStates.STORAGE || quantity < 0)
                 return false;
 
-            quantity = quantity == 0 ?
-                       _account.Game.Character.Inventory.Kamas :
-                       (quantity > _account.Game.Character.Inventory.Kamas ? _account.Game.Character.Inventory.Kamas : quantity);
+            quantity = quantity == 0 ? _account.Game.Character.Inventory.Kamas :
+                quantity > _account.Game.Character.Inventory.Kamas ? _account.Game.Character.Inventory.Kamas : quantity;
 
             if (quantity > 0)
             {
@@ -98,9 +96,8 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             if (_account.State != AccountStates.STORAGE || quantity < 0)
                 return false;
 
-            quantity = quantity == 0 ?
-                       Kamas :
-                       (quantity > Kamas ? Kamas : quantity);
+            quantity = quantity == 0 ? Kamas :
+                quantity > Kamas ? Kamas : quantity;
 
             if (quantity > 0)
             {
@@ -108,8 +105,8 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
                 _account.Logger.LogInfo(LanguageManager.Translate("132"), LanguageManager.Translate("121", quantity));
                 return true;
             }
-            else
-                return false;
+
+            return false;
         }
 
         public bool PutAllItems()
@@ -161,14 +158,13 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
 
         public void Update(StorageInventoryContentMessage message)
         {
-            Kamas = (int)message.Kamas;
+            Kamas = (int) message.Kamas;
             Objects.Clear();
 
-            var objects = DataManager.GetEnumerable<Items>(message.Objects.Select(f => (int)f.ObjectGID));
-            for (int i = 0; i < message.Objects.Count; i++)
-            {
-                Objects.Add(new ObjectEntry(message.Objects[i], objects.FirstOrDefault(f => f.Id == message.Objects[i].ObjectGID)));
-            }
+            var objects = DataManager.GetEnumerable<Items>(message.Objects.Select(f => (int) f.ObjectGID));
+            for (var i = 0; i < message.Objects.Count; i++)
+                Objects.Add(new ObjectEntry(message.Objects[i],
+                    objects.FirstOrDefault(f => f.Id == message.Objects[i].ObjectGID)));
 
             StorageStarted?.Invoke();
         }
@@ -186,14 +182,10 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
 
             // Needs to be added
             if (obj == null)
-            {
-                Objects.Add(new ObjectEntry(message.Object, DataManager.Get<Items>((int)message.Object.ObjectGID)));
-            }
+                Objects.Add(new ObjectEntry(message.Object, DataManager.Get<Items>((int) message.Object.ObjectGID)));
             // Needs to be updated
             else
-            {
                 obj.Update(message.Object);
-            }
 
             StorageUpdated?.Invoke();
         }
@@ -207,20 +199,17 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
 
         public void Update(StorageObjectsUpdateMessage message)
         {
-            for (int i = 0; i < message.ObjectList.Count; i++)
+            for (var i = 0; i < message.ObjectList.Count; i++)
             {
                 var obj = Objects.FirstOrDefault(f => f.UID == message.ObjectList[i].ObjectUID);
 
                 // Needs to be added
                 if (obj == null)
-                {
-                    Objects.Add(new ObjectEntry(message.ObjectList[i], DataManager.Get<Items>((int)message.ObjectList[i].ObjectGID)));
-                }
+                    Objects.Add(new ObjectEntry(message.ObjectList[i],
+                        DataManager.Get<Items>((int) message.ObjectList[i].ObjectGID)));
                 // Needs to be updated
                 else
-                {
                     obj.Update(message.ObjectList[i]);
-                }
             }
 
             StorageUpdated?.Invoke();
@@ -228,17 +217,16 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
 
         public void Update(StorageObjectsRemoveMessage message)
         {
-            for (int i = 0; i < message.ObjectUIDList.Count; i++)
-            {
+            for (var i = 0; i < message.ObjectUIDList.Count; i++)
                 Objects.RemoveAll(o => o.UID == message.ObjectUIDList[i]);
-            }
 
             StorageUpdated?.Invoke();
         }
 
         public void Update(ExchangeLeaveMessage message)
         {
-            if ((DialogTypeEnum)message.DialogType == DialogTypeEnum.DIALOG_EXCHANGE && _account.State == AccountStates.STORAGE)
+            if ((DialogTypeEnum) message.DialogType == DialogTypeEnum.DIALOG_EXCHANGE &&
+                _account.State == AccountStates.STORAGE)
             {
                 _account.State = AccountStates.NONE;
                 Objects.Clear();
@@ -252,7 +240,7 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -260,7 +248,6 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             {
                 if (disposing)
                 {
-
                 }
 
                 Objects.Clear();
@@ -271,11 +258,16 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             }
         }
 
-        ~StorageGame() => Dispose(false);
+        ~StorageGame()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

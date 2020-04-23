@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class ObjectItemInRolePlay
-	{
+    public class ObjectItemInRolePlay
+    {
 
-		// Properties
-		public uint CellId { get; set; }
-		public uint ObjectGID { get; set; }
+        // Properties
+        public uint CellId { get; set; }
+        public uint ObjectGID { get; set; }
 
 
-		// Constructors
-		public ObjectItemInRolePlay() { }
+        // Constructors
+        public ObjectItemInRolePlay() { }
 
-		public ObjectItemInRolePlay(uint cellId = 0, uint objectGID = 0)
-		{
-			CellId = cellId;
-			ObjectGID = objectGID;
-		}
+        public ObjectItemInRolePlay(uint cellId = 0, uint objectGID = 0)
+        {
+            CellId = cellId;
+            ObjectGID = objectGID;
+        }
 
-	}
+    }
 }

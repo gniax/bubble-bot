@@ -1,25 +1,24 @@
-using System.Collections.Generic;
+using BubbleBot.Protocol.Converters;
 using BubbleBot.Protocol.Types;
 using Newtonsoft.Json;
-using BubbleBot.Protocol.Converters;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightShowFighterMessage : Message
-	{
+    public class GameFightShowFighterMessage : Message
+    {
 
-		// Properties
+        // Properties
         [JsonConverter(typeof(TypedPropertyConverter))]
-		public GameFightFighterInformations Informations { get; set; }
+        public GameFightFighterInformations Informations { get; set; }
 
 
-		// Constructors
-		public GameFightShowFighterMessage() { }
+        // Constructors
+        public GameFightShowFighterMessage() { }
 
-		public GameFightShowFighterMessage(GameFightFighterInformations informations = null)
-		{
-			Informations = informations;
-		}
+        public GameFightShowFighterMessage(GameFightFighterInformations informations = null)
+        {
+            Informations = informations;
+        }
 
-	}
+    }
 }

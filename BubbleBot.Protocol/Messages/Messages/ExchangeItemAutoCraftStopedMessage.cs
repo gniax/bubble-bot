@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeItemAutoCraftStopedMessage : Message
-	{
+    public class ExchangeItemAutoCraftStopedMessage : Message
+    {
 
-		// Properties
-		public int Reason { get; set; }
+        // Properties
+        public int Reason { get; set; }
 
 
-		// Constructors
-		public ExchangeItemAutoCraftStopedMessage() { }
+        // Constructors
+        public ExchangeItemAutoCraftStopedMessage() { }
 
-		public ExchangeItemAutoCraftStopedMessage(int reason = 0)
-		{
-			Reason = reason;
-		}
+        public ExchangeItemAutoCraftStopedMessage(int reason = 0)
+        {
+            Reason = reason;
+        }
 
-	}
+    }
 }

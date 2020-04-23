@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightDispellableEffectExtendedInformations
-	{
+    public class FightDispellableEffectExtendedInformations
+    {
 
-		// Properties
-		public uint ActionId { get; set; }
-		public int SourceId { get; set; }
-		public AbstractFightDispellableEffect Effect { get; set; }
+        // Properties
+        public uint ActionId { get; set; }
+        public int SourceId { get; set; }
+        public AbstractFightDispellableEffect Effect { get; set; }
 
 
-		// Constructors
-		public FightDispellableEffectExtendedInformations() { }
+        // Constructors
+        public FightDispellableEffectExtendedInformations() { }
 
-		public FightDispellableEffectExtendedInformations(uint actionId = 0, int sourceId = 0, AbstractFightDispellableEffect effect = null)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			Effect = effect;
-		}
+        public FightDispellableEffectExtendedInformations(uint actionId = 0, int sourceId = 0, AbstractFightDispellableEffect effect = null)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            Effect = effect;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterDeletionRequestMessage : Message
-	{
+    public class CharacterDeletionRequestMessage : Message
+    {
 
-		// Properties
-		public uint CharacterId { get; set; }
-		public string SecretAnswerHash { get; set; }
+        // Properties
+        public uint CharacterId { get; set; }
+        public string SecretAnswerHash { get; set; }
 
 
-		// Constructors
-		public CharacterDeletionRequestMessage() { }
+        // Constructors
+        public CharacterDeletionRequestMessage() { }
 
-		public CharacterDeletionRequestMessage(uint characterId = 0, string secretAnswerHash = "")
-		{
-			CharacterId = characterId;
-			SecretAnswerHash = secretAnswerHash;
-		}
+        public CharacterDeletionRequestMessage(uint characterId = 0, string secretAnswerHash = "")
+        {
+            CharacterId = characterId;
+            SecretAnswerHash = secretAnswerHash;
+        }
 
-	}
+    }
 }

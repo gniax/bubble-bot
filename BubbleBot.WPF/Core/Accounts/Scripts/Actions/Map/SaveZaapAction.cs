@@ -5,7 +5,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class SaveZaapAction : ScriptAction
     {
-
         internal override Task<ScriptActionResults> Process(Account account)
         {
             if (!account.Game.Managers.Teleportables.SaveZaap())
@@ -16,6 +15,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 
             return ProcessingResult;
         }
-
     }
 }

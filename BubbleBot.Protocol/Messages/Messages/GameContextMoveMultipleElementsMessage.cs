@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameContextMoveMultipleElementsMessage : Message
-	{
+    public class GameContextMoveMultipleElementsMessage : Message
+    {
 
-		// Properties
-		public List<EntityMovementInformations> Movements { get; set; }
+        // Properties
+        public List<EntityMovementInformations> Movements { get; set; }
 
 
-		// Constructors
-		public GameContextMoveMultipleElementsMessage() { }
+        // Constructors
+        public GameContextMoveMultipleElementsMessage() { }
 
-		public GameContextMoveMultipleElementsMessage(List<EntityMovementInformations> movements = null)
-		{
-			Movements = movements;
-		}
+        public GameContextMoveMultipleElementsMessage(List<EntityMovementInformations> movements = null)
+        {
+            Movements = movements;
+        }
 
-	}
+    }
 }

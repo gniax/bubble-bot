@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class JobCrafterDirectoryListEntry
-	{
+    public class JobCrafterDirectoryListEntry
+    {
 
-		// Properties
-		public JobCrafterDirectoryEntryPlayerInfo PlayerInfo { get; set; }
-		public JobCrafterDirectoryEntryJobInfo JobInfo { get; set; }
+        // Properties
+        public JobCrafterDirectoryEntryPlayerInfo PlayerInfo { get; set; }
+        public JobCrafterDirectoryEntryJobInfo JobInfo { get; set; }
 
 
-		// Constructors
-		public JobCrafterDirectoryListEntry() { }
+        // Constructors
+        public JobCrafterDirectoryListEntry() { }
 
-		public JobCrafterDirectoryListEntry(JobCrafterDirectoryEntryPlayerInfo playerInfo = null, JobCrafterDirectoryEntryJobInfo jobInfo = null)
-		{
-			PlayerInfo = playerInfo;
-			JobInfo = jobInfo;
-		}
+        public JobCrafterDirectoryListEntry(JobCrafterDirectoryEntryPlayerInfo playerInfo = null, JobCrafterDirectoryEntryJobInfo jobInfo = null)
+        {
+            PlayerInfo = playerInfo;
+            JobInfo = jobInfo;
+        }
 
-	}
+    }
 }

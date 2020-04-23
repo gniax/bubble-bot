@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeItemObjectAddAsPaymentMessage : Message
-	{
+    public class ExchangeItemObjectAddAsPaymentMessage : Message
+    {
 
-		// Properties
-		public int PaymentType { get; set; }
-		public bool BAdd { get; set; }
-		public uint ObjectToMoveId { get; set; }
-		public uint Quantity { get; set; }
+        // Properties
+        public int PaymentType { get; set; }
+        public bool BAdd { get; set; }
+        public uint ObjectToMoveId { get; set; }
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ExchangeItemObjectAddAsPaymentMessage() { }
+        // Constructors
+        public ExchangeItemObjectAddAsPaymentMessage() { }
 
-		public ExchangeItemObjectAddAsPaymentMessage(int paymentType = 0, bool bAdd = false, uint objectToMoveId = 0, uint quantity = 0)
-		{
-			PaymentType = paymentType;
-			BAdd = bAdd;
-			ObjectToMoveId = objectToMoveId;
-			Quantity = quantity;
-		}
+        public ExchangeItemObjectAddAsPaymentMessage(int paymentType = 0, bool bAdd = false, uint objectToMoveId = 0, uint quantity = 0)
+        {
+            PaymentType = paymentType;
+            BAdd = bAdd;
+            ObjectToMoveId = objectToMoveId;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

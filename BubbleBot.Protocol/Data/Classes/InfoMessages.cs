@@ -1,22 +1,21 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class InfoMessages : IData
-	{
+    public class InfoMessages : IData
+    {
 
-		// Properties
-		[JsonProperty("typeId")]
-		public int TypeId { get; set; }
-		[JsonProperty("messageId")]
-		public int Id { get; set; }
-		[JsonProperty("textId")]
-		public string TextId { get; set; }
+        // Properties
+        [JsonProperty("typeId")]
+        public int TypeId { get; set; }
+        [JsonProperty("messageId")]
+        public int Id { get; set; }
+        [JsonProperty("textId")]
+        public string TextId { get; set; }
 
 
-		//Constructor
-		internal InfoMessages() {}
+        //Constructor
+        internal InfoMessages() { }
 
-	}
+    }
 }

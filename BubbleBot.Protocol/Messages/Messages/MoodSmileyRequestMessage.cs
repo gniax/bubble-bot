@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MoodSmileyRequestMessage : Message
-	{
+    public class MoodSmileyRequestMessage : Message
+    {
 
-		// Properties
-		public int SmileyId { get; set; }
+        // Properties
+        public int SmileyId { get; set; }
 
 
-		// Constructors
-		public MoodSmileyRequestMessage() { }
+        // Constructors
+        public MoodSmileyRequestMessage() { }
 
-		public MoodSmileyRequestMessage(int smileyId = 0)
-		{
-			SmileyId = smileyId;
-		}
+        public MoodSmileyRequestMessage(int smileyId = 0)
+        {
+            SmileyId = smileyId;
+        }
 
-	}
+    }
 }

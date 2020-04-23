@@ -3,15 +3,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Web;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 namespace BubbleBot.Website
 {
     public class Startup
@@ -29,7 +25,7 @@ namespace BubbleBot.Website
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-            services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson(); 
+            services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
             services.AddDbContext<PanelDbContext>(options => options.UseMySql(Configuration.GetConnectionString("PanelConnection")));
             services.AddMvcCore();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

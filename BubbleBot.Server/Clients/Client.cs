@@ -3,13 +3,11 @@ using BubbleBot.Server.Enums;
 using BubbleBot.Server.Handlers;
 using BubbleBot.Server.Messages;
 using BubbleBot.Server.Network;
-using BubbleBot.Server.Utility;
 using BubbleBot.Server.Utility.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +37,7 @@ namespace BubbleBot.Server.Clients
         public Client(ClientWrapper clientWrapper)
         {
             _clientWrapper = clientWrapper;
-            _semaphore = new SemaphoreSlim(1, 1); 
+            _semaphore = new SemaphoreSlim(1, 1);
             _pingTimer = new Timer(Ping_Callback, null, 30000, 30000);
             _pingTimeoutTimer = new Timer(PingTimeout_Callback, null, Timeout.Infinite, Timeout.Infinite);
             Informations = new ClientInformations(this);
@@ -66,7 +64,9 @@ namespace BubbleBot.Server.Clients
             return result;
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task RemoveAccounts(IEnumerable<string> usernames, int clientid = 0)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             try
             {
@@ -148,7 +148,8 @@ namespace BubbleBot.Server.Clients
                 if (!(message is PongMessage))
                     Console.WriteLine("Received {0} from client {1}.", message.GetType().Name, Informations.ToString());
 
-                HandlersManager.HandleMessage(this, message);
+                if (client != null)
+                    HandlersManager.HandleMessage(this, message);
             }
             catch (Exception ex)
             {
@@ -191,6 +192,7 @@ namespace BubbleBot.Server.Clients
             {
                 Console.WriteLine("Client {0} timed out and already disconnected.", Informations);
                 ServerMain.RemoveClient(Informations.Id);
+
             }
         }
 

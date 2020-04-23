@@ -1,7 +1,6 @@
 ﻿using BubbleBot.Server.Clients;
 using BubbleBot.Server.Clients.Accounts;
 using BubbleBot.Server.Messages;
-using System;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Server.Handlers
@@ -9,7 +8,7 @@ namespace BubbleBot.Server.Handlers
     public static class BotsHandlers
     {
 
-        public static Task HandleBotSelectedSuccesMessage(Client client, BotSelectedSuccesMessage message)
+        public static Task HandleBotSelectedSuccessMessage(Client client, BotSelectedSuccessMessage message)
             => Task.Run(() =>
             {
                 if (!client.LoggedIn)
@@ -17,7 +16,11 @@ namespace BubbleBot.Server.Handlers
 
                 if (client.Accounts.TryGetValue(message.Account, out Account account))
                 {
+                    if (account.HasBot && account.BotName == message.Name)
+                        return;
+
                     account.SetInitialBotInformations(client.Informations.Id, message.Id, message.Name, message.Server, message.Breed, message.Level);
+
                     ServerMain.BroadcastStatistics();
                 }
             });
@@ -30,7 +33,7 @@ namespace BubbleBot.Server.Handlers
 
                 if (client.Accounts.TryGetValue(message.Account, out Account account))
                 {
-                    account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, 
+                    account.UpdateBotInformations(client.Informations.Id, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas,
                                                   message.MapId, message.MapPosition, message.State, message.Group_Id, message.Group_Chief, message.Script_Name);
 
                     account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, account.BotBreed, message.Level, message.EnergyPercent, message.WeightPercent, message.Kamas, message.MapId, message.MapPosition,
@@ -48,7 +51,7 @@ namespace BubbleBot.Server.Handlers
                 {
                     if (client.Accounts.TryGetValue(kvp.Key, out Account account))
                     {
-                        account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition, 
+                        account.UpdateBotInformations(client.Informations.Id, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,
                             kvp.Value.State, kvp.Value.Group_Id, kvp.Value.Group_Chief, kvp.Value.Script_Name);
 
                         account.ArchiveBotsInformations(client.Informations.Id, account.BotId, account.BotName, account.BotServer, account.BotBreed, kvp.Value.Level, kvp.Value.EnergyPercent, kvp.Value.WeightPercent, kvp.Value.Kamas, kvp.Value.MapId, kvp.Value.MapPosition,

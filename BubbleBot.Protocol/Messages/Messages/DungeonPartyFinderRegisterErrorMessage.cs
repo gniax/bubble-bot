@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class DungeonPartyFinderRegisterErrorMessage : Message
-	{
+    public class DungeonPartyFinderRegisterErrorMessage : Message
+    {
 
-		// Constructors
-		public DungeonPartyFinderRegisterErrorMessage() { }
+        // Constructors
+        public DungeonPartyFinderRegisterErrorMessage() { }
 
 
-	}
+    }
 }

@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeObjectRemovedMessage : ExchangeObjectMessage
-	{
+    public class ExchangeObjectRemovedMessage : ExchangeObjectMessage
+    {
 
-		// Properties
-		public uint ObjectUID { get; set; }
+        // Properties
+        public uint ObjectUID { get; set; }
 
 
-		// Constructors
-		public ExchangeObjectRemovedMessage() { }
+        // Constructors
+        public ExchangeObjectRemovedMessage() { }
 
-		public ExchangeObjectRemovedMessage(bool remote = false, uint objectUID = 0)
-		{
-			Remote = remote;
-			ObjectUID = objectUID;
-		}
+        public ExchangeObjectRemovedMessage(bool remote = false, uint objectUID = 0)
+        {
+            Remote = remote;
+            ObjectUID = objectUID;
+        }
 
-	}
+    }
 }

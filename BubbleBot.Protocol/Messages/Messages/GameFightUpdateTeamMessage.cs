@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameFightUpdateTeamMessage : Message
-	{
+    public class GameFightUpdateTeamMessage : Message
+    {
 
-		// Properties
-		public uint FightId { get; set; }
-		public FightTeamInformations Team { get; set; }
+        // Properties
+        public uint FightId { get; set; }
+        public FightTeamInformations Team { get; set; }
 
 
-		// Constructors
-		public GameFightUpdateTeamMessage() { }
+        // Constructors
+        public GameFightUpdateTeamMessage() { }
 
-		public GameFightUpdateTeamMessage(uint fightId = 0, FightTeamInformations team = null)
-		{
-			FightId = fightId;
-			Team = team;
-		}
+        public GameFightUpdateTeamMessage(uint fightId = 0, FightTeamInformations team = null)
+        {
+            FightId = fightId;
+            Team = team;
+        }
 
-	}
+    }
 }

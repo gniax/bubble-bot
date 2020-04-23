@@ -8,12 +8,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
 {
     public class StorageGetAutoRegenStoreAction : ScriptAction
     {
-        
-        // Properties
-        public List<int> Items { get; private set; }
-        public int Store { get; private set; }
-
-
         // Constructor
         public StorageGetAutoRegenStoreAction(List<int> items, int store)
         {
@@ -21,12 +15,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
             Store = store;
         }
 
+        // Properties
+        public List<int> Items { get; }
+        public int Store { get; }
+
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            int store = Store;
+            var store = Store;
 
-            for (int i = 0; i < Items.Count && store > 0; i++)
+            for (var i = 0; i < Items.Count && store > 0; i++)
             {
                 // we'll have to get the items manually instead of using Storage.GetITem
                 var obj = account.Game.Storage.Objects.FirstOrDefault(o => o.GID == Items[i]);
@@ -35,7 +33,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
                     continue;
 
                 // Get the quantity we can actually take
-                int validQty = (int)Math.Min(store, obj.Quantity);
+                var validQty = (int) Math.Min(store, obj.Quantity);
 
                 if (account.Game.Storage.GetItem(Items[i], validQty))
                 {
@@ -45,12 +43,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Storage
             }
 
             if (store > 0)
-            {
                 account.Logger.LogWarning(LanguageManager.Translate("165"), LanguageManager.Translate("181"));
-            }
 
             return ScriptActionResults.DONE;
         }
-
     }
 }

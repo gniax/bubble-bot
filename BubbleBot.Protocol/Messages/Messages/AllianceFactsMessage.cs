@@ -1,26 +1,26 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceFactsMessage : Message
-	{
+    public class AllianceFactsMessage : Message
+    {
 
-		// Properties
-		public List<GuildInAllianceInformations> Guilds { get; set; }
-		public List<uint> ControlledSubareaIds { get; set; }
-		public AllianceFactSheetInformations Infos { get; set; }
+        // Properties
+        public List<GuildInAllianceInformations> Guilds { get; set; }
+        public List<uint> ControlledSubareaIds { get; set; }
+        public AllianceFactSheetInformations Infos { get; set; }
 
 
-		// Constructors
-		public AllianceFactsMessage() { }
+        // Constructors
+        public AllianceFactsMessage() { }
 
-		public AllianceFactsMessage(AllianceFactSheetInformations infos = null, List<GuildInAllianceInformations> guilds = null, List<uint> controlledSubareaIds = null)
-		{
-			Infos = infos;
-			Guilds = guilds;
-			ControlledSubareaIds = controlledSubareaIds;
-		}
+        public AllianceFactsMessage(AllianceFactSheetInformations infos = null, List<GuildInAllianceInformations> guilds = null, List<uint> controlledSubareaIds = null)
+        {
+            Infos = infos;
+            Guilds = guilds;
+            ControlledSubareaIds = controlledSubareaIds;
+        }
 
-	}
+    }
 }

@@ -7,36 +7,25 @@ namespace BubbleBot.Utility.Security
 {
     public static class AESEncryption
     {
-
-        #region Settings
-
-        private static int _iterations = 10;
-        private static int _keySize = 256;
-
-        private static string _salt = "aselrias38490a32";
-        private static string _vector = "8947az34awl34kjq";
-
-        #endregion
-
         public static string Encrypt(string value, string password)
         {
-            byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
-            byte[] saltBytes = Encoding.ASCII.GetBytes(_salt);
-            byte[] valueBytes = Encoding.ASCII.GetBytes(value);
+            var vectorBytes = Encoding.ASCII.GetBytes(_vector);
+            var saltBytes = Encoding.ASCII.GetBytes(_salt);
+            var valueBytes = Encoding.ASCII.GetBytes(value);
 
             byte[] encrypted;
             using (var cipher = Aes.Create())
             {
-                Rfc2898DeriveBytes _passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, _iterations);
-                byte[] keyBytes = _passwordBytes.GetBytes(_keySize / 8);
+                var _passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, _iterations);
+                var keyBytes = _passwordBytes.GetBytes(_keySize / 8);
 
                 cipher.Mode = CipherMode.CBC;
 
-                using (ICryptoTransform encryptor = cipher.CreateEncryptor(keyBytes, vectorBytes))
+                using (var encryptor = cipher.CreateEncryptor(keyBytes, vectorBytes))
                 {
-                    using (MemoryStream to = new MemoryStream())
+                    using (var to = new MemoryStream())
                     {
-                        using (CryptoStream writer = new CryptoStream(to, encryptor, CryptoStreamMode.Write))
+                        using (var writer = new CryptoStream(to, encryptor, CryptoStreamMode.Write))
                         {
                             writer.Write(valueBytes, 0, valueBytes.Length);
                             writer.FlushFinalBlock();
@@ -44,6 +33,7 @@ namespace BubbleBot.Utility.Security
                         }
                     }
                 }
+
                 //cipher.Clear();
             }
 
@@ -52,27 +42,27 @@ namespace BubbleBot.Utility.Security
 
         public static string Decrypt(string value, string password)
         {
-            byte[] vectorBytes = Encoding.ASCII.GetBytes(_vector);
-            byte[] saltBytes = Encoding.ASCII.GetBytes(_salt);
-            byte[] valueBytes = Convert.FromBase64String(value);
+            var vectorBytes = Encoding.ASCII.GetBytes(_vector);
+            var saltBytes = Encoding.ASCII.GetBytes(_salt);
+            var valueBytes = Convert.FromBase64String(value);
 
             byte[] decrypted;
-            int decryptedByteCount = 0;
+            var decryptedByteCount = 0;
 
             using (var cipher = Aes.Create())
             {
-                Rfc2898DeriveBytes _passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, _iterations);
-                byte[] keyBytes = _passwordBytes.GetBytes(_keySize / 8);
+                var _passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, _iterations);
+                var keyBytes = _passwordBytes.GetBytes(_keySize / 8);
 
                 cipher.Mode = CipherMode.CBC;
 
                 try
                 {
-                    using (ICryptoTransform decryptor = cipher.CreateDecryptor(keyBytes, vectorBytes))
+                    using (var decryptor = cipher.CreateDecryptor(keyBytes, vectorBytes))
                     {
-                        using (MemoryStream from = new MemoryStream(valueBytes))
+                        using (var from = new MemoryStream(valueBytes))
                         {
-                            using (CryptoStream reader = new CryptoStream(from, decryptor, CryptoStreamMode.Read))
+                            using (var reader = new CryptoStream(from, decryptor, CryptoStreamMode.Read))
                             {
                                 decrypted = new byte[valueBytes.Length];
                                 decryptedByteCount = reader.Read(decrypted, 0, decrypted.Length);
@@ -82,7 +72,7 @@ namespace BubbleBot.Utility.Security
                 }
                 catch
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
 
                 //cipher.Clear();
@@ -91,5 +81,14 @@ namespace BubbleBot.Utility.Security
             return Encoding.UTF8.GetString(decrypted, 0, decryptedByteCount);
         }
 
+        #region Settings
+
+        private static readonly int _iterations = 10;
+        private static readonly int _keySize = 256;
+
+        private static readonly string _salt = "aselrias38490a32";
+        private static readonly string _vector = "8947az34awl34kjq";
+
+        #endregion
     }
 }

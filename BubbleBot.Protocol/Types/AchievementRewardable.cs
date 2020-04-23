@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class AchievementRewardable
-	{
+    public class AchievementRewardable
+    {
 
-		// Properties
-		public uint Id { get; set; }
-		public uint Finishedlevel { get; set; }
+        // Properties
+        public uint Id { get; set; }
+        public uint Finishedlevel { get; set; }
 
 
-		// Constructors
-		public AchievementRewardable() { }
+        // Constructors
+        public AchievementRewardable() { }
 
-		public AchievementRewardable(uint id = 0, uint finishedlevel = 0)
-		{
-			Id = id;
-			Finishedlevel = finishedlevel;
-		}
+        public AchievementRewardable(uint id = 0, uint finishedlevel = 0)
+        {
+            Id = id;
+            Finishedlevel = finishedlevel;
+        }
 
-	}
+    }
 }

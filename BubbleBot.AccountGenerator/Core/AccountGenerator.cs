@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Windows;
-using System.Linq;
-using System.Net;
-using System.IO;
+﻿using CefSharp;
 using CefSharp.OffScreen;
-using CefSharp;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
-using System.Threading;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
-using System.Drawing;
-using System.Text;
-using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace AccountGenerator.Core
@@ -26,13 +18,17 @@ namespace AccountGenerator.Core
         public ChromiumWebBrowser browser;
         //Progarm property
         private int mLongueurName = 16; // 6-19
+#pragma warning disable CS0414 // The field 'AccountCreation.mLongueurPassword' is assigned but its value is never used
         private int mLongueurPassword = 12;
+#pragma warning restore CS0414 // The field 'AccountCreation.mLongueurPassword' is assigned but its value is never used
         private int mLongueurMailAlias = 10;
 
 
         //Account1
         private bool mAccountCreated1 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError1' is never used
         private string mAccountError1;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError1' is never used
         private string mUsername1;
         private string mPassword1;
         private string mMail1;
@@ -44,7 +40,9 @@ namespace AccountGenerator.Core
         private int mYearDate1;
         //Account2
         private bool mAccountCreated2 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError2' is never used
         private string mAccountError2;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError2' is never used
         private string mUsername2;
         private string mPassword2;
         private string mMail2;
@@ -55,8 +53,10 @@ namespace AccountGenerator.Core
         private int mMonthDate2;
         private int mYearDate2;
         //Account3
-        private bool mAccountCreated3= false;
+        private bool mAccountCreated3 = false;
+#pragma warning disable CS0169 // The field 'AccountCreation.mAccountError3' is never used
         private string mAccountError3;
+#pragma warning restore CS0169 // The field 'AccountCreation.mAccountError3' is never used
         private string mUsername3;
         private string mPassword3;
         private string mMail3;
@@ -115,14 +115,14 @@ namespace AccountGenerator.Core
             else
             {
                 mPassword1 = GetRandomString(16);
-                mPassword2 = GetRandomString(16); 
+                mPassword2 = GetRandomString(16);
                 mPassword3 = GetRandomString(16);
             }
 
             //On choisi mail
             if (accountmail != "")
             {
-                mMail1 = accountmail + "+" + GetRandomStringMini(mLongueurMailAlias) + "@gmail.com" ;
+                mMail1 = accountmail + "+" + GetRandomStringMini(mLongueurMailAlias) + "@gmail.com";
                 mMail2 = accountmail + "+" + GetRandomStringMini(mLongueurMailAlias) + "@gmail.com";
                 mMail3 = accountmail + "+" + GetRandomStringMini(mLongueurMailAlias) + "@gmail.com";
             }
@@ -150,18 +150,20 @@ namespace AccountGenerator.Core
                 mApikey3 = accountapikey;
             }
             //Pour les infos random autre
-            mDayDate1 = GetRandomInt(1,30);
+            mDayDate1 = GetRandomInt(1, 30);
             mDayDate2 = GetRandomInt(1, 30);
             mDayDate3 = GetRandomInt(1, 30);
             mMonthDate1 = GetRandomInt(1, 12);
-            mMonthDate2 = GetRandomInt(1, 12); 
+            mMonthDate2 = GetRandomInt(1, 12);
             mMonthDate3 = GetRandomInt(1, 12);
             mYearDate1 = GetRandomInt(1990, 2000);
             mYearDate2 = GetRandomInt(1990, 2000);
             mYearDate3 = GetRandomInt(1990, 2000);
         }
 
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async void CreateAccount()
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             bool browserInit;
             //On charge le navigateur vide
@@ -181,11 +183,11 @@ namespace AccountGenerator.Core
                 Console.WriteLine("Browser open !");
             }
             browser.FrameLoadEnd += BrowserAccountCreation;
-          /*  browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
-            {
-                BrowserAccountCreation(RuntimeHelpers.GetObjectValue(sender), e);
-            };
-            */
+            /*  browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
+              {
+                  BrowserAccountCreation(RuntimeHelpers.GetObjectValue(sender), e);
+              };
+              */
             Console.WriteLine("Information sur la création du compte 1 :");
             Console.WriteLine("Pseudo:{0}   Password:{1}   Mail:{2}  Proxy:{3}:{4}   ApiKey:{5}   Jour:{6}   Mois:{7}   Année:{8}", mUsername1, mPassword1, mMail1, mProxyAdresse1, mProxyPort1, mApikey1, mDayDate1, mMonthDate1, mYearDate1);
             Console.WriteLine("Information sur la création du compte 2 :");
@@ -238,20 +240,24 @@ namespace AccountGenerator.Core
             if (e.Frame.Url.Contains("recaptcha/api/fallback") && mCapctha == 0)
             {
                 mCapctha = 1;
-               //StartCaptchaBypass();
+                //StartCaptchaBypass();
             }
 
             if (e.Frame.Url.Contains("recaptcha/api2/anchor") && mCapctha == 0)
             {
                 mCapctha = 1;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 StartCaptchaBypass();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
             }
 
             if (e.Frame.Url.Contains("www.dofus.com/fr/mmorpg/jouer?__cf_chl_captcha_tk__="))
             {
                 //await VerifBypassSecondCaptcha();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                 CreateAccountMode2();
-              
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
             }
             if (e.Frame.Url == "https://www.dofus.com/fr/mmorpg/jouer")
             {
@@ -390,88 +396,88 @@ namespace AccountGenerator.Core
             Thread.Sleep(2000);
             //Def des variable attribuant les info de compte
 
-        /*    Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-            JavascriptResponse testCapt = await browser.GetMainFrame().EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
-            string testCaptss = JsonConvert.SerializeObject(testCapt.Result);
-            if (testCaptss == '\"'.ToString() + '\"'.ToString())
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptss);
-                Console.WriteLine("Clée non trouver !");
-                Thread.Sleep(1000);
-               
-            }
-            else
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptss);
-                Console.WriteLine("Clée trouver !");
-                Thread.Sleep(1000);
+            /*    Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+                JavascriptResponse testCapt = await browser.GetMainFrame().EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
+                string testCaptss = JsonConvert.SerializeObject(testCapt.Result);
+                if (testCaptss == '\"'.ToString() + '\"'.ToString())
+                {
+                    Console.WriteLine("Valeur key : ");
+                    Console.WriteLine(testCaptss);
+                    Console.WriteLine("Clée non trouver !");
+                    Thread.Sleep(1000);
 
-            }
+                }
+                else
+                {
+                    Console.WriteLine("Valeur key : ");
+                    Console.WriteLine(testCaptss);
+                    Console.WriteLine("Clée trouver !");
+                    Thread.Sleep(1000);
 
-            */
-                Thread.Sleep(2000);
+                }
+
+                */
+            Thread.Sleep(2000);
             await BypassCaptchaInscription();
             Thread.Sleep(2000);
-        /*    Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT2");
-            JavascriptResponse testCaptz = await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
-            string testCaptzss = JsonConvert.SerializeObject(testCaptz.Result);
-            if (testCaptzss == '\"'.ToString() + '\"'.ToString())
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptzss);
-                Console.WriteLine("Clée non trouver !");
-                Thread.Sleep(1000);
+            /*    Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT2");
+                JavascriptResponse testCaptz = await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
+                string testCaptzss = JsonConvert.SerializeObject(testCaptz.Result);
+                if (testCaptzss == '\"'.ToString() + '\"'.ToString())
+                {
+                    Console.WriteLine("Valeur key : ");
+                    Console.WriteLine(testCaptzss);
+                    Console.WriteLine("Clée non trouver !");
+                    Thread.Sleep(1000);
 
-            }
-            else
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptzss);
-                Console.WriteLine("Clée trouver !");
-                Thread.Sleep(1000);
+                }
+                else
+                {
+                    Console.WriteLine("Valeur key : ");
+                    Console.WriteLine(testCaptzss);
+                    Console.WriteLine("Clée trouver !");
+                    Thread.Sleep(1000);
 
-            }
-            */
+                }
+                */
             await InjecteAccountInformation();
             Thread.Sleep(2000);
 
-                while (true)
+            while (true)
+            {
+                Thread.Sleep(200);
+                JavascriptResponse takeVerife = await browser.GetMainFrame().EvaluateScriptAsync(@"document.querySelector('body > div.ak-mobile-menu-scroller > div > div > div:nth-child(1) > div > div > div > div.ak-inner-block > div > div.col-md-8 > div > div > div > div.ak-title').innerText;");
+                string takedVerife = JsonConvert.SerializeObject(takeVerife.Result);
+                if (takedVerife == '\"' + "Confirmez votre inscription" + '\"')
                 {
-                    Thread.Sleep(200);
-                    JavascriptResponse takeVerife = await browser.GetMainFrame().EvaluateScriptAsync(@"document.querySelector('body > div.ak-mobile-menu-scroller > div > div > div:nth-child(1) > div > div > div > div.ak-inner-block > div > div.col-md-8 > div > div > div > div.ak-title').innerText;");
-                    string takedVerife = JsonConvert.SerializeObject(takeVerife.Result);
-                    if (takedVerife == '\"' + "Confirmez votre inscription" + '\"')
+                    Console.WriteLine("Le compte a bien été créer !");
+                    browser.GetBrowser().MainFrame.LoadUrl("https://account.ankama.com/sso?action=logout&from=https%3A%2F%2Fwww.dofus.com%2Ffr");
+                    // browser.Load("https://account.ankama.com/sso?action=logout&from=https%3A%2F%2Fwww.dofus.com%2Ffr");
+                    Console.WriteLine("Déconnexion du compte!");
+                    Thread.Sleep(10000);
+                    await MakeSnapshot(2);
+                    if (selectedAccount == 1)
                     {
-                        Console.WriteLine("Le compte a bien été créer !");
-                        browser.GetBrowser().MainFrame.LoadUrl("https://account.ankama.com/sso?action=logout&from=https%3A%2F%2Fwww.dofus.com%2Ffr");
-                       // browser.Load("https://account.ankama.com/sso?action=logout&from=https%3A%2F%2Fwww.dofus.com%2Ffr");
-                        Console.WriteLine("Déconnexion du compte!");
-                        Thread.Sleep(10000);
-                        await MakeSnapshot(2);
-                        if (selectedAccount == 1)
-                        {
-                            mAccountCreated1 = true;
-                            selectedAccount++;
-                            Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
-                        }
-                        else if (selectedAccount == 2)
-                        {
-                            mAccountCreated2 = true;
-                            selectedAccount++;
-                            Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
-                        }
-                        else if (selectedAccount == 3)
-                        {
-                            mAccountCreated3 = true;
-                            selectedAccount++;
-                            Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
-                        }
-                        else if (selectedAccount == 4)
-                        {
-                            Console.WriteLine("On à fini la création des comptes !");
-                        }
+                        mAccountCreated1 = true;
+                        selectedAccount++;
+                        Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
+                    }
+                    else if (selectedAccount == 2)
+                    {
+                        mAccountCreated2 = true;
+                        selectedAccount++;
+                        Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
+                    }
+                    else if (selectedAccount == 3)
+                    {
+                        mAccountCreated3 = true;
+                        selectedAccount++;
+                        Console.WriteLine("On passe au compte " + selectedAccount.ToString() + ".");
+                    }
+                    else if (selectedAccount == 4)
+                    {
+                        Console.WriteLine("On à fini la création des comptes !");
+                    }
                     Thread.Sleep(2000);
 
                     //captcharesult = "";
@@ -479,16 +485,16 @@ namespace AccountGenerator.Core
                     //mCapctha = 0;
                     //mCaptchamode = 0;
                     //browser.GetMainFrame().Delete();
-                    
+
                     //browser.Load("https://www.dofus.com/fr/mmorpg/jouer");
                     //await CreateAccountMode1();
                     break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Erreur a la création du compte !");
-                        //break;
-                    }
+                }
+                else
+                {
+                    Console.WriteLine("Erreur a la création du compte !");
+                    //break;
+                }
                 JavascriptResponse verifValidation = await browser.GetMainFrame().EvaluateScriptAsync(@"document.querySelector('#ak_field_4').value;");
                 string takeValide = JsonConvert.SerializeObject(verifValidation.Result);
                 if (takeValide == '\"' + "Terminer l'inscription" + '\"')
@@ -537,32 +543,32 @@ namespace AccountGenerator.Core
             Thread.Sleep(2000);
             await BypassCaptchaInscription();
             Thread.Sleep(2000);
-           /* Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT2");
-            JavascriptResponse testCaptz = await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
-            string testCaptzss = JsonConvert.SerializeObject(testCaptz.Result);
-            if (testCaptzss == '\"'.ToString() + '\"'.ToString())
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptzss);
-                Console.WriteLine("Clée non trouver !");
-                Thread.Sleep(1000);
+            /* Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT2");
+             JavascriptResponse testCaptz = await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response-1').innerText;");
+             string testCaptzss = JsonConvert.SerializeObject(testCaptz.Result);
+             if (testCaptzss == '\"'.ToString() + '\"'.ToString())
+             {
+                 Console.WriteLine("Valeur key : ");
+                 Console.WriteLine(testCaptzss);
+                 Console.WriteLine("Clée non trouver !");
+                 Thread.Sleep(1000);
 
-            }
-            else
-            {
-                Console.WriteLine("Valeur key : ");
-                Console.WriteLine(testCaptzss);
-                Console.WriteLine("Clée trouver !");
-                Thread.Sleep(1000);
+             }
+             else
+             {
+                 Console.WriteLine("Valeur key : ");
+                 Console.WriteLine(testCaptzss);
+                 Console.WriteLine("Clée trouver !");
+                 Thread.Sleep(1000);
 
-            }
-            */
+             }
+             */
             await InjecteAccountInformation();
 
             while (true)
             {
                 Thread.Sleep(200);
-                while(browser.IsLoading)
+                while (browser.IsLoading)
                 {
                     Thread.Sleep(500);
                 }
@@ -603,7 +609,7 @@ namespace AccountGenerator.Core
                     // mSitekey = "";
                     //mCapctha = 0;
                     //mCaptchamode = 0;
-                   // browser.Load("https://www.dofus.com/fr/mmorpg/jouer");
+                    // browser.Load("https://www.dofus.com/fr/mmorpg/jouer");
                     //await CreateAccountMode1();
 
                     break;
@@ -616,14 +622,14 @@ namespace AccountGenerator.Core
                 string takeValide = JsonConvert.SerializeObject(verifValidation.Result);
                 if (takeValide == '\"' + "Terminer l'inscription" + '\"')
                 {
-                  //  int nbtryingvalidation = 0;
-                //    while (nbtryingvalidation < 5)
-                  //  {
-                        Console.WriteLine(takeValide);
-                        Console.WriteLine("On est sur la page d'inscription, donc on réinjecte les infos !");
-                        await InjecteAccountInformation();
-                     //   nbtryingvalidation++;
-                   // }
+                    //  int nbtryingvalidation = 0;
+                    //    while (nbtryingvalidation < 5)
+                    //  {
+                    Console.WriteLine(takeValide);
+                    Console.WriteLine("On est sur la page d'inscription, donc on réinjecte les infos !");
+                    await InjecteAccountInformation();
+                    //   nbtryingvalidation++;
+                    // }
                 }
                 else
                 {
@@ -637,7 +643,7 @@ namespace AccountGenerator.Core
             Thread.Sleep(200);
             Thread.Sleep(10000);
             await MakeSnapshot(0);
-    }
+        }
         public async Task BypassCaptchaInscription()
         {
             string captchares;
@@ -670,7 +676,7 @@ namespace AccountGenerator.Core
                 Console.WriteLine(takedVerife);
                 success = false;
             }
-            takeVerife =  await browser.GetBrowser().FocusedFrame.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";");
+            takeVerife = await browser.GetBrowser().FocusedFrame.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";");
             takedVerife = JsonConvert.SerializeObject(takeVerife.Result);
             Thread.Sleep(500);
             if (takedVerife != '\"'.ToString() + '\"'.ToString())
@@ -695,7 +701,7 @@ namespace AccountGenerator.Core
                 success = false;
             }*/
             //Verife erreur
-            if(success == false)
+            if (success == false)
             {
                 Console.WriteLine("Erreur à l'injection du captcha dans la page d'inscription.");
             }
@@ -827,8 +833,12 @@ namespace AccountGenerator.Core
                 await MakeSnapshot(6);
                 Thread.Sleep(2000);
                 Console.WriteLine($"page {e.Browser.MainFrame.Url} loaded!");
+#pragma warning disable CS0219 // The variable 'postR' is assigned but its value is never used
                 string postR = "";
+#pragma warning restore CS0219 // The variable 'postR' is assigned but its value is never used
+#pragma warning disable CS0219 // The variable 'postId' is assigned but its value is never used
                 string postId = "";
+#pragma warning restore CS0219 // The variable 'postId' is assigned but its value is never used
                 /*
                 Thread.Sleep(6000);
                 //On commence à récupérer les données captcha 
@@ -976,10 +986,10 @@ namespace AccountGenerator.Core
                     if (dictionaryRes.ContainsKey("data")) //On récupère l'apikey
                     {
                         ckey = (string)dictionaryRes["data"];
-                        
+
                     }
 
-                    
+
                     Console.WriteLine("On va effectuer la requête pour la methode anchor !");
                     script = @"document.querySelector('#g-recaptcha-response').style.display = 'block'" + "; " +
                     "document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";" +
@@ -987,20 +997,22 @@ namespace AccountGenerator.Core
                     ;
                     //await MakeSnapshot(2);
                     //browser.GetBrowser().GetFrame("").EvaluateScriptAsync(script).ContinueWith(x =>
-                     e.Frame.EvaluateScriptAsync(script).ContinueWith(x =>
-                    {
-                        var response = x.Result;
-                        var startDate = response.Result;
-                        Console.WriteLine(startDate);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+                    e.Frame.EvaluateScriptAsync(script).ContinueWith(x =>
+                   {
+                       var response = x.Result;
+                       var startDate = response.Result;
+                       Console.WriteLine(startDate);
 
-                    });
+                   });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
                     Console.WriteLine("Requête terminer !");
                     Thread.Sleep(15000);
                     Console.WriteLine(e.Frame.Url);
                     await MakeSnapshot(6);
                     Thread.Sleep(15000);
                     Console.WriteLine("Normalement on a passez le captcha !");
-                    
+
 
                     captchabypassed = true;
 
@@ -1026,7 +1038,7 @@ namespace AccountGenerator.Core
                     captchabypassed = true;
                      */
 
-                   
+
                     mCkey = ckey;
                     //e.Frame.Delete();
                 }
@@ -1038,7 +1050,7 @@ namespace AccountGenerator.Core
             else if (e.Url.Contains("recaptcha/api2/bframe looodfkkdoskfokoezkofkoezkfokezo"))
             {
                 if (mCkey == "" && captchawork == false)
-                 {
+                {
                     Console.WriteLine(e.Url);
                     captchawork = true;
                     captchamethode = "bframe";
@@ -1099,11 +1111,11 @@ namespace AccountGenerator.Core
             }
             else if (e.Url.Contains("dofus"))
             {
-                while(mCkey == "")
+                while (mCkey == "")
                 {
 
                 }
-                
+
 
                 if (captchamethode == "fallback" && captchabypassed == false)
                 {
@@ -1113,29 +1125,29 @@ namespace AccountGenerator.Core
                     "document.querySelector('input[type=submit]').click();"
                     ;
 
-                    await e.Frame.EvaluateScriptAsync(scriptcapt,e.Frame.Url).ContinueWith(x =>
-                    {
-                        var response = x.Result;
+                    await e.Frame.EvaluateScriptAsync(scriptcapt, e.Frame.Url).ContinueWith(x =>
+                     {
+                         var response = x.Result;
 
-                        if (response.Success && response.Result != null)
-                        {
-                            var startDate = response.Result;
-                            //Console.WriteLine("On entre le pseudo");
-                            //Console.WriteLine(startDate);
-                            //startDate is the value of a HTML element.
+                         if (response.Success && response.Result != null)
+                         {
+                             var startDate = response.Result;
+                             //Console.WriteLine("On entre le pseudo");
+                             //Console.WriteLine(startDate);
+                             //startDate is the value of a HTML element.
 
-                        }
-                    });
+                         }
+                     });
                     Console.WriteLine("Requête terminer !");
                     Thread.Sleep(5000);
                     Console.WriteLine("Normalement on a passez le captcha !");
                 }
                 if (captchamethode == "anchor" && captchabypassed == false)
                 {
-                    
+
                 }
 
-                
+
 
                 string userNamed = "jackouille99700";
                 string userpass = "CHANGE_ME";
@@ -1180,23 +1192,23 @@ namespace AccountGenerator.Core
                 Console.WriteLine(mCkey);
 
                 //string script = string.Format("document.getElementById('userlogin').value= " + '\'' + userNamed + '\'' + ";");
-                 script = @"document.getElementById('userlogin').value= " + '\'' + userNamed + '\'' + "; " +
-                    "document.getElementById('user_password').value= " +  '\'' + userpass + '\'' + ";" +
-                    "document.getElementById('user_password_confirm').value= " + '\'' + userpass + '\'' + ";" +
-                    "document.getElementById('user_mail').value= " + '\'' + userMail + '\'' + ";" +
-                    "document.getElementById('ak_field_1').value= " + '\'' + dated + '\'' + ";" +
-                    "document.getElementById('ak_field_2').value= " + '\'' + datem + '\'' + ";" +
-                    "document.getElementById('ak_field_3').value= " + '\'' + datey + '\'' + ";" +
-                    "document.querySelector('body > div.ak-mobile-menu-scroller > div > div > div:nth-child(1) > div > div > div > div.ak-inner-block > div > div.col-md-8 > div > form > fieldset > div > div > div > div.row.ak-container > div input[type=submit]').click();"
-                    ;
-               // "document.querySelector('#g-recaptcha-response').value = " + '\'' + mCkey + '\'' + ";" +
+                script = @"document.getElementById('userlogin').value= " + '\'' + userNamed + '\'' + "; " +
+                   "document.getElementById('user_password').value= " + '\'' + userpass + '\'' + ";" +
+                   "document.getElementById('user_password_confirm').value= " + '\'' + userpass + '\'' + ";" +
+                   "document.getElementById('user_mail').value= " + '\'' + userMail + '\'' + ";" +
+                   "document.getElementById('ak_field_1').value= " + '\'' + dated + '\'' + ";" +
+                   "document.getElementById('ak_field_2').value= " + '\'' + datem + '\'' + ";" +
+                   "document.getElementById('ak_field_3').value= " + '\'' + datey + '\'' + ";" +
+                   "document.querySelector('body > div.ak-mobile-menu-scroller > div > div > div:nth-child(1) > div > div > div > div.ak-inner-block > div > div.col-md-8 > div > form > fieldset > div > div > div > div.row.ak-container > div input[type=submit]').click();"
+                   ;
+                // "document.querySelector('#g-recaptcha-response').value = " + '\'' + mCkey + '\'' + ";" +
 
                 //string.Format("document.querySelector('#user_password').value= 'CHANGE_ME';");
 
                 await e.Frame.EvaluateScriptAsync(script).ContinueWith(x =>
                 {
                     var response = x.Result;
-                    
+
                     if (response.Success && response.Result != null)
                     {
                         var startDate = response.Result;
@@ -1205,9 +1217,9 @@ namespace AccountGenerator.Core
                         //startDate is the value of a HTML element.
 
                     }
-                    
+
                 });
-                
+
                 Console.WriteLine("On a entrer le pseudo");
                 Thread.Sleep(7000);
                 /*
@@ -1404,30 +1416,30 @@ namespace AccountGenerator.Core
             var task = browser.ScreenshotAsync();
             await task.ContinueWith(x =>
             {
-                    // Make a file to save it to (e.g. C:\Users\dev\Desktop\CefSharp screenshot.png)
-                    var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "DebugJackouille" + number + ".png");
+                // Make a file to save it to (e.g. C:\Users\dev\Desktop\CefSharp screenshot.png)
+                var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "DebugJackouille" + number + ".png");
 
                 //Console.WriteLine();
                 //Console.WriteLine("Screenshot ready. Saving to {0}", screenshotPath);
 
-                    // Save the Bitmap to the path.
-                    // The image type is auto-detected via the ".png" extension.
-                    task.Result.Save(screenshotPath);
+                // Save the Bitmap to the path.
+                // The image type is auto-detected via the ".png" extension.
+                task.Result.Save(screenshotPath);
 
-                    // We no longer need the Bitmap.
-                    // Dispose it to avoid keeping the memory alive.  Especially important in 32-bit applications.
-                    task.Result.Dispose();
+                // We no longer need the Bitmap.
+                // Dispose it to avoid keeping the memory alive.  Especially important in 32-bit applications.
+                task.Result.Dispose();
 
-                    /*
-                    // Tell Windows to launch the saved image.
-                    Process.Start(new ProcessStartInfo(screenshotPath)
-                    {
-                        // UseShellExecute is false by default on .NET Core.
-                        UseShellExecute = true
-                    });
+                /*
+                // Tell Windows to launch the saved image.
+                Process.Start(new ProcessStartInfo(screenshotPath)
+                {
+                    // UseShellExecute is false by default on .NET Core.
+                    UseShellExecute = true
+                });
 
-                    Console.WriteLine("Image viewer launched.  Press any key to exit.");
-                    */
+                Console.WriteLine("Image viewer launched.  Press any key to exit.");
+                */
             }, TaskScheduler.Default);
             Console.WriteLine("Fin screen");
 

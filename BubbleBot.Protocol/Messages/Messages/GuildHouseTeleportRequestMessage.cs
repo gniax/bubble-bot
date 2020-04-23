@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildHouseTeleportRequestMessage : Message
-	{
+    public class GuildHouseTeleportRequestMessage : Message
+    {
 
-		// Properties
-		public uint HouseId { get; set; }
+        // Properties
+        public uint HouseId { get; set; }
 
 
-		// Constructors
-		public GuildHouseTeleportRequestMessage() { }
+        // Constructors
+        public GuildHouseTeleportRequestMessage() { }
 
-		public GuildHouseTeleportRequestMessage(uint houseId = 0)
-		{
-			HouseId = houseId;
-		}
+        public GuildHouseTeleportRequestMessage(uint houseId = 0)
+        {
+            HouseId = houseId;
+        }
 
-	}
+    }
 }

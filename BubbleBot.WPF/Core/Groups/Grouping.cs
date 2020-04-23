@@ -15,11 +15,6 @@ namespace BubbleBot.Core.Groups
         private List<Account> _missingMembers;
 
 
-        // Properties
-        private int ChiefPosX => _group.Chief.Game.Map.PosX;
-        private int ChiefPosY => _group.Chief.Game.Map.PosY;
-
-
         // Constructor
         public Grouping(Group group)
         {
@@ -27,18 +22,21 @@ namespace BubbleBot.Core.Groups
         }
 
 
+        // Properties
+        private int ChiefPosX => _group.Chief.Game.Map.PosX;
+        private int ChiefPosY => _group.Chief.Game.Map.PosY;
+
+
         public async Task GroupMembers()
         {
-            var missingMembers = _group.Members.Where(m => m.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition).ToList();
+            var missingMembers = _group.Members
+                .Where(m => m.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition).ToList();
             if (missingMembers.Count == 0)
                 return;
 
             _missingMembers = missingMembers;
-            Task[] groupings = new Task[_missingMembers.Count];
-            for (int i = 0; i < _missingMembers.Count; i++)
-            {
-                groupings[i] = GroupMissingMember(_missingMembers[i]);
-            }
+            var groupings = new Task[_missingMembers.Count];
+            for (var i = 0; i < _missingMembers.Count; i++) groupings[i] = GroupMissingMember(_missingMembers[i]);
 
             await Task.WhenAll(groupings);
         }
@@ -55,7 +53,8 @@ namespace BubbleBot.Core.Groups
 
             missingMember.Game.Map.MapChanged += MapChanged;
 
-            while (_group.Chief.Scripts.Enabled && missingMember.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition)
+            while (_group.Chief.Scripts.Enabled &&
+                   missingMember.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition)
             {
                 Console.WriteLine("test1");
                 tcs = new TaskCompletionSource<bool>();
@@ -72,24 +71,15 @@ namespace BubbleBot.Core.Groups
 
             // TOP
             if (ChiefPosY < missingMember.Game.Map.PosY)
-            {
                 dir = MapChangeDirections.TOP;
-            }
             // BOTTOM
             else if (ChiefPosY > missingMember.Game.Map.PosY)
-            {
                 dir = MapChangeDirections.BOTTOM;
-            }
             // LEFT
             else if (ChiefPosX < missingMember.Game.Map.PosX)
-            {
                 dir = MapChangeDirections.LEFT;
-            }
             // RIGHT
-            else if (ChiefPosX > missingMember.Game.Map.PosX)
-            {
-                dir = MapChangeDirections.RIGHT;
-            }
+            else if (ChiefPosX > missingMember.Game.Map.PosX) dir = MapChangeDirections.RIGHT;
 
             if (dir == MapChangeDirections.NONE)
                 return;
@@ -115,9 +105,10 @@ namespace BubbleBot.Core.Groups
         }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

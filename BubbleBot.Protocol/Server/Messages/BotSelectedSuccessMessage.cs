@@ -2,7 +2,7 @@
 
 namespace BubbleBot.Server.Messages
 {
-    public class BotSelectedSuccesMessage : IServerMessage
+    public class BotSelectedSuccessMessage : IServerMessage
     {
 
         // Fields
@@ -20,9 +20,9 @@ namespace BubbleBot.Server.Messages
 
 
         // Constructor
-        public BotSelectedSuccesMessage() { }
+        public BotSelectedSuccessMessage() { }
 
-        public BotSelectedSuccesMessage(string account, int id, string name, string server, string breed, byte level)
+        public BotSelectedSuccessMessage(string account, int id, string name, string server, string breed, byte level)
         {
             Account = account;
             Id = id;

@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameMapMovementMessage : Message
-	{
+    public class GameMapMovementMessage : Message
+    {
 
-		// Properties
-		public List<uint> KeyMovements { get; set; }
-		public int ActorId { get; set; }
+        // Properties
+        public List<uint> KeyMovements { get; set; }
+        public int ActorId { get; set; }
 
 
-		// Constructors
-		public GameMapMovementMessage() { }
+        // Constructors
+        public GameMapMovementMessage() { }
 
-		public GameMapMovementMessage(int actorId = 0, List<uint> keyMovements = null)
-		{
-			ActorId = actorId;
-			KeyMovements = keyMovements;
-		}
+        public GameMapMovementMessage(int actorId = 0, List<uint> keyMovements = null)
+        {
+            ActorId = actorId;
+            KeyMovements = keyMovements;
+        }
 
-	}
+    }
 }

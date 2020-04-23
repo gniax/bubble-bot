@@ -1,28 +1,27 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class InventoryPresetSaveCustomMessage : Message
-	{
+    public class InventoryPresetSaveCustomMessage : Message
+    {
 
-		// Properties
-		public List<uint> ItemsPositions { get; set; }
-		public List<uint> ItemsUids { get; set; }
-		public uint PresetId { get; set; }
-		public uint SymbolId { get; set; }
+        // Properties
+        public List<uint> ItemsPositions { get; set; }
+        public List<uint> ItemsUids { get; set; }
+        public uint PresetId { get; set; }
+        public uint SymbolId { get; set; }
 
 
-		// Constructors
-		public InventoryPresetSaveCustomMessage() { }
+        // Constructors
+        public InventoryPresetSaveCustomMessage() { }
 
-		public InventoryPresetSaveCustomMessage(uint presetId = 0, uint symbolId = 0, List<uint> itemsPositions = null, List<uint> itemsUids = null)
-		{
-			PresetId = presetId;
-			SymbolId = symbolId;
-			ItemsPositions = itemsPositions;
-			ItemsUids = itemsUids;
-		}
+        public InventoryPresetSaveCustomMessage(uint presetId = 0, uint symbolId = 0, List<uint> itemsPositions = null, List<uint> itemsUids = null)
+        {
+            PresetId = presetId;
+            SymbolId = symbolId;
+            ItemsPositions = itemsPositions;
+            ItemsUids = itemsUids;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightDispellMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightDispellMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public int TargetId { get; set; }
+        // Properties
+        public int TargetId { get; set; }
 
 
-		// Constructors
-		public GameActionFightDispellMessage() { }
+        // Constructors
+        public GameActionFightDispellMessage() { }
 
-		public GameActionFightDispellMessage(uint actionId = 0, int sourceId = 0, int targetId = 0)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			TargetId = targetId;
-		}
+        public GameActionFightDispellMessage(uint actionId = 0, int sourceId = 0, int targetId = 0)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            TargetId = targetId;
+        }
 
-	}
+    }
 }

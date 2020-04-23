@@ -1,17 +1,16 @@
-using BubbleBot.Protocol.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Protocol.Enums;
 
 namespace BubbleBot.Converters.Enums
 {
     public class ObjectEntryPositionStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((CharacterInventoryPositionEnum)value)
+            switch ((CharacterInventoryPositionEnum) value)
             {
                 case CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET:
                     return LanguageManager.Translate("207");
@@ -56,6 +55,5 @@ namespace BubbleBot.Converters.Enums
         {
             throw new NotImplementedException();
         }
-
     }
 }

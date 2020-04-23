@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class CharacterToRelookInformation : AbstractCharacterInformation
-	{
+    public class CharacterToRelookInformation : AbstractCharacterInformation
+    {
 
-		// Properties
-		public uint CosmeticId { get; set; }
+        // Properties
+        public uint CosmeticId { get; set; }
 
 
-		// Constructors
-		public CharacterToRelookInformation() { }
+        // Constructors
+        public CharacterToRelookInformation() { }
 
-		public CharacterToRelookInformation(uint id = 0, uint cosmeticId = 0)
-		{
-			Id = id;
-			CosmeticId = cosmeticId;
-		}
+        public CharacterToRelookInformation(uint id = 0, uint cosmeticId = 0)
+        {
+            Id = id;
+            CosmeticId = cosmeticId;
+        }
 
-	}
+    }
 }

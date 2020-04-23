@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceChangeGuildRightsMessage : Message
-	{
+    public class AllianceChangeGuildRightsMessage : Message
+    {
 
-		// Properties
-		public uint GuildId { get; set; }
-		public uint Rights { get; set; }
+        // Properties
+        public uint GuildId { get; set; }
+        public uint Rights { get; set; }
 
 
-		// Constructors
-		public AllianceChangeGuildRightsMessage() { }
+        // Constructors
+        public AllianceChangeGuildRightsMessage() { }
 
-		public AllianceChangeGuildRightsMessage(uint guildId = 0, uint rights = 0)
-		{
-			GuildId = guildId;
-			Rights = rights;
-		}
+        public AllianceChangeGuildRightsMessage(uint guildId = 0, uint rights = 0)
+        {
+            GuildId = guildId;
+            Rights = rights;
+        }
 
-	}
+    }
 }

@@ -12,18 +12,14 @@ namespace BubbleBot.Converters.Enums
                 return null;
 
             if (targetType.IsEnum)
-            {
                 // convert int to enum
                 return Enum.ToObject(targetType, value);
-            }
 
             if (value.GetType().IsEnum)
-            {
                 // convert enum to int
                 return System.Convert.ChangeType(
                     value,
                     Enum.GetUnderlyingType(value.GetType()));
-            }
 
             return null;
         }

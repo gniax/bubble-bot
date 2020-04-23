@@ -1,14 +1,12 @@
-using BubbleBot.Core.Accounts.Scripts.Api;
-using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Managers
 {
     public class LuaScriptManager : IDisposable
     {
-
         // Properties
         public Script Script { get; private set; }
 
@@ -29,7 +27,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
 
             var result = Script.Call(func);
 
-            return result.Type != DataType.Table ? null : result.Table.Values.Where(f => f.Type == DataType.Table).Select(f => f.Table);
+            return result.Type != DataType.Table
+                ? null
+                : result.Table.Values.Where(f => f.Type == DataType.Table).Select(f => f.Table);
         }
 
         public T GetGlobalOr<T>(string key, DataType type, T orValue)
@@ -41,7 +41,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
 
             try
             {
-                return (T)global.ToObject(typeof(T));
+                return (T) global.ToObject(typeof(T));
             }
             catch
             {
@@ -49,24 +49,40 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             }
         }
 
-        public DynValue GetGlobalAsDynValue(string key) =>
-            Script.Globals.Get(key);
+        public DynValue GetGlobalAsDynValue(string key)
+        {
+            return Script.Globals.Get(key);
+        }
 
         public T GetGlobalOr<T>(string key, T or)
-            => HasGlobal(key) ? (T)Script.Globals[key] : or;
+        {
+            return HasGlobal(key) ? (T) Script.Globals[key] : or;
+        }
 
         public T GetGlobal<T>(string key)
-            => HasGlobal(key) ? (T)Script.Globals[key] : default(T);
+        {
+            return HasGlobal(key) ? (T) Script.Globals[key] : default;
+        }
 
         public bool HasGlobal(string key)
-            => Script.Globals[key] != null;
+        {
+            return Script.Globals[key] != null;
+        }
 
         public void SetGlobal(string key, object value)
-            => Script.Globals[key] = value;
+        {
+            Script.Globals[key] = value;
+        }
+
+        public static void Initialize()
+        {
+            // Register all the types with [MoonSharpUserData] attribute
+            UserData.RegisterAssembly();
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -74,7 +90,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             {
                 if (disposing)
                 {
-
                 }
 
                 Script = null;
@@ -83,17 +98,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             }
         }
 
-        ~LuaScriptManager() => Dispose(false);
-
-        public void Dispose() => Dispose(true);
-
-        #endregion
-
-        public static void Initialize()
+        ~LuaScriptManager()
         {
-            // Register all the types with [MoonSharpUserData] attribute
-            UserData.RegisterAssembly();
+            Dispose(false);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #endregion
     }
 }

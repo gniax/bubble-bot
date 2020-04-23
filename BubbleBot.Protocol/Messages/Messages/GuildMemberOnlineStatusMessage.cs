@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildMemberOnlineStatusMessage : Message
-	{
+    public class GuildMemberOnlineStatusMessage : Message
+    {
 
-		// Properties
-		public uint MemberId { get; set; }
-		public bool Online { get; set; }
+        // Properties
+        public uint MemberId { get; set; }
+        public bool Online { get; set; }
 
 
-		// Constructors
-		public GuildMemberOnlineStatusMessage() { }
+        // Constructors
+        public GuildMemberOnlineStatusMessage() { }
 
-		public GuildMemberOnlineStatusMessage(uint memberId = 0, bool online = false)
-		{
-			MemberId = memberId;
-			Online = online;
-		}
+        public GuildMemberOnlineStatusMessage(uint memberId = 0, bool online = false)
+        {
+            MemberId = memberId;
+            Online = online;
+        }
 
-	}
+    }
 }

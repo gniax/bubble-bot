@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class Shortcut
-	{
+    public class Shortcut
+    {
 
-		// Properties
-		public uint Slot { get; set; }
+        // Properties
+        public uint Slot { get; set; }
 
 
-		// Constructors
-		public Shortcut() { }
+        // Constructors
+        public Shortcut() { }
 
-		public Shortcut(uint slot = 0)
-		{
-			Slot = slot;
-		}
+        public Shortcut(uint slot = 0)
+        {
+            Slot = slot;
+        }
 
-	}
+    }
 }

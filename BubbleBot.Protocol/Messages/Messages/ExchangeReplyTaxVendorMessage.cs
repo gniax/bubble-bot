@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeReplyTaxVendorMessage : Message
-	{
+    public class ExchangeReplyTaxVendorMessage : Message
+    {
 
-		// Properties
-		public uint ObjectValue { get; set; }
-		public uint TotalTaxValue { get; set; }
+        // Properties
+        public uint ObjectValue { get; set; }
+        public uint TotalTaxValue { get; set; }
 
 
-		// Constructors
-		public ExchangeReplyTaxVendorMessage() { }
+        // Constructors
+        public ExchangeReplyTaxVendorMessage() { }
 
-		public ExchangeReplyTaxVendorMessage(uint objectValue = 0, uint totalTaxValue = 0)
-		{
-			ObjectValue = objectValue;
-			TotalTaxValue = totalTaxValue;
-		}
+        public ExchangeReplyTaxVendorMessage(uint objectValue = 0, uint totalTaxValue = 0)
+        {
+            ObjectValue = objectValue;
+            TotalTaxValue = totalTaxValue;
+        }
 
-	}
+    }
 }

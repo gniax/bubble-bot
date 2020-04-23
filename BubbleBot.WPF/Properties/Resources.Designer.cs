@@ -143,6 +143,16 @@ namespace BubbleBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap circle_purple {
+            get {
+                object obj = ResourceManager.GetObject("circle_purple", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap circle_red {
             get {
                 object obj = ResourceManager.GetObject("circle_red", resourceCulture);
@@ -156,6 +166,16 @@ namespace BubbleBot.Properties {
         internal static System.Drawing.Bitmap Clock_24 {
             get {
                 object obj = ResourceManager.GetObject("Clock_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap close_btn {
+            get {
+                object obj = ResourceManager.GetObject("close_btn", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -318,6 +338,7 @@ namespace BubbleBot.Properties {
         ///		coroutine.yield()
         ///	end	
         ///end
+        ///fightsCount = api.Fight.FightsCount
         ///
         ///-- Gather
         ///canGather = api.Gather.CanGather
@@ -327,10 +348,7 @@ namespace BubbleBot.Properties {
         ///	end
         ///end
         ///
-        ///-- Global
-        ///function delay(ms)
-        ///	delayFunc(ms)
-        ///	coroutine.y [rest of string was truncated]&quot;;.
+        ///--  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string scriptsApiHelper {
             get {

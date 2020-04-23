@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildHouseUpdateInformationMessage : Message
-	{
+    public class GuildHouseUpdateInformationMessage : Message
+    {
 
-		// Properties
-		public HouseInformationsForGuild HousesInformations { get; set; }
+        // Properties
+        public HouseInformationsForGuild HousesInformations { get; set; }
 
 
-		// Constructors
-		public GuildHouseUpdateInformationMessage() { }
+        // Constructors
+        public GuildHouseUpdateInformationMessage() { }
 
-		public GuildHouseUpdateInformationMessage(HouseInformationsForGuild housesInformations = null)
-		{
-			HousesInformations = housesInformations;
-		}
+        public GuildHouseUpdateInformationMessage(HouseInformationsForGuild housesInformations = null)
+        {
+            HousesInformations = housesInformations;
+        }
 
-	}
+    }
 }

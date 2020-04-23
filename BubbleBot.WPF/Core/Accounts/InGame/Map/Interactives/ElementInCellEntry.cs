@@ -2,12 +2,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Interactives
 {
     public class ElementInCellEntry
     {
-
-        // Properties
-        public InteractiveElementEntry Element { get; }
-        public short CellId { get; }
-
-
         // Constructor
         public ElementInCellEntry(InteractiveElementEntry element, short cellId)
         {
@@ -15,5 +9,8 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Interactives
             CellId = cellId;
         }
 
+        // Properties
+        public InteractiveElementEntry Element { get; }
+        public short CellId { get; }
     }
 }

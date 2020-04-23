@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class StatsUpgradeResultMessage : Message
-	{
+    public class StatsUpgradeResultMessage : Message
+    {
 
-		// Properties
-		public uint NbCharacBoost { get; set; }
+        // Properties
+        public uint NbCharacBoost { get; set; }
 
 
-		// Constructors
-		public StatsUpgradeResultMessage() { }
+        // Constructors
+        public StatsUpgradeResultMessage() { }
 
-		public StatsUpgradeResultMessage(uint nbCharacBoost = 0)
-		{
-			NbCharacBoost = nbCharacBoost;
-		}
+        public StatsUpgradeResultMessage(uint nbCharacBoost = 0)
+        {
+            NbCharacBoost = nbCharacBoost;
+        }
 
-	}
+    }
 }

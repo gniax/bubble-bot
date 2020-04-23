@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class SpellForgottenMessage : Message
-	{
+    public class SpellForgottenMessage : Message
+    {
 
-		// Properties
-		public List<uint> SpellsId { get; set; }
-		public uint BoostPoint { get; set; }
+        // Properties
+        public List<uint> SpellsId { get; set; }
+        public uint BoostPoint { get; set; }
 
 
-		// Constructors
-		public SpellForgottenMessage() { }
+        // Constructors
+        public SpellForgottenMessage() { }
 
-		public SpellForgottenMessage(uint boostPoint = 0, List<uint> spellsId = null)
-		{
-			BoostPoint = boostPoint;
-			SpellsId = spellsId;
-		}
+        public SpellForgottenMessage(uint boostPoint = 0, List<uint> spellsId = null)
+        {
+            BoostPoint = boostPoint;
+            SpellsId = spellsId;
+        }
 
-	}
+    }
 }

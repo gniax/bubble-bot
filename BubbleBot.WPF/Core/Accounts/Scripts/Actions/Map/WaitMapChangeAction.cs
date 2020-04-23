@@ -4,22 +4,20 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class WaitMapChangeAction : ScriptAction
     {
-
-        // Properties
-        public uint Delay { get; private set; }
-
-
         // Constructor
         public WaitMapChangeAction(uint delay)
         {
             Delay = delay;
         }
 
+        // Properties
+        public uint Delay { get; }
+
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
             account.Logger.LogDebug("WaitMapChangeAction", "Waiting");
-            bool mapChanged = false;
+            var mapChanged = false;
 
             void Map_MapChanged()
             {
@@ -28,7 +26,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 
             account.Game.Map.MapChanged += Map_MapChanged;
 
-            int delay = 0;
+            var delay = 0;
             while (!mapChanged && delay < Delay && account.Scripts.Running)
             {
                 await Task.Delay(100);
@@ -43,6 +41,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
             account.Logger.LogDebug("WaitMapChangeAction", "Waited");
             return ScriptActionResults.DONE;
         }
-
     }
 }

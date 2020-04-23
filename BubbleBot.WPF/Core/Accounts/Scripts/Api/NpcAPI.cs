@@ -1,8 +1,8 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Npcs;
-using MoonSharp.Interpreter;
 using System;
 using System.Linq;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Npcs;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +10,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class NpcAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -41,11 +40,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         public void Reply(int replyId)
-            => _account.Scripts.ActionsManager.EnqueueAction(new ReplyAction(replyId), true);
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ReplyAction(replyId), true);
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -59,12 +60,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~NpcAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeKamaModifiedMessage : ExchangeObjectMessage
-	{
+    public class ExchangeKamaModifiedMessage : ExchangeObjectMessage
+    {
 
-		// Properties
-		public uint Quantity { get; set; }
+        // Properties
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ExchangeKamaModifiedMessage() { }
+        // Constructors
+        public ExchangeKamaModifiedMessage() { }
 
-		public ExchangeKamaModifiedMessage(bool remote = false, uint quantity = 0)
-		{
-			Remote = remote;
-			Quantity = quantity;
-		}
+        public ExchangeKamaModifiedMessage(bool remote = false, uint quantity = 0)
+        {
+            Remote = remote;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

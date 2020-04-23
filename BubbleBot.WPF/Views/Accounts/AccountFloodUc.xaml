@@ -1,27 +1,27 @@
 ﻿<UserControl x:Class="BubbleBot.Views.Accounts.AccountFloodUc"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:BubbleBot.Views.Accounts"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
              xmlns:enums="clr-namespace:BubbleBot.Converters.Enums"
              xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
-             mc:Ignorable="d"  
-             Height="484" 
+             mc:Ignorable="d"
+             Height="484"
              Width="798"
              FontSize="12">
 
     <UserControl.Resources>
-        
+
         <!-- Converters -->
         <specific:BoolToStringConverter x:Key="BoolToStringConverter" />
         <enums:ChannelsStringConverter x:Key="ChannelsStringConverter" />
 
     </UserControl.Resources>
-    
+
     <ScrollViewer Height="484">
         <StackPanel>
 
@@ -50,7 +50,7 @@
                     <ContextMenu>
                         <MenuItem Header="{_:Lang 239}" Click="BtnDelete_Click">
                             <MenuItem.Icon>
-                                <iconPacks:PackIconMaterial Margin="8 0 0 0" 
+                                <iconPacks:PackIconMaterial Margin="8 0 0 0"
                                                             Kind="Close" />
                             </MenuItem.Icon>
                         </MenuItem>
@@ -79,14 +79,14 @@
                         <controls:NumericUpDown Minimum="1" Maximum="300"
                                                 Value="{Binding Extensions.Flood.Configuration.GeneralChannelInterval}" />
                     </DockPanel>
-                    <controls:ToggleSwitch OnLabel="{_:Lang 418}" 
+                    <controls:ToggleSwitch OnLabel="{_:Lang 418}"
                                            OffLabel="{_:Lang 419}"
                                            HorizontalAlignment="Right"
                                            Name="tsActivate"
                                            IsCheckedChanged="TsActivate_IsCheckedChanged" />
                 </StackPanel>
             </GroupBox>
-        
+
             <!-- Add a sentence -->
             <GroupBox Header="{_:Lang 428}">
                 <StackPanel>
@@ -96,7 +96,7 @@
                     </DockPanel>
                     <DockPanel Margin="4">
                         <TextBlock Text="{_:Lang 430}" VerticalAlignment="Center" />
-                        <ComboBox Name="cmbChannel" 
+                        <ComboBox Name="cmbChannel"
                                   SelectedIndex="0"
                                   SelectionChanged="CmbChannel_SelectionChanged">
                             <ComboBoxItem Content="{_:Lang 266}" />
@@ -115,13 +115,13 @@
                                   IsChecked="True"
                                   Margin="4" />
                     </StackPanel>
-                    <Button Name="btnAddSentence" 
+                    <Button Name="btnAddSentence"
                             Click="BtnAddSentence_Click"
-                            HorizontalAlignment="Right" 
+                            HorizontalAlignment="Right"
                             Width="100" Height="32"
                             Background="{StaticResource AccentColorBrush}"
                             Margin="0 6 4 4">
-                        <StackPanel Orientation="Horizontal" >
+                        <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconMaterial Kind="Plus" />
                             <TextBlock Margin="10 0 0 0" Text="{_:Lang 260}" />
                         </StackPanel>
@@ -132,33 +132,33 @@
             <!-- Informations -->
             <GroupBox Header="{_:Lang 434}">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" 
+                    <StackPanel Orientation="Horizontal"
                                 Margin="0 4"
-                                HorizontalAlignment="Center" >
-                        <iconPacks:PackIconMaterial Width="18" 
+                                HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Width="18"
                                                     Height="18"
                                                     Kind="Information"
                                                     VerticalAlignment="Center" />
-                        <TextBlock Margin="4 0 0 0" 
+                        <TextBlock Margin="4 0 0 0"
                                    Text="{_:Lang 435}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                     <TextBlock Text="{_:Lang 436}"
-                                   FontWeight="Bold"
-                                   FontSize="13"
-                                   Margin="4" />
+                               FontWeight="Bold"
+                               FontSize="13"
+                               Margin="4" />
                     <TextBlock Text="{_:Lang 437}"
-                                   Margin="4" />
+                               Margin="4" />
                     <TextBlock Text="{_:Lang 438}"
-                                   Margin="4" />
+                               Margin="4" />
                     <TextBlock Text="{_:Lang 439}"
-                                   FontWeight="Bold"
-                                   FontSize="13"
-                                   Margin="4" />
+                               FontWeight="Bold"
+                               FontSize="13"
+                               Margin="4" />
                     <TextBlock Text="{_:Lang 440}"
-                                   Margin="4" />
+                               Margin="4" />
                     <TextBlock Text="{_:Lang 441}"
-                                   Margin="4" />
+                               Margin="4" />
                 </StackPanel>
             </GroupBox>
 

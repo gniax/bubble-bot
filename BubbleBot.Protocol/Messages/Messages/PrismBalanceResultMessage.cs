@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class PrismBalanceResultMessage : Message
-	{
+    public class PrismBalanceResultMessage : Message
+    {
 
-		// Properties
-		public uint TotalBalanceValue { get; set; }
-		public uint SubAreaBalanceValue { get; set; }
+        // Properties
+        public uint TotalBalanceValue { get; set; }
+        public uint SubAreaBalanceValue { get; set; }
 
 
-		// Constructors
-		public PrismBalanceResultMessage() { }
+        // Constructors
+        public PrismBalanceResultMessage() { }
 
-		public PrismBalanceResultMessage(uint totalBalanceValue = 0, uint subAreaBalanceValue = 0)
-		{
-			TotalBalanceValue = totalBalanceValue;
-			SubAreaBalanceValue = subAreaBalanceValue;
-		}
+        public PrismBalanceResultMessage(uint totalBalanceValue = 0, uint subAreaBalanceValue = 0)
+        {
+            TotalBalanceValue = totalBalanceValue;
+            SubAreaBalanceValue = subAreaBalanceValue;
+        }
 
-	}
+    }
 }

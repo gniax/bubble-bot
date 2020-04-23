@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountReleaseRequestMessage : Message
-	{
+    public class MountReleaseRequestMessage : Message
+    {
 
-		// Constructors
-		public MountReleaseRequestMessage() { }
+        // Constructors
+        public MountReleaseRequestMessage() { }
 
 
-	}
+    }
 }

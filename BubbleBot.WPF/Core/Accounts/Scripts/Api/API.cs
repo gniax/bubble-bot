@@ -1,6 +1,6 @@
-using MoonSharp.Interpreter;
 using System;
 using System.Reflection;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -8,34 +8,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class API : IDisposable
     {
-
-        // Properties
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public CharacterAPI Character { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public FightAPI Fight { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public GatherAPI Gather { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public InventoryAPI Inventory { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public JobsAPI Jobs { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public MapAPI Map { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public NpcAPI Npc { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public MountAPI Mount { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public StorageAPI Storage { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public ExchangeAPI Exchange { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public BidAPI Bid { get; private set; }
-        [Obfuscation(Exclude = false, Feature = "-rename")]
-        public ExtendScriptAPI ExtendScript { get; private set; }
-
-
         // Constructor
         public API(Account account)
         {
@@ -52,6 +24,43 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             Bid = new BidAPI(account);
             ExtendScript = new ExtendScriptAPI(account);
         }
+
+        // Properties
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public CharacterAPI Character { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public FightAPI Fight { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public GatherAPI Gather { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public InventoryAPI Inventory { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public JobsAPI Jobs { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public MapAPI Map { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public NpcAPI Npc { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public MountAPI Mount { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public StorageAPI Storage { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public ExchangeAPI Exchange { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public BidAPI Bid { get; private set; }
+
+        [Obfuscation(Exclude = false, Feature = "-rename")]
+        public ExtendScriptAPI ExtendScript { get; private set; }
 
         #region IDisposable Support
 
@@ -95,12 +104,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~API()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

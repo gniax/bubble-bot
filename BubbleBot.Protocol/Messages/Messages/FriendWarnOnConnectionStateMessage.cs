@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class FriendWarnOnConnectionStateMessage : Message
-	{
+    public class FriendWarnOnConnectionStateMessage : Message
+    {
 
-		// Properties
-		public bool Enable { get; set; }
+        // Properties
+        public bool Enable { get; set; }
 
 
-		// Constructors
-		public FriendWarnOnConnectionStateMessage() { }
+        // Constructors
+        public FriendWarnOnConnectionStateMessage() { }
 
-		public FriendWarnOnConnectionStateMessage(bool enable = false)
-		{
-			Enable = enable;
-		}
+        public FriendWarnOnConnectionStateMessage(bool enable = false)
+        {
+            Enable = enable;
+        }
 
-	}
+    }
 }

@@ -6,15 +6,8 @@ namespace BubbleBot.Core.Pathfinding
 {
     public class MapPoint
     {
-
         // Fields
         public static List<MapPoint> cells;
-
-
-        // Properties
-        public int X { get; internal set; }
-        public int Y { get; internal set; }
-        public short CellId { get; private set; }
 
 
         // Constructor
@@ -28,7 +21,7 @@ namespace BubbleBot.Core.Pathfinding
                 row = i % 14 - ~~(i / 28);
                 x = row + 19;
                 y = row + ~~(i / 14);
-                cells.Add(new MapPoint()
+                cells.Add(new MapPoint
                 {
                     X = x,
                     Y = y,
@@ -38,29 +31,48 @@ namespace BubbleBot.Core.Pathfinding
         }
 
 
-        public int DistanceTo(MapPoint destination) => (int)Math.Round(Math.Sqrt(Math.Pow(destination.X - X, 2) + Math.Pow(destination.Y - Y, 2)));
-        public int DistanceToCell(MapPoint destination) => Math.Abs(X - destination.X) + Math.Abs(Y - destination.Y);
+        // Properties
+        public int X { get; internal set; }
+        public int Y { get; internal set; }
+        public short CellId { get; private set; }
 
 
-        public static MapPoint FromCellId(short cellId) => cells[cellId];
-        public static MapPoint FromCoords(int x, int y) => cells.FirstOrDefault(c => c.X == x && c.Y == y);
+        public int DistanceTo(MapPoint destination)
+        {
+            return (int) Math.Round(Math.Sqrt(Math.Pow(destination.X - X, 2) + Math.Pow(destination.Y - Y, 2)));
+        }
+
+        public int DistanceToCell(MapPoint destination)
+        {
+            return Math.Abs(X - destination.X) + Math.Abs(Y - destination.Y);
+        }
+
+
+        public static MapPoint FromCellId(short cellId)
+        {
+            return cells[cellId];
+        }
+
+        public static MapPoint FromCoords(int x, int y)
+        {
+            return cells.FirstOrDefault(c => c.X == x && c.Y == y);
+        }
 
         public static List<MapPoint> GetNeighbourCells(short cellId, bool allowDiagonal)
         {
             var coord = FromCellId(cellId);
             var neighbours = new List<MapPoint>();
 
-            if (allowDiagonal) { neighbours.Add(FromCoords(coord.X + 1, coord.Y + 1)); }
+            if (allowDiagonal) neighbours.Add(FromCoords(coord.X + 1, coord.Y + 1));
             neighbours.Add(FromCoords(coord.X, coord.Y + 1));
-            if (allowDiagonal) { neighbours.Add(FromCoords(coord.X - 1, coord.Y + 1)); }
+            if (allowDiagonal) neighbours.Add(FromCoords(coord.X - 1, coord.Y + 1));
             neighbours.Add(FromCoords(coord.X - 1, coord.Y));
-            if (allowDiagonal) { neighbours.Add(FromCoords(coord.X - 1, coord.Y - 1)); }
+            if (allowDiagonal) neighbours.Add(FromCoords(coord.X - 1, coord.Y - 1));
             neighbours.Add(FromCoords(coord.X, coord.Y - 1));
-            if (allowDiagonal) { neighbours.Add(FromCoords(coord.X + 1, coord.Y - 1)); }
+            if (allowDiagonal) neighbours.Add(FromCoords(coord.X + 1, coord.Y - 1));
             neighbours.Add(FromCoords(coord.X + 1, coord.Y));
 
             return neighbours;
         }
-
     }
 }

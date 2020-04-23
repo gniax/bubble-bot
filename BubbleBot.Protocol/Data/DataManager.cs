@@ -34,7 +34,7 @@ namespace BubbleBot.Protocol.Data
             {
                 if (!dataType.IsAssignableFrom(type) || type == dataType)
                     continue;
-                
+
                 _cache.Add(type.Name, new ConcurrentDictionary<int, IData>());
             }
         }
@@ -50,7 +50,6 @@ namespace BubbleBot.Protocol.Data
             Stopwatch sw = Stopwatch.StartNew();
             string className = typeof(T).Name;
             string dir = Path.Combine(Directory.GetCurrentDirectory(), "Data", className);
-            //List<T> data = new List<T>(ids.Count()+1);
             List<T> data = new List<T>();
 
             List<int> idsToDownload = new List<int>();

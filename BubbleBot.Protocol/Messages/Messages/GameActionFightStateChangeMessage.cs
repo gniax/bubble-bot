@@ -1,28 +1,25 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightStateChangeMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightStateChangeMessage : AbstractGameActionMessage
+    {
 
-		// Properties
-		public int TargetId { get; set; }
-		public int StateId { get; set; }
-		public bool Active { get; set; }
+        // Properties
+        public int TargetId { get; set; }
+        public int StateId { get; set; }
+        public bool Active { get; set; }
 
 
-		// Constructors
-		public GameActionFightStateChangeMessage() { }
+        // Constructors
+        public GameActionFightStateChangeMessage() { }
 
-		public GameActionFightStateChangeMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, int stateId = 0, bool active = false)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			TargetId = targetId;
-			StateId = stateId;
-			Active = active;
-		}
+        public GameActionFightStateChangeMessage(uint actionId = 0, int sourceId = 0, int targetId = 0, int stateId = 0, bool active = false)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            TargetId = targetId;
+            StateId = stateId;
+            Active = active;
+        }
 
-	}
+    }
 }

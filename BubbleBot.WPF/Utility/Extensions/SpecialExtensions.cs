@@ -1,12 +1,15 @@
-using BubbleBot.Utility.DofusTouch;
 using System;
+using BubbleBot.Utility.DofusTouch;
 
 namespace BubbleBot.Utility.Extensions
 {
     public static class SpecialExtensions
     {
+        public static bool TryGetCoord(this int cellid, out float x, out float y)
+        {
+            return TryGetCoord((short) cellid, out x, out y);
+        }
 
-        public static bool TryGetCoord(this int cellid, out float x, out float y) => TryGetCoord((short)cellid, out x, out y);
         public static bool TryGetCoord(this short cellid, out float x, out float y)
         {
             x = 0;
@@ -16,9 +19,8 @@ namespace BubbleBot.Utility.Extensions
                 return false;
 
             x = cellid % DTConstants.MAP_WIDTH;
-            y = (float)Math.Floor((float)cellid / DTConstants.MAP_WIDTH);
+            y = (float) Math.Floor((float) cellid / DTConstants.MAP_WIDTH);
             return true;
         }
-
     }
 }

@@ -1,23 +1,14 @@
+using System;
 using BubbleBot.Core.Accounts.Extensions.Bid;
+using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 using BubbleBot.Core.Accounts.Extensions.Exchanges;
 using BubbleBot.Core.Accounts.Extensions.Fights;
 using BubbleBot.Core.Accounts.Extensions.Flood;
-using System;
-using BubbleBot.Core.Accounts.Extensions.CharacterCreator;
 
 namespace BubbleBot.Core.Accounts.Extensions
 {
     public class ExtensionsContainer : IClearable, IDisposable
     {
-
-        // Properties
-        public FightsExtension Fights { get; private set; }
-        public BidExtension Bid { get; private set; }
-        public RoleplayExtension Roleplay { get; private set; }
-        public FloodExtension Flood { get; private set; }
-        public CharacterCreatorExtension CharacterCreation { get; private set; }
-
-
         // Constructor
         public ExtensionsContainer(Account account)
         {
@@ -27,6 +18,13 @@ namespace BubbleBot.Core.Accounts.Extensions
             Flood = new FloodExtension(account);
             CharacterCreation = new CharacterCreatorExtension(account);
         }
+
+        // Properties
+        public FightsExtension Fights { get; private set; }
+        public BidExtension Bid { get; private set; }
+        public RoleplayExtension Roleplay { get; private set; }
+        public FloodExtension Flood { get; private set; }
+        public CharacterCreatorExtension CharacterCreation { get; private set; }
 
 
         public void Clear()
@@ -63,11 +61,16 @@ namespace BubbleBot.Core.Accounts.Extensions
             }
         }
 
-        ~ExtensionsContainer() => Dispose(false);
+        ~ExtensionsContainer()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

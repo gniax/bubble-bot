@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildCharacsUpgradeRequestMessage : Message
-	{
+    public class GuildCharacsUpgradeRequestMessage : Message
+    {
 
-		// Properties
-		public uint CharaTypeTarget { get; set; }
+        // Properties
+        public uint CharaTypeTarget { get; set; }
 
 
-		// Constructors
-		public GuildCharacsUpgradeRequestMessage() { }
+        // Constructors
+        public GuildCharacsUpgradeRequestMessage() { }
 
-		public GuildCharacsUpgradeRequestMessage(uint charaTypeTarget = 0)
-		{
-			CharaTypeTarget = charaTypeTarget;
-		}
+        public GuildCharacsUpgradeRequestMessage(uint charaTypeTarget = 0)
+        {
+            CharaTypeTarget = charaTypeTarget;
+        }
 
-	}
+    }
 }

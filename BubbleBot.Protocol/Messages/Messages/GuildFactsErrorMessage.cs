@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildFactsErrorMessage : Message
-	{
+    public class GuildFactsErrorMessage : Message
+    {
 
-		// Properties
-		public uint GuildId { get; set; }
+        // Properties
+        public uint GuildId { get; set; }
 
 
-		// Constructors
-		public GuildFactsErrorMessage() { }
+        // Constructors
+        public GuildFactsErrorMessage() { }
 
-		public GuildFactsErrorMessage(uint guildId = 0)
-		{
-			GuildId = guildId;
-		}
+        public GuildFactsErrorMessage(uint guildId = 0)
+        {
+            GuildId = guildId;
+        }
 
-	}
+    }
 }

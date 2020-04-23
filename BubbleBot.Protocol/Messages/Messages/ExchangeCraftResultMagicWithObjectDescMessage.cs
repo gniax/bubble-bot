@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeCraftResultMagicWithObjectDescMessage : ExchangeCraftResultWithObjectDescMessage
-	{
+    public class ExchangeCraftResultMagicWithObjectDescMessage : ExchangeCraftResultWithObjectDescMessage
+    {
 
-		// Properties
-		public int MagicPoolStatus { get; set; }
+        // Properties
+        public int MagicPoolStatus { get; set; }
 
 
-		// Constructors
-		public ExchangeCraftResultMagicWithObjectDescMessage() { }
+        // Constructors
+        public ExchangeCraftResultMagicWithObjectDescMessage() { }
 
-		public ExchangeCraftResultMagicWithObjectDescMessage(uint craftResult = 0, ObjectItemNotInContainer objectInfo = null, int magicPoolStatus = 0)
-		{
-			CraftResult = craftResult;
-			ObjectInfo = objectInfo;
-			MagicPoolStatus = magicPoolStatus;
-		}
+        public ExchangeCraftResultMagicWithObjectDescMessage(uint craftResult = 0, ObjectItemNotInContainer objectInfo = null, int magicPoolStatus = 0)
+        {
+            CraftResult = craftResult;
+            ObjectInfo = objectInfo;
+            MagicPoolStatus = magicPoolStatus;
+        }
 
-	}
+    }
 }

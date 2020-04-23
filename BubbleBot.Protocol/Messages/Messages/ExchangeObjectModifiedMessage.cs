@@ -1,23 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeObjectModifiedMessage : ExchangeObjectMessage
-	{
+    public class ExchangeObjectModifiedMessage : ExchangeObjectMessage
+    {
 
-		// Properties
-		public ObjectItem @Object { get; set; }
+        // Properties
+        public ObjectItem @Object { get; set; }
 
 
-		// Constructors
-		public ExchangeObjectModifiedMessage() { }
+        // Constructors
+        public ExchangeObjectModifiedMessage() { }
 
-		public ExchangeObjectModifiedMessage(bool remote = false, ObjectItem @object = null)
-		{
-			Remote = remote;
-			@Object = @object;
-		}
+        public ExchangeObjectModifiedMessage(bool remote = false, ObjectItem @object = null)
+        {
+            Remote = remote;
+            @Object = @object;
+        }
 
-	}
+    }
 }

@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeMountStableAddMessage : Message
-	{
+    public class ExchangeMountStableAddMessage : Message
+    {
 
-		// Properties
-		public MountClientData MountDescription { get; set; }
+        // Properties
+        public MountClientData MountDescription { get; set; }
 
 
-		// Constructors
-		public ExchangeMountStableAddMessage() { }
+        // Constructors
+        public ExchangeMountStableAddMessage() { }
 
-		public ExchangeMountStableAddMessage(MountClientData mountDescription = null)
-		{
-			MountDescription = mountDescription;
-		}
+        public ExchangeMountStableAddMessage(MountClientData mountDescription = null)
+        {
+            MountDescription = mountDescription;
+        }
 
-	}
+    }
 }

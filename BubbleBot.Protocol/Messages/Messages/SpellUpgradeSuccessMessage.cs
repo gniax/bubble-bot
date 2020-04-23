@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SpellUpgradeSuccessMessage : Message
-	{
+    public class SpellUpgradeSuccessMessage : Message
+    {
 
-		// Properties
-		public int SpellId { get; set; }
-		public uint SpellLevel { get; set; }
+        // Properties
+        public int SpellId { get; set; }
+        public uint SpellLevel { get; set; }
 
 
-		// Constructors
-		public SpellUpgradeSuccessMessage() { }
+        // Constructors
+        public SpellUpgradeSuccessMessage() { }
 
-		public SpellUpgradeSuccessMessage(int spellId = 0, uint spellLevel = 0)
-		{
-			SpellId = spellId;
-			SpellLevel = spellLevel;
-		}
+        public SpellUpgradeSuccessMessage(int spellId = 0, uint spellLevel = 0)
+        {
+            SpellId = spellId;
+            SpellLevel = spellLevel;
+        }
 
-	}
+    }
 }

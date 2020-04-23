@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightNoSpellCastMessage : Message
-	{
+    public class GameActionFightNoSpellCastMessage : Message
+    {
 
-		// Properties
-		public uint SpellLevelId { get; set; }
+        // Properties
+        public uint SpellLevelId { get; set; }
 
 
-		// Constructors
-		public GameActionFightNoSpellCastMessage() { }
+        // Constructors
+        public GameActionFightNoSpellCastMessage() { }
 
-		public GameActionFightNoSpellCastMessage(uint spellLevelId = 0)
-		{
-			SpellLevelId = spellLevelId;
-		}
+        public GameActionFightNoSpellCastMessage(uint spellLevelId = 0)
+        {
+            SpellLevelId = spellLevelId;
+        }
 
-	}
+    }
 }

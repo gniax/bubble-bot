@@ -4,13 +4,6 @@ namespace BubbleBot.Core.Accounts.Network
 {
     public class NetworkMessage
     {
-
-        // Properties
-        public string Message { get; }
-        public bool Sent { get; }
-        public DateTime Time { get; }
-
-
         // Constructor
         public NetworkMessage(string message, bool sent)
         {
@@ -19,6 +12,9 @@ namespace BubbleBot.Core.Accounts.Network
             Time = DateTime.Now;
         }
 
+        // Properties
+        public string Message { get; }
+        public bool Sent { get; }
+        public DateTime Time { get; }
     }
-
 }

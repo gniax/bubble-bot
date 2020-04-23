@@ -1,97 +1,137 @@
-using System.Diagnostics;
-using System.Linq;
-using BubbleBot.Core.Accounts;
-using BubbleBot.Protocol.Messages;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
-using BubbleBot.Server.Messages;
-using BubbleBot.Core.Extensions;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Frames.Game
 {
     public static class CharacterFrame
     {
         public static Task HandleEmotePlayMessage(Account account, EmotePlayMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleCharacterExperienceGainMessage(Account account, CharacterExperienceGainMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 account.Statistics.Update(message);
 
                 account.Logger.LogInfo("", LanguageManager.Translate("93", message.ExperienceCharacter));
                 account.Game.Character.Stats.Update(message);
             });
+        }
 
         public static Task HandleCharacterStatsListMessage(Account account, CharacterStatsListMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleCharacterLevelUpMessage(Account account, CharacterLevelUpMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 account.Statistics.Update(message);
 
                 account.Logger.LogInfo("", "Level up!");
                 account.Game.Character.Update(message);
             });
+        }
 
         public static Task HandleUpdateLifePointsMessage(Account account, UpdateLifePointsMessage message)
-            => Task.Run(() => account.Game.Character.Stats.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Stats.Update(message));
+        }
 
-        public static Task HandleGameRolePlayPlayerLifeStatusMessage(Account account, GameRolePlayPlayerLifeStatusMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        public static Task HandleGameRolePlayPlayerLifeStatusMessage(Account account,
+            GameRolePlayPlayerLifeStatusMessage message)
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandlePlayerStatusUpdateMessage(Account account, PlayerStatusUpdateMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleLifePointsRegenBeginMessage(Account account, LifePointsRegenBeginMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleLifePointsRegenEndMessage(Account account, LifePointsRegenEndMessage message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() =>
             {
                 account.Game.Character.Update(message);
 
                 if (message.LifePointsGained > 0)
-                {
                     account.Logger.LogInfo("", LanguageManager.Translate("95", message.LifePointsGained));
-                }
 
                 account.Game.Character.Stats.Update(message);
             });
+        }
 
         public static Task HandleSpellListMessage(Account account, SpellListMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleSpellUpgradeSuccessMessage(Account account, SpellUpgradeSuccessMessage message)
-            => Task.Run(() => account.Game.Character.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
 
         public static Task HandleJobDescriptionMessage(Account account, JobDescriptionMessage message)
-            => Task.Run(() => account.Game.Character.Jobs.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Jobs.Update(message));
+        }
 
-        public static Task HandleJobExperienceMultiUpdateMessage(Account account, JobExperienceMultiUpdateMessage message)
-            => Task.Run(async () => await account.Game.Character.Jobs.Update(message));
+        public static Task HandleJobExperienceMultiUpdateMessage(Account account,
+            JobExperienceMultiUpdateMessage message)
+        {
+            return Task.Run(async () => await account.Game.Character.Jobs.Update(message));
+        }
 
         public static Task HandleJobExperienceUpdateMessage(Account account, JobExperienceUpdateMessage message)
-            => Task.Run(() => account.Game.Character.Jobs.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Jobs.Update(message));
+        }
 
         public static Task HandleMountXpRatioMessage(Account account, MountXpRatioMessage message)
-            => Task.Run(() => account.Game.Character.Mount.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Mount.Update(message));
+        }
 
         public static Task HandleMountRidingMessage(Account account, MountRidingMessage message)
-            => Task.Run(() => account.Game.Character.Mount.Update(message));
+        {
+            return Task.Run(() => account.Game.Character.Mount.Update(message));
+        }
 
         public static Task HandleMountSetMessage(Account account, MountSetMessage message)
-            => Task.Run(() => account.Game.Character.Mount.Update(message));
-        public static Task HandlebakSoftToHardCurrentRateSuccess(Account account, bakSoftToHardCurrentRateSuccess message)
-            => Task.Run(() =>
+        {
+            return Task.Run(() => account.Game.Character.Mount.Update(message));
+        }
+
+        public static Task HandlebakSoftToHardCurrentRateSuccess(Account account,
+            bakSoftToHardCurrentRateSuccess message)
+        {
+            return Task.Run(() =>
             {
-                if(message.Rate.HasValue)
-                    account.Game.bakRate = (double)message.Rate;
+                if (message.Rate.HasValue)
+                    account.Game.bakRate = (double) message.Rate;
             });
+        }
+
         public static Task HandleshopBuyError(Account account, shopBuyError message)
-            => Task.Run(() => account.Game.shopBuyInfo = -1);
+        {
+            return Task.Run(() => account.Game.shopBuyInfo = -1);
+        }
+
         public static Task HandleshopBuySuccess(Account account, shopBuySuccess message)
-            => Task.Run(() => account.Game.shopBuyInfo = 1);
+        {
+            return Task.Run(() => account.Game.shopBuyInfo = 1);
+        }
     }
 }

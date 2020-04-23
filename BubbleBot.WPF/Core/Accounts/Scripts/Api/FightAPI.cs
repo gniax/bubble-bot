@@ -1,8 +1,8 @@
-using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
-using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -10,7 +10,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class FightAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -22,14 +21,22 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
 
-        public bool CanFight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null, int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
-            => _account.Game.Map.CanFight(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters);
-
-        public bool Fight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null, int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        public bool CanFight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null,
+            int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
         {
-            if (CanFight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel))
+            return _account.Game.Map.CanFight(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel,
+                forbiddenMonsters, mandatoryMonsters);
+        }
+
+        public bool Fight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null, int minMonsters = 1,
+            int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        {
+            if (CanFight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel,
+                maxMonstersLevel))
             {
-                _account.Scripts.ActionsManager.EnqueueAction(new FightAction(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters), true);
+                _account.Scripts.ActionsManager.EnqueueAction(
+                    new FightAction(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters,
+                        mandatoryMonsters), true);
                 return true;
             }
 
@@ -37,11 +44,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         public uint FightsCount()
-        => _account.Statistics.FightsCount;
+        {
+            return _account.Statistics.FightsCount;
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -55,12 +64,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~FightAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class HumanOptionEmote : HumanOption
-	{
+    public class HumanOptionEmote : HumanOption
+    {
 
-		// Properties
-		public uint EmoteId { get; set; }
-		public double EmoteStartTime { get; set; }
+        // Properties
+        public uint EmoteId { get; set; }
+        public double EmoteStartTime { get; set; }
 
 
-		// Constructors
-		public HumanOptionEmote() { }
+        // Constructors
+        public HumanOptionEmote() { }
 
-		public HumanOptionEmote(uint emoteId = 0, double emoteStartTime = 0)
-		{
-			EmoteId = emoteId;
-			EmoteStartTime = emoteStartTime;
-		}
+        public HumanOptionEmote(uint emoteId = 0, double emoteStartTime = 0)
+        {
+            EmoteId = emoteId;
+            EmoteStartTime = emoteStartTime;
+        }
 
-	}
+    }
 }

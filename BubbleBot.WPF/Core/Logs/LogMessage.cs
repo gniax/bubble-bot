@@ -1,27 +1,28 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
+using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Core.Logs
 {
     public class LogMessage
     {
-
-        // Properties
-        public string Source { get; }
-        public string Message { get; }
-        public string Color { get; }
-        public DateTime Time { get; }
-
-
         // Constructor
-        public LogMessage(string source, string message, string color)
+        public LogMessage(string source, string message, string color, List<ObjectItem> objectitems = null)
         {
             Source = source;
             Message = message;
             Color = color;
             Time = DateTime.Now;
+            ObjectItems = objectitems;
         }
 
+        // Properties
+        public string Source { get; }
+        public string Color { get; }
+        public string Message { get; }
+        public DateTime Time { get; }
+        public List<ObjectItem> ObjectItems { get; }
 
         public override string ToString()
         {
@@ -32,6 +33,5 @@ namespace BubbleBot.Core.Logs
 
             return sb.ToString();
         }
-
     }
 }

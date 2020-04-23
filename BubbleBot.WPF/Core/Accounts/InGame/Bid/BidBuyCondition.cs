@@ -1,36 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BubbleBot.Core.Accounts.InGame.Bid
+﻿namespace BubbleBot.Core.Accounts.InGame.Bid
 {
-    public class BidUserCondition 
+    public class BidBuyCondition
     {
-        public int ItemEffectsId = 0;
         public string ItemCondition = "";
-        public int ItemValue = 0;
-        public bool Checked = false;
+        public uint ItemEffectId;
+        public int ItemValue;
 
-        public BidUserCondition(int itemeffects,string itemcondition,int itemvalue)
+        public BidBuyCondition(uint itemeffects, string itemcondition, int itemvalue)
         {
-            ItemEffectsId = itemeffects;
+            ItemEffectId = itemeffects;
             ItemCondition = itemcondition;
             ItemValue = itemvalue;
         }
 
-        public bool BidConditionChecker(int ItemValueToCheck)
+        public bool BidConditionChecker(uint ItemValueToCheck)
         {
-            Checked = true;
             if (ItemCondition != "")
             {
-                if(ItemCondition == "=" || ItemCondition == "==")
+                if (ItemCondition == "=" || ItemCondition == "==")
                 {
                     if (ItemValueToCheck == ItemValue)
                         return true;
                 }
-                else if(ItemCondition == ">")
+                else if (ItemCondition == ">")
                 {
                     if (ItemValueToCheck > ItemValue)
                         return true;
@@ -47,10 +39,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                 }
                 else if (ItemCondition == "<=")
                 {
-                    if (ItemValueToCheck <= ItemValue)
-                    {
-                        return true;
-                    }
+                    if (ItemValueToCheck <= ItemValue) return true;
                 }
                 else if (ItemCondition == "!=" || ItemCondition == "=!")
                 {
@@ -62,8 +51,8 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
                     return false;
                 }
             }
+
             return false;
         }
-
     }
 }

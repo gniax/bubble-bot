@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class OrnamentSelectedMessage : Message
-	{
+    public class OrnamentSelectedMessage : Message
+    {
 
-		// Properties
-		public uint OrnamentId { get; set; }
+        // Properties
+        public uint OrnamentId { get; set; }
 
 
-		// Constructors
-		public OrnamentSelectedMessage() { }
+        // Constructors
+        public OrnamentSelectedMessage() { }
 
-		public OrnamentSelectedMessage(uint ornamentId = 0)
-		{
-			OrnamentId = ornamentId;
-		}
+        public OrnamentSelectedMessage(uint ornamentId = 0)
+        {
+            OrnamentId = ornamentId;
+        }
 
-	}
+    }
 }

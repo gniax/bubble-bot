@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeTypesExchangerDescriptionForUserMessage : Message
-	{
+    public class ExchangeTypesExchangerDescriptionForUserMessage : Message
+    {
 
-		// Properties
-		public List<uint> TypeDescription { get; set; }
+        // Properties
+        public List<uint> TypeDescription { get; set; }
 
 
-		// Constructors
-		public ExchangeTypesExchangerDescriptionForUserMessage() { }
+        // Constructors
+        public ExchangeTypesExchangerDescriptionForUserMessage() { }
 
-		public ExchangeTypesExchangerDescriptionForUserMessage(List<uint> typeDescription = null)
-		{
-			TypeDescription = typeDescription;
-		}
+        public ExchangeTypesExchangerDescriptionForUserMessage(List<uint> typeDescription = null)
+        {
+            TypeDescription = typeDescription;
+        }
 
-	}
+    }
 }

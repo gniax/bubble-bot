@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CinematicMessage : Message
-	{
+    public class CinematicMessage : Message
+    {
 
-		// Properties
-		public uint CinematicId { get; set; }
+        // Properties
+        public uint CinematicId { get; set; }
 
 
-		// Constructors
-		public CinematicMessage() { }
+        // Constructors
+        public CinematicMessage() { }
 
-		public CinematicMessage(uint cinematicId = 0)
-		{
-			CinematicId = cinematicId;
-		}
+        public CinematicMessage(uint cinematicId = 0)
+        {
+            CinematicId = cinematicId;
+        }
 
-	}
+    }
 }

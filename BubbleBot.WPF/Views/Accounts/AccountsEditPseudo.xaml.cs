@@ -3,11 +3,12 @@
 namespace BubbleBot.Views.Accounts
 {
     /// <summary>
-    /// Logique d'interaction pour AccountsManagerEditAccount.xaml
+    ///     Logique d'interaction pour AccountsManagerEditAccount.xaml
     /// </summary>
     public partial class AccountsEditPseudo
     {
         public string newPseudo = "";
+
         public AccountsEditPseudo()
         {
             InitializeComponent();
@@ -16,8 +17,7 @@ namespace BubbleBot.Views.Accounts
         private void btn_pseudoValidation(object sender, RoutedEventArgs e)
         {
             newPseudo = txtNickname.Text;
-            this.Close();
+            Close();
         }
     }
 }
-

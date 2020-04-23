@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Data
 {
-	public class ServerCommunities : IData
-	{
+    public class ServerCommunities : IData
+    {
 
-		// Properties
-		[JsonProperty("id")]
-		public int Id { get; set; }
-		[JsonProperty("nameId")]
-		public string NameId { get; set; }
-		[JsonProperty("defaultCountries")]
-		public List<string> DefaultCountries { get; set; }
-		[JsonProperty("shortId")]
-		public string ShortId { get; set; }
+        // Properties
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("nameId")]
+        public string NameId { get; set; }
+        [JsonProperty("defaultCountries")]
+        public List<string> DefaultCountries { get; set; }
+        [JsonProperty("shortId")]
+        public string ShortId { get; set; }
 
 
-		//Constructor
-		internal ServerCommunities() {}
+        //Constructor
+        internal ServerCommunities() { }
 
-	}
+    }
 }

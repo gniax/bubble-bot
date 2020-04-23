@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AlignmentRankUpdateMessage : Message
-	{
+    public class AlignmentRankUpdateMessage : Message
+    {
 
-		// Properties
-		public uint AlignmentRank { get; set; }
-		public bool Verbose { get; set; }
+        // Properties
+        public uint AlignmentRank { get; set; }
+        public bool Verbose { get; set; }
 
 
-		// Constructors
-		public AlignmentRankUpdateMessage() { }
+        // Constructors
+        public AlignmentRankUpdateMessage() { }
 
-		public AlignmentRankUpdateMessage(uint alignmentRank = 0, bool verbose = false)
-		{
-			AlignmentRank = alignmentRank;
-			Verbose = verbose;
-		}
+        public AlignmentRankUpdateMessage(uint alignmentRank = 0, bool verbose = false)
+        {
+            AlignmentRank = alignmentRank;
+            Verbose = verbose;
+        }
 
-	}
+    }
 }

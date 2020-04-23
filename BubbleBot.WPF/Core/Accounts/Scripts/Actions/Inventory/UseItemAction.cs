@@ -4,18 +4,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Inventory
 {
     public class UseItemAction : ScriptAction
     {
-
-        // Properties
-        public int GID { get; private set; }
-        public uint Quantity { get; private set; }
-
-
         // Constructor
         public UseItemAction(int gid, uint quantity)
         {
             GID = gid;
             Quantity = quantity;
         }
+
+        // Properties
+        public int GID { get; }
+        public uint Quantity { get; }
 
 
         internal override async Task<ScriptActionResults> Process(Account account)
@@ -25,11 +23,10 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Inventory
             if (obj != null)
             {
                 account.Game.Character.Inventory.UseObject(obj, Quantity);
-                //await Task.Delay(500);
+                await Task.Delay(1);
             }
 
             return ScriptActionResults.DONE;
         }
-
     }
 }

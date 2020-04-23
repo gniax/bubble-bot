@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectGroundRemovedMessage : Message
-	{
+    public class ObjectGroundRemovedMessage : Message
+    {
 
-		// Properties
-		public uint Cell { get; set; }
+        // Properties
+        public uint Cell { get; set; }
 
 
-		// Constructors
-		public ObjectGroundRemovedMessage() { }
+        // Constructors
+        public ObjectGroundRemovedMessage() { }
 
-		public ObjectGroundRemovedMessage(uint cell = 0)
-		{
-			Cell = cell;
-		}
+        public ObjectGroundRemovedMessage(uint cell = 0)
+        {
+            Cell = cell;
+        }
 
-	}
+    }
 }

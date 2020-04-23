@@ -7,18 +7,15 @@ namespace BubbleBot.Converters.Specific
 {
     public class SubscriptionTextConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (BubbleBotMain.Instance.Server.IsSubscribedToTouch)
-            {
                 // If the user is currently in a plan
-                return BubbleBotMain.Instance.Server.TouchEndDate == null ? 
-                    LanguageManager.Translate("415") : 
-                    LanguageManager.Translate("416", BubbleBotMain.Instance.Server.TouchEndDate.Value.ToString("G"));
-            }
+                return BubbleBotMain.Instance.Server.TouchEndDate == null
+                    ? LanguageManager.Translate("415")
+                    : LanguageManager.Translate("416", BubbleBotMain.Instance.Server.TouchEndDate.Value.ToString("G"));
 
-            return LanguageManager.Translate("417");        
+            return LanguageManager.Translate("417");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

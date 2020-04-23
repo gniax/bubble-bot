@@ -7,16 +7,14 @@ namespace BubbleBot.Converters.Specific
 {
     public class LanguagesToIndexConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (byte)((Languages)value);
+            return (byte) (Languages) value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (Languages)value;
+            return (Languages) value;
         }
-
     }
 }

@@ -1,23 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartyNewGuestMessage : AbstractPartyEventMessage
-	{
+    public class PartyNewGuestMessage : AbstractPartyEventMessage
+    {
 
-		// Properties
-		public PartyGuestInformations Guest { get; set; }
+        // Properties
+        public PartyGuestInformations Guest { get; set; }
 
 
-		// Constructors
-		public PartyNewGuestMessage() { }
+        // Constructors
+        public PartyNewGuestMessage() { }
 
-		public PartyNewGuestMessage(uint partyId = 0, PartyGuestInformations guest = null)
-		{
-			PartyId = partyId;
-			Guest = guest;
-		}
+        public PartyNewGuestMessage(uint partyId = 0, PartyGuestInformations guest = null)
+        {
+            PartyId = partyId;
+            Guest = guest;
+        }
 
-	}
+    }
 }

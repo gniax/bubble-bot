@@ -1,24 +1,23 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class JobLevelUpMessage : Message
-	{
+    public class JobLevelUpMessage : Message
+    {
 
-		// Properties
-		public uint NewLevel { get; set; }
-		public JobDescription JobsDescription { get; set; }
+        // Properties
+        public uint NewLevel { get; set; }
+        public JobDescription JobsDescription { get; set; }
 
 
-		// Constructors
-		public JobLevelUpMessage() { }
+        // Constructors
+        public JobLevelUpMessage() { }
 
-		public JobLevelUpMessage(uint newLevel = 0, JobDescription jobsDescription = null)
-		{
-			NewLevel = newLevel;
-			JobsDescription = jobsDescription;
-		}
+        public JobLevelUpMessage(uint newLevel = 0, JobDescription jobsDescription = null)
+        {
+            NewLevel = newLevel;
+            JobsDescription = jobsDescription;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class MapObstacle
-	{
+    public class MapObstacle
+    {
 
-		// Properties
-		public uint ObstacleCellId { get; set; }
-		public uint State { get; set; }
+        // Properties
+        public uint ObstacleCellId { get; set; }
+        public uint State { get; set; }
 
 
-		// Constructors
-		public MapObstacle() { }
+        // Constructors
+        public MapObstacle() { }
 
-		public MapObstacle(uint obstacleCellId = 0, uint state = 0)
-		{
-			ObstacleCellId = obstacleCellId;
-			State = state;
-		}
+        public MapObstacle(uint obstacleCellId = 0, uint state = 0)
+        {
+            ObstacleCellId = obstacleCellId;
+            State = state;
+        }
 
-	}
+    }
 }

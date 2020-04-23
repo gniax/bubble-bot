@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameRolePlayTaxCollectorFightRequestMessage : Message
-	{
+    public class GameRolePlayTaxCollectorFightRequestMessage : Message
+    {
 
-		// Properties
-		public int TaxCollectorId { get; set; }
+        // Properties
+        public int TaxCollectorId { get; set; }
 
 
-		// Constructors
-		public GameRolePlayTaxCollectorFightRequestMessage() { }
+        // Constructors
+        public GameRolePlayTaxCollectorFightRequestMessage() { }
 
-		public GameRolePlayTaxCollectorFightRequestMessage(int taxCollectorId = 0)
-		{
-			TaxCollectorId = taxCollectorId;
-		}
+        public GameRolePlayTaxCollectorFightRequestMessage(int taxCollectorId = 0)
+        {
+            TaxCollectorId = taxCollectorId;
+        }
 
-	}
+    }
 }

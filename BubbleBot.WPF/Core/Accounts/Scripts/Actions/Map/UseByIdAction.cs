@@ -5,18 +5,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
     public class UseByIdAction : ScriptAction
     {
-
-        // Properties
-        public int ElementId { get; private set; }
-        public int SkillInstanceUid { get; private set; }
-
-
         // Constructor
         public UseByIdAction(int elementId, int skillInstanceUid)
         {
             ElementId = elementId;
             SkillInstanceUid = skillInstanceUid;
         }
+
+        // Properties
+        public int ElementId { get; }
+        public int SkillInstanceUid { get; }
 
         internal override Task<ScriptActionResults> Process(Account account)
         {

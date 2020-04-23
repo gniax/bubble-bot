@@ -5,18 +5,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 {
     public class NpcBankAction : ScriptAction
     {
-
-        // Properties
-        public int NpcId { get; private set; }
-        public int ReplyId { get; private set; }
-
-
         // Constructor
         public NpcBankAction(int npcId, int replyId)
         {
             NpcId = npcId;
             ReplyId = replyId;
         }
+
+        // Properties
+        public int NpcId { get; }
+        public int ReplyId { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
@@ -29,6 +27,5 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Npcs
 
             return ProcessingResult;
         }
-
     }
 }

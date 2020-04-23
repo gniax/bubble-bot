@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeCraftInformationObjectMessage : ExchangeCraftResultWithObjectIdMessage
-	{
+    public class ExchangeCraftInformationObjectMessage : ExchangeCraftResultWithObjectIdMessage
+    {
 
-		// Properties
-		public uint PlayerId { get; set; }
+        // Properties
+        public uint PlayerId { get; set; }
 
 
-		// Constructors
-		public ExchangeCraftInformationObjectMessage() { }
+        // Constructors
+        public ExchangeCraftInformationObjectMessage() { }
 
-		public ExchangeCraftInformationObjectMessage(uint craftResult = 0, uint objectGenericId = 0, uint playerId = 0)
-		{
-			CraftResult = craftResult;
-			ObjectGenericId = objectGenericId;
-			PlayerId = playerId;
-		}
+        public ExchangeCraftInformationObjectMessage(uint craftResult = 0, uint objectGenericId = 0, uint playerId = 0)
+        {
+            CraftResult = craftResult;
+            ObjectGenericId = objectGenericId;
+            PlayerId = playerId;
+        }
 
-	}
+    }
 }

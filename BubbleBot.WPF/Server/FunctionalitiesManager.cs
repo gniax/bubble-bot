@@ -1,27 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
-using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Configurations;
+using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Groups;
 using BubbleBot.Server.Enums;
 using BubbleBot.Server.Messages;
-using BubbleBot.Configurations;
-using BubbleBot.Configurations.Language;
 using BubbleBot.WPF.Views;
+using MahApps.Metro.Controls.Dialogs;
 using MoonSharp.Interpreter;
 
 namespace BubbleBot.Server
 {
     public static class FunctionalitiesManager
     {
-
         public static void Initialize()
         {
             BubbleBotMain.Instance.Server.RegisterMessage<SetProxyMessage>(HandleSetProxyMessage);
-            BubbleBotMain.Instance.Server.RegisterMessage<AddAuthorizedTradeFromMessage>(HandleAddAuthorizedTradeFromMessage);
+            BubbleBotMain.Instance.Server.RegisterMessage<AddAuthorizedTradeFromMessage>(
+                HandleAddAuthorizedTradeFromMessage);
             BubbleBotMain.Instance.Server.RegisterMessage<LoadScriptMessage>(HandleLoadScriptMessage);
             BubbleBotMain.Instance.Server.RegisterMessage<StartScriptMessage>(HandleStartScriptMessage);
             BubbleBotMain.Instance.Server.RegisterMessage<StartBidExtensionMessage>(HandleStartBidExtensionMessage);
@@ -48,7 +47,8 @@ namespace BubbleBot.Server
             if (account == null)
                 return;
 
-            Application.Current.Dispatcher.Invoke(() => account.Configuration.AuthorizedTradesFrom.Add(message.CharacterId));
+            Application.Current.Dispatcher.Invoke(() =>
+                account.Configuration.AuthorizedTradesFrom.Add(message.CharacterId));
             account.Configuration.Save();
         }
 
@@ -131,31 +131,40 @@ namespace BubbleBot.Server
                 switch (message.Operation)
                 {
                     case InvalidOperations.MAX_ACCOUNTS_REACHED:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("399"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("399"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_PROX_SET:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("407"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("407"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_EXCHANGES:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("408"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("408"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_OPEN_BANGS:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("409"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("409"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_AUTO_DELETE:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("410"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("410"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_PHENIX_FUNCTION:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("411"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("411"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_BID:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("412"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("412"));
                         break;
                     case InvalidOperations.MAX_LEVEL_REACHED:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("413"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("413"));
                         break;
                     case InvalidOperations.UNAUTHORIZED_GROUPS:
-                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("414"));
+                        await MainWindow.Instance.ShowMessageAsync(LanguageManager.Translate("249"),
+                            LanguageManager.Translate("414"));
                         break;
                 }
             });
@@ -171,7 +180,6 @@ namespace BubbleBot.Server
                 case 0 when message.Parameters.Length == 1: // Load a script
 
                     foreach (var account in GetConnectAccounts(message.Accounts))
-                    {
                         try
                         {
                             account.Scripts.FromFile(message.Parameters[0]);
@@ -184,13 +192,11 @@ namespace BubbleBot.Server
                         {
                             account.Logger.LogError(LanguageManager.Translate("165"), ex.ToString());
                         }
-                    }
 
                     break;
                 case 1: // Start the scrpit
 
                     foreach (var account in GetConnectAccounts(message.Accounts))
-                    {
                         try
                         {
                             account.Scripts.StartScript();
@@ -199,7 +205,6 @@ namespace BubbleBot.Server
                         {
                             account.Logger.LogError(LanguageManager.Translate("165"), ex.ToString());
                         }
-                    }
 
                     break;
             }
@@ -207,7 +212,9 @@ namespace BubbleBot.Server
 
         // This function will only be used by quick actions, so no need to look into the groups' members
         private static IEnumerable<Account> GetConnectAccounts(string[] usernames)
-            => BubbleBotMain.Instance.ConnectedAccounts.Where(a => usernames.Contains(a.AccountConfig.Username));
+        {
+            return BubbleBotMain.Instance.ConnectedAccounts.Where(a => usernames.Contains(a.AccountConfig.Username));
+        }
 
         private static Account GetConnectedAccount(string username)
         {
@@ -221,16 +228,13 @@ namespace BubbleBot.Server
                     if (group.Chief.AccountConfig.Username == username)
                         return group.Chief;
 
-                    for (int i = 0; i < group.Members.Count; i++)
-                    {
-                        if (group.Members[i].AccountConfig.Username == username)
-                            return group.Members[i];
-                    }
+                    for (var i = 0; i < group.Members.Count; i++)
+                        if (@group.Members[i].AccountConfig.Username == username)
+                            return @group.Members[i];
                 }
             }
 
             return null;
         }
-
     }
 }

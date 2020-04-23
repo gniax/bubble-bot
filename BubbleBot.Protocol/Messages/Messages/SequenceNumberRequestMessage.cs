@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class SequenceNumberRequestMessage : Message
-	{
+    public class SequenceNumberRequestMessage : Message
+    {
 
-		// Constructors
-		public SequenceNumberRequestMessage() { }
+        // Constructors
+        public SequenceNumberRequestMessage() { }
 
 
-	}
+    }
 }

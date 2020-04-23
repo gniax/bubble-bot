@@ -1,26 +1,23 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class IgnoredDeleteResultMessage : Message
-	{
+    public class IgnoredDeleteResultMessage : Message
+    {
 
-		// Properties
-		public bool Success { get; set; }
-		public string Name { get; set; }
-		public bool Session { get; set; }
+        // Properties
+        public bool Success { get; set; }
+        public string Name { get; set; }
+        public bool Session { get; set; }
 
 
-		// Constructors
-		public IgnoredDeleteResultMessage() { }
+        // Constructors
+        public IgnoredDeleteResultMessage() { }
 
-		public IgnoredDeleteResultMessage(bool success = false, string name = "", bool session = false)
-		{
-			Success = success;
-			Name = name;
-			Session = session;
-		}
+        public IgnoredDeleteResultMessage(bool success = false, string name = "", bool session = false)
+        {
+            Success = success;
+            Name = name;
+            Session = session;
+        }
 
-	}
+    }
 }

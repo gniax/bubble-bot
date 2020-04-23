@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TaxCollectorHireRequestMessage : Message
-	{
+    public class TaxCollectorHireRequestMessage : Message
+    {
 
-		// Constructors
-		public TaxCollectorHireRequestMessage() { }
+        // Constructors
+        public TaxCollectorHireRequestMessage() { }
 
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NpcDialogCreationMessage : Message
-	{
+    public class NpcDialogCreationMessage : Message
+    {
 
-		// Properties
-		public int MapId { get; set; }
-		public int NpcId { get; set; }
+        // Properties
+        public int MapId { get; set; }
+        public int NpcId { get; set; }
 
 
-		// Constructors
-		public NpcDialogCreationMessage() { }
+        // Constructors
+        public NpcDialogCreationMessage() { }
 
-		public NpcDialogCreationMessage(int mapId = 0, int npcId = 0)
-		{
-			MapId = mapId;
-			NpcId = npcId;
-		}
+        public NpcDialogCreationMessage(int mapId = 0, int npcId = 0)
+        {
+            MapId = mapId;
+            NpcId = npcId;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class HumanOptionTitle : HumanOption
-	{
+    public class HumanOptionTitle : HumanOption
+    {
 
-		// Properties
-		public uint TitleId { get; set; }
-		public string TitleParam { get; set; }
+        // Properties
+        public uint TitleId { get; set; }
+        public string TitleParam { get; set; }
 
 
-		// Constructors
-		public HumanOptionTitle() { }
+        // Constructors
+        public HumanOptionTitle() { }
 
-		public HumanOptionTitle(uint titleId = 0, string titleParam = "")
-		{
-			TitleId = titleId;
-			TitleParam = titleParam;
-		}
+        public HumanOptionTitle(uint titleId = 0, string titleParam = "")
+        {
+            TitleId = titleId;
+            TitleParam = titleParam;
+        }
 
-	}
+    }
 }

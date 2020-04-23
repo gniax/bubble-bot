@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class GuildLeftMessage : Message
-	{
+    public class GuildLeftMessage : Message
+    {
 
-		// Constructors
-		public GuildLeftMessage() { }
+        // Constructors
+        public GuildLeftMessage() { }
 
 
-	}
+    }
 }

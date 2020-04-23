@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class LifePointsRegenBeginMessage : Message
-	{
+    public class LifePointsRegenBeginMessage : Message
+    {
 
-		// Properties
-		public uint RegenRate { get; set; }
+        // Properties
+        public uint RegenRate { get; set; }
 
 
-		// Constructors
-		public LifePointsRegenBeginMessage() { }
+        // Constructors
+        public LifePointsRegenBeginMessage() { }
 
-		public LifePointsRegenBeginMessage(uint regenRate = 0)
-		{
-			RegenRate = regenRate;
-		}
+        public LifePointsRegenBeginMessage(uint regenRate = 0)
+        {
+            RegenRate = regenRate;
+        }
 
-	}
+    }
 }

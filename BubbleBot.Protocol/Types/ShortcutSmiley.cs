@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class ShortcutSmiley : Shortcut
-	{
+    public class ShortcutSmiley : Shortcut
+    {
 
-		// Properties
-		public uint SmileyId { get; set; }
+        // Properties
+        public uint SmileyId { get; set; }
 
 
-		// Constructors
-		public ShortcutSmiley() { }
+        // Constructors
+        public ShortcutSmiley() { }
 
-		public ShortcutSmiley(uint slot = 0, uint smileyId = 0)
-		{
-			Slot = slot;
-			SmileyId = smileyId;
-		}
+        public ShortcutSmiley(uint slot = 0, uint smileyId = 0)
+        {
+            Slot = slot;
+            SmileyId = smileyId;
+        }
 
-	}
+    }
 }

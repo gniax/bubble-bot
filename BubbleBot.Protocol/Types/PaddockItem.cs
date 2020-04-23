@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class PaddockItem : ObjectItemInRolePlay
-	{
+    public class PaddockItem : ObjectItemInRolePlay
+    {
 
-		// Properties
-		public ItemDurability Durability { get; set; }
+        // Properties
+        public ItemDurability Durability { get; set; }
 
 
-		// Constructors
-		public PaddockItem() { }
+        // Constructors
+        public PaddockItem() { }
 
-		public PaddockItem(uint cellId = 0, uint objectGID = 0, ItemDurability durability = null)
-		{
-			CellId = cellId;
-			ObjectGID = objectGID;
-			Durability = durability;
-		}
+        public PaddockItem(uint cellId = 0, uint objectGID = 0, ItemDurability durability = null)
+        {
+            CellId = cellId;
+            ObjectGID = objectGID;
+            Durability = durability;
+        }
 
-	}
+    }
 }

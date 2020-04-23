@@ -1,34 +1,32 @@
-using MahApps.Metro.Controls.Dialogs;
-using BubbleBot.Core.Accounts.Scripts.Managers;
-using BubbleBot.Core.Commands;
-using BubbleBot.Core.Frames;
-using BubbleBot.Protocol.Data;
-using BubbleBot.Protocol.Data.Maps;
-using BubbleBot.Protocol.Types;
-using BubbleBot.Utility;
-using BubbleBot.Utility.DofusTouch;
-using BubbleBot.Views;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using BubbleBot.Server.Messages;
-using BubbleBot.Updates;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.Scripts.Managers;
+using BubbleBot.Core.Commands;
+using BubbleBot.Core.Frames;
+using BubbleBot.Core.Groups;
+using BubbleBot.Protocol.Data;
+using BubbleBot.Protocol.Data.Maps;
+using BubbleBot.Protocol.Types;
+using BubbleBot.Server.Messages;
+using BubbleBot.Updates;
+using BubbleBot.Utility;
+using BubbleBot.Utility.DofusTouch;
+using BubbleBot.Views;
 using BubbleBot.Views.Planner;
+using MahApps.Metro.Controls.Dialogs;
 using Application = System.Windows.Application;
+using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
+using MessagesBuilder = BubbleBot.Protocol.Messages.MessagesBuilder;
 
 namespace BubbleBot.WPF.Views
 {
     public partial class MainWindow
     {
-
-        // Properties
-        public static MainWindow Instance { get; private set; }
-
-
         // Constructor
         public MainWindow()
         {
@@ -43,6 +41,9 @@ namespace BubbleBot.WPF.Views
 
             BubbleBotMain.Instance.Server.RegisterMessage<FilesHashesMessage>(HandleFilesHashesMessage);
         }
+
+        // Properties
+        public static MainWindow Instance { get; private set; }
 
 
         private void HandleFilesHashesMessage(FilesHashesMessage message)
@@ -59,34 +60,29 @@ namespace BubbleBot.WPF.Views
                 // Loading
                 try
                 {
-                    var controller = await this.ShowProgressAsync(LanguageManager.Translate("483"), Randomize.GetRandomLoadingText());
-                    await Task.Run(async () =>
+                    var controller = await this.ShowProgressAsync(LanguageManager.Translate("483"),
+                        Randomize.GetRandomLoadingText());
+                    await Task.Run(() =>
                     {
-                        Protocol.Messages.MessagesBuilder.Initialize();
+                        MessagesBuilder.Initialize();
                         controller.SetProgress(0.14);
-                        await Task.Delay(200);
 
                         TypesBuilder.Initialize();
                         controller.SetProgress(0.28);
-                        await Task.Delay(200);
 
                         DataManager.Initialize(DTConstants.AssetsVersion, GlobalConfiguration.Instance.Lang);
                         controller.SetProgress(0.42);
-                        await Task.Delay(200);
 
                         MapsManager.Initialize(DTConstants.AssetsVersion);
                         controller.SetProgress(0.56);
-                        await Task.Delay(200);
 
                         FramesManager.Initialize();
                         controller.SetProgress(0.70);
-                        await Task.Delay(200);
 
                         CommandsHandler.Initialize();
 
                         BreedsUtility.Initialize();
                         controller.SetProgress(1);
-                        await Task.Delay(200);
 
                         LuaScriptManager.Initialize();
                     });
@@ -105,27 +101,41 @@ namespace BubbleBot.WPF.Views
             BubbleBotMain.Instance.Server.SendMessage(new FilesHashesRequestMessage());
         }
 
+        private void BtnConnectGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as MenuItem).DataContext;
+            var group = (Group) datacontext;
+            if (group != null) @group.Connect();
+        }
+
+        private async void BtnDisconnectGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as MenuItem).DataContext;
+            var group = (Group) datacontext;
+            if (group != null) await @group.Disconnect("CLIENT_CLOSING");
+        }
+
         private void BtnAccountsManager_Click(object sender, RoutedEventArgs e)
         {
-            var accountsManagerWindow = new AccountsManagerWindow { Owner = this };
+            var accountsManagerWindow = new AccountsManagerWindow {Owner = this};
             accountsManagerWindow.ShowDialog();
         }
 
         private void BtnOptions_Click(object sender, RoutedEventArgs e)
         {
-            var optionsWindow = new OptionsWindow { Owner = this };
+            var optionsWindow = new OptionsWindow {Owner = this};
             optionsWindow.ShowDialog();
         }
 
         private void BtnQuickActions_Click(object sender, RoutedEventArgs e)
         {
-            var quickActionsWindow = new QuickActionsWindow { Owner = this };
+            var quickActionsWindow = new QuickActionsWindow {Owner = this};
             quickActionsWindow.ShowDialog();
         }
 
         private void BtnPlanner_Click(object sender, RoutedEventArgs e)
         {
-            var plannerWindow = new PlannerWindow { Owner = this };
+            var plannerWindow = new PlannerWindow {Owner = this};
             plannerWindow.ShowDialog();
         }
 
@@ -147,6 +157,5 @@ namespace BubbleBot.WPF.Views
         }
 
         #endregion
-
     }
 }

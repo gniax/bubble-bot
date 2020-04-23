@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleBot.Api.Extensions
 {
@@ -73,5 +72,5 @@ namespace BubbleBot.Api.Extensions
             }
         }
     }
-    
+
 }

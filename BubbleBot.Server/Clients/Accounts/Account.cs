@@ -1,5 +1,4 @@
 ﻿using BubbleBot.Server.Utility;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
@@ -47,7 +46,7 @@ namespace BubbleBot.Server.Clients.Accounts
             await HttpClientUtility.PostAsync("characters", GeneratePostContent(clientId));
         }
 
-        public async void UpdateBotInformations(int clientId, byte botLevel, byte botEnergyPercent, byte botWeightPercent, 
+        public async void UpdateBotInformations(int clientId, byte botLevel, byte botEnergyPercent, byte botWeightPercent,
                                                 int botKamas, int botMapId, string botMapPosition, string botState, string botGroupId, byte botGroupChief, string botScriptName)
         {
             BotLevel = botLevel;
@@ -64,7 +63,7 @@ namespace BubbleBot.Server.Clients.Accounts
             await HttpClientUtility.PatchAsync($"characters/{BotId}", GeneratePostContent(clientId));
         }
 
-        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, string botBreed, byte botLevel, byte botEnergyPercent, 
+        public async void ArchiveBotsInformations(int clientId, int botId, string botName, string botServer, string botBreed, byte botLevel, byte botEnergyPercent,
                                                   byte botWeightPercent, int botKamas, int botMapId, string botMapPosition, string botState, string botGroupId, byte botGroupChief, string botScriptName)
         {
             BotId = botId;

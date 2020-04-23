@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class DebugInClientMessage : Message
-	{
+    public class DebugInClientMessage : Message
+    {
 
-		// Properties
-		public uint Level { get; set; }
-		public string Message { get; set; }
+        // Properties
+        public uint Level { get; set; }
+        public string Message { get; set; }
 
 
-		// Constructors
-		public DebugInClientMessage() { }
+        // Constructors
+        public DebugInClientMessage() { }
 
-		public DebugInClientMessage(uint level = 0, string message = "")
-		{
-			Level = level;
-			Message = message;
-		}
+        public DebugInClientMessage(uint level = 0, string message = "")
+        {
+            Level = level;
+            Message = message;
+        }
 
-	}
+    }
 }

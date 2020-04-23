@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TeleportBuddiesAnswerMessage : Message
-	{
+    public class TeleportBuddiesAnswerMessage : Message
+    {
 
-		// Properties
-		public bool Accept { get; set; }
+        // Properties
+        public bool Accept { get; set; }
 
 
-		// Constructors
-		public TeleportBuddiesAnswerMessage() { }
+        // Constructors
+        public TeleportBuddiesAnswerMessage() { }
 
-		public TeleportBuddiesAnswerMessage(bool accept = false)
-		{
-			Accept = accept;
-		}
+        public TeleportBuddiesAnswerMessage(bool accept = false)
+        {
+            Accept = accept;
+        }
 
-	}
+    }
 }

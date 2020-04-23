@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class FightEntityDispositionInformations : EntityDispositionInformations
-	{
+    public class FightEntityDispositionInformations : EntityDispositionInformations
+    {
 
-		// Properties
-		public int CarryingCharacterId { get; set; }
+        // Properties
+        public int CarryingCharacterId { get; set; }
 
 
-		// Constructors
-		public FightEntityDispositionInformations() { }
+        // Constructors
+        public FightEntityDispositionInformations() { }
 
-		public FightEntityDispositionInformations(int cellId = 0, uint direction = 1, int carryingCharacterId = 0)
-		{
-			CellId = cellId;
-			Direction = direction;
-			CarryingCharacterId = carryingCharacterId;
-		}
+        public FightEntityDispositionInformations(int cellId = 0, uint direction = 1, int carryingCharacterId = 0)
+        {
+            CellId = cellId;
+            Direction = direction;
+            CarryingCharacterId = carryingCharacterId;
+        }
 
-	}
+    }
 }

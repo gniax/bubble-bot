@@ -1,8 +1,7 @@
-﻿using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BubbleBot.Protocol;
+using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Server.Messages
 {

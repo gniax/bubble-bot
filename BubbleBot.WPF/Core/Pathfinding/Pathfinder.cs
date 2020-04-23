@@ -1,21 +1,20 @@
-using BubbleBot.Protocol.Data.Maps;
 using System;
 using System.Collections.Generic;
+using BubbleBot.Protocol.Data.Maps;
 
 namespace BubbleBot.Core.Pathfinding
 {
     public class Pathfinder : IDisposable
     {
-
         // Fields
         private const int OCCUPIED_CELL_WEIGHT = 10;
         private const double ELEVATION_TOLERANCE = 11.825;
         private const int WIDTH = 35;
         private const int HEIGHT = 36;
+        private short _firstCellZone;
 
         private CellData[,] _grid;
         private bool _oldMovementSystem;
-        private short _firstCellZone;
 
 
         // Constructor
@@ -30,18 +29,17 @@ namespace BubbleBot.Core.Pathfinding
             _firstCellZone = map.Cells[0].z;
             _oldMovementSystem = true; // TODO: add whether a map uses the old system onto the map data
 
-            for (int i = 0; i < WIDTH; i++)
+            for (var i = 0; i < WIDTH; i++)
+            for (var j = 0; j < HEIGHT; j++)
             {
-                for (int j = 0; j < HEIGHT; j++)
-                {
-                    _grid[i, j] = new CellData(i, j);
-                    MapPoint p = MapPoint.FromCoords(i - 1, j - 1);
-                    UpdateCellPath(p == null ? null : map.Cells[p.CellId], _grid[i, j]);
-                }
+                _grid[i, j] = new CellData(i, j);
+                var p = MapPoint.FromCoords(i - 1, j - 1);
+                UpdateCellPath(p == null ? null : map.Cells[p.CellId], _grid[i, j]);
             }
         }
 
-        public List<short> GetPath(short source, short target, List<short> occupiedCells, bool allowDiagonals, bool stopNextToTarget)
+        public List<short> GetPath(short source, short target, List<short> occupiedCells, bool allowDiagonals,
+            bool stopNextToTarget)
         {
             int c;
             CellPath candidate;
@@ -49,58 +47,56 @@ namespace BubbleBot.Core.Pathfinding
             var srcPos = MapPoint.FromCellId(source);
             var dstPos = MapPoint.FromCellId(target);
 
-            int si = srcPos.X + 1;
-            int sj = srcPos.Y + 1;
+            var si = srcPos.X + 1;
+            var sj = srcPos.Y + 1;
 
             var srcCell = _grid[si, sj];
             if (srcCell.Zone == -1)
             {
                 CellData bestFit = null;
-                int bestDist = int.MaxValue;
-                int bestFloorDiff = int.MaxValue;
+                var bestDist = int.MaxValue;
+                var bestFloorDiff = int.MaxValue;
 
-                for (int i = -1; i <= 1; i++)
+                for (var i = -1; i <= 1; i++)
+                for (var j = -1; j <= 1; j++)
                 {
-                    for (int j = -1; j <= 1; j++)
+                    if (i == 0 && j == 0)
+                        continue;
+
+                    var cell = _grid[si + i, sj + j];
+                    if (cell.Zone == -1)
+                        continue;
+
+                    var floorDiff = Math.Abs(cell.Floor - srcCell.Floor);
+                    var dist = Math.Abs(i) + Math.Abs(j);
+                    if (bestFit == null || floorDiff < bestFloorDiff || floorDiff <= bestFloorDiff && dist < bestDist)
                     {
-                        if (i == 0 && j == 0)
-                            continue;
-
-                        var cell = _grid[si + i, sj + j];
-                        if (cell.Zone == -1)
-                            continue;
-
-                        int floorDiff = Math.Abs(cell.Floor - srcCell.Floor);
-                        int dist = Math.Abs(i) + Math.Abs(j);
-                        if (bestFit == null || floorDiff < bestFloorDiff || (floorDiff <= bestFloorDiff && dist < bestDist))
-                        {
-                            bestFit = cell;
-                            bestDist = dist;
-                            bestFloorDiff = floorDiff;
-                        }
+                        bestFit = cell;
+                        bestDist = dist;
+                        bestFloorDiff = floorDiff;
                     }
                 }
 
                 if (bestFit != null)
-                    return new List<short>() { source, MapPoint.FromCoords(bestFit.I + 1, bestFit.J + 1).CellId };
+                    return new List<short> {source, MapPoint.FromCoords(bestFit.I + 1, bestFit.J + 1).CellId};
 
                 throw new Exception($"Player is stuck in '{si}/{sj}.");
             }
 
-            int di = dstPos.X + 1;
-            int dj = dstPos.Y + 1;
+            var di = dstPos.X + 1;
+            var dj = dstPos.Y + 1;
 
             MapPoint cellPos;
-            foreach (short cellId in occupiedCells)
+            foreach (var cellId in occupiedCells)
             {
                 cellPos = MapPoint.FromCellId(cellId);
                 _grid[cellPos.X + 1, cellPos.Y + 1].Weight += OCCUPIED_CELL_WEIGHT;
             }
 
-            List<CellPath> candidates = new List<CellPath>();
-            List<CellPath> selections = new List<CellPath>();
+            var candidates = new List<CellPath>();
+            var selections = new List<CellPath>();
 
-            double distSrcDst = Math.Sqrt(Math.Pow(si - di, 2) + Math.Pow(sj - dj, 2));
+            var distSrcDst = Math.Sqrt(Math.Pow(si - di, 2) + Math.Pow(sj - dj, 2));
             var selection = new CellPath(si, sj, 0, distSrcDst, null);
 
             CellPath reachingPath = null;
@@ -109,15 +105,15 @@ namespace BubbleBot.Core.Pathfinding
             {
                 AddCandidates(selection, di, dj, candidates, allowDiagonals);
 
-                int n = candidates.Count;
+                var n = candidates.Count;
                 if (n == 0)
                 {
                     selection = closestPath;
                     break;
                 }
 
-                double minPotentialWeight = double.MaxValue;
-                int selectionIndex = 0;
+                var minPotentialWeight = double.MaxValue;
+                var selectionIndex = 0;
                 for (c = 0; c < n; c++)
                 {
                     candidate = candidates[c];
@@ -132,35 +128,29 @@ namespace BubbleBot.Core.Pathfinding
                 selections.Add(selection);
                 candidates.RemoveAt(selectionIndex);
 
-                if (selection.D == 0 || (stopNextToTarget && selection.D < 1.5))
+                if (selection.D == 0 || stopNextToTarget && selection.D < 1.5)
                 {
                     if (reachingPath == null || selection.W < reachingPath.W)
                     {
                         reachingPath = selection;
                         closestPath = selection;
 
-                        List<CellPath> trimmedCandidates = new List<CellPath>();
+                        var trimmedCandidates = new List<CellPath>();
                         for (c = 0; c < candidates.Count; c++)
                         {
                             candidate = candidates[c];
                             if (candidate.W + candidate.D < reachingPath.W)
-                            {
                                 trimmedCandidates.Add(candidate);
-                            }
                             else
-                            {
                                 _grid[candidate.I, candidate.J].CandidateRef = null;
-                            }
                         }
+
                         candidates = trimmedCandidates;
                     }
                 }
                 else
                 {
-                    if (selection.D < closestPath.D)
-                    {
-                        closestPath = selection;
-                    }
+                    if (selection.D < closestPath.D) closestPath = selection;
                 }
             }
 
@@ -170,19 +160,19 @@ namespace BubbleBot.Core.Pathfinding
                 _grid[candidate.I, candidate.J].CandidateRef = null;
             }
 
-            for (int s = 0; s < selections.Count; s++)
+            for (var s = 0; s < selections.Count; s++)
             {
                 selection = selections[s];
                 _grid[selection.I, selection.J].CandidateRef = null;
             }
 
-            foreach (short cellId in occupiedCells)
+            foreach (var cellId in occupiedCells)
             {
                 cellPos = MapPoint.FromCellId(cellId);
                 _grid[cellPos.X + 1, cellPos.Y + 1].Weight -= OCCUPIED_CELL_WEIGHT;
             }
 
-            List<short> shortestPath = new List<short>();
+            var shortestPath = new List<short>();
             while (closestPath != null)
             {
                 shortestPath.Insert(0, MapPoint.FromCoords(closestPath.I - 1, closestPath.J - 1).CellId);
@@ -194,13 +184,13 @@ namespace BubbleBot.Core.Pathfinding
 
         public List<int> CompressPath(List<short> path)
         {
-            List<int> compressedPath = new List<int>();
+            var compressedPath = new List<int>();
 
-            short prevCellId = path[0];
-            int prevDirection = -1;
+            var prevCellId = path[0];
+            var prevDirection = -1;
             int prevX = 0, prevY = 0;
 
-            for (int i = 0; i < path.Count; i++)
+            for (var i = 0; i < path.Count; i++)
             {
                 int direction;
                 var coord = MapPoint.FromCellId(path[i]);
@@ -222,13 +212,9 @@ namespace BubbleBot.Core.Pathfinding
                     else
                     {
                         if (coord.X > prevX)
-                        {
                             direction = coord.Y > prevY ? 0 : 6;
-                        }
                         else
-                        {
                             direction = coord.Y > prevY ? 2 : 4;
-                        }
                     }
                 }
 
@@ -250,7 +236,7 @@ namespace BubbleBot.Core.Pathfinding
         public List<short> NormalizePath(List<short> path)
         {
             if (CheckPath(path)) return path;
-            else return ExpandPath(path);
+            return ExpandPath(path);
         }
 
         public List<MapPoint> GetAccessibleCells(int i, int j)
@@ -258,19 +244,18 @@ namespace BubbleBot.Core.Pathfinding
             i++;
             j++;
             var c = _grid[i, j];
-            List<MapPoint> accessibleCells = new List<MapPoint>();
+            var accessibleCells = new List<MapPoint>();
 
             foreach (var cell in GetAdjacentCells(i, j))
-            {
-                if (AreCommunicating(c, cell)) accessibleCells.Add(MapPoint.FromCoords(cell.I - 1, cell.J - 1));
-            }
+                if (AreCommunicating(c, cell))
+                    accessibleCells.Add(MapPoint.FromCoords(cell.I - 1, cell.J - 1));
 
             return accessibleCells;
         }
 
         public void UpdateCellPath(short cellId, Cell cell)
         {
-            MapPoint p = MapPoint.FromCellId(cellId);
+            var p = MapPoint.FromCellId(cellId);
             UpdateCellPath(cell, _grid[p.X + 1, p.Y + 1]);
         }
 
@@ -278,11 +263,11 @@ namespace BubbleBot.Core.Pathfinding
         {
             if (path.Count < 2) return path;
 
-            List<short> result = new List<short>();
+            var result = new List<short>();
             result.Add(path[0]);
 
             var previous = MapPoint.FromCellId(path[0]);
-            for (int i = 1; i < path.Count; i++)
+            for (var i = 1; i < path.Count; i++)
             {
                 var coord = MapPoint.FromCellId(path[i]);
                 int incrX, incrY;
@@ -294,7 +279,7 @@ namespace BubbleBot.Core.Pathfinding
                 {
                     if (c > 1)
                     {
-                        incrX = (coord.X > previous.X) ? 1 : -1;
+                        incrX = coord.X > previous.X ? 1 : -1;
                         previous.X += incrX;
                         while (previous.X != coord.X)
                         {
@@ -302,9 +287,10 @@ namespace BubbleBot.Core.Pathfinding
                             previous.X += incrX;
                         }
                     }
+
                     if (d > 1)
                     {
-                        incrY = (coord.Y > previous.Y) ? 1 : -1;
+                        incrY = coord.Y > previous.Y ? 1 : -1;
                         previous.Y += incrY;
                         while (previous.Y != coord.Y)
                         {
@@ -315,8 +301,8 @@ namespace BubbleBot.Core.Pathfinding
                 }
                 else if (c == d)
                 {
-                    incrX = (coord.X > previous.X) ? 1 : -1;
-                    incrY = (coord.Y > previous.Y) ? 1 : -1;
+                    incrX = coord.X > previous.X ? 1 : -1;
+                    incrY = coord.Y > previous.Y ? 1 : -1;
 
                     while (previous.Y != coord.Y)
                     {
@@ -339,7 +325,7 @@ namespace BubbleBot.Core.Pathfinding
                 return false;
 
             var previous = MapPoint.FromCellId(path[0]);
-            for (int i = 1; i < path.Count; i++)
+            for (var i = 1; i < path.Count; i++)
             {
                 var coord = MapPoint.FromCellId(path[i]);
                 if (Math.Abs(previous.X - coord.X) > 1) return false;
@@ -374,7 +360,7 @@ namespace BubbleBot.Core.Pathfinding
                 return true;
 
             if (c1.Zone == c2.Zone)
-                return _oldMovementSystem || (c1.Zone != 0) || (Math.Abs(c1.Floor - c2.Floor) <= ELEVATION_TOLERANCE);
+                return _oldMovementSystem || c1.Zone != 0 || Math.Abs(c1.Floor - c2.Floor) <= ELEVATION_TOLERANCE;
 
             return false;
         }
@@ -386,7 +372,7 @@ namespace BubbleBot.Core.Pathfinding
 
         private void AddCandidate(CellData c, double weight, int di, int dj, List<CellPath> candidates, CellPath path)
         {
-            double distanceToDestination = Math.Sqrt(Math.Pow(di - c.I, 2) + Math.Pow(dj - c.J, 2));
+            var distanceToDestination = Math.Sqrt(Math.Pow(di - c.I, 2) + Math.Pow(dj - c.J, 2));
             weight = weight / c.Speed + c.Weight;
 
             if (c.CandidateRef == null)
@@ -397,7 +383,7 @@ namespace BubbleBot.Core.Pathfinding
             }
             else
             {
-                double newWeight = path.W + weight;
+                var newWeight = path.W + weight;
                 if (newWeight < c.CandidateRef.W)
                 {
                     c.CandidateRef.W = newWeight;
@@ -408,9 +394,9 @@ namespace BubbleBot.Core.Pathfinding
 
         private void AddCandidates(CellPath path, int di, int dj, List<CellPath> candidates, bool allowDiagonals)
         {
-            int i = path.I;
-            int j = path.J;
-            CellData c = _grid[i, j];
+            var i = path.I;
+            var j = path.J;
+            var c = _grid[i, j];
 
             var c01 = _grid[i - 1, j];
             var c10 = _grid[i, j - 1];
@@ -429,7 +415,7 @@ namespace BubbleBot.Core.Pathfinding
                 var c20 = _grid[i + 1, j - 1];
                 var c22 = _grid[i + 1, j + 1];
 
-                double weightDiagonal = Math.Sqrt(2);
+                var weightDiagonal = Math.Sqrt(2);
 
                 if (CanMoveDiagonallyTo(c, c00, c01, c10)) AddCandidate(c00, weightDiagonal, di, dj, candidates, path);
                 if (CanMoveDiagonallyTo(c, c20, c21, c10)) AddCandidate(c20, weightDiagonal, di, dj, candidates, path);
@@ -443,7 +429,7 @@ namespace BubbleBot.Core.Pathfinding
             return new CellData[4]
             {
                 _grid[i - 1, j],
-                _grid[i, j  - 1],
+                _grid[i, j - 1],
                 _grid[i, j + 1],
                 _grid[i + 1, j]
             };
@@ -451,7 +437,7 @@ namespace BubbleBot.Core.Pathfinding
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -459,7 +445,6 @@ namespace BubbleBot.Core.Pathfinding
             {
                 if (disposing)
                 {
-
                 }
 
                 _grid = null;
@@ -468,11 +453,16 @@ namespace BubbleBot.Core.Pathfinding
             }
         }
 
-        ~Pathfinder() => Dispose(false);
+        ~Pathfinder()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -12,6 +12,6 @@
 
         public string Sitekey { get; set; }
 
-    } 
+    }
 
 }

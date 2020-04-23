@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MimicryObjectErrorMessage : ObjectErrorMessage
-	{
+    public class MimicryObjectErrorMessage : ObjectErrorMessage
+    {
 
-		// Properties
-		public bool Preview { get; set; }
-		public int ErrorCode { get; set; }
+        // Properties
+        public bool Preview { get; set; }
+        public int ErrorCode { get; set; }
 
 
-		// Constructors
-		public MimicryObjectErrorMessage() { }
+        // Constructors
+        public MimicryObjectErrorMessage() { }
 
-		public MimicryObjectErrorMessage(int reason = 0, bool preview = false, int errorCode = 0)
-		{
-			Reason = reason;
-			Preview = preview;
-			ErrorCode = errorCode;
-		}
+        public MimicryObjectErrorMessage(int reason = 0, bool preview = false, int errorCode = 0)
+        {
+            Reason = reason;
+            Preview = preview;
+            ErrorCode = errorCode;
+        }
 
-	}
+    }
 }

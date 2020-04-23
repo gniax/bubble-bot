@@ -3,11 +3,11 @@ using Newtonsoft.Json;
 namespace BubbleBot.Protocol.Types
 {
     public class InteractiveElementSkill
-	{
+    {
 
-		// Properties
-		public uint SkillId { get; set; }
-		public uint SkillInstanceUid { get; set; }
+        // Properties
+        public uint SkillId { get; set; }
+        public uint SkillInstanceUid { get; set; }
         [JsonProperty("_name")]
         public string Name { get; set; }
         [JsonProperty("_parentJobName")]
@@ -21,11 +21,11 @@ namespace BubbleBot.Protocol.Types
         // Constructors
         public InteractiveElementSkill() { }
 
-		public InteractiveElementSkill(uint skillId = 0, uint skillInstanceUid = 0)
-		{
-			SkillId = skillId;
-			SkillInstanceUid = skillInstanceUid;
-		}
+        public InteractiveElementSkill(uint skillId = 0, uint skillInstanceUid = 0)
+        {
+            SkillId = skillId;
+            SkillInstanceUid = skillInstanceUid;
+        }
 
-	}
+    }
 }

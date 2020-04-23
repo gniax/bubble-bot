@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CurrentMapMessage : Message
-	{
+    public class CurrentMapMessage : Message
+    {
 
-		// Properties
-		public uint MapId { get; set; }
-		public string MapKey { get; set; }
+        // Properties
+        public uint MapId { get; set; }
+        public string MapKey { get; set; }
 
 
-		// Constructors
-		public CurrentMapMessage() { }
+        // Constructors
+        public CurrentMapMessage() { }
 
-		public CurrentMapMessage(uint mapId = 0, string mapKey = "")
-		{
-			MapId = mapId;
-			MapKey = mapKey;
-		}
+        public CurrentMapMessage(uint mapId = 0, string mapKey = "")
+        {
+            MapId = mapId;
+            MapKey = mapKey;
+        }
 
-	}
+    }
 }

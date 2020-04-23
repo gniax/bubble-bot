@@ -1,27 +1,26 @@
-using System.Collections.Generic;
+using BubbleBot.Protocol.Converters;
 using BubbleBot.Protocol.Types;
 using Newtonsoft.Json;
-using BubbleBot.Protocol.Converters;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class GameActionFightDispellableEffectMessage : AbstractGameActionMessage
-	{
+    public class GameActionFightDispellableEffectMessage : AbstractGameActionMessage
+    {
 
-		// Properties
+        // Properties
         [JsonConverter(typeof(TypedPropertyConverter))]
-		public AbstractFightDispellableEffect Effect { get; set; }
+        public AbstractFightDispellableEffect Effect { get; set; }
 
 
-		// Constructors
-		public GameActionFightDispellableEffectMessage() { }
+        // Constructors
+        public GameActionFightDispellableEffectMessage() { }
 
-		public GameActionFightDispellableEffectMessage(uint actionId = 0, int sourceId = 0, AbstractFightDispellableEffect effect = null)
-		{
-			ActionId = actionId;
-			SourceId = sourceId;
-			Effect = effect;
-		}
+        public GameActionFightDispellableEffectMessage(uint actionId = 0, int sourceId = 0, AbstractFightDispellableEffect effect = null)
+        {
+            ActionId = actionId;
+            SourceId = sourceId;
+            Effect = effect;
+        }
 
-	}
+    }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
@@ -24,7 +20,7 @@ namespace BubbleBot.Protocol.Messages
             Currency = currency;
             amountHard = amounthard;
             amountSoft = amountsoft;
-            
+
             isMysteryBox = ismysterybox;
             Purchase purchases = new Purchase(quantity, id);
             purchase = new List<Purchase>();
@@ -32,15 +28,15 @@ namespace BubbleBot.Protocol.Messages
         }
 
     }
-        public class Purchase
-        {
+    public class Purchase
+    {
         public int Quantity { get; set; }
         public int Id { get; set; }
-            public Purchase(int quantity, int id)
-            {
-                Quantity = quantity;
-                Id = id;
-            }
+        public Purchase(int quantity, int id)
+        {
+            Quantity = quantity;
+            Id = id;
         }
+    }
 }
 

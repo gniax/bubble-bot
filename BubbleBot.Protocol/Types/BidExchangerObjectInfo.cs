@@ -1,26 +1,28 @@
+using BubbleBot.Protocol.Converters;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Types
 {
-	public class BidExchangerObjectInfo
-	{
+    public class BidExchangerObjectInfo
+    {
 
-		// Properties
-		public List<ObjectEffect> Effects { get; set; }
-		public List<uint> Prices { get; set; }
-		public uint ObjectUID { get; set; }
+        // Properties
+        [JsonConverter(typeof(TypedPropertyConverter))]
+        public List<ObjectEffect> Effects { get; set; }
+        public List<uint> Prices { get; set; }
+        public uint ObjectUID { get; set; }
 
 
-		// Constructors
-		public BidExchangerObjectInfo() { }
+        // Constructors
+        public BidExchangerObjectInfo() { }
 
-		public BidExchangerObjectInfo(uint objectUID = 0, List<ObjectEffect> effects = null, List<uint> prices = null)
-		{
-			ObjectUID = objectUID;
-			Effects = effects;
-			Prices = prices;
-		}
+        public BidExchangerObjectInfo(uint objectUID = 0, List<ObjectEffect> effects = null, List<uint> prices = null)
+        {
+            ObjectUID = objectUID;
+            Effects = effects;
+            Prices = prices;
+        }
 
-	}
+    }
 }

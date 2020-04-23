@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CredentialsAcknowledgementMessage : Message
-	{
+    public class CredentialsAcknowledgementMessage : Message
+    {
 
-		// Constructors
-		public CredentialsAcknowledgementMessage() { }
+        // Constructors
+        public CredentialsAcknowledgementMessage() { }
 
 
-	}
+    }
 }

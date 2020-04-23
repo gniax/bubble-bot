@@ -1,10 +1,8 @@
-﻿using System;
+﻿using BubbleBot.Website.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleBot.Api.Extensions;
-using BubbleBot.Website.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BubbleBot.Website.Services
 {
@@ -29,7 +27,7 @@ namespace BubbleBot.Website.Services
             if (_panelDb == null) return;
 
             Character character = null;
-            if(id != -1) // Si on update juste
+            if (id != -1) // Si on update juste
             {
                 character = _panelDb.Characters.FirstOrDefault(c => c.Character_id == id);
                 if (character == null)
@@ -89,7 +87,7 @@ namespace BubbleBot.Website.Services
 
         public async Task<List<Character>> GetBotsInfos(string username)
         {
-            if (_panelDb == null) 
+            if (_panelDb == null)
                 return null;
 
             var user = _panelDb.Users.Select(u => u.Username == username);
@@ -97,14 +95,14 @@ namespace BubbleBot.Website.Services
                 return null;
 
             int userid = await _panelDb.GetUserId(username);
-            if(userid == (default))
+            if (userid == (default))
                 return null;
 
             _panelDb.SaveChanges();
             List<Character> characters = new List<Character>();
             characters = _panelDb.Characters.Where(c => c.User_id == userid).ToList();
-            
-            if(characters.Count > 0)
+
+            if (characters.Count > 0)
             {
                 return characters;
             }
@@ -113,7 +111,7 @@ namespace BubbleBot.Website.Services
         }
         public async Task<List<ArchivedCharacter>> GetArchivedBotInfos(string username, string account, string botname)
         {
-            if (_panelDb == null) 
+            if (_panelDb == null)
                 return null;
 
             var user = _panelDb.Users.Select(u => u.Username == username);
@@ -127,7 +125,7 @@ namespace BubbleBot.Website.Services
             _panelDb.SaveChanges(); // Debug ?
             List<ArchivedCharacter> archivedcharacter = new List<ArchivedCharacter>();
             archivedcharacter = _panelDb.ArchivedCharacters.Where(c => c.User_id == userid && c.Account == account && c.Name == botname).ToList();
-         
+
             if (archivedcharacter.Count > 0)
             {
                 return archivedcharacter;

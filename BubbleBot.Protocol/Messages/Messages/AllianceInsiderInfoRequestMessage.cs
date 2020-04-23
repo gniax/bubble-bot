@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceInsiderInfoRequestMessage : Message
-	{
+    public class AllianceInsiderInfoRequestMessage : Message
+    {
 
-		// Constructors
-		public AllianceInsiderInfoRequestMessage() { }
+        // Constructors
+        public AllianceInsiderInfoRequestMessage() { }
 
 
-	}
+    }
 }

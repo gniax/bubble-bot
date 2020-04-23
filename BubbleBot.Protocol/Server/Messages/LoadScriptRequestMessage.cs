@@ -11,7 +11,7 @@ namespace BubbleBot.Server.Messages
 
         // Properties
         public short MessageId => ProtocolId;
-        public string Account { get; private set;}
+        public string Account { get; private set; }
         public string Path { get; private set; }
         public string Content { get; private set; }
 

@@ -8,7 +8,7 @@
 
 
         // Constructor
-        public ConnectionFailedMessage(string reason)
+        public ConnectionFailedMessage(string reason = "")
         {
             Reason = reason;
         }

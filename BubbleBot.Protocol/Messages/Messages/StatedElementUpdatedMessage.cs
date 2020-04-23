@@ -1,22 +1,21 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class StatedElementUpdatedMessage : Message
-	{
+    public class StatedElementUpdatedMessage : Message
+    {
 
-		// Properties
-		public StatedElement StatedElement { get; set; }
+        // Properties
+        public StatedElement StatedElement { get; set; }
 
 
-		// Constructors
-		public StatedElementUpdatedMessage() { }
+        // Constructors
+        public StatedElementUpdatedMessage() { }
 
-		public StatedElementUpdatedMessage(StatedElement statedElement = null)
-		{
-			StatedElement = statedElement;
-		}
+        public StatedElementUpdatedMessage(StatedElement statedElement = null)
+        {
+            StatedElement = statedElement;
+        }
 
-	}
+    }
 }

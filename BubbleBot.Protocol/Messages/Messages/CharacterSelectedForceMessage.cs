@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterSelectedForceMessage : Message
-	{
+    public class CharacterSelectedForceMessage : Message
+    {
 
-		// Properties
-		public int Id { get; set; }
+        // Properties
+        public int Id { get; set; }
 
 
-		// Constructors
-		public CharacterSelectedForceMessage() { }
+        // Constructors
+        public CharacterSelectedForceMessage() { }
 
-		public CharacterSelectedForceMessage(int id = 0)
-		{
-			Id = id;
-		}
+        public CharacterSelectedForceMessage(int id = 0)
+        {
+            Id = id;
+        }
 
-	}
+    }
 }

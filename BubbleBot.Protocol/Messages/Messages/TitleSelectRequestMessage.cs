@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class TitleSelectRequestMessage : Message
-	{
+    public class TitleSelectRequestMessage : Message
+    {
 
-		// Properties
-		public uint TitleId { get; set; }
+        // Properties
+        public uint TitleId { get; set; }
 
 
-		// Constructors
-		public TitleSelectRequestMessage() { }
+        // Constructors
+        public TitleSelectRequestMessage() { }
 
-		public TitleSelectRequestMessage(uint titleId = 0)
-		{
-			TitleId = titleId;
-		}
+        public TitleSelectRequestMessage(uint titleId = 0)
+        {
+            TitleId = titleId;
+        }
 
-	}
+    }
 }

@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class HouseGuildShareRequestMessage : Message
-	{
+    public class HouseGuildShareRequestMessage : Message
+    {
 
-		// Properties
-		public bool Enable { get; set; }
-		public uint Rights { get; set; }
+        // Properties
+        public bool Enable { get; set; }
+        public uint Rights { get; set; }
 
 
-		// Constructors
-		public HouseGuildShareRequestMessage() { }
+        // Constructors
+        public HouseGuildShareRequestMessage() { }
 
-		public HouseGuildShareRequestMessage(bool enable = false, uint rights = 0)
-		{
-			Enable = enable;
-			Rights = rights;
-		}
+        public HouseGuildShareRequestMessage(bool enable = false, uint rights = 0)
+        {
+            Enable = enable;
+            Rights = rights;
+        }
 
-	}
+    }
 }

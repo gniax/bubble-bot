@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AntiRecaptcha;
-using System.Threading;
+﻿using AntiRecaptcha;
+using System;
 using System.Threading.Tasks;
 
 namespace AccountGenerator.Core
@@ -12,13 +9,15 @@ namespace AccountGenerator.Core
 
         // Fields
         // private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        
+
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task<string> GetResponse(string siteKey)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
-           // _semaphore.Wait();
+            // _semaphore.Wait();
             string result = null;
             //6Leicx0TAAAAAE-R05fbh9qqtID2XDtkOBd7-KnF
-            
+
             if (!string.IsNullOrEmpty(Program.API_KEY))
             {
                 try
@@ -33,12 +32,12 @@ namespace AccountGenerator.Core
                 }
                 catch
                 {
-             //       _semaphore.Release();
+                    //       _semaphore.Release();
                     throw;
                 }
             }
 
-           // _semaphore.Release();
+            // _semaphore.Release();
             return result;
         }
 

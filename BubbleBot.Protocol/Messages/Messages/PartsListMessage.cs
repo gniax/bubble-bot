@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
+using System.Collections.Generic;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class PartsListMessage : Message
-	{
+    public class PartsListMessage : Message
+    {
 
-		// Properties
-		public List<ContentPart> Parts { get; set; }
+        // Properties
+        public List<ContentPart> Parts { get; set; }
 
 
-		// Constructors
-		public PartsListMessage() { }
+        // Constructors
+        public PartsListMessage() { }
 
-		public PartsListMessage(List<ContentPart> parts = null)
-		{
-			Parts = parts;
-		}
+        public PartsListMessage(List<ContentPart> parts = null)
+        {
+            Parts = parts;
+        }
 
-	}
+    }
 }

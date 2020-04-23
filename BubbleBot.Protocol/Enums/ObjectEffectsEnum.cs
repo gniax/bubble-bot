@@ -1,6 +1,6 @@
 ﻿namespace BubbleBot.Protocol.Enums
 {
-	public enum ObjectEffectsEnum
+    public enum ObjectEffectsEnum
     {
         /// <summary>
         /// Steals #1{~1~2 to X} MP

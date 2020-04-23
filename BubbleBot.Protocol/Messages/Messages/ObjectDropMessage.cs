@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ObjectDropMessage : Message
-	{
+    public class ObjectDropMessage : Message
+    {
 
-		// Properties
-		public uint ObjectUID { get; set; }
-		public uint Quantity { get; set; }
+        // Properties
+        public uint ObjectUID { get; set; }
+        public uint Quantity { get; set; }
 
 
-		// Constructors
-		public ObjectDropMessage() { }
+        // Constructors
+        public ObjectDropMessage() { }
 
-		public ObjectDropMessage(uint objectUID = 0, uint quantity = 0)
-		{
-			ObjectUID = objectUID;
-			Quantity = quantity;
-		}
+        public ObjectDropMessage(uint objectUID = 0, uint quantity = 0)
+        {
+            ObjectUID = objectUID;
+            Quantity = quantity;
+        }
 
-	}
+    }
 }

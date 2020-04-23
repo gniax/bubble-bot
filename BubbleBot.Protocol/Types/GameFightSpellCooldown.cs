@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Types
 {
-	public class GameFightSpellCooldown
-	{
+    public class GameFightSpellCooldown
+    {
 
-		// Properties
-		public int SpellId { get; set; }
-		public uint Cooldown { get; set; }
+        // Properties
+        public int SpellId { get; set; }
+        public uint Cooldown { get; set; }
 
 
-		// Constructors
-		public GameFightSpellCooldown() { }
+        // Constructors
+        public GameFightSpellCooldown() { }
 
-		public GameFightSpellCooldown(int spellId = 0, uint cooldown = 0)
-		{
-			SpellId = spellId;
-			Cooldown = cooldown;
-		}
+        public GameFightSpellCooldown(int spellId = 0, uint cooldown = 0)
+        {
+            SpellId = spellId;
+            Cooldown = cooldown;
+        }
 
-	}
+    }
 }

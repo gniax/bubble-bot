@@ -1,9 +1,7 @@
-﻿using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript;
-using BubbleBot.Core.Accounts.Scripts.Actions.Global;
-using MoonSharp.Interpreter;
-using System;
+﻿using System;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -23,29 +21,32 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public void CreateFile(string filename)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new CreateFileAction((string)filename), false);
+            _account.Scripts.ActionsManager.EnqueueAction(new CreateFileAction(filename));
         }
 
         public void DeleteFile(string filename)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new DeleteFileAction((string)filename), false);
+            _account.Scripts.ActionsManager.EnqueueAction(new DeleteFileAction(filename));
         }
-           
-        public void EditValueInt(string filename,string name, int value)
+
+        public void EditValueInt(string filename, string name, int value)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new EditValueIntAction(filename, name, value), false);
+            _account.Scripts.ActionsManager.EnqueueAction(new EditValueIntAction(filename, name, value));
         }
+
         public void EditValueString(string filename, string name, string value)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new EditValueStringAction(filename, name, value), false);
+            _account.Scripts.ActionsManager.EnqueueAction(new EditValueStringAction(filename, name, value));
         }
+
         public void DeleteVariable(string filename, string name)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new DeleteVariable(filename, name), false);
+            _account.Scripts.ActionsManager.EnqueueAction(new DeleteVariable(filename, name));
         }
+
         public int GetValueInt(string filename, string name)
         {
-            return _account.Game.ExtendScript.GetValueInt(filename,name);
+            return _account.Game.ExtendScript.GetValueInt(filename, name);
         }
 
         public string GetValueString(string filename, string name)
@@ -55,7 +56,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -69,10 +70,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~ExtendScriptAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
     }

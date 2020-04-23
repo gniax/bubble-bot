@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class ExchangeGoldPaymentForCraftMessage : Message
-	{
+    public class ExchangeGoldPaymentForCraftMessage : Message
+    {
 
-		// Properties
-		public bool OnlySuccess { get; set; }
-		public uint GoldSum { get; set; }
+        // Properties
+        public bool OnlySuccess { get; set; }
+        public uint GoldSum { get; set; }
 
 
-		// Constructors
-		public ExchangeGoldPaymentForCraftMessage() { }
+        // Constructors
+        public ExchangeGoldPaymentForCraftMessage() { }
 
-		public ExchangeGoldPaymentForCraftMessage(bool onlySuccess = false, uint goldSum = 0)
-		{
-			OnlySuccess = onlySuccess;
-			GoldSum = goldSum;
-		}
+        public ExchangeGoldPaymentForCraftMessage(bool onlySuccess = false, uint goldSum = 0)
+        {
+            OnlySuccess = onlySuccess;
+            GoldSum = goldSum;
+        }
 
-	}
+    }
 }

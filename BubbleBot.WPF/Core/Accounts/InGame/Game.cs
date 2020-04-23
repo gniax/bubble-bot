@@ -1,34 +1,20 @@
-using BubbleBot.Core.Accounts.InGame.Character;
-using BubbleBot.Core.Accounts.InGame.Map;
-using BubbleBot.Core.Accounts.InGame.Server;
-using BubbleBot.Core.Accounts.InGame.Fights;
-using BubbleBot.Core.Accounts.InGame.Chat;
-using BubbleBot.Core.Accounts.InGame.Managers;
-using BubbleBot.Core.Accounts.InGame.Npcs;
-using BubbleBot.Core.Accounts.InGame.Storage;
 using System;
-using BubbleBot.Core.Accounts.InGame.Exchange;
 using BubbleBot.Core.Accounts.InGame.Bid;
+using BubbleBot.Core.Accounts.InGame.Character;
+using BubbleBot.Core.Accounts.InGame.Chat;
+using BubbleBot.Core.Accounts.InGame.Exchange;
 using BubbleBot.Core.Accounts.InGame.ExtendScript;
+using BubbleBot.Core.Accounts.InGame.Fights;
+using BubbleBot.Core.Accounts.InGame.Managers;
+using BubbleBot.Core.Accounts.InGame.Map;
+using BubbleBot.Core.Accounts.InGame.Npcs;
+using BubbleBot.Core.Accounts.InGame.Server;
+using BubbleBot.Core.Accounts.InGame.Storage;
 
 namespace BubbleBot.Core.Accounts.InGame
 {
     public class Game : IClearable, IDisposable
     {
-
-        // Properties
-        public ServerGame Server { get; private set; }
-        public CharacterGame Character { get; private set; }
-        public MapGame Map { get; private set; }
-        public ManagersGame Managers { get; private set; }
-        public FightGame Fight { get; private set; }
-        public ChatGame Chat { get; private set; }
-        public NpcsGame Npcs { get; private set; }
-        public StorageGame Storage { get; private set; }
-        public ExchangeGame Exchange { get; private set; }
-        public BidGame Bid { get; private set; }
-        public ExtendScriptGame ExtendScript { get; private set; }
-
         public double bakRate = 0;
         public int shopBuyInfo = 0;
 
@@ -48,6 +34,19 @@ namespace BubbleBot.Core.Accounts.InGame
             ExtendScript = new ExtendScriptGame(account);
         }
 
+        // Properties
+        public ServerGame Server { get; private set; }
+        public CharacterGame Character { get; private set; }
+        public MapGame Map { get; private set; }
+        public ManagersGame Managers { get; private set; }
+        public FightGame Fight { get; private set; }
+        public ChatGame Chat { get; private set; }
+        public NpcsGame Npcs { get; private set; }
+        public StorageGame Storage { get; private set; }
+        public ExchangeGame Exchange { get; private set; }
+        public BidGame Bid { get; private set; }
+        public ExtendScriptGame ExtendScript { get; private set; }
+
 
         public void Clear()
         {
@@ -62,7 +61,7 @@ namespace BubbleBot.Core.Accounts.InGame
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -99,11 +98,16 @@ namespace BubbleBot.Core.Accounts.InGame
             }
         }
 
-        ~Game() => Dispose(false);
+        ~Game()
+        {
+            Dispose(false);
+        }
 
-        public void Dispose() => Dispose(true);
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,7 +1,7 @@
-using BubbleBot.Protocol.Enums;
-using MoonSharp.Interpreter;
 using System;
 using System.Reflection;
+using BubbleBot.Protocol.Enums;
+using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -9,7 +9,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class CharacterAPI : IDisposable
     {
-
         // Fields
         private Account _account;
 
@@ -22,56 +21,88 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
 
         public bool IsAlive()
-            => _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
+        {
+            return _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
+        }
 
         public bool IsTombstone()
-            => _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE;
+        {
+            return _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE;
+        }
 
         public bool IsPhantom()
-            => _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM;
+        {
+            return _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM;
+        }
 
         public string Name()
-            => _account.Game.Character.Name;
+        {
+            return _account.Game.Character.Name;
+        }
 
         public byte Level()
-            => _account.Game.Character.Level;
+        {
+            return _account.Game.Character.Level;
+        }
 
         public bool Sex()
-            => _account.Game.Character.Sex;
+        {
+            return _account.Game.Character.Sex;
+        }
 
         public uint LifePoints()
-            => _account.Game.Character.Stats.LifePoints;
+        {
+            return _account.Game.Character.Stats.LifePoints;
+        }
 
         public uint MaxLifePoints()
-            => _account.Game.Character.Stats.MaxLifePoints;
+        {
+            return _account.Game.Character.Stats.MaxLifePoints;
+        }
 
         public int LifePointsP()
-            => _account.Game.Character.Stats.LifePercent;
+        {
+            return _account.Game.Character.Stats.LifePercent;
+        }
 
         public int Experience()
-            => _account.Game.Character.Stats.ExperiencePercent;
+        {
+            return _account.Game.Character.Stats.ExperiencePercent;
+        }
 
         public uint EnergyPoints()
-            => _account.Game.Character.Stats.EnergyPoints;
+        {
+            return _account.Game.Character.Stats.EnergyPoints;
+        }
 
         public uint MaxEnergyPoints()
-            => _account.Game.Character.Stats.MaxEnergyPoints;
+        {
+            return _account.Game.Character.Stats.MaxEnergyPoints;
+        }
 
         public int EnergyPointsP()
-            => _account.Game.Character.Stats.EnergyPercent;
+        {
+            return _account.Game.Character.Stats.EnergyPercent;
+        }
 
         public int Kamas()
-            => _account.Game.Character.Inventory.Kamas;
+        {
+            return _account.Game.Character.Inventory.Kamas;
+        }
 
         public void Sit()
-            => _account.Game.Character.Sit();
+        {
+            _account.Game.Character.Sit();
+        }
 
         public bool FreeSoul()
-            => _account.Game.Character.FreeSoul();
+        {
+            return _account.Game.Character.FreeSoul();
+        }
 
         #region IDisposable Support
 
-        private bool disposedValue = false;
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -84,12 +115,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
 
         ~CharacterAPI()
-            => Dispose(false);
+        {
+            Dispose(false);
+        }
 
         public void Dispose()
-            => Dispose(true);
+        {
+            Dispose(true);
+        }
 
         #endregion
-
     }
 }

@@ -1,26 +1,25 @@
 using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class NotificationByServerMessage : Message
-	{
+    public class NotificationByServerMessage : Message
+    {
 
-		// Properties
-		public List<string> Parameters { get; set; }
-		public uint Id { get; set; }
-		public bool ForceOpen { get; set; }
+        // Properties
+        public List<string> Parameters { get; set; }
+        public uint Id { get; set; }
+        public bool ForceOpen { get; set; }
 
 
-		// Constructors
-		public NotificationByServerMessage() { }
+        // Constructors
+        public NotificationByServerMessage() { }
 
-		public NotificationByServerMessage(uint id = 0, bool forceOpen = false, List<string> parameters = null)
-		{
-			Id = id;
-			ForceOpen = forceOpen;
-			Parameters = parameters;
-		}
+        public NotificationByServerMessage(uint id = 0, bool forceOpen = false, List<string> parameters = null)
+        {
+            Id = id;
+            ForceOpen = forceOpen;
+            Parameters = parameters;
+        }
 
-	}
+    }
 }

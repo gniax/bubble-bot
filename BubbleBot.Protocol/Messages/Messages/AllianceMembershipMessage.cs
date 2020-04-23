@@ -1,19 +1,18 @@
-using System.Collections.Generic;
 using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Protocol.Messages
 {
-	public class AllianceMembershipMessage : AllianceJoinedMessage
-	{
+    public class AllianceMembershipMessage : AllianceJoinedMessage
+    {
 
-		// Constructors
-		public AllianceMembershipMessage() { }
+        // Constructors
+        public AllianceMembershipMessage() { }
 
-		public AllianceMembershipMessage(AllianceInformations allianceInfo = null, bool enabled = false)
-		{
-			AllianceInfo = allianceInfo;
-			Enabled = enabled;
-		}
+        public AllianceMembershipMessage(AllianceInformations allianceInfo = null, bool enabled = false)
+        {
+            AllianceInfo = allianceInfo;
+            Enabled = enabled;
+        }
 
-	}
+    }
 }

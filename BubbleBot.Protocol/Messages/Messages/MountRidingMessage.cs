@@ -1,22 +1,19 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class MountRidingMessage : Message
-	{
+    public class MountRidingMessage : Message
+    {
 
-		// Properties
-		public bool IsRiding { get; set; }
+        // Properties
+        public bool IsRiding { get; set; }
 
 
-		// Constructors
-		public MountRidingMessage() { }
+        // Constructors
+        public MountRidingMessage() { }
 
-		public MountRidingMessage(bool isRiding = false)
-		{
-			IsRiding = isRiding;
-		}
+        public MountRidingMessage(bool isRiding = false)
+        {
+            IsRiding = isRiding;
+        }
 
-	}
+    }
 }

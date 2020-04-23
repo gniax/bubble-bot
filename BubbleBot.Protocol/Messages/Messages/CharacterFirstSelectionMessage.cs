@@ -1,23 +1,20 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class CharacterFirstSelectionMessage : CharacterSelectionMessage
-	{
+    public class CharacterFirstSelectionMessage : CharacterSelectionMessage
+    {
 
-		// Properties
-		public bool DoTutorial { get; set; }
+        // Properties
+        public bool DoTutorial { get; set; }
 
 
-		// Constructors
-		public CharacterFirstSelectionMessage() { }
+        // Constructors
+        public CharacterFirstSelectionMessage() { }
 
-		public CharacterFirstSelectionMessage(int id = 0, bool doTutorial = false)
-		{
-			Id = id;
-			DoTutorial = doTutorial;
-		}
+        public CharacterFirstSelectionMessage(int id = 0, bool doTutorial = false)
+        {
+            Id = id;
+            DoTutorial = doTutorial;
+        }
 
-	}
+    }
 }

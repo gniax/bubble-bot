@@ -1,24 +1,21 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class StartupActionsObjetAttributionMessage : Message
-	{
+    public class StartupActionsObjetAttributionMessage : Message
+    {
 
-		// Properties
-		public uint ActionId { get; set; }
-		public uint CharacterId { get; set; }
+        // Properties
+        public uint ActionId { get; set; }
+        public uint CharacterId { get; set; }
 
 
-		// Constructors
-		public StartupActionsObjetAttributionMessage() { }
+        // Constructors
+        public StartupActionsObjetAttributionMessage() { }
 
-		public StartupActionsObjetAttributionMessage(uint actionId = 0, uint characterId = 0)
-		{
-			ActionId = actionId;
-			CharacterId = characterId;
-		}
+        public StartupActionsObjetAttributionMessage(uint actionId = 0, uint characterId = 0)
+        {
+            ActionId = actionId;
+            CharacterId = characterId;
+        }
 
-	}
+    }
 }

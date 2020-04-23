@@ -2,15 +2,6 @@ namespace BubbleBot.Core.Pathfinding.Fights
 {
     public class MoveNode
     {
-
-        // Properties
-        public int Ap { get; private set; }
-        public int Mp { get; private set; }
-        public short From { get; private set; }
-        public bool Reachable { get; private set; }
-        public FightPath Path { get; set; }
-
-
         // Constructor
         public MoveNode(int ap, int mp, short from, bool reachable)
         {
@@ -20,5 +11,11 @@ namespace BubbleBot.Core.Pathfinding.Fights
             Reachable = reachable;
         }
 
+        // Properties
+        public int Ap { get; }
+        public int Mp { get; }
+        public short From { get; }
+        public bool Reachable { get; }
+        public FightPath Path { get; set; }
     }
 }

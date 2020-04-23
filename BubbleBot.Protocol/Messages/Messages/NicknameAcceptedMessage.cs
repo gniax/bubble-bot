@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using BubbleBot.Protocol.Types;
-
 namespace BubbleBot.Protocol.Messages
 {
-	public class NicknameAcceptedMessage : Message
-	{
+    public class NicknameAcceptedMessage : Message
+    {
 
-		// Constructors
-		public NicknameAcceptedMessage() { }
+        // Constructors
+        public NicknameAcceptedMessage() { }
 
 
-	}
+    }
 }

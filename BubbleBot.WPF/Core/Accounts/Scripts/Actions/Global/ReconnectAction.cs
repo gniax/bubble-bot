@@ -1,21 +1,13 @@
-﻿using BubbleBot.Configurations.Language;
-using BubbleBot.Core.Enums;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Configurations.Language;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
 {
     public class ReconnectAction : ScriptAction
     {
-
-        // Properties
-        public int Seconds { get; private set; }
-
-        public bool RestartScript { get; private set; }
-
         // Constructor
         public ReconnectAction(int s, bool rs)
         {
@@ -23,63 +15,62 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             RestartScript = rs;
         }
 
+        // Properties
+        public int Seconds { get; }
+
+        public bool RestartScript { get; }
+
 
         // Reconnection Function
         // Exception : reconnect(0, true||false) leads to an instant reconnection
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            DateTime localDate = DateTime.Now;
-            DateTime newDate = localDate.AddSeconds(Seconds);
+            var localDate = DateTime.Now;
+            var newDate = localDate.AddSeconds(Seconds);
 
-            string newDateToDay = newDate.Day.ToString() + " " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month);
-            string newDateToTime= newDate.ToString("HH:mm:ss");
+            var newDateToDay =
+                newDate.Day + " " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month);
+            var newDateToTime = newDate.ToString("HH:mm:ss");
 
-            account.Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("612", newDateToDay, newDateToTime, RestartScript.ToString()));
+            account.Logger.LogMessage(LanguageManager.Translate("165"),
+                LanguageManager.Translate("612", newDateToDay, newDateToTime, RestartScript.ToString()));
+            account.PreventPlanificationReconnection = true;
             await account.Network.Disconnect("CLIENT_CLOSING");
             await Task.Delay(400);
-            
+
             // Note: Here we'll log informations about current timer before reconnection
             // More the longer the time, and more will be display informations about situation
             // Ex: For 30 seconds reconnection -> 1 display at the half (show 15 seconds remaining)
             // For 86440s (1 day) -> a display each hour
-            for(int i=0; i<Seconds; i++)
+            for (var i = 0; i < Seconds; i++)
             {
-                int factor = 0;
+                var factor = 0;
 
                 if (Seconds > 30 && Seconds <= 300)
-                {
                     factor = 2;
-                }
                 else if (Seconds > 300 && Seconds <= 1800)
-                {
                     factor = 3;
-                }
                 else if (Seconds > 1800 && Seconds <= 7200)
-                {
                     factor = 5;
-                }
                 else if (Seconds > 7200 && Seconds <= 43200)
-                {
                     factor = 8;
-                }
                 else
-                {
                     factor = 12;
-                }
 
-                if (i == Seconds - 60 || Enumerable.Range(1, factor - 1).Any(n => i == (Seconds / factor * n)))
+                if (i == Seconds - 60 || Enumerable.Range(1, factor - 1).Any(n => i == Seconds / factor * n))
                 {
-                    TimeSpan time = TimeSpan.FromSeconds(Seconds - i);
+                    var time = TimeSpan.FromSeconds(Seconds - i);
 
-                    string format = @"hh\:mm\:ss";
+                    var format = @"hh\:mm\:ss";
 
-                    if ((Seconds - i) < 60)
+                    if (Seconds - i < 60)
                         format = @"ss";
-                    else if ((Seconds - i) < 3600)
+                    else if (Seconds - i < 3600)
                         format = @"mm\:ss";
 
-                    string timeDisplay = time.ToString(format);
-                    account.Logger.LogMessage(LanguageManager.Translate("165"), LanguageManager.Translate("614", timeDisplay));
+                    var timeDisplay = time.ToString(format);
+                    account.Logger.LogMessage(LanguageManager.Translate("165"),
+                        LanguageManager.Translate("614", timeDisplay));
                 }
 
                 // Here set the delay to 1sec
@@ -94,123 +85,21 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             if (account.Network.Connected)
                 return ScriptActionResults.FAILED;
 
-            await account.Connect();
+            await account.Connect().ConfigureAwait(true);
 
-            account.Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-            await Task.Delay(20000);
-            if (account.Network.Phase == NetworkPhases.GAME)
+            await Task.Delay(3000);
+
+            if (account.Network.Connected && RestartScript)
             {
-                if (RestartScript == true)
-                {
-                    int retries = 3;
-                    if (account.HasGroup && account.IsGroupChief)
-                    {
-                        account.Group.Chief.Scripts.StartScript();
-                        while (!account.Scripts.Running && retries >= 0)
-                        {
-                            account.Group.Chief.Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-                    }
-                    else if (!account.HasGroup)
-                    {
-                        SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                        await Task.Delay(1500);
-                        account.Scripts.StartScript();
-                        while (!account.Scripts.Running && retries >= 0)
-                        {
-                            account.Scripts.StartScript();
-                            SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                            retries--;
-                        }
-
-                    }
-                }
-                        
+                account.WaitForRestartScript = true;
                 return ScriptActionResults.DONE;
             }
-            else // If the reconnection failed ? server busy ? bann ? => Retry
-            {
-                await account.Connect();
-                account.Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("616", 20));
-                await Task.Delay(20000);
-                if (account.Network.Connected)
-                {
-                    if (RestartScript == true)
-                    {
-                        int retries = 3;
-                        if (account.HasGroup && account.IsGroupChief)
-                        {
-                            account.Group.Chief.Scripts.StartScript();
-                            while (!account.Scripts.Running && retries >= 0)
-                            {
-                                account.Group.Chief.Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
-                        }
-                        else if (!account.HasGroup)
-                        {
-                            SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                            await Task.Delay(1500);
-                            account.Scripts.StartScript();
-                            while (!account.Scripts.Running && retries >= 0)
-                            {
-                                account.Scripts.StartScript();
-                                SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                retries--;
-                            }
 
-                        }
-                    }
+            if (account.Network.Connected && !RestartScript)
+                return ScriptActionResults.DONE;
+            if (!account.Network.Connected) return ScriptActionResults.FAILED;
 
-                    return ScriptActionResults.DONE;
-                }
-
-                // If it takes a long time to reconnect, we will try a second time
-                if (Seconds > 1800)
-                {
-                    account.Logger.LogMessage(LanguageManager.Translate("617"), LanguageManager.Translate("613"));
-                    await Task.Delay(300 * 1000);
-                    await account.Connect();
-                    if (account.Network.Connected)
-                    {
-                        if (RestartScript == true)
-                        {
-                            int retries = 3;
-                            if (account.HasGroup && account.IsGroupChief)
-                            {
-                                account.Group.Chief.Scripts.StartScript();
-                                while (!account.Scripts.Running && retries >= 0)
-                                {
-                                    account.Group.Chief.Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                            else if (!account.HasGroup)
-                            {
-                                SpinWait.SpinUntil(() => (!account.IsBusy), TimeSpan.FromSeconds(10));
-                                await Task.Delay(1500);
-                                account.Scripts.StartScript();
-                                while (!account.Scripts.Running && retries >= 0)
-                                {
-                                    account.Scripts.StartScript();
-                                    SpinWait.SpinUntil(() => (account.Scripts.Running), TimeSpan.FromSeconds(30));
-                                    retries--;
-                                }
-                            }
-                        }
-
-                        return ScriptActionResults.DONE;
-                    }
-                }
-
-                await account.Network.Disconnect("CLIENT_CLOSING", true);
-                return ScriptActionResults.FAILED;
-            }
+            return ScriptActionResults.FAILED;
         }
-
     }
 }
