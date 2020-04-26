@@ -8,6 +8,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Bid
 {

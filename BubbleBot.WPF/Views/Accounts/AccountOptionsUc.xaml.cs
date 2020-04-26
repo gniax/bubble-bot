@@ -8,6 +8,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Server.Messages;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Data;
 
 namespace BubbleBot.Views.Accounts
 {

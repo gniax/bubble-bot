@@ -1,3 +1,4 @@
+using BubbleBot.Data;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Types;
 
@@ -13,7 +14,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
 
             var m = DataManager.Get<Monsters>(GenericId);
             Name = m.NameId;
-            Level = m.Grades[Grade - 1].level;
+            Level = m?.Grades[Grade - 1].level;
             Boss = m.IsBoss;
             MiniBoss = m.IsMiniBoss;
             QuestMonster = m.IsQuestMonster;

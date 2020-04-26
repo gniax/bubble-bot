@@ -1,5 +1,6 @@
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Types;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Map.Entities
 {

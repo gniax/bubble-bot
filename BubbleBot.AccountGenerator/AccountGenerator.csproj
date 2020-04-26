@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="CefSharp.OffScreen" Version="75.1.143" />
     <PackageReference Include="Google.Apis.Discovery.v1" Version="1.43.0" />
-    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.43.0.1835" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.43.0.1859" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Security.Permissions" Version="4.7.0" />

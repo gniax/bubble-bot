@@ -7,6 +7,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using GalaSoft.MvvmLight;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 {

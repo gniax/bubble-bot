@@ -5,8 +5,13 @@ using BubbleBot.Server.Network;
 using BubbleBot.Server.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using CefSharp;
+using CefSharp.OffScreen;
 
 namespace BubbleBot.Server
 {
@@ -15,17 +20,17 @@ namespace BubbleBot.Server
         // Server Infos
         public const int Port = 3000;
 
-        public const string IP = "127.0.0.1"; // Server IP
-        public const string ApiIpAddress = "http://localhost:5001"; // API IP
+        //public const string IP = "127.0.0.1"; // Server IP
+        //public const string ApiIpAddress = "http://localhost:5001"; // API IP
 
-        //public const string IP = "93.113.207.95"; // Server IP
-        //public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP 
+        public const string IP = "93.113.207.95"; // Server IP
+        public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP 
 
         // Dofus Touch
-        public static string AppVersion { get; set; } = "0.0.0";
-        public static string BuildVersion { get; set; } = "0.00.0";
-        public static string AssetsVersion { get; set; } = "0.00.0";
-        public static string StaticDataVersion { get; set; } = "0.0.0";
+        public static string AppVersion { get; set; } = "2.0.4";
+        public static string BuildVersion { get; set; } = "1.46.6";
+        public static string AssetsVersion { get; set; } = "2.31.2_GgYeQVuuYVUEkPO6ozwD0cOQeo-E'y'e";
+        public static string StaticDataVersion { get; set; } = "1.15.9";
 
         // Updates
         public static Dictionary<string, string> FilesHashes { get; set; }
@@ -43,6 +48,9 @@ namespace BubbleBot.Server
             server.ClientConnected += Server_ClientConnected;
             server.ErrorOccured += Server_ErrorOccured;
             server.ClientDisconnected += Server_ClientDisconnected;
+
+            //AppDomain.CurrentDomain.AssemblyResolve += Resolver;
+            //InitializeCefSharp();
 
             ConsoleLogger(1);
             CommandsManager.Initialize();
@@ -202,5 +210,8 @@ namespace BubbleBot.Server
                     break;
             }
         }
+
+        
     }
+
 }

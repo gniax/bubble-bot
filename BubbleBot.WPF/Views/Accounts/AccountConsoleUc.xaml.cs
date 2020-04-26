@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -22,6 +23,7 @@ using BubbleBot.Core.Logs;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Utility.DofusTouch;
+using BubbleBot.Data;
 using Microsoft.Win32;
 
 namespace BubbleBot.Views.Accounts

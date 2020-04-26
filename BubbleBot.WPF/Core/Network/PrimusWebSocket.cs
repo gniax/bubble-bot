@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Core.Accounts;
 using BubbleBot.Utility;
 using BubbleBot.Utility.Security;
 using Newtonsoft.Json.Linq;
@@ -163,10 +164,11 @@ namespace BubbleBot.Core.Network
             string proxyPassword)
         {
             Url = new Uri(url + "&sid=" + sid + "&t=" + YeastAPI.GenerateKey() + "&b64=1");
-            Console.WriteLine(Url);
+            //Console.WriteLine(Url);
 
             _webSocket = new WebSocket(Url.AbsoluteUri);
             _webSocket.SetCookie(new Cookie("io", sid));
+            _webSocket.Compression = CompressionMethod.Deflate;
 
             if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyPassword ?? "", proxyUsername ?? "");
 
@@ -207,7 +209,6 @@ namespace BubbleBot.Core.Network
                 return;
             }
 
-
             if (e.Data[0] != '0' && e.Data[0] != '4')
                 return;
 
@@ -219,7 +220,10 @@ namespace BubbleBot.Core.Network
             }
 
             if (e.Data.Contains("primus::server::close"))
+            {
+                Console.WriteLine(e.Data);
                 return;
+            }
 
             try
             {

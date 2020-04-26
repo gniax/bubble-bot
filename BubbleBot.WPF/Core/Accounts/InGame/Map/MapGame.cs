@@ -14,6 +14,8 @@ using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Server.Messages;
 using GalaSoft.MvvmLight;
+using BubbleBot.Data;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {

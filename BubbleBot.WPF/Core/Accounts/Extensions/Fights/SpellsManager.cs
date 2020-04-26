@@ -11,6 +11,7 @@ using BubbleBot.Core.Accounts.InGame.Fights.Fighters;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Fights;
 using BubbleBot.Protocol.Data;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {

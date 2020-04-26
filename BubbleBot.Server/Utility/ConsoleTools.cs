@@ -53,8 +53,7 @@ namespace BubbleBot.Server.Utility
             displayMsg = msg;
             sequenceCode = code;
             active = true;
-            if (!thread.IsAlive)
-                thread.Start();
+            //thread.Start();
         }
 
         public void Stop()
@@ -86,5 +85,6 @@ namespace BubbleBot.Server.Utility
 
             Console.SetCursorPosition(Console.CursorLeft - msglength, Console.CursorTop);
         }
+
     }
 }

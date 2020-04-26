@@ -41,15 +41,14 @@ namespace BubbleBot.Server.Commands
             if (args.Length != 0)
                 return;
 
-            if (SetVersions.setVersions())
-            {
+
                 ServerMain.BroadcastMessage(new DTVersionsMessage(Constants.AppVersion, Constants.BuildVersion, Constants.AssetsVersion, Constants.StaticDataVersion), true);
                 Console.WriteLine("DT Versions updated and broadcasted.");
-            }
-            else
-            {
-                Console.WriteLine("DT Versions update failed - try again");
-            }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("DT Versions update failed - try again");
+            //}
         }
 
         private static string GetSha512HashFromFile(string fileName)

@@ -20,6 +20,7 @@ using BubbleBot.Core.Commands;
 using BubbleBot.Core.Enums;
 using BubbleBot.Core.Groups;
 using BubbleBot.Core.Logs;
+using BubbleBot.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility;
 using CefSharp;
@@ -42,7 +43,9 @@ namespace BubbleBot.Core.Accounts
         private bool _wasScriptEnabled;
         private bool _wasScriptRunning;
 
-        private ChromiumWebBrowser browser;
+        public ChromiumWebBrowser Browser;
+
+        public string SidResponse;
 
         // This variable is used for auto-reconnection
         public bool IsIntentionalDisconnection;
@@ -74,6 +77,7 @@ namespace BubbleBot.Core.Accounts
             Extensions = new ExtensionsContainer(this);
             Statistics = new StatisticsManager(this);
             PlanificationTimer = new TimerWrapper(30000, Planification_Callback);
+            //DataManager = new DataManager(this);
 
             Network.Disconnected += Network_Disconnected;
             Game.Map.MapLoaded += Map_MapLoaded;
@@ -81,6 +85,7 @@ namespace BubbleBot.Core.Accounts
 
         // Properties
         public AccountConfiguration AccountConfig { get; private set; }
+        //public DataManager DataManager { get; private set; }
         public Configuration Configuration { get; private set; }
         public FramesData FramesData { get; private set; }
         public string Token { get; private set; }
@@ -153,53 +158,105 @@ namespace BubbleBot.Core.Accounts
                 await Network.ConnectToLoginServer();
             }
         }
+        public bool LoadBrowser()
+        {
+            if (Browser == null || Browser.IsDisposed)
+            {
+                var browserSettings = new BrowserSettings
+                {
+                    ApplicationCache = CefState.Disabled,
+                    FileAccessFromFileUrls = CefState.Disabled,
+                    UniversalAccessFromFileUrls = CefState.Disabled,
+                    ImageLoading = CefState.Disabled,
+                    Javascript = CefState.Disabled,
+                    WebSecurity = CefState.Disabled,
+                    Plugins = CefState.Disabled,
+                    LocalStorage = CefState.Disabled,
+                    WebGl = CefState.Disabled,
+                    WindowlessFrameRate = 1
+                };
+                if (AccountConfig.Proxy.IsValid)
+                {
+                    Browser = new ChromiumWebBrowser("about:blank", browserSettings,
+                        new RequestContext(new BrowserRequestContextHandler(AccountConfig.Proxy.Ip,
+                            AccountConfig.Proxy.Port.ToString())));
+                    Browser.RequestHandler =
+                        new BrowserRequestHandler(AccountConfig.Proxy.Username, AccountConfig.Proxy.Password);
+                }
+                else
+                {
+                    Browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+                }
+
+                var browserInit = SpinWait.SpinUntil(() => Browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
+
+                if (!browserInit)
+                {
+                    CloseBrowser();
+                    return false;
+                }
+
+                return true;
+            }
+            return true;
+        }
 
         public void CloseBrowser()
         {
-            if (browser != null)
+            if (Browser != null)
             {
-                if (browser.IsDisposed)
+                if (Browser.IsDisposed)
                 {
-                    browser = null;
+                    Browser = null;
                     return;
                 }
 
-                if (browser.IsBrowserInitialized && browser.IsLoading) browser?.Stop();
+                if (Browser.IsBrowserInitialized && Browser.IsLoading) Browser?.Stop();
 
-                browser?.Dispose();
-                browser?.RequestContext?.Dispose();
-                browser = null;
+                Browser?.Dispose();
+                Browser?.RequestContext?.Dispose();
+                Browser = null;
             }
         }
 
-        private int SetKey(short method, object sender, FrameLoadEndEventArgs e)
+        public int SetKey(short method, object sender, FrameLoadEndEventArgs e)
         {
             // method : 1 => apikey
             // method : 2 => token
-            // 200 => Success => Read Token or Apikey
+            // method : 3 => sid 
+            // 200 => Success => Read Token or Apikeycor Sid
             // 601 => Ban => Disconnect other accounts if needed
             // 429 => Too Many Requests => Retry after 
-            if (e.Url.Contains("haapi"))
+
+            if ((e.Url.Contains("haapi") || e.Url.Contains("touch.dofus.com")) && SidResponse == null)
             {
-                if (e.HttpStatusCode == 200) //Si la requète POST a fonctionné --> on continue 
+                if (e.HttpStatusCode == 200) 
                 {
                     _taskCancelToken = new CancellationTokenSource();
                     e.Frame.GetTextAsync().ContinueWith(taskHtml =>
                     {
                         var resultHtml = taskHtml.Result;
+
+                        resultHtml = resultHtml.Substring(resultHtml.IndexOf("{"));
+
                         var dictionaryRes =
                             JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(resultHtml));
 
                         if (method == 1 && dictionaryRes.ContainsKey("key"))
                         {
-                            var apikey = (string) dictionaryRes["key"];
-                            _apiKey = apikey;
+                            _apiKey = (string)dictionaryRes["key"];
                             _taskCancelToken.Cancel(false);
                         }
                         else if (method == 2 && dictionaryRes.ContainsKey("token"))
                         {
-                            var token = (string) dictionaryRes["token"];
-                            _token = token;
+                            _token = (string)dictionaryRes["token"];
+                            _taskCancelToken.Cancel(false);
+                        }
+                        else if (method == 3)
+                        {
+                            SidResponse = (string)dictionaryRes["sid"];
+                            Network?.SetWebsocketTimer((long) dictionaryRes["pingInterval"],
+                                (long) dictionaryRes["pingTimeout"]);
                             _taskCancelToken.Cancel(false);
                         }
                     }, _taskCancelToken.Token);
@@ -260,6 +317,8 @@ namespace BubbleBot.Core.Accounts
                     _apiKey = "failed";
                 else if (method == 2)
                     _token = "failed";
+                else if (method == 3)
+                    SidResponse = "failed";
             }
 
             return e.HttpStatusCode;
@@ -277,41 +336,9 @@ namespace BubbleBot.Core.Accounts
 
             //On charge le navigateur vide
 
-            var browserSettings = new BrowserSettings
-            {
-                ApplicationCache = CefState.Disabled,
-                FileAccessFromFileUrls = CefState.Disabled,
-                UniversalAccessFromFileUrls = CefState.Disabled,
-                ImageLoading = CefState.Disabled,
-                Javascript = CefState.Disabled,
-                WebSecurity = CefState.Disabled,
-                Plugins = CefState.Disabled,
-                LocalStorage = CefState.Disabled,
-                WebGl = CefState.Disabled,
-                WindowlessFrameRate = 1
-            };
-            if (AccountConfig.Proxy.IsValid)
-            {
-                browser = new ChromiumWebBrowser("about:blank", browserSettings,
-                    new RequestContext(new BrowserRequestContextHandler(AccountConfig.Proxy.Ip,
-                        AccountConfig.Proxy.Port.ToString())));
-                browser.RequestHandler =
-                    new BrowserRequestHandler(AccountConfig.Proxy.Username, AccountConfig.Proxy.Password);
-            }
-            else
-            {
-                browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
-            }
+            LoadBrowser();
 
-            var browserInit = SpinWait.SpinUntil(() => browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
-
-            if (!browserInit)
-            {
-                CloseBrowser();
-                return false;
-            }
-
-            var frame = browser.GetMainFrame();
+            var frame = Browser.GetMainFrame();
             var request = frame.CreateRequest();
 
             request.Url = "https://haapi.ankama.com/json/Ankama/v2/Api/CreateApiKey";
@@ -325,7 +352,7 @@ namespace BubbleBot.Core.Accounts
             frame.LoadRequest(request);
 
             var httpCode = 0;
-            browser.FrameLoadEnd += delegate(object sender, FrameLoadEndEventArgs e)
+            Browser.FrameLoadEnd += delegate(object sender, FrameLoadEndEventArgs e)
             {
                 httpCode = SetKey(1, RuntimeHelpers.GetObjectValue(sender), e);
             };
@@ -359,7 +386,7 @@ namespace BubbleBot.Core.Accounts
 
             Console.WriteLine("[2/3] - Retrieving account token");
 
-            var mainFrame = browser.GetMainFrame();
+            var mainFrame = Browser.GetMainFrame();
             var tokenRequest = mainFrame.CreateRequest(false);
             tokenRequest.Url = "https://haapi.ankama.com/json/Ankama/v2/Account/CreateToken?game=18";
             tokenRequest.Method = "GET";
@@ -367,7 +394,7 @@ namespace BubbleBot.Core.Accounts
             mainFrame.LoadRequest(tokenRequest);
 
             httpCode = 0;
-            browser.FrameLoadEnd += delegate(object sender, FrameLoadEndEventArgs e)
+            Browser.FrameLoadEnd += delegate(object sender, FrameLoadEndEventArgs e)
             {
                 httpCode = SetKey(2, RuntimeHelpers.GetObjectValue(sender), e);
             };
@@ -400,12 +427,12 @@ namespace BubbleBot.Core.Accounts
                 return false;
             }
 
-            Console.WriteLine("[3/3] - Authenticated");
+            Console.WriteLine("[3/3] - Success retrieving Token");
+
             Token = _token;
             _token = null;
             _apiKey = null;
             ConnectError = default;
-            CloseBrowser();
             return true;
         }
 
@@ -494,8 +521,6 @@ namespace BubbleBot.Core.Accounts
                 if (State != AccountStates.BANNED && !AccountConfig.IsBan)
                     State = AccountStates.DISCONNECTED;
                 Logger.LogWarning("Network", LanguageManager.Translate("31"));
-
-                CloseBrowser();
 
                 // In case there was a script enabled
                 if (Network.Phase != NetworkPhases.SWITCHING_TO_GAME)
@@ -747,7 +772,7 @@ namespace BubbleBot.Core.Accounts
                     CloseBrowser();
                 }
 
-                browser = null;
+                Browser = null;
                 _taskCancelToken = null;
                 _state = AccountStates.NONE;
                 _apiKey = null;

@@ -6,6 +6,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Utility.DofusTouch;
 using GalaSoft.MvvmLight;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 {

@@ -13,18 +13,22 @@ namespace BubbleBot.Protocol.Messages
         public string Ticket { get; set; }
         [JsonProperty("_access")]
         public string Access { get; set; }
+        [JsonProperty("_isInitialized")]
+        public bool IsInitialized { get; set; }
 
 
         // Constructors
         public SelectedServerDataMessage() { }
 
-        public SelectedServerDataMessage(int serverId = 0, string address = "", uint port = 0, bool canCreateNewCharacter = false, string ticket = "")
+        public SelectedServerDataMessage(int serverId = 0, string address = "", uint port = 0, bool canCreateNewCharacter = false, string ticket = "", bool isInitialized = true, string access = "")
         {
             ServerId = serverId;
             Address = address;
             Port = port;
             CanCreateNewCharacter = canCreateNewCharacter;
             Ticket = ticket;
+            IsInitialized = isInitialized;
+            Access = access;
         }
 
     }

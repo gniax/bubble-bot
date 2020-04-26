@@ -19,9 +19,14 @@
 [Rr]elease/
 [Rr]eleases/
 x64/
+packages\*
 x86/
+packages/*
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
+packages/
+/packages/
+!packages/repositories.config
 bld/
 [Bb]in/
 [Oo]bj/
@@ -338,3 +343,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+*.h
+*.pak

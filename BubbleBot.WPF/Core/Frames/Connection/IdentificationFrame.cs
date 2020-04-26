@@ -112,9 +112,6 @@ namespace BubbleBot.Core.Frames.Connection
         {
             return Task.Run(() =>
             {
-                if (account.Network.ConnectTimeout != null)
-                    account.Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
-
                 Console.WriteLine("HandleIdentificationSuccessMessage");
                 account.Login = message.Login;
                 account.SubscriptionEndDate = message.SubscriptionEndDate == 0
@@ -138,7 +135,8 @@ namespace BubbleBot.Core.Frames.Connection
                 account.Logger.LogError("IdentificationFrame", LanguageManager.Translate("86", reason));
                 if (reason != IdentificationFailureReasonEnum.TIME_OUT &&
                     reason != IdentificationFailureReasonEnum.KICKED &&
-                    reason != IdentificationFailureReasonEnum.OTP_TIMEOUT)
+                    reason != IdentificationFailureReasonEnum.OTP_TIMEOUT && 
+                    reason != IdentificationFailureReasonEnum.WRONG_CREDENTIALS)
                 {
                     account.PreventAutoReconnection = true;
                     account.PreventPlanificationReconnection = true;
@@ -158,6 +156,16 @@ namespace BubbleBot.Core.Frames.Connection
                 var until = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(message.BanEndDate);
                 account.Logger.LogError("IdentificationFrame",
                     $"{(IdentificationFailureReasonEnum) message.Reason} [{until.ToShortDateString()} {until.ToShortTimeString()}]");
+            });
+        }
+
+        public static Task HandleAuthentificationTicketRefusedMessage(Account account,
+            AuthenticationTicketRefusedMessage message)
+        {
+            return Task.Run(() =>
+            {
+                Console.WriteLine("HandleAuthentificationTicketRefusedMessage");
+
             });
         }
     }

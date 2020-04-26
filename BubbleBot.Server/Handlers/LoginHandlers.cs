@@ -19,7 +19,6 @@ namespace BubbleBot.Server.Handlers
         public static Task HandleLoginRequestMessage(Client client, LoginRequestMessage message)
             => Task.Run(async () =>
             {
-                await _semaphore.WaitAsync();
 
                 var response = await HttpClientUtility.GetJsonAsync($"login?username={message.Username}&password={message.Password}&token=1997");
 
@@ -68,7 +67,6 @@ namespace BubbleBot.Server.Handlers
                     client.SendMessage(new LoginRefusedMessage(messageId));
                 }
 
-                _semaphore.Release();
             });
         public static Task HandleReconnectRequestMessage(Client client, ReconnectRequestMessage message)
             => Task.Run(async () =>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Server
 {
@@ -30,6 +31,7 @@ namespace BubbleBot.Core.Accounts.InGame.Server
         {
             Id = message.ServerId;
             Name = DataManager.Get<Servers>(Id).NameId;
+            Console.WriteLine(Name);
 
             ServerSelected?.Invoke();
         }

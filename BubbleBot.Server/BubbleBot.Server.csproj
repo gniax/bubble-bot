@@ -7,8 +7,10 @@
     <UpgradeBackupLocation />
     <ProjectGuid>{1987AB55-8012-46F5-B3D0-8E17EB0F2205}</ProjectGuid>
     <LangVersion>8.0</LangVersion>
+    <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CefSharp.OffScreen" Version="79.1.360" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>

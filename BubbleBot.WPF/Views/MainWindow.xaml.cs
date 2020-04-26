@@ -18,6 +18,7 @@ using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Views;
 using BubbleBot.Views.Planner;
 using MahApps.Metro.Controls.Dialogs;
+using BubbleBot.Data;
 using Application = System.Windows.Application;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
@@ -70,7 +71,7 @@ namespace BubbleBot.WPF.Views
                         TypesBuilder.Initialize();
                         controller.SetProgress(0.28);
 
-                        DataManager.Initialize(DTConstants.AssetsVersion, GlobalConfiguration.Instance.Lang);
+                        DataManager.Initialize();
                         controller.SetProgress(0.42);
 
                         MapsManager.Initialize(DTConstants.AssetsVersion);

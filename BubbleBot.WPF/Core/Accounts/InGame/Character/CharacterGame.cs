@@ -15,6 +15,7 @@ using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using GalaSoft.MvvmLight;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Character
 {

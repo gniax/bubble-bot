@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using BubbleBot.Protocol.Data;
+using BubbleBot.Data;
 
 namespace BubbleBot.Utility.DofusTouch
 {

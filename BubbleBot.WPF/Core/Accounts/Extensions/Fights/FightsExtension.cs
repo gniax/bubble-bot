@@ -11,6 +11,7 @@ using BubbleBot.Core.Pathfinding;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights
 {

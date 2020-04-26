@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
+using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 {

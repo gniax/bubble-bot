@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Enums;
 using BubbleBot.Core.Frames;
+using BubbleBot.Core.Logs;
 using BubbleBot.Core.Network;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility;
 using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Utility.Extensions;
 using BubbleBot.Utility.Security;
+using CefSharp;
 using GalaSoft.MvvmLight;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -102,7 +105,6 @@ namespace BubbleBot.Core.Accounts.Network
         public event Action<NetworkManager> PhaseChanged;
         public event Action<NetworkManager> Disconnected;
 
-
         public async Task ConnectToLoginServer()
         {
             if (Connected)
@@ -111,15 +113,14 @@ namespace BubbleBot.Core.Accounts.Network
             if (Phase != NetworkPhases.NONE)
                 Phase = NetworkPhases.NONE;
 
+
             _sessionId = 16.ToRandomString();
             _primus = YeastAPI.GenerateKey();
 
             ConnectTimeout = new Timer(ConnectTimeoutCallback, null, 120000, 120000);
 
             // Url as null if it is the first time then we use the selected server as url
-            if (!await SetSid(null, _sessionId, Account.AccountConfig.Proxy.Ip ?? "",
-                Account.AccountConfig.Proxy.Port.ToString(), Account.AccountConfig.Proxy.Username ?? "",
-                Account.AccountConfig.Proxy.Password ?? ""))
+            if (!await SetSid(null, _sessionId))
             {
                 if (Account.AccountConfig.Proxy.IsValid)
                     Account.Logger.LogError("", LanguageManager.Translate("672"));
@@ -159,6 +160,8 @@ namespace BubbleBot.Core.Accounts.Network
             _serverId = serverId;
             _access =
                 $"{access.Replace("https", "wss")}/primus/?STICKER={_sessionId}&_primuscb={_primus}&EIO=3&transport=websocket";
+            Console.WriteLine(_access);
+
             Phase = NetworkPhases.SWITCHING_TO_GAME;
 
             await Disconnect("SWITCHING_TO_GAME").ConfigureAwait(false);
@@ -504,9 +507,7 @@ namespace BubbleBot.Core.Accounts.Network
                 if (Phase == NetworkPhases.SWITCHING_TO_GAME && _access != null && Account != null && _sid != null)
                 {
                     // We have to retrieve the sid from the server
-                    if (!await SetSid(_access, _sessionId, Account.AccountConfig.Proxy.Ip ?? "",
-                        Account.AccountConfig.Proxy.Port.ToString(), Account.AccountConfig.Proxy.Username ?? "",
-                        Account.AccountConfig.Proxy.Password ?? ""))
+                    if (!await SetSid(_access, _sessionId))
                     {
                         if (Account.AccountConfig.Proxy.IsValid)
                             Account.Logger.LogError("", LanguageManager.Translate("672"));
@@ -548,9 +549,17 @@ namespace BubbleBot.Core.Accounts.Network
             // Connecting to the login server
             if (Phase == NetworkPhases.NONE)
             {
-                var cm = new ConnectingMessage(DTConstants.AppVersion, DTConstants.BuildVersion,
-                    GlobalConfiguration.Instance.Lang, "login", "android");
-                await SendCallAsync(cm).ConfigureAwait(false);
+                dynamic msg = new ExpandoObject();
+                msg.call = "connecting";
+                msg.data = new ExpandoObject();
+                msg.data.language = GlobalConfiguration.Instance.Lang;
+                msg.data.server = "login";
+                msg.data.client = "android";
+                msg.data.appVersion = DTConstants.AppVersion;
+                msg.data.buildVersion = DTConstants.BuildVersion;
+
+                string raw = JsonConvert.SerializeObject(msg);
+                await SendRawAsync(raw);
             }
             else if (Phase == NetworkPhases.SWITCHING_TO_GAME)
             {
@@ -572,8 +581,16 @@ namespace BubbleBot.Core.Accounts.Network
             }
         }
 
-        private async Task<bool> SetSid(string url = null, string sticker = null, string host = "",
-            string service = "0", string username = "", string password = "")
+        public void SetWebsocketTimer(long interval, long timeout)
+        {
+            if (_webSocket != null)
+            {
+                _webSocket.SocketPingInterval = interval;
+                _webSocket.SocketPingTimeout = timeout;
+            }
+        }
+
+        private async Task<bool> SetSid(string url = null, string sticker = null)
         {
             var yeastValue = YeastAPI.GenerateKey();
             string fullUrl;
@@ -584,85 +601,64 @@ namespace BubbleBot.Core.Accounts.Network
             }
             else
             {
-                var tempUrl = url.Substring(0, url.LastIndexOf('&')) + "&_primuscb=" + _primus +
-                              "&EIO=3&transport=polling&t=" + yeastValue + "&b64=1";
+                var tempUrl = url.Substring(0, url.LastIndexOf('&')) + "&transport=polling&t=" + yeastValue + "&b64=1";
                 fullUrl = tempUrl.Replace("wss", "https");
             }
 
-            HttpClient client;
-            if (host != "" && service != "0")
+            var mainFrame = Account.Browser?.GetMainFrame();
+            var sidRequest = mainFrame.CreateRequest(false);
+            sidRequest.Url = fullUrl;
+
+            sidRequest.Method = "GET";
+            //Console.WriteLine(fullUrl);
+
+            sidRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
+            sidRequest.SetHeaderByName("accept-language", "fr", true);
+            sidRequest.SetHeaderByName("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; K92 Build/NMF26V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.124 Mobile Safari/537.36", true);
+            sidRequest.SetHeaderByName("accept", "*/*", true);
+
+            mainFrame.LoadRequest(sidRequest);
+
+            int httpCode = 0;
+            Account.Browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
             {
-                // First create a proxy object
-                var proxy = new WebProxy
-                {
-                    Address = new Uri($"http://{host}:{service}"),
-                    BypassProxyOnLocal = false,
-                    UseDefaultCredentials = false
-                };
+                httpCode = Account.SetKey(3, RuntimeHelpers.GetObjectValue(sender), e);
+            };
 
-                if (service != "" && username != "")
-                    proxy.Credentials = new NetworkCredential
-                    {
-                        UserName = username,
-                        Password = password
-                    };
-                // Now create a client handler which uses that proxy
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Proxy = proxy
-                };
+            var getSid = SpinWait.SpinUntil(() => Account.SidResponse != null, TimeSpan.FromSeconds(20));
 
-                client = new HttpClient(httpClientHandler, true);
+            if (Account.ConnectError.Key == "Retry-After")
+            {
+                var timeLeft = Math.Floor((Account.ConnectError.Value.AddMinutes(10) - DateTime.Now).TotalSeconds);
+                Account.Logger.LogError(LanguageManager.Translate("12"), LanguageManager.Translate("670"));
+                if (Account.AccountConfig.PlanificationActivated)
+                    Account.Logger.LogError(LanguageManager.Translate("12"), LanguageManager.Translate("614", timeLeft));
+                else
+                    Account.Logger.LogError(LanguageManager.Translate("12"), LanguageManager.Translate("671", timeLeft));
             }
-            else
+
+            if (getSid == false || Account.SidResponse == "failed")
             {
-                client = new HttpClient();
-            }
+                if (httpCode == 0 && Account.AccountConfig.Proxy.IsValid)
+                    Account.Logger.LogError("", LanguageManager.Translate("672"));
 
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Add("UserAgent",
-                "Mozilla/5.0 (Linux; Android 7.1.1; ONEPLUS A" + Randomize.GetRandomInt(1, 10000) +
-                "Build/NMF26F; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/59.0.3071.92 Mobile Safari/537.36");
+                else if (httpCode == 0)
+                    Account.Logger.LogError("", LanguageManager.Translate("673"));
 
-            try
-            {
-                var response = await client.GetAsync(fullUrl);
+                if (Account.ConnectError.Key != "Retry-After" && httpCode != 0)
+                    Account.Logger.LogError("", LanguageManager.Translate("32", httpCode));
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = null;
-                    using (var responseStream = await response.Content.ReadAsStreamAsync())
-                    {
-                        using (var reader = new StreamReader(responseStream, Encoding.UTF8))
-                        {
-                            result = reader.ReadToEnd();
-                        }
-                    }
-
-                    var dictionaryRes =
-                        JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(result)
-                            .Substring(result.IndexOf('{')));
-                    _sid = (string) dictionaryRes["sid"];
-                    if (_webSocket != null)
-                    {
-                        _webSocket.SocketPingInterval = (long) dictionaryRes["pingInterval"];
-                        _webSocket.SocketPingTimeout = (long) dictionaryRes["pingTimeout"];
-                    }
-
-                    response.Dispose();
-                    client.Dispose();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception : {0}", ex.Message);
-                client.Dispose();
+                Account.CloseBrowser();
+                Account.SidResponse = null;
                 return false;
             }
 
-            client.Dispose();
-            return false;
+            if (url != null)
+                Account.CloseBrowser();
+
+            _sid = Account.SidResponse;
+            Account.SidResponse = null;
+            return true;
         }
 
         #endregion

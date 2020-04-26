@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -183,7 +185,6 @@
     <Compile Include="Data\Classes\TypeActions.cs" />
     <Compile Include="Data\Classes\Url.cs" />
     <Compile Include="Data\Classes\WorldMaps.cs" />
-    <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\DataTypes.cs" />
     <Compile Include="Data\IData.cs" />
     <Compile Include="Data\Maps\Cell.cs" />

@@ -12,8 +12,9 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using CommonServiceLocator;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using CommonServiceLocator;
 
 namespace AntiRecaptcha.ViewModel
 {
@@ -51,7 +52,7 @@ namespace AntiRecaptcha.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-
+        
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

@@ -9,6 +9,9 @@ namespace BubbleBot.Converters.Specific
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if ((int)(BoostableStats)value == null || (int)(BoostableStats)value == 0 || (int)(BoostableStats)value == 9)
+                return 0;
+
             return (int) (BoostableStats) value - 9;
         }
 
