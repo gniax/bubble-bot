@@ -23,8 +23,8 @@ namespace BubbleBot.Server
         //public const string IP = "127.0.0.1"; // Server IP
         //public const string ApiIpAddress = "http://localhost:5001"; // API IP
 
-        public const string IP = "93.113.207.95"; // Server IP
-        public const string ApiIpAddress = "http://93.113.207.95:5001"; // API IP 
+        public const string IP = "api.example.com"; // Server IP
+        public const string ApiIpAddress = "http://api.example.com:5001"; // API IP 
 
         // Dofus Touch
         public static string AppVersion { get; set; } = "2.0.4";
