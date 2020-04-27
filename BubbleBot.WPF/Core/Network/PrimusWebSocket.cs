@@ -16,17 +16,19 @@ namespace BubbleBot.Core.Network
         private readonly ConcurrentQueue<JObject> _messagesQueue;
         private Timer _socketIOtimer;
         private bool _waitingToBeClosed;
+        private Account _account;
+  
 
         // Fields
         private WebSocket _webSocket;
 
-
         // Constructors
-        public PrimusWebSocket()
+        public PrimusWebSocket(Account account)
         {
             _messagesQueue = new ConcurrentQueue<JObject>();
             _socketIOtimer = new Timer(SocketTimerCallback, null, Timeout.Infinite, Timeout.Infinite);
             _waitingToBeClosed = false;
+            _account = account;
         }
 
         // Properties
@@ -47,6 +49,7 @@ namespace BubbleBot.Core.Network
             SocketPingTimeout = null;
             _webSocket = null;
             _socketIOtimer = null;
+            _account = null;
         }
 
 
@@ -166,11 +169,12 @@ namespace BubbleBot.Core.Network
             Url = new Uri(url + "&sid=" + sid + "&t=" + YeastAPI.GenerateKey() + "&b64=1");
             //Console.WriteLine(Url);
 
-            _webSocket = new WebSocket(Url.AbsoluteUri);
+            _webSocket = new WebSocket(Url.AbsoluteUri + "/websocket");
             _webSocket.SetCookie(new Cookie("io", sid));
             _webSocket.Compression = CompressionMethod.Deflate;
 
             if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyPassword ?? "", proxyUsername ?? "");
+            _webSocket.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
 
             _waitingToBeClosed = false;
 
@@ -193,7 +197,6 @@ namespace BubbleBot.Core.Network
         {
             ErrorOccured?.Invoke(this, e.Exception);
         }
-
 
         private void WebSocket_MessageReceived(object sender, MessageEventArgs e)
         {
@@ -245,12 +248,25 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_Closed(object sender, EventArgs e)
         {
-            _waitingToBeClosed = true;
-            _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
+            if (Connected == false)
+            {
+                _waitingToBeClosed = true;
+                _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
+                Console.WriteLine("NON CONNECTER ");
+                _account.State = Enums.AccountStates.DISCONNECTED;
+                _account.Connect().ConfigureAwait(false);
+            }
+            else
+            {
+                _waitingToBeClosed = true;
+                _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
         }
 
         private void WebSocket_Opened(object sender, EventArgs e)
         {
+            Console.WriteLine("Websocket open ");
+
             _webSocket.Send("2probe");
             _webSocket.Send("5");
 

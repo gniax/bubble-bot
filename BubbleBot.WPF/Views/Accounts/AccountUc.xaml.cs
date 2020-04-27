@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Threading;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
@@ -20,9 +21,10 @@ namespace BubbleBot.Views.Accounts
     public partial class AccountUc : UserControl
     {
         private static bool removing;
-
+        
         // Properties
         private bool _fixedTabs;
+        private Mutex mutConnection = new Mutex();
 
         // Constructor
         public AccountUc()
@@ -71,9 +73,14 @@ namespace BubbleBot.Views.Accounts
             {
                 // If the bot is connect, disconnect it
                 if (Account.Network.Connected)
+                {
                     await Account.Network.Disconnect("CLIENT_CLOSING");
+                }
                 // Otherwise connect it
-                else if (Account.State == AccountStates.DISCONNECTED) await Account.Connect();
+                else if (Account.State == AccountStates.DISCONNECTED)
+                {
+                    await Account.Connect();
+                }
             }
             catch
             {

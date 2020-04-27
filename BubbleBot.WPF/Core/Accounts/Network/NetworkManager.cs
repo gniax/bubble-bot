@@ -58,7 +58,7 @@ namespace BubbleBot.Core.Accounts.Network
         {
             Account = account;
             _phase = NetworkPhases.NONE;
-            _webSocket = new PrimusWebSocket();
+            _webSocket = new PrimusWebSocket(Account);
             _pingTimer = new Timer(PingTimerCallback, null, 600000, 600000);
             _semaphore = new SemaphoreSlim(1);
             _registeredMessages = new ConcurrentDictionary<string, RegisteredMessage>();

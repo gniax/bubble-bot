@@ -175,6 +175,7 @@ namespace BubbleBot.Core.Accounts
                     WebGl = CefState.Disabled,
                     WindowlessFrameRate = 1
                 };
+                
                 if (AccountConfig.Proxy.IsValid)
                 {
                     Browser = new ChromiumWebBrowser("about:blank", browserSettings,
@@ -398,7 +399,7 @@ namespace BubbleBot.Core.Accounts
             {
                 httpCode = SetKey(2, RuntimeHelpers.GetObjectValue(sender), e);
             };
-
+           
             var getToken = SpinWait.SpinUntil(() => _token != null, TimeSpan.FromSeconds(20));
 
             if (ConnectError.Key == "Retry-After")
