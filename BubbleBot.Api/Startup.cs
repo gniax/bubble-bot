@@ -26,6 +26,7 @@ namespace BubbleBot.Api
             services.AddScoped(typeof(LoginService));
             services.AddScoped(typeof(RegisterService));
             services.AddScoped(typeof(BotService));
+            services.AddScoped(typeof(CollectHDVService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -369,7 +369,21 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
             return _itemDescriptionTcs.Task.Result;
         }
+        public List<BidExchangerObjectInfo> GetListOfItem(uint gid)
+        {
+            if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
+                !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
+                return null;
 
+            if (!InitializeGetItemPrice(gid))
+                return null;
+
+            // Item not found in bid
+            if (_itemDescriptionTcs.Task.Result == null || _itemDescriptionTcs.Task.Result.Count == 0)
+                return null;
+
+            return _itemDescriptionTcs.Task.Result;
+        }
         public bool AddBuyItemCondition(uint effectId, string conditionType, int effectValue)
         {
             BuyItemConditions.Add(new BidBuyCondition(effectId, conditionType, effectValue));

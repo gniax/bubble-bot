@@ -170,6 +170,7 @@ namespace BubbleBot.Views.Accounts
                     break;
                 case Functionalities.HDV:
                     Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountBidUc(), 6));
+                    Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountBreederUc(), 7));
                     break;
                 case Functionalities.FLOOD:
                     Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountFloodUc(), 4));

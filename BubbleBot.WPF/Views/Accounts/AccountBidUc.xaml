@@ -147,6 +147,14 @@
                         Margin="4" />
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="Collect HDV">
+                <StackPanel>
+                    <Button Height="32"
+                                Content="Start Collect"
+                                Margin="28,6,594,4"
+                                Click="BtnCollect_HDV"/>
+                </StackPanel>
+            </GroupBox>
 
         </StackPanel>
     </ScrollViewer>

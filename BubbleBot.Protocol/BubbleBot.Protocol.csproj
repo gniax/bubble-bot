@@ -1211,6 +1211,7 @@
     <Compile Include="Server\Messages\BotSelectedSuccessMessage.cs" />
     <Compile Include="Server\Messages\BotsInformationsMessage.cs" />
     <Compile Include="Server\Messages\BotsInformationsRequestMessage.cs" />
+    <Compile Include="Server\Messages\CollectHDVMessage.cs" />
     <Compile Include="Server\Messages\ConnectAccountMessage.cs" />
     <Compile Include="Server\Messages\ConnectAccountRequestMessage.cs" />
     <Compile Include="Server\Messages\ConnectAccountsMessage.cs" />

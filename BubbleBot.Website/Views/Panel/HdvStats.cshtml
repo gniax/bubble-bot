@@ -1,0 +1,600 @@
+﻿@using  BubbleBot.Website.Models
+@using  BubbleBot.Website.Enums
+@{
+    ViewData["Title"] = "Hôtel de vente";
+}
+
+
+<div class="row">
+    <div class="col-md-4 pr-1">
+        <div class="form-group">
+            <h4 class="server_combo_header">Selection du serveur</h4>
+            @Html.DropDownList("Server-Select", new SelectList(new string[5] { "Herdegrize", "Oshimo", "Dodge", "Grandapan", "Brutas" }), "Terra Cogita", new { @class = "form-control", @style = "line-height: 0.5;font-size: 14px;" })
+            <span></span>
+        </div>
+    </div>
+    <div class="col-md-6 pr-1 ">
+        <div class="form-group">
+            <h4 class="server_combo_header">Item recherché</h4>
+            <input onkeypress="return /[0-9]//[a-z]/i.test(event.key)" minlength=2 maxlength=60 type="text" class="form-control" name="search-input" id="SearchInput" placeholder="Nom ou identifiant de l'item" value="">
+        </div>
+    </div>
+</div>
+<button type="submit" class="btn btn-info btn-fill pull-right" onclick="checkdataitem()">Lancer la recherche</button>
+
+@* Graphique des niveaux/kamas *@
+<div class="col-md-8" id="div_chart_line" style="margin-left: -10px;margin-top: 20px;">
+    <div class="card" style="height: 490px; width:100%">
+        <div class="card-header row d-inline-block" style="margin: 0;">
+            <div class="custom-card-header">
+                <h4 class="card-title" id="line_title">Évolution du prix</h4>
+                <p class="card-category">Rapport en fonction du temps</p>
+            </div>
+            <div class="dropdown-menu visible float-lg-right">
+                <a class="dropdown-item active" id="a_line_lot_1" onclick="redrawLine(this.id, true)">Lot 1</a>
+                <a class="dropdown-item" id="a_line_lot_10" onclick="redrawLine(this.id, true)">Lot 10</a>
+                <a class="dropdown-item" id="a_line_lot_100" onclick="redrawLine(this.id, true)">Lot 100</a>
+            </div>
+        </div>
+        <div class="card-body ">
+            <div id="chartLine" class="ct-chart"></div>
+            <hr />
+            <div class="stats text-center">
+                <button id="btn_line_day" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)" data-toggle="tooltip" title="Aucune informations pour aujourd'hui..."><i class="fa fa-clock-o"></i> Jour</button>
+                <button id="btn_line_week" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)" data-toggle="tooltip" title="Aucune informations pour la semaine..."><i class="fa fa-clock-o"></i> Semaine</button>
+                <button id="btn_line_month" class="btn btn-sm btn-outline-dark" role="button" onclick="redrawLine(this.id, false)"><i class="fa fa-clock-o"></i> Mois</button>
+            </div>
+        </div>
+    </div>
+</div>
+               
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    window.ChartLib = {}; // Initialize window variables storage
+    google.load('visualization', { 'packages': ['corechart', 'bar'], 'language': 'fr' });
+
+    // Determines if an array var is empty
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+
+    function hasNumber(myString) {
+        return /\d/.test(myString);
+    }
+
+
+
+    //Verifie les données de l'item
+    function checkdataitem() {
+        var e = document.getElementById("Server-Select");
+        var serverSelected = e.options[e.selectedIndex].value;
+
+        if (serverSelected == "") {
+            serverSelected = "Terra Cogita";
+        }
+
+        var itemSelected = document.getElementById("SearchInput").value;
+
+        if (serverSelected != "Terra Cogita" && serverSelected != "Herdegrize" && serverSelected != "Oshimo" && serverSelected != "Dodge" && serverSelected != "Grandapan" && serverSelected != "Brutas") {
+            alert("Erreur, veuillez vérifier le nom du serveur.");
+            return;
+        }
+
+        var id = -1;
+        var name = "";
+
+        if (itemSelected == "") {
+            alert("Erreur, veuillez vérifier le nom de l'item.");
+            return;
+        }
+
+        try {
+            id = parseInt(itemSelected, 10);
+            if (id <= 0 || id > 16000) {
+                alert("Erreur, veuillez vérifier l'identifiant de l'item.");
+                return;
+            }
+        }
+        catch (error) {
+            alert("Erreur, veuillez vérifier l'identifiant de l'item.");
+            return;
+        }
+
+        if (isNaN(id)) {
+            name = itemSelected;
+            id = - 1;
+        }
+
+        if (hasNumber(name) == true) {
+            alert("Erreur, veuillez vérifier le nom de l'item.");
+            return;
+        }
+
+        if (id == -1) {
+            //alert("Via NOM : " + name);
+            itemdatarequest(name,id,serverSelected);
+        }
+        else {
+            //alert("Via ID : " + );
+            itemdatarequest(name,id,serverSelected);
+        }
+    }
+
+// Called on date btn change or dropdown
+    function redrawLine(id, dropdown) {
+        if (ChartLib.linegraph_type != null) {
+            let result = "a_line_" + ChartLib.linegraph_type;
+            if (result == id)
+                return;
+        }
+
+        var a_line_lot_1 = document.getElementById("a_line_lot_1");
+        var a_line_lot_10 = document.getElementById("a_line_lot_10");
+        var a_line_lot_100 = document.getElementById("a_line_lot_100");
+        var line_title = document.getElementById("line_title");
+
+        if (id == "a_line_lot_1") ChartLib.linegraph_type = "lot1";
+        else if (id == "a_line_lot_10") ChartLib.linegraph_type = "lot10";
+        else if (id == "a_line_lot_100") ChartLib.linegraph_type = "lot100";
+
+
+        var btn_line_day = document.getElementById("btn_line_day");
+        var btn_line_week = document.getElementById("btn_line_week");
+        var btn_line_month = document.getElementById("btn_line_month");
+
+
+        var selected = document.getElementById(id);
+
+
+
+        if (dropdown && ChartLib.linegraph_minDate != null) { // change type of graph...
+
+            if (a_line_lot_1.classList.contains('active'))
+                a_line_lot_1.classList.remove('active');
+
+            if (a_line_lot_10.classList.contains('active'))
+                a_line_lot_10.classList.remove('active');
+
+            if (a_line_lot_100.classList.contains('active'))
+                a_line_lot_100.classList.remove('active');
+
+            selected.classList.add('active');
+
+            if (btn_line_day.classList.contains('active')) {
+                btn_line_day.classList.remove('active');
+                ChartLib.linegraph_minDate = "day";
+            }
+
+            if (btn_line_week.classList.contains('active')) {
+                btn_line_week.classList.remove('active');
+                ChartLib.linegraph_minDate = "week";
+            }
+
+            if (btn_line_month.classList.contains('active')) {
+                btn_line_month.classList.remove('active');
+                ChartLib.linegraph_minDate = "month";
+            }
+
+            switch (ChartLib.linegraph_minDate)
+            {
+                case "day":
+                    btn_line_day.classList.add('active');
+                        switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+                case "week":
+                    btn_line_week.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+                case "month":
+                    btn_line_month.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+            }
+        }
+        else // Date selected
+        {
+            if (btn_line_day.classList.contains('active'))
+                btn_line_day.classList.remove('active');
+
+            if (btn_line_week.classList.contains('active'))
+                btn_line_week.classList.remove('active');
+
+            if (btn_line_month.classList.contains('active'))
+                btn_line_month.classList.remove('active');
+
+            selected.classList.add('active');
+
+            switch (id)
+            {
+                case "btn_line_day":
+                    btn_line_day.classList.add('active');
+                        switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_day, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+                case "btn_line_week":
+                    btn_line_week.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_week, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+                case "btn_line_month":
+                    btn_line_month.classList.add('active');
+                    switch (ChartLib.linegraph_type)
+                        {
+                            case "lot1":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_1_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot10":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_10_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                            case "lot100":
+                                drawLineChart(ChartLib.linegraph_prix_list_lot_100_month, "Prix");
+                                line_title.innerHTML = "Évolution du prix";
+                                break;
+                        }
+                    break;
+            }
+            
+        }
+    }
+
+    //return the date selected
+    function getActiveDate() {
+        var btn_line_day = document.getElementById("btn_line_day");
+        var btn_line_week = document.getElementById("btn_line_week");
+        var btn_line_month = document.getElementById("btn_line_month");
+
+        if (btn_line_day.classList.contains('active'))
+            return "day";
+
+        if (btn_line_week.classList.contains('active'))
+            return "week";
+
+        if (btn_line_month.classList.contains('active'))
+            return "month";
+        return "";
+    }
+           // Draw an area chart with array as an argument
+    function drawLineChart(array, attribut) {
+        if (!isEmpty(array)) {
+            var newArray = [];
+            array.forEach(function (item) {
+                Object.keys(item).forEach(function (key) {
+                    if (typeof item[key] === 'object')
+                        newArray.push(item[key]);
+                });
+            });
+
+
+            var selectedDate = getActiveDate();
+            var selectedlot = 1;
+            var arrayAverage = [];
+            if (ChartLib.linegraph_type == "lot1") {
+                selectedlot = 1;
+                if (selectedDate == "day")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_day;
+                else if (selectedDate == "week")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_week;
+                else if (selectedDate == "month")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_month;
+             }
+            else if (ChartLib.linegraph_type == "lot10") {
+                selectedlot = 10;
+                 if (selectedDate == "day")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_day;
+                else if (selectedDate == "week")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_week;
+                else if (selectedDate == "month")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_month;
+             }
+            else if (ChartLib.linegraph_type == "lot100") {
+                selectedlot = 100;
+                if (selectedDate == "day")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_day;
+                else if (selectedDate == "week")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_week;
+                else if (selectedDate == "month")
+                    arrayAverage = ChartLib.linegraph_prix_list_average_price_month;
+             }
+
+            var newAverageArray = [];
+            if (!isEmpty(arrayAverage)) {
+                arrayAverage.forEach(function (item) {
+                Object.keys(item).forEach(function (key) {
+                    if (typeof item[key] === 'object')
+                        newAverageArray.push(item[key]);
+                });
+            });
+            }
+
+            var convertedArray = [];
+
+            if (!isEmpty(newArray) && !isEmpty(newAverageArray)) {
+                for (var i = 0, c = newArray.length; i < c; i++) {
+                    var averagetemp = newAverageArray[i]['value'];
+                    var innerObj = [new Date(newArray[i]['key']), newArray[i]['value'], averagetemp * selectedlot];
+                    convertedArray.push(innerObj);
+                }
+            }
+
+            
+            if (!isEmpty(newArray) && isEmpty(convertedArray)) {
+                for (var line in newArray) {
+                     var innerObj = [new Date(newArray[line]['key']), newArray[line]['value']];
+                    convertedArray.push(innerObj);
+                 }
+            }
+
+
+
+            if (!isEmpty(convertedArray)) {
+
+                // Set chart options
+                var options = {
+                    width: '100%', height: '100%',
+                    legend: { position: 'bottom' },
+                    chartArea: { width: "85%", height: "85%" },
+                    explorer: {
+                        actions: ['dragToZoom', 'rightClickToReset'],
+                        axis: 'horizontal',
+                        keepInBounds: true,
+                        maxZoomIn: 0
+                    },
+                    animation:{
+                      duration: 1000,
+                      easing: 'linear',
+                      startup: true
+                    },
+                    vAxis: { format: '0' },
+                };
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date');
+                if (attribut == "Prix") {
+                    data.addColumn('number', 'Prix');
+                    data.addColumn('number', 'Prix Moyen');
+                }
+
+            
+                    data.addRows(convertedArray);
+                    
+                
+               
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.LineChart(document.getElementById('chartLine'));
+                chart.draw(data, options);
+
+            }
+        }
+    }
+
+   function itemdatarequest(itemname,itemid, itemserver) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ItemDataRequest", "Panel")',
+            data: {
+                ItemName: itemname,
+                ItemId: itemid,
+                ItemServer: itemserver
+            },
+            dataType: 'json',
+            success: function (result) {
+                if (result.success) {
+                   // alert("La requête a bien été reçus.");
+
+                    if (result.linegraph == true) {
+                        ChartLib.linegraph_prix_list_lot_1_day = Object.entries(result.linegraph_prix_list_lot_1_day);
+                        ChartLib.linegraph_prix_list_lot_1_week = Object.entries(result.linegraph_prix_list_lot_1_week);
+                        ChartLib.linegraph_prix_list_lot_1_month = Object.entries(result.linegraph_prix_list_lot_1_month);
+                        ChartLib.linegraph_prix_list_lot_10_day = Object.entries(result.linegraph_prix_list_lot_10_day);
+                        ChartLib.linegraph_prix_list_lot_10_week = Object.entries(result.linegraph_prix_list_lot_10_week);
+                        ChartLib.linegraph_prix_list_lot_10_month = Object.entries(result.linegraph_prix_list_lot_10_month);
+                        ChartLib.linegraph_prix_list_lot_100_day = Object.entries(result.linegraph_prix_list_lot_100_day);
+                        ChartLib.linegraph_prix_list_lot_100_week = Object.entries(result.linegraph_prix_list_lot_100_week);
+                        ChartLib.linegraph_prix_list_lot_100_month = Object.entries(result.linegraph_prix_list_lot_100_month);
+                        ChartLib.linegraph_prix_list_average_price_day = Object.entries(result.linegraph_prix_list_average_price_day);
+                        ChartLib.linegraph_prix_list_average_price_week = Object.entries(result.linegraph_prix_list_average_price_week);
+                        ChartLib.linegraph_prix_list_average_price_month = Object.entries(result.linegraph_prix_list_average_price_month);
+
+                    }
+
+
+                    array = ChartLib.linegraph_prix_list_lot_1_day;
+
+
+
+                    if (isEmpty(result.linegraph_prix_list_lot_1_month) || isEmpty(result.linegraph_prix_list_lot_10_month) || isEmpty(result.linegraph_prix_list_lot_100_month)) {
+                        document.getElementById("div_chart_line").style.display = "none";
+                    }
+                    else {
+                        var array = []; // will be fill with proper data
+
+                        document.getElementById("div_chart_line").style.display = "block";
+                        var btn_line_day = document.getElementById("btn_line_day");
+                        var btn_line_week = document.getElementById("btn_line_week");
+                        var btn_line_month = document.getElementById("btn_line_month");
+                        var a_line_lot_1 = document.getElementById("a_line_lot_1");
+                        var a_line_lot_10 = document.getElementById("a_line_lot_10");
+                        var a_line_lot_100 = document.getElementById("a_line_lot_100");
+                        ChartLib.linegraph_type = "none";
+                        line_title.innerHTML = "Évolution du prix";
+
+                        if (a_line_lot_1.classList.contains('active'))
+                            ChartLib.linegraph_type = "lot1";
+
+                        if (a_line_lot_10.classList.contains('active'))
+                            ChartLib.linegraph_type = "lot10";
+
+                        if (a_line_lot_100.classList.contains('active'))
+                            ChartLib.linegraph_type = "lot100";
+
+                        if (ChartLib.linegraph_type == "none") {
+                            ChartLib.linegraph_type = "lot1";
+                            a_line_lot_1.classList.add('active');
+                        }
+                            
+
+                        if (isEmpty(result.linegraph_prix_list_lot_1_week) && isEmpty(result.linegraph_prix_list_lot_10_week) && isEmpty(result.linegraph_prix_list_lot_100_week)) {
+                            btn_line_day.disabled = true;
+                            btn_line_week.disabled = true;
+                            $('#btn_line_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                            $('#btn_line_week').tooltip({ selector: '[data-toggle=tooltip]' });
+                            btn_line_month.classList.add('active');
+
+                            if (btn_line_day.classList.contains('active'))
+                                btn_line_day.classList.remove('active');
+
+                            if (btn_line_week.classList.contains('active'))
+                                btn_line_week.classList.remove('active');
+
+                            if (ChartLib.linegraph_type == "lot1") {
+                                array = ChartLib.linegraph_prix_list_lot_1_month;
+                            }
+                            else if (ChartLib.linegraph_type == "lot10") {
+                                array = ChartLib.linegraph_prix_list_lot_10_month;
+                            }
+                            else if (ChartLib.linegraph_type == "lot100") {
+                                array = ChartLib.linegraph_prix_list_lot_100_month;
+                            }
+                            
+                            ChartLib.linegraph_minDate = "month";
+                        }
+                        else if (isEmpty(result.linegraph_prix_list_lot_1_day) && isEmpty(result.linegraph_prix_list_lot_10_day) && isEmpty(result.linegraph_prix_list_lot_100_day)) // week & month but not day
+                        {
+                            btn_line_day.disabled = true;
+                            btn_line_week.disabled = false;
+                            $('#btn_line_day').tooltip({ selector: '[data-toggle=tooltip]' });
+                            $('#btn_line_week').tooltip('dispose');
+                            btn_line_week.classList.add('active');
+
+                            if (btn_line_day.classList.contains('active'))
+                                btn_line_day.classList.remove('active');
+
+                            if (btn_line_month.classList.contains('active'))
+                                btn_line_month.classList.remove('active');
+
+                            if (ChartLib.linegraph_type == "lot1") {
+                                array = ChartLib.linegraph_prix_list_lot_1_week;
+                            }
+                            else if (ChartLib.linegraph_type == "lot10") {
+                                array = ChartLib.linegraph_prix_list_lot_10_week;
+                            }
+                            else if (ChartLib.linegraph_type == "lot100") {
+                                array = ChartLib.linegraph_prix_list_lot_100_week;
+                            }
+
+                            ChartLib.linegraph_minDate = "week";
+                        }
+                        else // none empty
+                        {
+                            btn_line_day.disabled = false;
+                            btn_line_week.disabled = false;
+                            $('#btn_line_day').tooltip('dispose');
+                            $('#btn_line_week').tooltip('dispose');
+                            btn_line_day.classList.add('active');
+
+                            if (btn_line_week.classList.contains('active'))
+                                btn_line_week.classList.remove('active');
+
+                            if (btn_line_month.classList.contains('active'))
+                                btn_line_month.classList.remove('active');
+
+                            if (ChartLib.linegraph_type == "lot1") {
+                                array = ChartLib.linegraph_prix_list_lot_1_day;
+                            }
+                            else if (ChartLib.linegraph_type == "lot10") {
+                                array = ChartLib.linegraph_prix_list_lot_10_day;
+                            }
+                            else if (ChartLib.linegraph_type == "lot100") {
+                                array = ChartLib.linegraph_prix_list_lot_100_day;
+                            }
+
+                            ChartLib.linegraph_minDate = "day";
+                        }
+
+                        drawLineChart(array, "Prix");
+                    }
+                }
+                        else if (result.error != null)
+                    {
+                        site.showNotification((result.error + "<br/>"), 4, 'top', 'right');
+                    }
+
+                }
+        })
+    }
+
+</script>
+

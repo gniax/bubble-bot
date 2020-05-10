@@ -349,6 +349,10 @@
     <Compile Include="Core\Accounts\Extensions\Flood\FloodConfiguration.cs" />
     <Compile Include="Core\Accounts\Extensions\Flood\FloodExtension.cs" />
     <Compile Include="Core\Accounts\Extensions\Flood\FloodSentence.cs" />
+    <Compile Include="Core\Accounts\Extensions\PetBreeder\PetBreederConfiguration.cs" />
+    <Compile Include="Core\Accounts\Extensions\PetBreeder\PetBreederExtension.cs" />
+    <Compile Include="Core\Accounts\Extensions\PetBreeder\PetsToBreedEntry.cs" />
+    <Compile Include="Core\Accounts\Extensions\UpdateServerHDV\UpdateServerHDVExtension.cs" />
     <Compile Include="Core\Accounts\FramesData.cs" />
     <Compile Include="Core\Accounts\IClearable.cs" />
     <Compile Include="Core\Accounts\InGame\Bid\BidGame.cs" />
@@ -561,6 +565,9 @@
     <Compile Include="ViewModel\MapViewer\MapViewerCellViewModel.cs" />
     <Compile Include="ViewModel\MapViewer\MapViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\Accounts\AccountBreederUc.xaml.cs">
+      <DependentUpon>AccountBreederUc.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Accounts\AccountsEditor.xaml.cs">
       <DependentUpon>AccountsEditor.xaml</DependentUpon>
     </Compile>
@@ -624,6 +631,10 @@
     <Page Include="Theme\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Accounts\AccountBreederUc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Accounts\AccountsEditor.xaml">
       <SubType>Designer</SubType>
@@ -891,7 +902,9 @@
     <None Include="Resources\kamas.bmp" />
     <Resource Include="Resources\circle_purple.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewsBubble\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>

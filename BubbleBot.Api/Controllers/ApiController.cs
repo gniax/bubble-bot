@@ -15,14 +15,16 @@ namespace BubbleBot.Api.Controllers
         private readonly LoginService _loginService;
         private readonly RegisterService _registerService;
         private readonly BotService _botService;
+        private readonly CollectHDVService _hdvService;
 
 
         // Constructor
-        public ApiController(LoginService loginService, RegisterService registerService, BotService botService)
+        public ApiController(LoginService loginService, RegisterService registerService, BotService botService, CollectHDVService hdvService) 
         {
             _loginService = loginService;
             _registerService = registerService;
             _botService = botService;
+            _hdvService = hdvService;
         }
 
 
@@ -144,6 +146,33 @@ namespace BubbleBot.Api.Controllers
 
             // TODO : Check if infos are corrupted or are a threat
             _botService.ArchiveAndAdd(user_id, character_id, account, name, server, breed, level, percent_energy, percent_pods, kamas, map_id, map_pos, state, group_id, group_chief, script_name);
+        }
+
+        [HttpPost("collected/hdv")]
+        public void ReceivedHDVInfos(string token, int object_id, string object_name, string object_server, int object_price_lot_1, int object_price_lot_10, int object_price_lot_100, int object_average_price)
+        {
+            if (token != _token)
+                return;
+
+            // TODO : Check if infos are corrupted or are a threat
+            _hdvService.Add(object_id, object_name, object_server, object_price_lot_1, object_price_lot_10, object_price_lot_100, object_average_price);
+        }
+
+        [HttpGet("iteminformations")]
+        public async Task<JsonResult> ItemInformationsRequest(string itemname, int itemid, string itemserver, string token)
+        {
+            if (token != _token)
+                return Json(new { success = false, errorId = 0 });
+
+            List<CollectedHDVItem> collectedItemsSelectedList = await _hdvService.GetItemInfos(itemname, itemid, itemserver).ConfigureAwait(true);
+            if (collectedItemsSelectedList == null)
+                return Json(new { success = false, errorId = 1 });
+
+            return Json(new
+            {
+                success = true,
+                collecteditemsselected = collectedItemsSelectedList
+            });
         }
     }
 }

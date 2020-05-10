@@ -17,7 +17,7 @@ namespace BubbleBot.Website.Models
         public DbSet<Extension> Extensions { get; set; }
         public DbSet<SubscriptionBought> SubscriptionsBought { get; set; }
         public DbSet<ExtensionBought> ExtensionsBought { get; set; }
-
+        public DbSet<CollectedHDVItem> CollectedHDVItems { get; set; }
 
         // Constructors
         public PanelDb() { }

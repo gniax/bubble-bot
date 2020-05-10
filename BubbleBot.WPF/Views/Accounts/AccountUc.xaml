@@ -291,7 +291,26 @@
                                HorizontalAlignment="Center"
                                FontSize="16" />
                 </TabItem>
+                
+                <!-- Breeder -->
+                <TabItem Style="{StaticResource TabItemLowerFontSize}"
+                         Visibility="{Binding Path=Game.Character.IsSelected,
+                                              Converter={StaticResource boolToVis}}">
+                    <TabItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="Cat" VerticalAlignment="Center" />
+                                <TextBlock Text="{_:Lang 702}" Margin="1 0 0 0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </TabItem.HeaderTemplate>
 
+                    <TextBlock Text="{_:Lang 406}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="16" />
+                </TabItem>
+                
                 <!-- Parameters -->
                 <TabItem Style="{StaticResource TabItemLowerFontSize}"
                          Visibility="{Binding Path=Game.Character.IsSelected,
@@ -329,7 +348,7 @@
                                FontSize="16" />
                 </TabItem>
 
-                <!-- Subscription -->
+                <!-- Subscription 
                 <TabItem Style="{StaticResource TabItemLowerFontSize}"
                          Visibility="{Binding Path=Game.Character.IsSelected,
                                               Converter={StaticResource boolToVis}}">
@@ -347,7 +366,7 @@
                                                                    Converter={StaticResource boolToVis}}"
                                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </TabItem>
-
+-->
             </TabControl>
 
             <!-- Status bar -->

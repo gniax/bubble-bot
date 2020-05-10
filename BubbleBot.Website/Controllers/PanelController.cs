@@ -203,6 +203,128 @@ namespace BubbleBot.Website.Controllers
             return HandleAuthorizedAction();
         }
 
+
+        #region HDV-STATS
+              [Authorize]
+              [HttpPost]
+              public async Task<JsonResult> ItemDataRequest(string ItemName, int ItemId, string ItemServer)
+                {
+                  string errorMessage = "Erreur inconnue...";
+                  User user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
+                  if (user == null)
+                      return Json(new { success = false, error = "Contexte utilisateur introuvable..." });
+                  Console.WriteLine(ItemName);
+                  Console.WriteLine(ItemId.ToString());
+                  Console.WriteLine(ItemServer);
+                  // Retrieve infos from api
+                    var response = await _httpClient.GetAsync(Program.Constants.ApiIpAddress + $"/api/iteminformations?itemname={ItemName}&itemid={ItemId}&itemserver={ItemServer}&token=1997");
+                  response.EnsureSuccessStatusCode();
+                  var content = await response.Content.ReadAsStringAsync();
+                  var json = JObject.Parse(content);
+                  if (json.Value<bool>("success"))
+                  {
+                      dynamic jo = JObject.Parse(content);
+                      var collectedItemsSelected = jo.collecteditemsselected;
+                      List<CollectedHDVItem> collectedItemsSelectedList = new List<CollectedHDVItem>();
+                      foreach (var item in collectedItemsSelected)
+                      {
+                          JObject Jitem = item as JObject;
+                          CollectedHDVItem selected_item = Jitem.ToObject<CollectedHDVItem>();
+                          collectedItemsSelectedList.Add(selected_item);
+                      }
+
+                if (collectedItemsSelectedList.Count() > 0)
+                      {
+                    DateTime now = DateTime.Now,
+                                    yesterday = DateTime.Now.AddDays(-1),
+                                    aWeekAgo = DateTime.Now.AddDays(-7),
+                                    aMonthAgo = DateTime.Now.AddDays(-30);
+
+
+                    List<KeyValuePair<DateTime, int>> all_prix_list_lot_1 = collectedItemsSelectedList.Select(c => new KeyValuePair<DateTime, int>(c.Object_Time, c.Object_Price_Lot_1))
+                                                                                       .OrderBy(c => c.Key)
+                                                                                       .ToList();
+                    List<KeyValuePair<DateTime, int>> all_prix_list_lot_10 = collectedItemsSelectedList.Select(c => new KeyValuePair<DateTime, int>(c.Object_Time, c.Object_Price_Lot_10))
+                                                                                       .OrderBy(c => c.Key)
+                                                                                       .ToList();
+                    List<KeyValuePair<DateTime, int>> all_prix_list_lot_100 = collectedItemsSelectedList.Select(c => new KeyValuePair<DateTime, int>(c.Object_Time, c.Object_Price_Lot_100))
+                                                                                       .OrderBy(c => c.Key)
+                                                                                       .ToList();
+                    List<KeyValuePair<DateTime, int>> all_prix_list_average_price = collectedItemsSelectedList.Select(c => new KeyValuePair<DateTime, int>(c.Object_Time, c.Object_Average_Price))
+                                                                                       .OrderBy(c => c.Key)
+                                                                                       .ToList();
+
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_1_day = all_prix_list_lot_1.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_1_week = all_prix_list_lot_1.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_1_month = all_prix_list_lot_1.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+                    
+
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_10_day = all_prix_list_lot_10.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_10_week = all_prix_list_lot_10.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_10_month = all_prix_list_lot_10.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_100_day = all_prix_list_lot_100.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_100_week = all_prix_list_lot_100.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_lot_100_month = all_prix_list_lot_100.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+                    List<KeyValuePair<DateTime, int>> prix_list_average_price_day = all_prix_list_average_price.Where(c => c.Key > yesterday).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_average_price_week = all_prix_list_average_price.Where(c => c.Key > aWeekAgo).OrderBy(c => c.Key).ToList();
+                    List<KeyValuePair<DateTime, int>> prix_list_average_price_month = all_prix_list_average_price.Where(c => c.Key > aMonthAgo).OrderBy(c => c.Key).ToList();
+
+
+
+                    return Json(new
+                        {
+                            success = true,
+                            // line infos
+                            linegraph = true,
+                            linegraph_prix_list_lot_1_day = prix_list_lot_1_day,
+                            linegraph_prix_list_lot_1_week = prix_list_lot_1_week,
+                            linegraph_prix_list_lot_1_month = prix_list_lot_1_month,
+                            linegraph_prix_list_lot_10_day = prix_list_lot_10_day,
+                            linegraph_prix_list_lot_10_week = prix_list_lot_10_week,
+                            linegraph_prix_list_lot_10_month = prix_list_lot_10_month,
+                            linegraph_prix_list_lot_100_day = prix_list_lot_100_day,
+                            linegraph_prix_list_lot_100_week = prix_list_lot_100_week,
+                            linegraph_prix_list_lot_100_month = prix_list_lot_100_month,
+                            linegraph_prix_list_average_price_day = prix_list_average_price_day,
+                            linegraph_prix_list_average_price_week = prix_list_average_price_week,
+                            linegraph_prix_list_average_price_month = prix_list_average_price_month
+                    });
+                }
+                      errorMessage = "Aucun object de ce type n'a été trouvé.";
+                  }
+                  else
+                  {
+                      switch (json.Value<byte>("errorId"))
+                      {
+                          case 0:
+                              errorMessage = "Erreur de jeton de communication ...";
+                              break;
+                          case 1:
+                              errorMessage = "Aucun item correspondant trouvé.";
+                              break;
+                      }
+                  }
+                  return Json(new { success = false, error = errorMessage });
+              }
+
+        [Authorize]
+        public IActionResult HdvStats()
+        {
+
+            // Verification 
+            var user = _panelDbContext.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return StatusCode(404);
+
+
+
+
+            return View(user);
+        }
+        #endregion HDV-STATS
+
         #region Statistics Manager
         [Authorize]
         [HttpPost]
@@ -614,7 +736,7 @@ namespace BubbleBot.Website.Controllers
                         ViewBag.EveryGroup = everyGroup;
                         ViewBag.GroupsColors = groupsColors;
                         _userBots = charactersList;
-
+                        
                         return View(user);
                     }
                 }

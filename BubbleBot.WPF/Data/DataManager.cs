@@ -209,7 +209,13 @@ namespace BubbleBot.Data
                     WindowlessFrameRate = 1
                 };
 
-                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+            
+
+                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler("api.example.com", "45785")));
+                _browser.RequestHandler = new BrowserRequestHandler("Selmistonifer9318", "T7k4VcH");
+
+
+                //_browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
 
 
                 var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));

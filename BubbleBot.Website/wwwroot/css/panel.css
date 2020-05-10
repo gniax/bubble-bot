@@ -1143,3 +1143,18 @@ ul.dropdown-menu-custom-show {
 .documentation .dropdown .dropdown-menu.show {
     transform: translate3d(0, 39px, 0) !important;
 }
+
+.wrapperhdv {
+    text-align: center;
+}
+
+.comboboxhdv {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}

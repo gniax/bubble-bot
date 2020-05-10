@@ -75,8 +75,10 @@ namespace BubbleBot.Core.Network
             }
             catch (Exception e)
             {
+                Console.WriteLine("Erreur WEBSOCKET lors de l'initializationn");
                 ErrorOccured?.Invoke(this, e);
             }
+            await Task.Delay(2000);
 
             await OpenAsync().ConfigureAwait(false);
         }
@@ -87,10 +89,12 @@ namespace BubbleBot.Core.Network
             {
                 try
                 {
+                    
                     _webSocket.ConnectAsync();
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine("Erreur WEBSOCKET lors de l'ouverture async");
                     ErrorOccured?.Invoke(this, e);
                 }
             });
@@ -172,9 +176,19 @@ namespace BubbleBot.Core.Network
             _webSocket = new WebSocket(Url.AbsoluteUri + "/websocket");
             _webSocket.SetCookie(new Cookie("io", sid));
             _webSocket.Compression = CompressionMethod.Deflate;
+            Console.WriteLine(proxyUrl);
+           
+            //_webSocket.EnableRedirection = true;
+           // _webSocket.WaitTime = TimeSpan.FromSeconds(5);
 
             if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyPassword ?? "", proxyUsername ?? "");
-            _webSocket.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+
+
+
+            //_webSocket.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+
+           // var sslProtocolHack = (System.Security.Authentication.SslProtocols)(SslProtocolsHack.Tls12 | SslProtocolsHack.Tls11 | SslProtocolsHack.Tls);
+           // _webSocket.SslConfiguration.EnabledSslProtocols = sslProtocolHack;
 
             _waitingToBeClosed = false;
 
@@ -195,12 +209,13 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_ErrorOccured(object sender, ErrorEventArgs e)
         {
+            Console.WriteLine("Erreur WEBSOCKET WebSocket_ErrorOccured" + e.Exception);
             ErrorOccured?.Invoke(this, e.Exception);
         }
 
         private void WebSocket_MessageReceived(object sender, MessageEventArgs e)
         {
-            //Console.WriteLine("data received: {0}", e.Data); //123456
+            Console.WriteLine("data received: {0}", e.Data); //123456
 
             // Useless message (or not?)
             if (e.Data.Length == 0)
@@ -248,6 +263,7 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_Closed(object sender, EventArgs e)
         {
+            Console.WriteLine("Erreur WEBSOCKET WebSocket_Closed" + e.ToString());
             if (Connected == false)
             {
                 _waitingToBeClosed = true;

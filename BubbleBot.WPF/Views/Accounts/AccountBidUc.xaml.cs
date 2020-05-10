@@ -10,6 +10,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using BubbleBot.Data;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -84,6 +85,21 @@ namespace BubbleBot.Views.Accounts
 
             Account.Extensions.Bid.Configuration.ObjectsToSell.Remove(lvObjects.SelectedItem as ObjectToSellEntry);
             Account.Extensions.Bid.Configuration.Save();
+        }
+
+        private void BtnCollect_HDV(object sender, RoutedEventArgs e)
+        {
+            if(Account.Extensions.UpdateServerHDV.Enabled == false)
+            {
+                Account.Extensions.UpdateServerHDV.Enabled = true;
+                Task.Run(() => Account.Extensions.UpdateServerHDV.Initialize());
+            }
+            else
+            {
+                Account.Extensions.UpdateServerHDV.Enabled = false;
+            }
+            
+            
         }
     }
 }
