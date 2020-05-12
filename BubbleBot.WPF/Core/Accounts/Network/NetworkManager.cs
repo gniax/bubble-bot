@@ -113,6 +113,7 @@ namespace BubbleBot.Core.Accounts.Network
             if (Phase != NetworkPhases.NONE)
                 Phase = NetworkPhases.NONE;
 
+       
 
             _sessionId = 16.ToRandomString();
             _primus = YeastAPI.GenerateKey();
@@ -336,6 +337,7 @@ namespace BubbleBot.Core.Accounts.Network
 
             httpWebResponse = null;
             httpWebRequest = null;
+
             return response;
         }
 
@@ -610,7 +612,7 @@ namespace BubbleBot.Core.Accounts.Network
             sidRequest.Url = fullUrl;
 
             sidRequest.Method = "GET";
-            //Console.WriteLine(fullUrl);
+            Console.WriteLine(fullUrl);
 
             sidRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
             sidRequest.SetHeaderByName("accept-language", "fr", true);

@@ -142,6 +142,6 @@ namespace BubbleBot.Configurations
         public string Password { get; set; }
 
         public bool IsValid => Ip.Length > 0;
-        public string Url => Ip.Length > 0 ? $"http{Ip}:{Port}" : "";
+        public string Url => Ip.Length > 0 ? $"http://{Ip}:{Port}" : "";
     }
 }

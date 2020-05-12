@@ -28,7 +28,7 @@ namespace BubbleBot.Server
 
         // Dofus Touch
         public static string AppVersion { get; set; } = "2.0.4";
-        public static string BuildVersion { get; set; } = "1.46.8";
+        public static string BuildVersion { get; set; } = "1.46.9";
         public static string AssetsVersion { get; set; } = "2.31.2_GgYeQVuuYVUEkPO6ozwD0cOQeo-E'y'e";
         public static string StaticDataVersion { get; set; } = "1.15.10";
 
