@@ -15,7 +15,6 @@ using BubbleBot.Protocol.Types;
 using BubbleBot.Server.Messages;
 using GalaSoft.MvvmLight;
 using BubbleBot.Data;
-using BubbleBot.Data;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
@@ -287,36 +286,36 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 BlacklistedMonsters.Clear();
                 Zaap = null;
 
-                await Task.Run(() =>
-                {
-                    if (_oneTime && _account.Game.Map.CurrentPosition != "0,0")
-                    {
-                        var result = SpinWait.SpinUntil(() => _account.Game.Map.Data.Id != 0, TimeSpan.FromSeconds(10));
-                        if (result && _account != null)
-                        {
-                            Task.Delay(2000);
-                            if (_account != null)
-                            {
-                                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
-                                    _account.AccountConfig.Username,
-                                    _account.Game.Character.Level,
-                                    (byte) _account.Game.Character.Stats.EnergyPercent,
-                                    (byte) _account.Game.Character.Inventory.WeightPercent,
-                                    _account.Game.Character.Inventory.Kamas,
-                                    _account.Game.Map.Id,
-                                    _account.Game.Map.CurrentPosition,
-                                    _account.State.ToString(),
-                                    _account.GroupId,
-                                    _account.Group_Chief,
-                                    _account.Scripts.CurrentScriptName != null
-                                        ? _account.Scripts.CurrentScriptName
-                                        : "-"
-                                ));
-                                _oneTime = false;
-                            }
-                        }
-                    }
-                }).ConfigureAwait(false);
+                //await Task.Run(() =>
+                //{
+                //    if (_oneTime && _account.Game.Map.CurrentPosition != "0,0")
+                //    {
+                //        var result = SpinWait.SpinUntil(() => _account.Game.Map.Data.Id != 0, TimeSpan.FromSeconds(10));
+                //        if (result && _account != null)
+                //        {
+                //            Task.Delay(2000);
+                //            if (_account != null)
+                //            {
+                //                BubbleBotMain.Instance.Server.SendMessage(new BotInformationsMessage(
+                //                    _account.AccountConfig.Username,
+                //                    _account.Game.Character.Level,
+                //                    (byte) _account.Game.Character.Stats.EnergyPercent,
+                //                    (byte) _account.Game.Character.Inventory.WeightPercent,
+                //                    _account.Game.Character.Inventory.Kamas,
+                //                    _account.Game.Map.Id,
+                //                    _account.Game.Map.CurrentPosition,
+                //                    _account.State.ToString(),
+                //                    _account.GroupId,
+                //                    _account.Group_Chief,
+                //                    _account.Scripts.CurrentScriptName != null
+                //                        ? _account.Scripts.CurrentScriptName
+                //                        : "-"
+                //                ));
+                //                _oneTime = false;
+                //            }
+                //        }
+                //    }
+                //}).ConfigureAwait(false);
 
                 // Entities
                 foreach (var actor in message.Actors)

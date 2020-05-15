@@ -94,6 +94,9 @@ namespace BubbleBot.Views.Accounts
                                 for (var i = 0; i < positionsObjects.Count; i++)
                                 {
                                     var position = positionsObjects[i];
+                                    if (position == null || positionsObjects[i] == null)
+                                        return;
+
                                     var registeredItem =
                                         ObjectEnumFinder.GetObjectNameById((int) msg.ObjectItems[i].ObjectGID);
                                     var item = DataManager.Get<Items>((int) msg.ObjectItems[i].ObjectGID);

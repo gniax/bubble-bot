@@ -502,7 +502,13 @@ namespace BubbleBot.Views
 
         private async void BtnTestProxy_Click(object sender, RoutedEventArgs e)
         {
-            if (!IPAddress.TryParse(TxtProxyIp.Text, out var ip) || !ushort.TryParse(TxtProxyPort.Text, out var port))
+            if (!ushort.TryParse(TxtProxyPort.Text, out var port))
+                return;
+
+            if (!IPAddress.TryParse(TxtProxyIp.Text, out var ip))
+                ip = Dns.GetHostEntry(TxtProxyIp.Text).AddressList[0];
+
+            if (ip == null)
                 return;
 
             using (var http = new HttpClient(new HttpClientHandler

@@ -77,7 +77,6 @@ namespace BubbleBot.Core.Network
             {
                 ErrorOccured?.Invoke(this, e);
             }
-            await Task.Delay(2000);
 
             await OpenAsync().ConfigureAwait(false);
         }
@@ -201,7 +200,7 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_MessageReceived(object sender, MessageEventArgs e)
         {
-            Console.WriteLine("data received: {0}", e.Data); //123456
+            //Console.WriteLine("data received: {0}", e.Data); //123456
 
             // Useless message (or not?)
             if (e.Data.Length == 0)
@@ -253,7 +252,6 @@ namespace BubbleBot.Core.Network
             {
                 _waitingToBeClosed = true;
                 _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
-                Console.WriteLine("NON CONNECTER ");
                 _account.State = Enums.AccountStates.DISCONNECTED;
                 _account.Connect().ConfigureAwait(false);
             }
@@ -266,7 +264,7 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_Opened(object sender, EventArgs e)
         {
-            Console.WriteLine("Websocket open ");
+            Console.WriteLine("Websocket open");
 
             _webSocket.Send("2probe");
             _webSocket.Send("5");

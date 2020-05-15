@@ -26,97 +26,200 @@
 
     </Controls:MetroWindow.Resources>
 
-    <StackPanel>
+    <TabControl Controls:TabControlHelper.Underlined="TabPanel" Margin="0,0,0,0">
+        <!-- Global options tab -->
+        <TabItem x:Name="GlobalTabItem">
+            <TabItem.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="SettingsOutline" />
+                        <TextBlock VerticalAlignment="Center"
+                                                   FontSize="15"
+                                                   Margin="10 0 0 0"
+                                                   Text="{_:Lang 266}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabItem.HeaderTemplate>
+            
+            <ScrollViewer>
+                <StackPanel>
+                    <!-- Recaptchas -->
+                    <GroupBox Header="{_:Lang 367}">
+                        <StackPanel>
+                            <DockPanel Margin="4">
+                                <TextBlock Text="{_:Lang 368}" VerticalAlignment="Center" />
+                                <TextBox Text="{Binding AntiCaptchaKey}" />
+                            </DockPanel>
+                            <TextBlock HorizontalAlignment="Right" Margin="4">
+                                        <Hyperlink NavigateUri="https://anti-captcha.com/"
+                                                   RequestNavigate="AntiCaptcha_OnRequestNavigate">
+                                            <TextBlock Text="{_:Lang 369}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
 
-        <!-- Recaptchas -->
-        <GroupBox Header="{_:Lang 367}">
-            <StackPanel>
-                <DockPanel Margin="4">
-                    <TextBlock Text="{_:Lang 368}" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding AntiCaptchaKey}" />
-                </DockPanel>
-                <TextBlock HorizontalAlignment="Right" Margin="4">
-                    <Hyperlink NavigateUri="https://anti-captcha.com/"
-                               RequestNavigate="AntiCaptcha_OnRequestNavigate">
-                        <TextBlock Text="{_:Lang 369}" />
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
-        </GroupBox>
+                    <!-- Language -->
+                    <GroupBox Header="{_:Lang 455}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                                Margin="0 8"
+                                                HorizontalAlignment="Center">
+                                <iconPacks:PackIconMaterial Width="18"
+                                                                    Height="18"
+                                                                    Kind="Information"
+                                                                    VerticalAlignment="Center" />
+                                <TextBlock Margin="4 0 0 0"
+                                                   Text="{_:Lang 457}"
+                                                   VerticalAlignment="Center" />
+                            </StackPanel>
+                            <DockPanel Margin="4">
+                                <TextBlock Text="{_:Lang 456}" VerticalAlignment="Center" />
+                                <ComboBox
+                                            SelectedIndex="{Binding Language, Mode=TwoWay, Converter={StaticResource LanguagesToIndexConverter}}"
+                                            Margin="4 0 0 0">
+                                    <ComboBoxItem>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="/Bubble Bot;component/Resources/france32.png" />
+                                            <TextBlock Text="Français"
+                                                               VerticalAlignment="Center"
+                                                               Margin="4 0 0 0" />
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="/Bubble Bot;component/Resources/usa32.png" />
+                                            <TextBlock Text="English"
+                                                               VerticalAlignment="Center"
+                                                               Margin="4 0 0 0" />
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="/Bubble Bot;component/Resources/portugal32.png" />
+                                            <TextBlock Text="Português"
+                                                               VerticalAlignment="Center"
+                                                               Margin="4 0 0 0" />
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                </ComboBox>
+                            </DockPanel>
+                        </StackPanel>
+                    </GroupBox>
 
-        <!-- Language -->
-        <GroupBox Header="{_:Lang 455}">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            Margin="0 8"
-                            HorizontalAlignment="Center">
-                    <iconPacks:PackIconMaterial Width="18"
-                                                Height="18"
-                                                Kind="Information"
-                                                VerticalAlignment="Center" />
-                    <TextBlock Margin="4 0 0 0"
-                               Text="{_:Lang 457}"
-                               VerticalAlignment="Center" />
+                    <!-- Performances-->
+                    <GroupBox Header="{_:Lang 700}">
+                        <StackPanel>
+                            <CheckBox Content="{_:Lang 701}"
+                                              Margin="4"
+                                              IsChecked="{Binding DisplayItemsInLogs}" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Others -->
+                    <GroupBox Header="{_:Lang 365}">
+                        <StackPanel>
+                            <CheckBox Content="{_:Lang 370}"
+                                              Margin="4"
+                                              IsChecked="{Binding ShowDebugMessages}" />
+                            <CheckBox Content="{_:Lang 605}"
+                                              Margin="4"
+                                              IsChecked="{Binding RandomNickname}" />
+                            <CheckBox Content="{_:Lang 624}"
+                                              Margin="4"
+                                              IsChecked="{Binding AutomaticReconnection}" />
+
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
-                <DockPanel Margin="4">
-                    <TextBlock Text="{_:Lang 456}" VerticalAlignment="Center" />
-                    <ComboBox
-                        SelectedIndex="{Binding Language, Mode=TwoWay, Converter={StaticResource LanguagesToIndexConverter}}"
-                        Margin="4 0 0 0">
-                        <ComboBoxItem>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem x:Name="ProxyTabItem">
+            <TabItem.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="SettingsTransferOutline" />
+                        <TextBlock VerticalAlignment="Center"
+                                                   FontSize="15"
+                                                   Margin="10 0 0 0"
+                                                   Text="{_:Lang 726}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabItem.HeaderTemplate>
+
+            <GroupBox Header="{_:Lang 729}">
+                <StackPanel Margin="4" VerticalAlignment="Center">
+                    <DockPanel Margin="4 4 4 15">
+                        <TextBlock Text="{_:Lang 358}" VerticalAlignment="Center" Margin="0 0 2 0" />
+                        <TextBox Controls:TextBoxHelper.ClearTextButton="True"
+                                 Controls:TextBoxHelper.Watermark="{_:Lang 359}"
+                                 Name="TxtProxyIp"
+                                 Width="180"
+                                 Text="{Binding ProxyIp, 
+                                                Mode=OneWay, 
+                                                UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{_:Lang 360}" VerticalAlignment="Center" Margin="6 0 2 0" />
+                        <TextBox Controls:TextBoxHelper.ClearTextButton="True"
+                                 Controls:TextBoxHelper.Watermark="8080"
+                                 Name="TxtProxyPort"
+                                 MaxLength="5"
+                                 Text="{Binding ProxyPort, 
+                                                Mode=OneWay, 
+                                                UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <TextBlock Text="{_:Lang 470}" VerticalAlignment="Center" Margin="0 0 2 0" />
+                    <TextBox Controls:TextBoxHelper.ClearTextButton="True"
+                             Controls:TextBoxHelper.Watermark="{_:Lang 470}"
+                             Name="TxtProxyUsername"
+                             Text="{Binding ProxyUsername, 
+                                               Mode=OneWay, 
+                                               UpdateSourceTrigger=PropertyChanged}"
+                             Margin="4 4 4 15" />
+                    <TextBlock Text="{_:Lang 471}" VerticalAlignment="Center" Margin="0 0 2 0" />
+                    <TextBox Controls:TextBoxHelper.ClearTextButton="True"
+                             Controls:TextBoxHelper.Watermark="{_:Lang 471}"
+                             Name="TxtProxyPassword"
+                             Text="{Binding ProxyPassword, 
+                                               Mode=OneWay, 
+                                               UpdateSourceTrigger=PropertyChanged}"
+                             Margin="4 4 4 15" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Width="130" Height="32"
+                                Content="{_:Lang 676}"
+                                Click="BtnResetProxy_Click"
+                                Margin="0 6 8 4" />
+                        <Button Width="130" Height="32"
+                                Content="{_:Lang 361}"
+                                Click="BtnTestProxy_Click"
+                                Margin="0 6 4 4" />
+                        <Button Width="120" Height="32"
+                                Name="BtnSaveProxy"
+                                Background="{StaticResource AccentColorBrush}"
+                                Click="BtnSaveProxy_Click"
+                                Margin="4 6 4 4">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="/Bubble Bot;component/Resources/france32.png" />
-                                <TextBlock Text="Français"
-                                           VerticalAlignment="Center"
-                                           Margin="4 0 0 0" />
+                                <iconPacks:PackIconMaterial Kind="CheckBold" />
+                                <TextBlock Margin="10 0 0 0" Text="{_:Lang 362}" />
                             </StackPanel>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/Bubble Bot;component/Resources/usa32.png" />
-                                <TextBlock Text="English"
-                                           VerticalAlignment="Center"
-                                           Margin="4 0 0 0" />
-                            </StackPanel>
-                        </ComboBoxItem>
-                        <ComboBoxItem>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/Bubble Bot;component/Resources/portugal32.png" />
-                                <TextBlock Text="Português"
-                                           VerticalAlignment="Center"
-                                           Margin="4 0 0 0" />
-                            </StackPanel>
-                        </ComboBoxItem>
-                    </ComboBox>
-                </DockPanel>
-            </StackPanel>
-        </GroupBox>
-
-        <!-- Performances-->
-        <GroupBox Header="{_:Lang 700}">
-            <StackPanel>
-                <CheckBox Content="{_:Lang 701}"
-                          Margin="4"
-                          IsChecked="{Binding DisplayItemsInLogs}" />
-            </StackPanel>
-        </GroupBox>
-
-        <!-- Others -->
-        <GroupBox Header="{_:Lang 365}">
-            <StackPanel>
-                <CheckBox Content="{_:Lang 370}"
-                          Margin="4"
-                          IsChecked="{Binding ShowDebugMessages}" />
-                <CheckBox Content="{_:Lang 605}"
-                          Margin="4"
-                          IsChecked="{Binding RandomNickname}" />
-                <CheckBox Content="{_:Lang 624}"
-                          Margin="4"
-                          IsChecked="{Binding AutomaticReconnection}" />
-
-            </StackPanel>
-        </GroupBox>
-
-    </StackPanel>
-
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                            Margin="0 8"
+                                            HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Width="18"
+                                                    Height="18"
+                                                    Kind="Information"
+                                                    VerticalAlignment="Center" />
+                        <TextBlock Margin="4 0 0 0"
+                                   Width="240"
+                                   TextWrapping="Wrap"
+                                   Text="{_:Lang 728}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </TabItem>
+            
+    </TabControl>
 </Controls:MetroWindow>

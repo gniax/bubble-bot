@@ -527,8 +527,11 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 
                 var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
                 for (var i = 0; i < message.Spells.Count; i++)
+                {
+                //Console.WriteLine(spells[i].DescriptionId);
                     Spells.Add(new SpellEntry(message.Spells[i],
                         spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
+                }
             });
 
             SpellsUpdated?.Invoke();

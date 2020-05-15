@@ -23,18 +23,27 @@ namespace BubbleBot.Configurations
         private bool _loaded;
         private bool _randomNickname;
         private bool _showDebugMessages;
+        private string _proxyIp;
+        private ushort _proxyPort;
+        private string _proxyUsername;
+        private string _proxyPassword;
 
 
         // Constructor
         private GlobalConfiguration()
         {
             Accounts = new ObservableCollection<AccountConfiguration>();
+
             AntiCaptchaKey = "";
             ShowDebugMessages = true;
             DisplayItemsInLogs = true;
             RandomNickname = false;
             AutomaticReconnection = true;
             Username = "";
+            ProxyIp = "";
+            ProxyPort = 0;
+            ProxyUsername = "";
+            ProxyPassword = "";
             Language = Languages.FRENCH;
             _semaphore = new SemaphoreSlim(1, 1);
         }
@@ -92,7 +101,44 @@ namespace BubbleBot.Configurations
                 Save();
             }
         }
+        public string ProxyIp
+        {
+            get => _proxyIp;
+            set
+            {
+                Set(ref _proxyIp, value);
+                Save();
+            }
+        }
+        public ushort ProxyPort
+        {
+            get => _proxyPort;
+            set
+            {
+                Set(ref _proxyPort, value);
+                Save();
+            }
+        }
 
+        public string ProxyUsername
+        {
+            get => _proxyUsername;
+            set
+            {
+                Set(ref _proxyUsername, value);
+                Save();
+            }
+        }
+
+        public string ProxyPassword
+        {
+            get => _proxyPassword;
+            set
+            {
+                Set(ref _proxyPassword, value);
+                Save();
+            }
+        }
         public string Username { get; set; }
 
         public Languages Language
@@ -150,6 +196,10 @@ namespace BubbleBot.Configurations
                             AutomaticReconnection = br.ReadBoolean();
                             Username = br.ReadString();
                             Language = (Languages) br.ReadByte();
+                            ProxyIp = br.ReadString();
+                            ProxyPort = br.ReadUInt16();
+                            ProxyUsername = br.ReadString();
+                            ProxyPassword = br.ReadString();
 
                             for (var i = 0; i < Accounts.Count; i++)
                             {
@@ -190,6 +240,10 @@ namespace BubbleBot.Configurations
                 bw.Write(AutomaticReconnection);
                 bw.Write(Username);
                 bw.Write((byte) Language);
+                bw.Write(ProxyIp);
+                bw.Write(ProxyPort);
+                bw.Write(ProxyUsername);
+                bw.Write(ProxyPassword);
 
                 for (var i = 0; i < Accounts.Count; i++)
                 {
@@ -230,11 +284,8 @@ namespace BubbleBot.Configurations
         {
             var tempAccountChecker = Accounts;
             var newAccountsSorter = new ObservableCollection<AccountConfiguration>();
-            var allPseudo = new List<string>();
+            var allPseudo = tempAccountChecker.Select(a => a.Nickname).ToList();
             var allPseudoClean = new List<string>();
-
-            //Creer une liste des pseudo avant ? 
-            foreach (var ActualPseudo in tempAccountChecker) allPseudo.Add(ActualPseudo.Nickname);
 
             //Delete les doublons 
             foreach (var Pseudo in allPseudo)

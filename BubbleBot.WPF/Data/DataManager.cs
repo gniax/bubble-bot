@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Data
 {
@@ -53,7 +54,6 @@ namespace BubbleBot.Data
 
         private static IEnumerable<T> GetOrDownload<T>(IEnumerable<int> ids) where T : IData
         {
-
             Stopwatch sw = Stopwatch.StartNew();
             string className = typeof(T).Name;
             string dir = Path.Combine(Directory.GetCurrentDirectory(), "Data", className);
@@ -100,8 +100,8 @@ namespace BubbleBot.Data
                 }
             }
 
-            //Console.WriteLine($"Got {data.Count} entries in {sw.Elapsed.Milliseconds}ms.");
-            return data;
+            Console.WriteLine($"Got {data.Count} entries in {sw.Elapsed.Milliseconds}ms.");
+            return data;           
         }
 
         private static bool endFrame = false;
@@ -160,6 +160,7 @@ namespace BubbleBot.Data
             var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
             endFrame = false;
             responseString = resultString;
+            //Console.WriteLine("recherche d'id... " + responseString);
             try
             {
                 var dict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(responseString);
@@ -209,14 +210,7 @@ namespace BubbleBot.Data
                     WindowlessFrameRate = 1
                 };
 
-            
-
-                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler("api.example.com", "45785")));
-                _browser.RequestHandler = new BrowserRequestHandler("Selmistonifer9318", "T7k4VcH");
-
-
-                //_browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
-
+                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
 
                 var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
             }
