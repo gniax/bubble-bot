@@ -173,8 +173,8 @@ namespace BubbleBot.Core.Network
             _webSocket = new WebSocket(Url.AbsoluteUri);
             _webSocket.SetCookie(new Cookie("io", sid));
             _webSocket.Compression = CompressionMethod.Deflate;
-
-             if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
+            _webSocket.Log.Output = (_, __) => { };
+            if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
 
             _waitingToBeClosed = false;
 

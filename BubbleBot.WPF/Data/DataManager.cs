@@ -27,10 +27,11 @@ namespace BubbleBot.Data
         // Fields
         private static Dictionary<string, ConcurrentDictionary<int, IData>> _cache;
         private static ChromiumWebBrowser _browser;
-
+        private static SemaphoreSlim _sheduleDataRequest;
         public static void Initialize()
         {
             _cache = new Dictionary<string, ConcurrentDictionary<int, IData>>();
+            _sheduleDataRequest = new SemaphoreSlim(1,1);
             LoadBrowser();
 
             var dataType = typeof(IData);
@@ -46,14 +47,26 @@ namespace BubbleBot.Data
             }
         }
 
-        public static T Get<T>(int id) where T : IData => GetOrDownload<T>(new[] { id }).ElementAt(0);
-
-        public static IEnumerable<T> GetEnumerable<T>(IEnumerable<int> ids) where T : IData => GetOrDownload<T>(ids);
-
-        public static List<T> GetList<T>(IEnumerable<int> ids) where T : IData => GetOrDownload<T>(ids).ToList();
-
-        private static IEnumerable<T> GetOrDownload<T>(IEnumerable<int> ids) where T : IData
+        public static async Task<T> Get<T>(int id) where T : IData
         {
+
+            var Object = await GetOrDownload<T>(new[] { id });
+            //Console.WriteLine("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+            //Console.WriteLine("NULLLLLLLLLLLLLLLLLLLLL?" + Object.ElementAt(0).ToString());
+           return Object.ElementAt(0);
+        }
+
+        public static async Task<IEnumerable<T>> GetEnumerableAsync<T>(IEnumerable<int> ids) where T : IData => await GetOrDownload<T>(ids);
+
+        public static async Task<List<T>> GetListAsync<T>(IEnumerable<int> ids) where T : IData
+        {
+            var ObjectList = await GetOrDownload<T>(ids);
+            return ObjectList.ToList();
+        }
+
+        private static async Task<IEnumerable<T>> GetOrDownload<T>(IEnumerable<int> ids) where T : IData
+        {
+           
             Stopwatch sw = Stopwatch.StartNew();
             string className = typeof(T).Name;
             string dir = Path.Combine(Directory.GetCurrentDirectory(), "Data", className);
@@ -92,7 +105,7 @@ namespace BubbleBot.Data
                 try
                 {
                     // This will download, cache and save all of the needed entries
-                    data.AddRange(Download<T>(idsToDownload));
+                    data.AddRange(await Download<T>(idsToDownload));
                 }
                 catch
                 {
@@ -101,12 +114,10 @@ namespace BubbleBot.Data
             }
 
             Console.WriteLine($"Got {data.Count} entries in {sw.Elapsed.Milliseconds}ms.");
-            return data;           
+            return data;
         }
 
-        private static bool endFrame = false;
-        private static string resultString = null;
-        private static IEnumerable<T> Download<T>(IEnumerable<int> ids) where T : IData
+        private static async Task<IEnumerable<T>> Download<T>(IEnumerable<int> ids) where T : IData
         {
             string className = typeof(T).Name;
             List<KeyValuePair<string, string>> contentKvps = new List<KeyValuePair<string, string>>();
@@ -117,81 +128,236 @@ namespace BubbleBot.Data
                 {
                     // Cache it
                     _cache[className].TryAdd(entry.Id, entry);
-
-                    // Then save it
-                    var dir = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Data", className));
-                    File.WriteAllText(Path.Combine(dir.FullName, $"{entry.Id}.bbot"), JsonConvert.SerializeObject(entry, Formatting.None));
+                    bool isWrite = false;
+                    while(!isWrite)
+                    {
+                        try
+                        {
+                            // Then save it
+                            var dir = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Data", className));
+                            File.WriteAllText(Path.Combine(dir.FullName, $"{entry.Id}.bbot"), JsonConvert.SerializeObject(entry, Formatting.None));
+                            isWrite = true;
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Erreur Ouverture du fichier ");
+                        }
+                    }
                 }
 
                 return data;
             }
 
-            contentKvps.Add(new KeyValuePair<string, string>("class", className));
-            string bytesArray = "class=" + className;
+
+            string listIdPost = "";
+            bool firstElement = true;
+
             foreach (var id in ids)
             {
-                contentKvps.Add(new KeyValuePair<string, string>("ids[]", id.ToString()));
-                bytesArray += "&ids[]=" + id.ToString();
+                if (firstElement == true)
+                {
+                    listIdPost += id.ToString();
+                    firstElement = false;
+                }
+                else
+                {
+                    listIdPost += ", " + id.ToString();
+                }
             }
 
-            var mainFrame = _browser.GetMainFrame();
-            var dataRequest = mainFrame.CreateRequest();
-            dataRequest.Url = $"https://proxyconnection.touch.dofus.com/data/map?lang={GlobalConfiguration.Instance.Lang}&v={DTConstants.AssetsVersion}";
-            dataRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
-            dataRequest.SetHeaderByName("accept-language", "fr", true);
-            dataRequest.SetHeaderByName("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; K92 Build/NMF26V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.124 Mobile Safari/537.36", true);
-            dataRequest.SetHeaderByName("accept", "*/*", true);
+            string dataToPost = "{class: " + '\'' + className + '\'' + ", ids: [" + listIdPost + "]}";
 
-            var bytes = Encoding.ASCII.GetBytes(bytesArray);
-            
-            dataRequest.Method = "POST";
-            dataRequest.InitializePostData();
-            var element = dataRequest.PostData.CreatePostDataElement();
-            element.Bytes = bytes;
-            dataRequest.PostData.AddElement(element);
-            mainFrame.LoadRequest(dataRequest);
+            /*     var mainFrame = _browser.GetMainFrame();
+                 var dataRequest = mainFrame.CreateRequest();
+                 dataRequest.Url = $"https://proxyconnection.touch.dofus.com/data/map?lang={GlobalConfiguration.Instance.Lang}&v={DTConstants.AssetsVersion}";
+                 dataRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
+                 dataRequest.SetHeaderByName("accept-language", "fr", true);
+                 dataRequest.SetHeaderByName("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; K92 Build/NMF26V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.124 Mobile Safari/537.36", true);
+               */
+            //  dataRequest.SetHeaderByName("accept", "*/*", true);
 
-            string responseString = null;
-            _browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
-            {
-                 GetContent(RuntimeHelpers.GetObjectValue(sender), e);
-            };
+            // var bytes = Encoding.ASCII.GetBytes(bytesArray);
 
-            var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
-            endFrame = false;
-            responseString = resultString;
-            //Console.WriteLine("recherche d'id... " + responseString);
-            try
-            {
-                var dict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(responseString);
-                // In case no objects were found
-                if (dict.Count == 0)
-                    return new List<T>() { default(T) };
+            //await _browser.GetMainFrame().EvaluateScriptAsync("var request = new XMLHttpRequest();");
+            //Initialisation des valeurs de la requête 
+           // _sheduleDataRequest.Wait();
+
+            string reqSalt = GetRandomString(20);
+            await _browser.GetMainFrame().EvaluateScriptAsync("var params"+ reqSalt + " = " + dataToPost + ";");
+            await _browser.GetMainFrame().EvaluateScriptAsync("var xhr" + reqSalt + " = new XMLHttpRequest();");
+            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".open('POST', 'https://proxyconnection.touch.dofus.com/data/map?lang=fr&v=1.46.9', false);");
+            //await Task.Delay(500);
+            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".setRequestHeader('content-type', 'application/json; charset=UTF-8');");
+            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".send(JSON.stringify(params" + reqSalt + "));");
+            //await Task.Delay(500);
+            //await Task.Delay(50);
+
+            JavascriptResponse takeInfo100 = await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".response;");
+            string resultCreate = JsonConvert.SerializeObject(takeInfo100.Result);
+            Console.WriteLine("Resultat requête NON TRAITER:" + resultCreate);
+            string specChar = string.Format("{0}{1}{2}{3}", @"\", @"\", @"\", "\"");
+            string resultwork = resultCreate.Replace(specChar, "'");
+            string resultClean = resultwork.Replace(@"\", "");
+            Console.WriteLine("Resultat requête :" + resultClean.Substring(1, resultClean.Length - 2));
+            //_sheduleDataRequest.Release();
+
+          try
+          {
+              var dict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(resultClean.Substring(1, resultClean.Length - 2));
+              // In case no objects were found
+              if (dict.Count == 0)
+                  return new List<T>() { default(T)};
 
                 var data = dict.Values.Select(f => (T)f.ToObject(typeof(T))).ToList();
 
                 return CacheAndSave(data);
-            }
-            catch { return null; }
-            
+          }
+          catch { return null; }
+}
+        private static Random random2 = new Random();
+        private static string GetRandomString(int length)
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random2.Next(s.Length)]).ToArray());
         }
 
-        public static void GetContent(object sender, FrameLoadEndEventArgs e)
-        {
-            if (e.Frame.IsMain)
-            {
-                if (e.HttpStatusCode == 200)
+
+        /*         dataRequest.Method = "POST";
+                 dataRequest.InitializePostData();
+                 var element = dataRequest.PostData.CreatePostDataElement();
+                 element.Bytes = bytes;
+                 dataRequest.PostData.AddElement(element);
+                 mainFrame.LoadRequest(dataRequest);
+
+                 string responseString = null;
+                 int i = 0;
+                 _browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
+                 {
+                     i++;
+                     GetContent(RuntimeHelpers.GetObjectValue(sender), e);
+                     Console.WriteLine("Recept :" + i.ToString());
+                 };
+
+                 var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
+                 endFrame = false;
+                 responseString = resultString;
+                 Console.WriteLine("SHEDULE : " + responseString);
+                 */
+
+
+        /*      try
+              {
+                  var dict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(responseString);
+                  // In case no objects were found
+                  if (dict.Count == 0)
+                      return new List<T>() { default(T)
+  };
+
+  var data = dict.Values.Select(f => (T)f.ToObject(typeof(T))).ToList();
+
+                  return CacheAndSave(data);
+              }
+              catch { return null; }
+              */
+
+        /*
+                private static bool endFrame = false;
+                private static string resultString = null;
+                private static IEnumerable<T> Download<T>(IEnumerable<int> ids) where T : IData
                 {
-                    e.Frame.GetTextAsync().ContinueWith(taskHtml =>
+                    string className = typeof(T).Name;
+                    List<KeyValuePair<string, string>> contentKvps = new List<KeyValuePair<string, string>>();
+
+                    IEnumerable<T> CacheAndSave<T>(IEnumerable<T> data) where T : IData
                     {
-                        var resultHtml = taskHtml.Result;
-                        resultString = resultHtml;
-                        endFrame = true;
-                    });
+                        foreach (var entry in data)
+                        {
+                            // Cache it
+                            _cache[className].TryAdd(entry.Id, entry);
+
+                            // Then save it
+                            var dir = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Data", className));
+                            File.WriteAllText(Path.Combine(dir.FullName, $"{entry.Id}.bbot"), JsonConvert.SerializeObject(entry, Formatting.None));
+                        }
+
+                        return data;
+                    }
+
+                    contentKvps.Add(new KeyValuePair<string, string>("class", className));
+                    string bytesArray = "class=" + className;
+                    foreach (var id in ids)
+                    {
+                        contentKvps.Add(new KeyValuePair<string, string>("ids[]", id.ToString()));
+                        bytesArray += "&ids[]=" + id.ToString();
+                    }
+
+                    var mainFrame = _browser.GetMainFrame();
+                    var dataRequest = mainFrame.CreateRequest();
+                    dataRequest.Url = $"https://proxyconnection.touch.dofus.com/data/map?lang={GlobalConfiguration.Instance.Lang}&v={DTConstants.AssetsVersion}";
+                    dataRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
+                    dataRequest.SetHeaderByName("accept-language", "fr", true);
+                    dataRequest.SetHeaderByName("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; K92 Build/NMF26V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.124 Mobile Safari/537.36", true);
+            */
+        //dataRequest.SetHeaderByName("accept", "*/*", true);
+        /*
+                var bytes = Encoding.ASCII.GetBytes(bytesArray);
+
+
+                       dataRequest.Method = "POST";
+                         dataRequest.InitializePostData();
+                         var element = dataRequest.PostData.CreatePostDataElement();
+                         element.Bytes = bytes;
+                         dataRequest.PostData.AddElement(element);
+                         mainFrame.LoadRequest(dataRequest);
+
+                         string responseString = null;
+                         int i = 0;
+                         _browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
+                         {
+                             i++;
+                             GetContent(RuntimeHelpers.GetObjectValue(sender), e);
+                             Console.WriteLine("Recept :" + i.ToString());
+                         };
+
+                         var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
+                         endFrame = false;
+                         responseString = resultString;
+                         Console.WriteLine("SHEDULE : " + responseString);
+
+
+
+                try
+                {
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(responseString);
+                    // In case no objects were found
+                    if (dict.Count == 0)
+                        return new List<T>() { default(T) };
+
+                    var data = dict.Values.Select(f => (T)f.ToObject(typeof(T))).ToList();
+
+                    return CacheAndSave(data);
+                }
+                catch { return null; }
+
+            }
+    *//*
+            public static void GetContent(object sender, FrameLoadEndEventArgs e)
+            {
+                if (e.Frame.IsMain)
+                {
+                    if (e.HttpStatusCode == 200)
+                    {
+                        e.Frame.GetTextAsync().ContinueWith(taskHtml =>
+                        {
+                            var resultHtml = taskHtml.Result;
+                            resultString = resultHtml;
+                            Console.WriteLine("keep : " + resultString);
+                            endFrame = true;
+                        });
+                    }
                 }
             }
-        }
-
+            */
         private static void LoadBrowser()
         {
             if (_browser == null || _browser.IsDisposed)
@@ -207,10 +373,16 @@ namespace BubbleBot.Data
                     Plugins = CefState.Disabled,
                     LocalStorage = CefState.Disabled,
                     WebGl = CefState.Disabled,
-                    WindowlessFrameRate = 1
-                };
+                    WindowlessFrameRate = 1,
+            };
 
-                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+
+                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler("api.example.com", "45785")));
+                _browser.RequestHandler = new BrowserRequestHandler("Selmistonifer9318", "T7k4VcH");
+
+
+                //_browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+
 
                 var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
             }

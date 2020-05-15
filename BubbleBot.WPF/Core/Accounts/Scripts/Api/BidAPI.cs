@@ -4,6 +4,7 @@ using System.Reflection;
 using BubbleBot.Core.Accounts.Scripts.Actions.Bid;
 using BubbleBot.Core.Enums;
 using MoonSharp.Interpreter;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
 {
@@ -31,9 +32,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return true;
         }
 
-        public uint GetItemPrice(uint gid, uint lot)
+        public async Task<uint> GetItemPrice(uint gid, uint lot)
         {
-            return _account.Game.Bid.GetItemPrice(gid, lot);
+            return await _account.Game.Bid.GetItemPriceAsync(gid, lot);
         }
 
         public int GetAverageItemPrice(uint gid)

@@ -288,7 +288,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             return GetHandToHandAllies(cellId).Count() > 0;
         }
 
-        public List<MapPoint> GetSpellZone(int spellId, short fromCellId, short targetCellId,
+        public async Task<List<MapPoint>> GetSpellZoneAsync(int spellId, short fromCellId, short targetCellId,
             SpellLevels spellLevel = null)
         {
             if (spellLevel == null)
@@ -298,26 +298,26 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 if (spellEntry == null)
                     return null;
 
-                var spell = DataManager.Get<Spells>(spellId);
+                var spell = await DataManager.Get<Spells>(spellId);
 
                 if (spell == null)
                     return null;
 
-                spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
+                spellLevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
             }
 
             return SpellShapes.GetSpellEffectZone(_account.Game.Map.Data, spellLevel, fromCellId, targetCellId);
         }
 
-        public SpellInabilityReasons CanLaunchSpell(int spellId)
+        public async Task<SpellInabilityReasons> CanLaunchSpellAsync(int spellId)
         {
             var spellEntry = _account.Game.Character.Spells.FirstOrDefault(f => f.Id == spellId);
 
             if (spellEntry == null)
                 return SpellInabilityReasons.UNKNOWN;
 
-            var spell = DataManager.Get<Spells>(spellId);
-            var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
+            var spell = await DataManager.Get<Spells>(spellId);
+            var spellLevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
 
             if (PlayedFighter.ActionPoints < spellLevel.ApCost)
                 return SpellInabilityReasons.ACTION_POINTS;
@@ -345,15 +345,15 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             return SpellInabilityReasons.NONE;
         }
 
-        public SpellInabilityReasons CanLaunchSpell(int spellId, short characterCellId, short targetCellId)
+        public async Task<SpellInabilityReasons> CanLaunchSpellAsync(int spellId, short characterCellId, short targetCellId)
         {
             var spellEntry = _account.Game.Character.Spells.FirstOrDefault(f => f.Id == spellId);
 
             if (spellEntry == null)
                 return SpellInabilityReasons.UNKNOWN;
 
-            var spell = DataManager.Get<Spells>(spellId);
-            var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
+            var spell = await DataManager.Get<Spells>(spellId);
+            var spellLevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[spellEntry.Level - 1]);
 
             if (spellLevel.MaxCastPerTarget > 0 && _totalSpellLaunchsInCells.ContainsKey(spellId) &&
                 _totalSpellLaunchsInCells[spellId].ContainsKey(targetCellId) &&
@@ -659,12 +659,12 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
             FightEnded?.Invoke();
         }
 
-        public void Update(GameActionFightSpellCastMessage message)
+        public async Task UpdateAsync(GameActionFightSpellCastMessage message)
         {
             if (PlayedFighter?.ContextualId == message.SourceId)
             {
-                var spell = DataManager.Get<Spells>((int) message.SpellId);
-                var spellLevel = DataManager.Get<SpellLevels>(spell.SpellLevels[(int) message.SpellLevel - 1]);
+                var spell = await DataManager.Get<Spells>((int) message.SpellId);
+                var spellLevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[(int) message.SpellLevel - 1]);
 
                 if (spellLevel.MinCastInterval > 0 && !_spellsIntervals.ContainsKey(spell.Id))
                     _spellsIntervals.Add(spell.Id, spellLevel.MinCastInterval);

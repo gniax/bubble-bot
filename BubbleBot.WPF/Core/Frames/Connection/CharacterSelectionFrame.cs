@@ -65,7 +65,7 @@ namespace BubbleBot.Core.Frames.Connection
         {
             return Task.Run(async () =>
             {
-                account.Game.Character.Update(message);
+                account.Game.Character.UpdateAsync(message);
 
                 await account.Network.SendCallAsync(new kpiStartSessionMessage(account.Login));
                 await account.Network.SendCallAsync(new moneyGoultinesAmountRequestMessage());

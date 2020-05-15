@@ -4,6 +4,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Data;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Server
 {
@@ -27,13 +28,15 @@ namespace BubbleBot.Core.Accounts.InGame.Server
 
         #region Update
 
-        public void Update(SelectedServerDataMessage message)
+        public async void UpdateAsync(SelectedServerDataMessage message)
         {
             Id = message.ServerId;
-            Name = DataManager.Get<Servers>(Id).NameId;
+            var data = await DataManager.Get<Servers>(Id);
+            Name = data.NameId;
             Console.WriteLine(Name);
 
-            ServerSelected?.Invoke();
+             ServerSelected?.Invoke();
+
         }
 
         public void Update(CharactersListMessage message)

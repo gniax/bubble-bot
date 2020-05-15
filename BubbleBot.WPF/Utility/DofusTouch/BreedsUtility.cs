@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Media;
 using BubbleBot.Protocol.Data;
 using BubbleBot.Data;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Utility.DofusTouch
 {
@@ -12,9 +13,10 @@ namespace BubbleBot.Utility.DofusTouch
         public static List<Breeds> Breeds { get; private set; }
 
 
-        public static void Initialize()
+        public static async Task InitializeAsync()
         {
-            Breeds = DataManager.GetList<Breeds>(Enumerable.Range(1, 15)).OrderBy(b => b.Id).ToList();
+            var dataList = await DataManager.GetListAsync<Breeds>(Enumerable.Range(1, 15));
+            Breeds = dataList.OrderBy(b => b.Id).ToList();
         }
 
         public static IEnumerable<string> GetBreedHeads(int breedId, int sex)

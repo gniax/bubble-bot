@@ -95,7 +95,7 @@ namespace BubbleBot.Core.Frames.Game
         {
             return Task.Run(() =>
             {
-                account.Game.Fight.Update(message);
+                account.Game.Fight.UpdateAsync(message);
                 account.Extensions.CharacterCreation.Update(message);
                 //account.Logger.LogFight(account.Game.Fight.GetFighter(message.SourceId).GetName(), $"a lancé {DataManager.Get<Spells>((int)message.SpellId).NameId}.");
             });

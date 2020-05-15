@@ -82,7 +82,7 @@ namespace BubbleBot.WPF.Views
 
                         CommandsHandler.Initialize();
 
-                        BreedsUtility.Initialize();
+                        BreedsUtility.InitializeAsync().ConfigureAwait(true);
                         controller.SetProgress(1);
 
                         LuaScriptManager.Initialize();

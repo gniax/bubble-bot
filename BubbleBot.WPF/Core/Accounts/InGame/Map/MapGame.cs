@@ -256,9 +256,9 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                 var sameMap = Data != null && message.MapId == Id;
                 Data = await MapsManager.GetMapAsync((int) message.MapId);
 
-                var mp = DataManager.Get<MapPositions>(Id);
-                var subArea = DataManager.Get<SubAreas>((int) message.SubAreaId);
-                var area = DataManager.Get<Areas>(subArea.AreaId);
+                var mp = await DataManager.Get<MapPositions>(Id);
+                var subArea = await DataManager.Get<SubAreas>((int) message.SubAreaId);
+                var area = await DataManager.Get<Areas>(subArea.AreaId);
 
                 // In case the account got disposed while we were getting the map's data
                 if (_disposedValue)

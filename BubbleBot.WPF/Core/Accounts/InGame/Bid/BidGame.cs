@@ -56,13 +56,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        public uint GetItemPrice(uint gid, uint lot)
+        public async Task<uint> GetItemPriceAsync(uint gid, uint lot)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return 0;
 
-            var cheapestItem = GetCheapestItem(gid, lot);
+            var cheapestItem = await GetCheapestItemAsync(gid, lot);
 
             // In case the item wasn't found
             if (cheapestItem == null)
@@ -91,13 +91,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return 0;
         }
 
-        public uint[] GetItemPrices(uint gid)
+        public async Task<uint[]> GetItemPricesAsync(uint gid)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return null;
 
-            if (!InitializeGetItemPrice(gid))
+            if (await InitializeGetItemPriceAsync(gid) == false)
                 return null;
 
             // Item not found in bid
@@ -112,13 +112,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             };
         }
 
-        public bool BuyItem(uint gid, uint lot)
+        public async Task<bool> BuyItemAsync(uint gid, uint lot)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
 
-            var cheapestItem = GetCheapestItem(gid, lot);
+            var cheapestItem = await GetCheapestItemAsync(gid, lot);
 
             // In case the item wasn't found
             if (cheapestItem == null)
@@ -225,13 +225,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        private BidExchangerObjectInfo GetCheapestItem(uint gid, uint lot)
+        private async Task<BidExchangerObjectInfo> GetCheapestItemAsync(uint gid, uint lot)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return null;
 
-            if (!InitializeGetItemPrice(gid))
+            if (await InitializeGetItemPriceAsync(gid) == false)
                 return null;
 
             // Item not found in bid
@@ -243,13 +243,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return _itemDescriptionTcs.Task.Result.OrderBy(o => o.Prices[index]).First();
         }
 
-        private bool InitializeGetItemPrice(uint gid)
+        private async Task<bool> InitializeGetItemPriceAsync(uint gid)
         {
             if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return false;
 
-            var item = DataManager.Get<Items>((int) gid);
+            var item = await DataManager.Get<Items>((int) gid);
 
             if (item == null)
                 return false;
@@ -267,7 +267,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return true;
         }
 
-        public bool ExtendedBuyItem(uint gid, uint lot, uint maxPrice)
+        public async Task<bool> ExtendedBuyItemAsync(uint gid, uint lot, uint maxPrice)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
@@ -276,7 +276,7 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             if (BuyItemConditions.Count <= 0)
                 return false;
 
-            var itemsInSell = GetAllItemInSell(gid, lot);
+            var itemsInSell = await GetAllItemInSellAsync(gid, lot);
 
             // In case the item wasn't found
             if (itemsInSell != null && itemsInSell.Count <= 0)
@@ -354,13 +354,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
             return false;
         }
 
-        private List<BidExchangerObjectInfo> GetAllItemInSell(uint gid, uint lot)
+        private async Task<List<BidExchangerObjectInfo>> GetAllItemInSellAsync(uint gid, uint lot)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return null;
 
-            if (!InitializeGetItemPrice(gid))
+            if (!await InitializeGetItemPriceAsync(gid))
                 return null;
 
             // Item not found in bid
@@ -369,13 +369,13 @@ namespace BubbleBot.Core.Accounts.InGame.Bid
 
             return _itemDescriptionTcs.Task.Result;
         }
-        public List<BidExchangerObjectInfo> GetListOfItem(uint gid)
+        public async Task<List<BidExchangerObjectInfo>> GetListOfItemAsync(uint gid)
         {
             if (_account.State != AccountStates.BUYING || !BubbleBotMain.Instance.Server.IsSubscribedToTouch ||
                 !BubbleBotMain.Instance.Server.HasExtension(ExtensionsEnum.HDV))
                 return null;
 
-            if (!InitializeGetItemPrice(gid))
+            if (!await InitializeGetItemPriceAsync(gid))
                 return null;
 
             // Item not found in bid

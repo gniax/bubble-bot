@@ -456,7 +456,7 @@ namespace BubbleBot.Core.Accounts.Network
             if (ex == null)
                 return;
             Console.WriteLine("websocket-error: {0}", ex);
-            Account.Logger.LogError("", ex.ToString());
+            //Account.Logger.LogError("", ex.ToString());
         }
 
         private void WebSocket_MessageReceived(PrimusWebSocket ws, JObject json)

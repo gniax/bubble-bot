@@ -8,6 +8,7 @@ using BubbleBot.Protocol.Data;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Data;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Storage
 {
@@ -157,12 +158,12 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             _account.State = AccountStates.STORAGE;
         }
 
-        public void Update(StorageInventoryContentMessage message)
+        public async void Update(StorageInventoryContentMessage message)
         {
             Kamas = (int) message.Kamas;
             Objects.Clear();
 
-            var objects = DataManager.GetEnumerable<Items>(message.Objects.Select(f => (int) f.ObjectGID));
+            var objects = await DataManager.GetEnumerableAsync<Items>(message.Objects.Select(f => (int) f.ObjectGID));
             for (var i = 0; i < message.Objects.Count; i++)
                 Objects.Add(new ObjectEntry(message.Objects[i],
                     objects.FirstOrDefault(f => f.Id == message.Objects[i].ObjectGID)));
@@ -177,13 +178,12 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             StorageUpdated?.Invoke();
         }
 
-        public void Update(StorageObjectUpdateMessage message)
+        public async Task UpdateAsync(StorageObjectUpdateMessage message)
         {
             var obj = Objects.FirstOrDefault(f => f.UID == message.Object.ObjectUID);
-
             // Needs to be added
             if (obj == null)
-                Objects.Add(new ObjectEntry(message.Object, DataManager.Get<Items>((int) message.Object.ObjectGID)));
+                Objects.Add(new ObjectEntry(message.Object, await DataManager.Get<Items>((int) message.Object.ObjectGID)));
             // Needs to be updated
             else
                 obj.Update(message.Object);
@@ -198,7 +198,7 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
             StorageUpdated?.Invoke();
         }
 
-        public void Update(StorageObjectsUpdateMessage message)
+        public async Task UpdateAsync(StorageObjectsUpdateMessage message)
         {
             for (var i = 0; i < message.ObjectList.Count; i++)
             {
@@ -207,7 +207,7 @@ namespace BubbleBot.Core.Accounts.InGame.Storage
                 // Needs to be added
                 if (obj == null)
                     Objects.Add(new ObjectEntry(message.ObjectList[i],
-                        DataManager.Get<Items>((int) message.ObjectList[i].ObjectGID)));
+                        await DataManager.Get<Items>((int) message.ObjectList[i].ObjectGID)));
                 // Needs to be updated
                 else
                     obj.Update(message.ObjectList[i]);

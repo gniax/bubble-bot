@@ -35,7 +35,7 @@ namespace BubbleBot.Views.Accounts
 
         private async void BtnAddSpellToBoost_Click(object sender, RoutedEventArgs e)
         {
-            var spell = DataManager.Get<Spells>((int) nudSpellId.Value);
+            var spell = await DataManager.Get<Spells>((int) nudSpellId.Value);
             var window = Window.GetWindow(this) as MetroWindow;
             if (spell == null)
             {
