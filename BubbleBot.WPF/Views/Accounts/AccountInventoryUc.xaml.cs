@@ -76,7 +76,10 @@ namespace BubbleBot.Views.Accounts
 
             Account.Game.Character.Inventory.DeleteObject(obj, qtyToDelete);
         }
-
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Account.Game.Character.Inventory.UpdateView();
+        }
         private async void BtnUse_Click(object sender, RoutedEventArgs e)
         {
             var obj = (sender as Button).DataContext as ObjectEntry;

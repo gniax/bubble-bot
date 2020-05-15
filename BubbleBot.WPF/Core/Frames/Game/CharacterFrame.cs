@@ -75,7 +75,7 @@ namespace BubbleBot.Core.Frames.Game
 
         public static Task HandleSpellListMessage(Account account, SpellListMessage message)
         {
-            return Task.Run(() => account.Game.Character.Update(message));
+            return Task.Run(() => account.Game.Character.UpdateAsync(message));
         }
 
         public static Task HandleSpellUpgradeSuccessMessage(Account account, SpellUpgradeSuccessMessage message)

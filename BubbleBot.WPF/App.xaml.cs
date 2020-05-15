@@ -78,6 +78,14 @@ namespace BubbleBot.WPF
             settings.CefCommandLineArgs.Add("disable-gpu-vsync", "1");
             settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache", "1");
 
+
+            //settings.LogSeverity = LogSeverity.Disable;
+            //settings.CachePath = AppDomain.CurrentDomain.BaseDirectory + "cache";
+            settings.CefCommandLineArgs.Add("disable-application-cache", "1");
+            settings.CefCommandLineArgs.Add("disable-session-storage", "1");
+            settings.CefCommandLineArgs.Add("disable-web-security", "1");
+            settings.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A403 Safari/602.1";
+
             CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
             Cef.Initialize(settings, false, browserProcessHandler: null);
         }

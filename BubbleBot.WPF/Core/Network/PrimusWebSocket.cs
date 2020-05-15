@@ -77,7 +77,6 @@ namespace BubbleBot.Core.Network
             {
                 ErrorOccured?.Invoke(this, e);
             }
-            await Task.Delay(2000);
 
             await OpenAsync().ConfigureAwait(false);
         }
@@ -174,8 +173,8 @@ namespace BubbleBot.Core.Network
             _webSocket = new WebSocket(Url.AbsoluteUri);
             _webSocket.SetCookie(new Cookie("io", sid));
             _webSocket.Compression = CompressionMethod.Deflate;
-
-             if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
+            _webSocket.Log.Output = (_, __) => { };
+            if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
 
             _waitingToBeClosed = false;
 
@@ -201,7 +200,7 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_MessageReceived(object sender, MessageEventArgs e)
         {
-            Console.WriteLine("data received: {0}", e.Data); //123456
+            //Console.WriteLine("data received: {0}", e.Data); //123456
 
             // Useless message (or not?)
             if (e.Data.Length == 0)

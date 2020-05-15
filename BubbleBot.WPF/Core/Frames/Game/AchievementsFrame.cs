@@ -12,11 +12,11 @@ namespace BubbleBot.Core.Frames.Game
         public static Task HandleAchievementRewardSuccessMessage(Account account,
             AchievementRewardSuccessMessage message)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 account.Statistics.Update(message);
 
-                var achievement = DataManager.Get<Achievements>(message.AchievementId);
+                var achievement = await DataManager.Get<Achievements>(message.AchievementId);
                 account.Logger.LogInfo("", LanguageManager.Translate("92", achievement.NameId, achievement.Points));
             });
         }

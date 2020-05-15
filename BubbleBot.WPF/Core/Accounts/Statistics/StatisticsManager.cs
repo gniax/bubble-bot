@@ -150,13 +150,14 @@ namespace BubbleBot.Core.Accounts.Statistics
             _lastObjectGained = gid;
         }
 
-        private void AddOrUpdate(ObservableCollection<ObjectObtainedEntry> list, uint gid, uint qty)
+        private async void AddOrUpdate(ObservableCollection<ObjectObtainedEntry> list, uint gid, uint qty)
         {
             var elem = list.FirstOrDefault(o => o.GID == gid);
 
             if (elem == null)
             {
-                elem = new ObjectObtainedEntry(gid, DataManager.Get<Items>((int) gid).NameId, 0);
+                var items = await DataManager.Get<Items>((int)gid);
+                elem = new ObjectObtainedEntry(gid, items.NameId, 0);
                 Application.Current.Dispatcher.Invoke(() => list.Add(elem));
             }
 

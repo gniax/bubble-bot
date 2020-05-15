@@ -23,14 +23,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
             Name = jobData.NameId;
             IconId = jobData.IconId;
             CollectSkills = new List<CollectSkillEntry>();
-
             if (job.Skills.Count > 0)
             {
-                var skills = DataManager.GetEnumerable<Protocol.Data.Skills>(job.Skills.Select(s => (int) s.SkillId));
-                for (var i = 0; i < job.Skills.Count; i++)
-                    if (job.Skills[i] is SkillActionDescriptionCollect)
-                        CollectSkills.Add(new CollectSkillEntry(job.Skills[i] as SkillActionDescriptionCollect,
-                            skills.FirstOrDefault(s => s.Id == job.Skills[i].SkillId)));
+                SetMonsterInformations(job);
             }
         }
 
@@ -58,6 +53,14 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
         public string IconUrl =>
             $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/jobs/{IconId}.png";
 
+        private async void SetMonsterInformations(JobDescription job)
+        {
+             var skills = await DataManager.GetEnumerableAsync<Protocol.Data.Skills>(job.Skills.Select(s => (int)s.SkillId));
+                for (var i = 0; i < job.Skills.Count; i++)
+                    if (job.Skills[i] is SkillActionDescriptionCollect)
+                        CollectSkills.Add(new CollectSkillEntry(job.Skills[i] as SkillActionDescriptionCollect,
+                            skills.FirstOrDefault(s => s.Id == job.Skills[i].SkillId)));
+        }
 
         #region Updates
 

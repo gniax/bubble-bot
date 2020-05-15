@@ -407,9 +407,9 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             if (Configuration.SpellToApproach == -1)
                 return false;
 
-            var spell = DataManager.Get<Spells>(Configuration.SpellToApproach);
+            var spell = await DataManager.Get<Spells>(Configuration.SpellToApproach);
             var spellLevel =
-                DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
+                await DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
 
             // Check if we can cast the spell from our current position
             if (_utility.SpellIsHittingAnyEnnemy(_account.Game.Fight.PlayedFighter.CellId, spellLevel))

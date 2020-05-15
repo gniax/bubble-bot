@@ -29,8 +29,8 @@ namespace BubbleBot.Views.Accounts
 
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var objpet = DataManager.Get<Items>((int)petGID.Value.Value);
-            var objfood = DataManager.Get<Items>((int)foodGID.Value.Value);
+            var objpet = await DataManager.Get<Items>((int)petGID.Value.Value);
+            var objfood = await DataManager.Get<Items>((int)foodGID.Value.Value);
 
             
 

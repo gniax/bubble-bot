@@ -96,7 +96,7 @@ namespace BubbleBot.Views.Accounts
                                     var position = positionsObjects[i];
                                     var registeredItem =
                                         ObjectEnumFinder.GetObjectNameById((int) msg.ObjectItems[i].ObjectGID);
-                                    var item = DataManager.Get<Items>((int) msg.ObjectItems[i].ObjectGID);
+                                    var item = await DataManager.Get<Items>((int) msg.ObjectItems[i].ObjectGID);
                                     var itemEntry = new ObjectEntry(msg.ObjectItems[i], item);
                                     var itemName = "[" + itemEntry.Name + "]";
 

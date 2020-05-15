@@ -18,7 +18,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Bid
 
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.Bid.BuyItem(GID, Lot)) await Task.Delay(1500);
+            if (await account.Game.Bid.BuyItemAsync(GID, Lot)) await Task.Delay(1500);
 
             return ScriptActionResults.DONE;
         }

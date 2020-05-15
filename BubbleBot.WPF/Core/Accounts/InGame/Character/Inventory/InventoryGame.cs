@@ -105,6 +105,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                 return false;
 
             var possiblePositions = InventoryHelper.GetPossiblePosition(obj.SuperTypeId);
+           
+            if (possiblePositions == null)
+                return false;
 
             // In case its not equippable
             if (possiblePositions?.Count == 0)
@@ -202,7 +205,10 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                 MaxWeight = _fallbackMaxWeight;
             }
         }
-
+        public void UpdateView()
+        {
+            RaiseINPCs();
+        }
         private void RaiseINPCs()
         {
             RaisePropertyChanged("Equipements");
@@ -213,12 +219,12 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         #region Updates
 
-        public void Update(InventoryContentMessage message)
+        public async void Update(InventoryContentMessage message)
         {
             _objects.Clear();
             Kamas = (int) message.Kamas;
 
-            var items = DataManager.GetList<Items>(message.Objects.Select(f => (int) f.ObjectGID));
+            var items = await DataManager.GetListAsync<Items>(message.Objects.Select(f => (int) f.ObjectGID));
             for (var i = 0; i < message.Objects.Count; i++)
                 _objects.TryAdd(message.Objects[i].ObjectUID,
                     new ObjectEntry(message.Objects[i],
@@ -237,9 +243,9 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             InventoryUpdated?.Invoke(true);
         }
 
-        public void Update(ObjectsAddedMessage message)
+        public async void Update(ObjectsAddedMessage message)
         {
-            var items = DataManager.GetList<Items>(message.Object.Select(f => (int) f.ObjectGID));
+            var items = await DataManager.GetListAsync<Items>(message.Object.Select(f => (int) f.ObjectGID));
             for (var i = 0; i < message.Object.Count; i++)
                 _objects.TryAdd(message.Object[i].ObjectUID,
                     new ObjectEntry(message.Object[i], items.FirstOrDefault(f => f.Id == message.Object[i].ObjectGID)));

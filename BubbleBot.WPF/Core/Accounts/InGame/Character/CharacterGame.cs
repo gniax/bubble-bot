@@ -16,6 +16,7 @@ using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using GalaSoft.MvvmLight;
 using BubbleBot.Data;
+using System.Threading.Tasks;
 
 namespace BubbleBot.Core.Accounts.InGame.Character
 {
@@ -472,7 +473,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 
         #region Updates
 
-        public void Update(CharacterSelectedSuccessMessage message)
+        public async Task UpdateAsync(CharacterSelectedSuccessMessage message)
         {
             Id = message.Infos.Id;
             Name = message.Infos.Name;
@@ -481,7 +482,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
             Sex = message.Infos.Sex;
             Look = message.Infos.EntityLook;
             SkinUrl = GetSkinUrl("full", 1, 128, 256, 0);
-            _breedData = DataManager.Get<Breeds>(message.Infos.Breed);
+            _breedData = await DataManager.Get<Breeds>(message.Infos.Breed);
             Status = PlayerStatusEnum.PLAYER_STATUS_AVAILABLE;
             LifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
 
@@ -518,20 +519,41 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         {
             Status = (PlayerStatusEnum) message.Status.StatusId;
         }
-
-        public void Update(SpellListMessage message)
+      /*  private async Task GetSpellList(SpellListMessage message)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Spells.Clear();
+            Spells.Clear();
 
-                var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
-                for (var i = 0; i < message.Spells.Count; i++)
-                    Spells.Add(new SpellEntry(message.Spells[i],
-                        spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
-            });
+            var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
+            for (var i = 0; i < message.Spells.Count; i++)
+             Spells.Add(new SpellEntry(message.Spells[i], spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
 
             SpellsUpdated?.Invoke();
+
+        }
+        */
+        public async Task UpdateAsync(SpellListMessage message)
+        {
+            /* Console.WriteLine("UPDATE SPELLLLLLLLLLLL");
+            var t = Task.Run(async() => await GetSpellList(message)).ConfigureAwait(true);
+             Console.WriteLine("FIN UPDATE SPELLLLLLLLLLLL");
+             */
+            var spells = await DataManager.GetListAsync<Spells>(message.Spells.Select(f => f.SpellId));
+
+            if(spells != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Spells.Clear();
+
+                    for (var i = 0; i < message.Spells.Count-1; i++)
+                        Spells.Add(new SpellEntry(message.Spells[i],
+                            spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
+
+                    SpellsUpdated?.Invoke();
+                });
+            }
+
+            
         }
 
         public void Update(SpellUpgradeSuccessMessage message)

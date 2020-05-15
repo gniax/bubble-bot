@@ -24,7 +24,7 @@ namespace BubbleBot.Core.Frames.Game
 
         public static Task HandleStorageObjectUpdateMessage(Account account, StorageObjectUpdateMessage message)
         {
-            return Task.Run(() => account.Game.Storage.Update(message));
+            return Task.Run(() => account.Game.Storage.UpdateAsync(message));
         }
 
         public static Task HandleStorageObjectRemoveMessage(Account account, StorageObjectRemoveMessage message)
@@ -34,7 +34,7 @@ namespace BubbleBot.Core.Frames.Game
 
         public static Task HandleStorageObjectsUpdateMessage(Account account, StorageObjectsUpdateMessage message)
         {
-            return Task.Run(() => account.Game.Storage.Update(message));
+            return Task.Run(() => account.Game.Storage.UpdateAsync(message));
         }
 
         public static Task HandleStorageObjectsRemoveMessage(Account account, StorageObjectsRemoveMessage message)

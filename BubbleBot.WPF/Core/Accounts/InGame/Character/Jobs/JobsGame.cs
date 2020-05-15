@@ -48,13 +48,12 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Jobs
 
         public void Update(JobDescriptionMessage message)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(async () =>
             {
                 _jobsInitialized = false;
 
                 Jobs.Clear();
-                var jobsData =
-                    DataManager.GetEnumerable<Protocol.Data.Jobs>(message.JobsDescription.Select(f => (int) f.JobId));
+                var jobsData = await DataManager.GetEnumerableAsync<Protocol.Data.Jobs>(message.JobsDescription.Select(f => (int) f.JobId));
                 for (var i = 0; i < message.JobsDescription.Count; i++)
                     Jobs.Add(new JobEntry(message.JobsDescription[i],
                         jobsData.FirstOrDefault(f => f.Id == message.JobsDescription[i].JobId)));

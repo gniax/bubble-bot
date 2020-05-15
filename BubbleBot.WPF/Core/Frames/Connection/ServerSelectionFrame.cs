@@ -74,7 +74,7 @@ namespace BubbleBot.Core.Frames.Connection
         {
             return Task.Run(async () =>
             {
-                account.Game.Server.Update(message);
+                account.Game.Server.UpdateAsync(message);
 
                 account.FramesData.Ticket = message.Ticket;
                 await account.Network.SwitchToGameServer(message.Address, message.Port, message.ServerId,
