@@ -182,23 +182,20 @@ namespace BubbleBot.Data
             //Initialisation des valeurs de la requête 
            // _sheduleDataRequest.Wait();
 
-            string reqSalt = GetRandomString(20);
-            await _browser.GetMainFrame().EvaluateScriptAsync("var params"+ reqSalt + " = " + dataToPost + ";");
-            await _browser.GetMainFrame().EvaluateScriptAsync("var xhr" + reqSalt + " = new XMLHttpRequest();");
-            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".open('POST', 'https://proxyconnection.touch.dofus.com/data/map?lang=fr&v=1.46.9', false);");
-            //await Task.Delay(500);
-            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".setRequestHeader('content-type', 'application/json; charset=UTF-8');");
-            await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".send(JSON.stringify(params" + reqSalt + "));");
-            //await Task.Delay(500);
-            //await Task.Delay(50);
+            string reqSalt = Utility.Randomize.GetRandomString(20);
+            await _browser.GetMainFrame().EvaluateScriptAsync("var params"+ reqSalt + " = " + dataToPost + ";" +
+                                                              "var xhr" + reqSalt + " = new XMLHttpRequest();" +
+                                                              "xhr" + reqSalt + ".open('POST', 'https://proxyconnection.touch.dofus.com/data/map?lang=" + GlobalConfiguration.Instance.Lang + "&v=" + DTConstants.AppVersion +"', false);" +
+                                                              "xhr" + reqSalt + ".setRequestHeader('content-type', 'application/json; charset=UTF-8');" +
+                                                              "xhr" + reqSalt + ".send(JSON.stringify(params" + reqSalt + "));");
 
             JavascriptResponse takeInfo100 = await _browser.GetMainFrame().EvaluateScriptAsync("xhr" + reqSalt + ".response;");
             string resultCreate = JsonConvert.SerializeObject(takeInfo100.Result);
-            Console.WriteLine("Resultat requête NON TRAITER:" + resultCreate);
+            //Console.WriteLine("Resultat requête NON TRAITER:" + resultCreate);
             string specChar = string.Format("{0}{1}{2}{3}", @"\", @"\", @"\", "\"");
             string resultwork = resultCreate.Replace(specChar, "'");
             string resultClean = resultwork.Replace(@"\", "");
-            Console.WriteLine("Resultat requête :" + resultClean.Substring(1, resultClean.Length - 2));
+           // Console.WriteLine("Resultat requête :" + resultClean.Substring(1, resultClean.Length - 2));
             //_sheduleDataRequest.Release();
 
           try
@@ -214,13 +211,6 @@ namespace BubbleBot.Data
           }
           catch { return null; }
 }
-        private static Random random2 = new Random();
-        private static string GetRandomString(int length)
-        {
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random2.Next(s.Length)]).ToArray());
-        }
-
 
         /*         dataRequest.Method = "POST";
                  dataRequest.InitializePostData();
@@ -373,16 +363,18 @@ namespace BubbleBot.Data
                     Plugins = CefState.Disabled,
                     LocalStorage = CefState.Disabled,
                     WebGl = CefState.Disabled,
-                    WindowlessFrameRate = 1,
+                    WindowlessFrameRate = 1
             };
 
-
-                _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler("api.example.com", "45785")));
-                _browser.RequestHandler = new BrowserRequestHandler("Selmistonifer9318", "T7k4VcH");
-
-
-                //_browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
-
+                if (GlobalConfiguration.Instance.IsProxyValid)
+                {
+                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler(GlobalConfiguration.Instance.ProxyIp, GlobalConfiguration.Instance.ProxyPort.ToString())));
+                    _browser.RequestHandler = new BrowserRequestHandler(GlobalConfiguration.Instance.ProxyUsername, GlobalConfiguration.Instance.ProxyPassword);
+                }
+                else
+                {
+                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+                }
 
                 var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
             }

@@ -1,9 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.IO;
+using System.Text;
 using System.Windows;
 using BubbleBot.Core.Enums;
 using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BubbleBot.Core.Accounts.Configurations
 {
@@ -170,7 +175,9 @@ namespace BubbleBot.Core.Accounts.Configurations
             }
         }
 
+        [JsonProperty("SpellsToBoost")]
         public ObservableCollection<SpellToBoostEntry> SpellsToBoost { get; private set; }
+        [JsonProperty("AuthorizedTradesFrom")]
         public ObservableCollection<int> AuthorizedTradesFrom { get; private set; }
 
         public bool IgnoreNonAuthorizedTrades
@@ -243,40 +250,54 @@ namespace BubbleBot.Core.Accounts.Configurations
             if (File.Exists(ConfigFilePath))
                 try
                 {
-                    using (var br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
-                        FileShare.ReadWrite)))
+                    using (var sr = new StreamReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
+                        FileShare.ReadWrite), Encoding.UTF8))
                     {
-                        ShowGeneralMessages = br.ReadBoolean();
-                        ShowPartyMessages = br.ReadBoolean();
-                        ShowFightMessages = br.ReadBoolean();
-                        ShowGuildMessages = br.ReadBoolean();
-                        ShowAllianceMessages = br.ReadBoolean();
-                        ShowSaleMessages = br.ReadBoolean();
-                        ShowSeekMessages = br.ReadBoolean();
-                        ShowNoobMessages = br.ReadBoolean();
-                        AutoRegenAccepted = br.ReadBoolean();
-                        AcceptAchievements = br.ReadBoolean();
-                        StatToBoost = (BoostableStats) br.ReadByte();
+                        var json = JObject.Parse(sr.ReadToEnd());
+
+                        AutoRegenAccepted = json.SelectToken("AutoRegenAccepted").Value<bool>();
+                        AcceptAchievements = json.SelectToken("AcceptAchievements").Value<bool>();
+                        StatToBoost = (BoostableStats) json.SelectToken("StatToBoost").Value<byte>();
+                        IgnoreNonAuthorizedTrades = json.SelectToken("IgnoreNonAuthorizedTrades").Value<bool>();
+                        DisconnectUponFightsLimit = json.SelectToken("DisconnectUponFightsLimit").Value<bool>();
+                        SpeedHack = json.SelectToken("SpeedHack").Value<bool>();
+                        DisconnectOnBan = json.SelectToken("DisconnectOnBan").Value<bool>();
+                        BanReconnectionDelay = json.SelectToken("BanReconnectionDelay").Value<int>();
+                        AutoMount = json.SelectToken("AutoMount").Value<bool>();
+                        ShowGeneralMessages = json.SelectToken("Channel.ShowGeneralMessages").Value<bool>();
+                        ShowPartyMessages = json.SelectToken("Channel.ShowPartyMessages").Value<bool>();
+                        ShowFightMessages = json.SelectToken("Channel.ShowFightMessages").Value<bool>();
+                        ShowGuildMessages = json.SelectToken("Channel.ShowGuildMessages").Value<bool>();
+                        ShowAllianceMessages = json.SelectToken("Channel.ShowAllianceMessages").Value<bool>();
+                        ShowSaleMessages = json.SelectToken("Channel.ShowSaleMessages").Value<bool>();
+                        ShowSeekMessages = json.SelectToken("Channel.ShowSeekMessages").Value<bool>();
+                        ShowNoobMessages = json.SelectToken("Channel.ShowNoobMessages").Value<bool>();
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             SpellsToBoost.Clear();
-                            var count = br.ReadByte();
-                            for (var i = 0; i < count; i++)
-                                SpellsToBoost.Add(new SpellToBoostEntry(br.ReadInt32(), br.ReadString(),
-                                    br.ReadByte()));
+                            var value = json["SpellsToBoost"];
+                            var spells = value.ToObject<List<SpellToBoostEntry>>();
+                            foreach (var spell in spells)
+                            {
+                                if (!SpellsToBoost.Contains(spell))
+                                {
+                                    SpellsToBoost.Add(new SpellToBoostEntry(spell.Id, spell.Name, spell.Level));
+                                }
+                            }
 
                             AuthorizedTradesFrom.Clear();
-                            count = br.ReadByte();
-                            for (var i = 0; i < count; i++) AuthorizedTradesFrom.Add(br.ReadInt32());
+                            value = json["AuthorizedTradesFrom"];
+                            var ids = value.ToObject<List<int>>();
+                            foreach (var id in ids)
+                            {
+                                if (!AuthorizedTradesFrom.Contains(id))
+                                {
+                                    AuthorizedTradesFrom.Add(id);
+                                }
+                            }
                         });
 
-                        IgnoreNonAuthorizedTrades = br.ReadBoolean();
-                        DisconnectUponFightsLimit = br.ReadBoolean();
-                        SpeedHack = br.ReadBoolean();
-                        DisconnectOnBan = br.ReadBoolean();
-                        BanReconnectionDelay = br.ReadInt32();
-                        AutoMount = br.ReadBoolean();
                     }
                 }
                 catch
@@ -297,38 +318,35 @@ namespace BubbleBot.Core.Accounts.Configurations
 
             try
             {
-                using (var bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
-                    FileShare.ReadWrite)))
+                using (var sw = new StreamWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
+                    FileShare.ReadWrite), Encoding.UTF8))
                 {
-                    bw.Write(ShowGeneralMessages);
-                    bw.Write(ShowPartyMessages);
-                    bw.Write(ShowFightMessages);
-                    bw.Write(ShowGuildMessages);
-                    bw.Write(ShowAllianceMessages);
-                    bw.Write(ShowSaleMessages);
-                    bw.Write(ShowSeekMessages);
-                    bw.Write(ShowNoobMessages);
-                    bw.Write(AutoRegenAccepted);
-                    bw.Write(AcceptAchievements);
-                    bw.Write((byte) StatToBoost);
+                    dynamic json = new ExpandoObject();
+                    json.AutoRegenAccepted = AutoRegenAccepted;
+                    json.AcceptAchievements = AcceptAchievements;
+                    json.StatToBoost = (byte) StatToBoost;
+                    json.IgnoreNonAuthorizedTrades = IgnoreNonAuthorizedTrades;
+                    json.DisconnectUponFightsLimit = DisconnectUponFightsLimit;
+                    json.SpeedHack = SpeedHack;
+                    json.DisconnectOnBan = DisconnectOnBan;
+                    json.BanReconnectionDelay = BanReconnectionDelay;
+                    json.AutoMount = AutoMount;
 
-                    bw.Write((byte) SpellsToBoost.Count);
-                    foreach (var spellToBoost in SpellsToBoost)
-                    {
-                        bw.Write(spellToBoost.Id);
-                        bw.Write(spellToBoost.Name);
-                        bw.Write(spellToBoost.Level);
-                    }
+                    json.Channel = new ExpandoObject();
+                    json.Channel.ShowGeneralMessages = ShowGeneralMessages;
+                    json.Channel.ShowPartyMessages = ShowPartyMessages;
+                    json.Channel.ShowFightMessages = ShowFightMessages;
+                    json.Channel.ShowGuildMessages = ShowGuildMessages;
+                    json.Channel.ShowAllianceMessages = ShowAllianceMessages;
+                    json.Channel.ShowSaleMessages = ShowSaleMessages;
+                    json.Channel.ShowSeekMessages = ShowSeekMessages;
+                    json.Channel.ShowNoobMessages = ShowNoobMessages;
+                    json.SpellsToBoost = SpellsToBoost;
+                    json.AuthorizedTradesFrom = AuthorizedTradesFrom;
 
-                    bw.Write((byte) AuthorizedTradesFrom.Count);
-                    foreach (var atf in AuthorizedTradesFrom) bw.Write(atf);
-
-                    bw.Write(IgnoreNonAuthorizedTrades);
-                    bw.Write(DisconnectUponFightsLimit);
-                    bw.Write(SpeedHack);
-                    bw.Write(DisconnectOnBan);
-                    bw.Write(BanReconnectionDelay);
-                    bw.Write(AutoMount);
+                    var serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(sw, json);
                 }
             }
             catch

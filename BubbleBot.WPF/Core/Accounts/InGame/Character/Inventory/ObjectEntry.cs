@@ -25,62 +25,11 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             GID = o.ObjectGID;
             UID = o.ObjectUID;
             Quantity = o.Quantity;
-            Position = (CharacterInventoryPositionEnum) o.Position;
+            Position = (CharacterInventoryPositionEnum)o.Position;
+            if (item == null)
+                item = DataManager.Get<Items>((int)GID).Result;
 
-            // Check if this item gives hp back (BOOST_HP 110)
-            for (var i = 0; i < o.Effects.Count; i++)
-            {
-                ObjectEffectsToString.Add(ObjectEffectToStringConverter.Convert(o.Effects[i]));
-
-                if (!(o.Effects[i] is ObjectEffectInteger oei))
-                    continue;
-
-                if (oei.ActionId == 110)
-                    RegenValue = oei.Value;
-                else if (oei.ActionId == 158) WeightBoost = oei.Value;
-            }
-
-            SetObjectInformations(item);
-
-        }
-
-        // Properties
-        public uint GID { get; private set; }
-        public uint UID { get; private set; }
-        public uint Quantity { get; private set; }
-        public int Price { get; private set; }
-        public CharacterInventoryPositionEnum Position { get; private set; }
-        public ObjectTypes Type { get; private set; }
-        public string Name { get; private set; }
-        public int IconId { get; private set; }
-        public bool Usable { get; private set; }
-        public bool Exchangeable { get; private set; }
-        public int Range { get; private set; }
-        public int Level { get; private set; }
-        public string Description { get; private set; }
-        public bool IsFishingRod { get; private set; }
-        public int RealWeight { get; private set; }
-        public int TypeId { get; private set; }
-        public int SuperTypeId { get; private set; }
-        public uint RegenValue { get; private set; }
-        public uint WeightBoost { get; private set; }
-        public string StringType { get; set; }
-        public List<object> DropMonsterIds { get; private set; }
-        public List<string> ObjectEffectsToString { get; set; }
-
-        public string IconUrl =>
-            $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/items/{IconId}.png";
-
-        public List<string> SortedDropMonsterIds { get; private set; } // Used for AccountInventoryView
-        public bool SortedDropMonsterIdsIsEmpty => SortedDropMonsterIds.Count > 0; // Used for AccountInventoryView
-
-        private async void SetObjectInformations(Items item)
-        {
-           
-            if(item == null)
-                item = await DataManager.Get<Items>((int)GID);
- 
-            var type = await DataManager.Get<ItemTypes>(item.TypeId);
+            var type = DataManager.Get<ItemTypes>(item.TypeId).Result;
             DropMonsterIds = item.DropMonsterIds;
             if (DropMonsterIds != null)
             {
@@ -113,7 +62,51 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
                 SuperTypeId = type.SuperTypeId;
                 Type = InventoryHelper.GetObjectType(SuperTypeId);
             }
+
+            // Check if this item gives hp back (BOOST_HP 110)
+            for (var i = 0; i < o.Effects.Count; i++)
+            {
+                ObjectEffectsToString.Add(ObjectEffectToStringConverter.Convert(o.Effects[i]));
+
+                if (!(o.Effects[i] is ObjectEffectInteger oei))
+                    continue;
+
+                if (oei.ActionId == 110)
+                    RegenValue = oei.Value;
+                else if (oei.ActionId == 158) WeightBoost = oei.Value;
+            }
         }
+
+        // Properties
+        public uint GID { get; private set; }
+        public uint UID { get; private set; }
+        public uint Quantity { get; private set; }
+        public int Price { get; }
+        public CharacterInventoryPositionEnum Position { get; private set; }
+        public ObjectTypes Type { get; }
+        public string Name { get; }
+        public int IconId { get; }
+        public bool Usable { get; }
+        public bool Exchangeable { get; }
+        public int Range { get; }
+        public int Level { get; }
+        public string Description { get; }
+        public bool IsFishingRod { get; }
+        public int RealWeight { get; }
+        public int TypeId { get; }
+        public int SuperTypeId { get; }
+        public uint RegenValue { get; }
+        public uint WeightBoost { get; }
+        public string StringType { get; set; }
+        public List<object> DropMonsterIds { get; }
+        public List<string> ObjectEffectsToString { get; set; }
+
+        public string IconUrl =>
+            $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/items/{IconId}.png";
+
+        public List<string> SortedDropMonsterIds { get; } // Used for AccountInventoryView
+        public bool SortedDropMonsterIdsIsEmpty => SortedDropMonsterIds.Count > 0; // Used for AccountInventoryView
+
 
         #region Updates
 
@@ -122,7 +115,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
             GID = o.ObjectGID;
             UID = o.ObjectUID;
             Quantity = o.Quantity;
-            Position = (CharacterInventoryPositionEnum) o.Position;
+            Position = (CharacterInventoryPositionEnum)o.Position;
         }
 
         public void UpdateQuantity(uint qty)
@@ -132,7 +125,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character.Inventory
 
         public void Update(ObjectMovementMessage message)
         {
-            Position = (CharacterInventoryPositionEnum) message.Position;
+            Position = (CharacterInventoryPositionEnum)message.Position;
         }
 
         #endregion

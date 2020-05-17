@@ -1,16 +1,17 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using BubbleBot.Utility.Security;
 using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
 
 namespace BubbleBot.Configurations
 {
     public class AccountConfiguration : ViewModelBase
     {
         private bool _forceStartScript;
-
         // Fields
         private bool _planificationActivated;
 
@@ -28,22 +29,37 @@ namespace BubbleBot.Configurations
             IsBan = isban;
             Proxy = new ProxyConfiguration();
             CharacterCreation = new CharacterCreation();
-            Planification = new ObservableCollection<bool>(Enumerable.Repeat(true, 24));
+            Planification = new ObservableCollection<bool>(Enumerable.Repeat(false, 24));
         }
 
 
         // Properties
         public string Username { get; set; }
+        [JsonConverter(typeof(EncryptingJsonConverter), "Bûbbl€Bôt")]
         public string Password { get; set; }
+
+        [JsonProperty("Server")]
         public string Server { get; set; }
+
+        [JsonProperty("Character")]
         public string Character { get; set; }
+
+        [JsonProperty("Nickname")]
         public string Nickname { get; set; }
+
+        [JsonProperty("Identifiant")]
         public string Identifiant { get; set; }
+
+        [JsonProperty("IsBan")]
         public bool IsBan { get; set; }
 
+        [JsonProperty("Proxy")]
         public ProxyConfiguration Proxy { get; private set; }
+
+        [JsonProperty("CharacterCreation")]
         public CharacterCreation CharacterCreation { get; set; }
 
+        [JsonProperty("PlanificationActivated")]
         public bool PlanificationActivated
         {
             get => _planificationActivated;
@@ -54,6 +70,7 @@ namespace BubbleBot.Configurations
             }
         }
 
+        [JsonProperty("ForceStartScript")]
         public bool ForceStartScript
         {
             get => _forceStartScript;
@@ -64,9 +81,11 @@ namespace BubbleBot.Configurations
             }
         }
 
+        [JsonProperty("UsernameColor")]
         public SolidColorBrush UsernameColor =>
             IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
 
+        [JsonProperty("Planification")]
         public ObservableCollection<bool> Planification { get; }
 
 
@@ -78,49 +97,6 @@ namespace BubbleBot.Configurations
             Proxy.Password = password;
 
             RaisePropertyChanged("Proxy");
-        }
-
-        public void Save(BinaryWriter bw)
-        {
-            bw.Write(Username);
-            bw.Write(AESEncryption.Encrypt(Password, "Bûbbl€Bôt"));
-            bw.Write(Server);
-            bw.Write(Character);
-            bw.Write(Nickname);
-            bw.Write(Identifiant);
-            bw.Write(IsBan);
-
-            bw.Write(Proxy.Ip);
-            bw.Write(Proxy.Port);
-            bw.Write(Proxy.Username);
-            bw.Write(Proxy.Password);
-
-            CharacterCreation.Save(bw);
-        }
-
-        public static AccountConfiguration Load(BinaryReader br)
-        {
-            try
-            {
-                var acc = new AccountConfiguration(br.ReadString(), AESEncryption.Decrypt(br.ReadString(), "Bûbbl€Bôt"),
-                    br.ReadString(), br.ReadString(), br.ReadString(), br.ReadString(), br.ReadBoolean());
-
-                acc.Proxy = new ProxyConfiguration
-                {
-                    Ip = br.ReadString(),
-                    Port = br.ReadUInt16(),
-                    Username = br.ReadString(),
-                    Password = br.ReadString()
-                };
-
-                acc.CharacterCreation.Load(br);
-
-                return acc;
-            }
-            catch
-            {
-                return null;
-            }
         }
     }
 
@@ -136,12 +112,18 @@ namespace BubbleBot.Configurations
         }
 
         // Properties
+        [JsonProperty("Ip")]
         public string Ip { get; set; }
+        [JsonProperty("Port")]
         public ushort Port { get; set; }
+        [JsonProperty("Username")]
         public string Username { get; set; }
+        [JsonProperty("Password")]
         public string Password { get; set; }
 
+        [JsonProperty("IsValid")]
         public bool IsValid => Ip.Length > 0;
+        [JsonProperty("Url")]
         public string Url => Ip.Length > 0 ? $"http://{Ip}:{Port}" : "";
     }
 }

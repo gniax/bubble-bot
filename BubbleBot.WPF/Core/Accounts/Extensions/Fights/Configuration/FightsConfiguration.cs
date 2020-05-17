@@ -1,10 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
 using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
 {
@@ -165,6 +171,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
             }
         }
 
+        [JsonProperty("Spells")]
         public ObservableCollection<Spell> Spells { get; private set; }
 
         public bool IgnoreSummonedEnnemies
@@ -195,31 +202,39 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
             if (File.Exists(ConfigFilePath))
                 try
                 {
-                    using (var br = new BinaryReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
-                        FileShare.ReadWrite)))
+                    using (var sr = new StreamReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
+                        FileShare.ReadWrite), Encoding.UTF8))
                     {
-                        FightStartPlacement = (FightStartPlacements) br.ReadByte();
-                        MonsterToApproach = br.ReadInt32();
-                        SpellToApproach = br.ReadInt32();
-                        BlockSpectatorScenario = (BlockSpectatorScenarios) br.ReadByte();
-                        LockFight = br.ReadBoolean();
-                        Tactic = (FightTactics) br.ReadByte();
-                        MaxCells = br.ReadByte();
-                        ApproachWhenNoSpellWasCasted = br.ReadBoolean();
-                        BaseApproachOnAllMonsters = br.ReadBoolean();
-                        RegenStart = br.ReadByte();
-                        RegenEnd = br.ReadByte();
+                        var json = JObject.Parse(sr.ReadToEnd());
+
+                        FightStartPlacement = (FightStartPlacements) json.SelectToken("FightStartPlacement").Value<byte>();
+                        BlockSpectatorScenario = (BlockSpectatorScenarios) json.SelectToken("BlockSpectatorScenario").Value<byte>();
+                        Tactic = (FightTactics) json.SelectToken("Tactic").Value<byte>();
+                        FightsSpeed = (FightSpeeds) json.SelectToken("FightsSpeed").Value<byte>();
+                        MonsterToApproach = json.SelectToken("MonsterToApproach").Value<int>();
+                        SpellToApproach = json.SelectToken("SpellToApproach").Value<int>();
+                        LockFight = json.SelectToken("LockFight").Value<bool>();
+                        MaxCells = json.SelectToken("MaxCells").Value<byte>();
+                        ApproachWhenNoSpellWasCasted = json.SelectToken("ApproachWhenNoSpellWasCasted").Value<bool>();
+                        BaseApproachOnAllMonsters = json.SelectToken("BaseApproachOnAllMonsters").Value<bool>();
+                        RegenStart = json.SelectToken("RegenStart").Value<byte>();
+                        RegenEnd = json.SelectToken("RegenEnd").Value<byte>();
+                        IgnoreSummonedEnnemies = json.SelectToken("IgnoreSummonedEnnemies").Value<bool>();
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             Spells.Clear();
-                            var c = br.ReadByte();
-                            for (var i = 0; i < c; i++)
-                                Spells.Add(Spell.Load(br));
+                            var value = json["Spells"];
+                            var spells = value.ToObject<List<Spell>>();
+                            foreach (var spell in spells)
+                            {
+                                if (!Spells.Contains(spell))
+                                {
+                                    Spells.Add(spell);
+                                }
+                            }
                         });
 
-                        IgnoreSummonedEnnemies = br.ReadBoolean();
-                        FightsSpeed = (FightSpeeds) br.ReadByte();
                     }
                 }
                 catch
@@ -239,27 +254,29 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
             // Ensure that the configuration directory is there
             Directory.CreateDirectory(ConfigurationsPath);
 
-            using (var bw = new BinaryWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
-                FileShare.ReadWrite)))
+            using (var sw = new StreamWriter(File.Open(ConfigFilePath, FileMode.Create, FileAccess.ReadWrite,
+                FileShare.ReadWrite), Encoding.UTF8))
             {
-                bw.Write((byte) FightStartPlacement);
-                bw.Write(MonsterToApproach);
-                bw.Write(SpellToApproach);
-                bw.Write((byte) BlockSpectatorScenario);
-                bw.Write(LockFight);
-                bw.Write((byte) Tactic);
-                bw.Write(MaxCells);
-                bw.Write(ApproachWhenNoSpellWasCasted);
-                bw.Write(BaseApproachOnAllMonsters);
-                bw.Write(RegenStart);
-                bw.Write(RegenEnd);
+                dynamic json = new ExpandoObject();
 
-                bw.Write((byte) Spells.Count);
-                for (var i = 0; i < Spells.Count; i++)
-                    Spells[i].Save(bw);
+                json.FightStartPlacement = (byte) FightStartPlacement;
+                json.BlockSpectatorScenario = (byte) BlockSpectatorScenario;
+                json.Tactic = (byte) Tactic;
+                json.FightsSpeed = (byte) FightsSpeed;
+                json.MonsterToApproach = MonsterToApproach;
+                json.SpellToApproach = SpellToApproach;
+                json.LockFight = LockFight;
+                json.MaxCells = MaxCells;
+                json.ApproachWhenNoSpellWasCasted = ApproachWhenNoSpellWasCasted;
+                json.BaseApproachOnAllMonsters = BaseApproachOnAllMonsters;
+                json.RegenStart = RegenStart;
+                json.RegenEnd = RegenEnd;
+                json.IgnoreSummonedEnnemies = IgnoreSummonedEnnemies;
+                json.Spells = Spells;
 
-                bw.Write(IgnoreSummonedEnnemies);
-                bw.Write((byte) FightsSpeed);
+                var serializer = new JsonSerializer();
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(sw, json);
             }
         }
 

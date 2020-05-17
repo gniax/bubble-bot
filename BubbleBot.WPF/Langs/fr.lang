@@ -719,3 +719,4 @@
 727|Attribuer un proxy général au bot
 728|Le proxy ci-dessus sera attribué au programme qui gère les bots, ainsi que tous les bots sans proxy...
 729|Gestion du proxy global
+730|Adresse IP utilisée : {0}

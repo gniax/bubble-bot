@@ -558,6 +558,7 @@
     <Compile Include="Utility\Extensions\StringsExtensions.cs" />
     <Compile Include="Utility\Randomize.cs" />
     <Compile Include="Utility\Security\AESEncryption.cs" />
+    <Compile Include="Utility\Security\EncryptingJsonConverter.cs" />
     <Compile Include="Utility\Security\RecaptchaHandler.cs" />
     <Compile Include="Utility\Security\YeastAPI.cs" />
     <Compile Include="Utility\TimerWrapper.cs" />

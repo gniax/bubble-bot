@@ -179,14 +179,21 @@ namespace BubbleBot.Core.Accounts
                 if (AccountConfig.Proxy.IsValid)
                 {
                     Browser = new ChromiumWebBrowser("about:blank", browserSettings,
-                        new RequestContext(new BrowserRequestContextHandler(AccountConfig.Proxy.Ip,
-                            AccountConfig.Proxy.Port.ToString())));
+                        new RequestContext(new BrowserRequestContextHandler(AccountConfig.Proxy.Ip, AccountConfig.Proxy.Port.ToString())));
                     Browser.RequestHandler =
                         new BrowserRequestHandler(AccountConfig.Proxy.Username, AccountConfig.Proxy.Password);
                 }
                 else
                 {
-                    Browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+                    if (GlobalConfiguration.Instance.IsProxyValid)
+                    {
+                        Browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler(GlobalConfiguration.Instance.ProxyIp, GlobalConfiguration.Instance.ProxyPort.ToString())));
+                        Browser.RequestHandler = new BrowserRequestHandler(GlobalConfiguration.Instance.ProxyUsername, GlobalConfiguration.Instance.ProxyPassword);
+                    }
+                    else
+                    {
+                        Browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+                    }
                 }
 
                 var browserInit = SpinWait.SpinUntil(() => Browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
@@ -245,6 +252,7 @@ namespace BubbleBot.Core.Accounts
 
                         if (method == 1 && dictionaryRes.ContainsKey("key"))
                         {
+                            Logger.LogInfo("", LanguageManager.Translate("730", (string)dictionaryRes["ip"]));
                             _apiKey = (string)dictionaryRes["key"];
                             _taskCancelToken.Cancel(false);
                         }
@@ -372,7 +380,7 @@ namespace BubbleBot.Core.Accounts
 
             if (boolGetApiKey == false || _apiKey == "failed")
             {
-                if (httpCode == 0 && AccountConfig.Proxy.IsValid)
+                if (httpCode == 0 && (AccountConfig.Proxy.IsValid || (!AccountConfig.Proxy.IsValid && GlobalConfiguration.Instance.IsProxyValid)))
                     Logger.LogError("", LanguageManager.Translate("672"));
 
                 else if (httpCode == 0)
@@ -414,7 +422,7 @@ namespace BubbleBot.Core.Accounts
 
             if (getToken == false || _token == "failed")
             {
-                if (httpCode == 0 && AccountConfig.Proxy.IsValid)
+                if (httpCode == 0 && (AccountConfig.Proxy.IsValid || (!AccountConfig.Proxy.IsValid && GlobalConfiguration.Instance.IsProxyValid)))
                     Logger.LogError("", LanguageManager.Translate("672"));
 
                 else if (httpCode == 0)

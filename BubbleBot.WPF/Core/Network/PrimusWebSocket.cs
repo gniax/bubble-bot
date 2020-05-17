@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using BubbleBot.Configurations;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Utility;
 using BubbleBot.Utility.Security;
@@ -174,7 +175,11 @@ namespace BubbleBot.Core.Network
             _webSocket.SetCookie(new Cookie("io", sid));
             _webSocket.Compression = CompressionMethod.Deflate;
             _webSocket.Log.Output = (_, __) => { };
-            if (proxyUrl?.Length > 0) _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
+
+            if (proxyUrl?.Length > 0) 
+                _webSocket.SetProxy(proxyUrl, proxyUsername ?? "", proxyPassword ?? "");
+            else if (GlobalConfiguration.Instance.IsProxyValid)
+                _webSocket.SetProxy(GlobalConfiguration.Instance.ProxyUrl, GlobalConfiguration.Instance.ProxyUsername ?? "", GlobalConfiguration.Instance.ProxyPassword ?? "");
 
             _waitingToBeClosed = false;
 

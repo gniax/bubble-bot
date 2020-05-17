@@ -1,13 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
+using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Data;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Groups;
 using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BubbleBot.Configurations
 {
@@ -15,6 +22,9 @@ namespace BubbleBot.Configurations
     {
         // Fields
         public readonly string _configPath = Path.Combine(Directory.GetCurrentDirectory(), "config.bbot");
+        public bool IsProxyValid => _proxyIp.Length > 0;
+        public string ProxyUrl => _proxyIp.Length > 0 ? $"http://{_proxyIp}:{_proxyPort}" : "";
+
         private readonly SemaphoreSlim _semaphore;
         private string _antiCaptchaKey;
         private bool _automaticReconnection;
@@ -184,30 +194,35 @@ namespace BubbleBot.Configurations
                     Accounts.Clear();
                     try
                     {
-                        using (var br = new BinaryReader(File.Open(_configPath, FileMode.Open)))
+                        using (var sr = new StreamReader(File.Open(_configPath, FileMode.Open), Encoding.UTF8))
                         {
-                            var c = br.ReadInt32();
-                            for (var i = 0; i < c; i++) Accounts.Add(AccountConfiguration.Load(br));
+                            var json = JObject.Parse(sr.ReadToEnd());
 
-                            AntiCaptchaKey = br.ReadString();
-                            ShowDebugMessages = br.ReadBoolean();
-                            DisplayItemsInLogs = br.ReadBoolean();
-                            RandomNickname = br.ReadBoolean();
-                            AutomaticReconnection = br.ReadBoolean();
-                            Username = br.ReadString();
-                            Language = (Languages) br.ReadByte();
-                            ProxyIp = br.ReadString();
-                            ProxyPort = br.ReadUInt16();
-                            ProxyUsername = br.ReadString();
-                            ProxyPassword = br.ReadString();
+                            AntiCaptchaKey = json.SelectToken("AntiCaptchaKey").Value<string>();
+                            ShowDebugMessages = json.SelectToken("ShowDebugMessages").Value<bool>();
+                            DisplayItemsInLogs = json.SelectToken("DisplayItemsInLogs").Value<bool>();
+                            RandomNickname = json.SelectToken("RandomNickname").Value<bool>();
+                            AutomaticReconnection = json.SelectToken("AutomaticReconnection").Value<bool>();
+                            Username = json.SelectToken("Username").Value<string>();
+                            Language = (Languages) json.SelectToken("Language").Value<byte>();
+                            ProxyIp = json.SelectToken("Proxy.Ip").Value<string>();
+                            ProxyPort = json.SelectToken("Proxy.Port").Value<ushort>();
+                            ProxyUsername = json.SelectToken("Proxy.Username").Value<string>();
+                            ProxyPassword = json.SelectToken("Proxy.Password").Value<string>();
 
-                            for (var i = 0; i < Accounts.Count; i++)
+                            var value = json["Accounts"];
+                            var accounts = value.ToObject<List<AccountConfiguration>>();
+
+                            foreach (var acc in accounts)
                             {
-                                for (var j = 0; j < 24; j++)
-                                    Accounts[i].Planification[j] = br.ReadBoolean();
-
-                                Accounts[i].PlanificationActivated = br.ReadBoolean();
-                                Accounts[i].ForceStartScript = br.ReadBoolean();
+                                if (!Accounts.Contains(acc))
+                                {
+                                    while (acc.Planification.Count > 24)
+                                    {
+                                        acc.Planification.RemoveAt(0);
+                                    }
+                                    Accounts.Add(acc);
+                                }
                             }
                         }
                     }
@@ -228,31 +243,27 @@ namespace BubbleBot.Configurations
 
             _semaphore.Wait();
 
-            using (var bw = new BinaryWriter(File.Open(_configPath, FileMode.Create)))
+            using (var sw = new StreamWriter(File.Open(_configPath, FileMode.Create), Encoding.UTF8))
             {
-                bw.Write(Accounts.Count);
-                foreach (var accountConfig in Accounts) accountConfig?.Save(bw);
+                dynamic json = new ExpandoObject();
+                json.Settings = new ExpandoObject();
+                json.AntiCaptchaKey = AntiCaptchaKey;
+                json.ShowDebugMessages = ShowDebugMessages;
+                json.DisplayItemsInLogs = DisplayItemsInLogs;
+                json.RandomNickname = RandomNickname;
+                json.AutomaticReconnection = AutomaticReconnection;
+                json.Username = Username;
+                json.Language = (byte) Language;
+                json.Proxy = new ExpandoObject();
+                json.Proxy.Ip = ProxyIp;
+                json.Proxy.Port = ProxyPort;
+                json.Proxy.Username = ProxyUsername;
+                json.Proxy.Password = ProxyPassword;
+                json.Accounts = Accounts;              
 
-                bw.Write(AntiCaptchaKey);
-                bw.Write(ShowDebugMessages);
-                bw.Write(DisplayItemsInLogs);
-                bw.Write(RandomNickname);
-                bw.Write(AutomaticReconnection);
-                bw.Write(Username);
-                bw.Write((byte) Language);
-                bw.Write(ProxyIp);
-                bw.Write(ProxyPort);
-                bw.Write(ProxyUsername);
-                bw.Write(ProxyPassword);
-
-                for (var i = 0; i < Accounts.Count; i++)
-                {
-                    for (var j = 0; j < 24; j++)
-                        bw.Write(Accounts[i].Planification[j]);
-
-                    bw.Write(Accounts[i].PlanificationActivated);
-                    bw.Write(Accounts[i].ForceStartScript);
-                }
+                var serializer = new JsonSerializer();
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(sw, json);
             }
 
             _semaphore.Release();

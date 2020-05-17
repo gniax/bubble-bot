@@ -684,7 +684,7 @@
 692|Familier
 693|Dofus/Trophée
 694|Monture
-695|Companion
+695|Compagnon
 696|Poids
 697|Prix
 698|Accéder au monstre dans le bestiaire
@@ -695,7 +695,7 @@
 703|Ajouter un familier
 704|GID du familier
 705|GID de la nouriture du familier
-706|Quantiter de nouriture par repas
+706|Quantité de nouriture par repas
 707|Interval entre les repas
 708|Familier introuvable
 709|Nouriture introuvable
@@ -703,7 +703,7 @@
 711|Nom familier
 712|ID nouriture
 713|Nom nouriture
-714|Quantiter
+714|Quantité
 715|Interval
 716|Elevage de familier
 717|Démarrer
@@ -712,6 +712,11 @@
 720|Breeder
 721|Erreur, aucun familier {0} trouver dans l'inventaire.
 722|Erreur, aucune nourriture de type {0} n'a été trouver dans l'inventaire.
-723|Erreur, quantiter insufisante de nourriture de type {0} dans l'inventaire.
-724|Erreur, il existe déjà un familier de se type dans la configuration.
+723|Erreur, quantité insufisante de nourriture de type {0} dans l'inventaire.
+724|Erreur, il existe déjà un familier de ce type dans la configuration.
 725|Arrêter
+726|Proxy
+727|Attribuer un proxy général au bot
+728|Le proxy ci-dessus sera attribué au programme qui gère les bots, ainsi que tous les bots sans proxy...
+729|Gestion du proxy global
+730|Adresse IP utilisée : {0}

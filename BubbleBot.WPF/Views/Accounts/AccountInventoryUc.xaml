@@ -34,7 +34,7 @@
         <specific:DropMonsterIdsVisiblityBoolean x:Key="dropMonsterIdsVisiblityBoolean" />
     </UserControl.Resources>
 
-    <TabControl Controls:TabControlHelper.Underlined="TabPanel" SelectionChanged="TabControl_SelectionChanged">
+    <TabControl Controls:TabControlHelper.Underlined="TabPanel">
         <!-- Equipements -->
         <TabItem Style="{StaticResource TabItemLowerFontSize}">
             <TabItem.HeaderTemplate>

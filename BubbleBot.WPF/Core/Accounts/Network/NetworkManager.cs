@@ -121,7 +121,7 @@ namespace BubbleBot.Core.Accounts.Network
             ConnectTimeout = new Timer(ConnectTimeoutCallback, null, 120000, 120000);
 
             // Url as null if it is the first time then we use the selected server as url
-            if (!await SetSid(null, _sessionId))
+            if (!SetSid(null, _sessionId))
             {
                 if (Account.AccountConfig.Proxy.IsValid)
                     Account.Logger.LogError("", LanguageManager.Translate("672"));
@@ -509,9 +509,9 @@ namespace BubbleBot.Core.Accounts.Network
                 if (Phase == NetworkPhases.SWITCHING_TO_GAME && _access != null && Account != null && _sid != null)
                 {
                     // We have to retrieve the sid from the server
-                    if (!await SetSid(_access, _sessionId))
+                    if (!SetSid(_access, _sessionId))
                     {
-                        if (Account.AccountConfig.Proxy.IsValid)
+                        if (Account.AccountConfig.Proxy.IsValid || (!Account.AccountConfig.Proxy.IsValid && GlobalConfiguration.Instance.IsProxyValid))
                             Account.Logger.LogError("", LanguageManager.Translate("672"));
                         else
                             Account.Logger.LogError("", LanguageManager.Translate("673"));
@@ -592,7 +592,7 @@ namespace BubbleBot.Core.Accounts.Network
             }
         }
 
-        private async Task<bool> SetSid(string url = null, string sticker = null)
+        private bool SetSid(string url = null, string sticker = null)
         {
             var yeastValue = YeastAPI.GenerateKey();
             string fullUrl;

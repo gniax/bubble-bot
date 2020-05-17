@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
@@ -6,54 +7,25 @@ namespace BubbleBot.Configurations
     public class CharacterCreation
     {
         // Properties
+        [JsonProperty("Create")]
         public bool Create { get; set; }
+        [JsonProperty("Name")]
         public string Name { get; set; }
+        [JsonProperty("Server")]
         public string Server { get; set; }
+        [JsonProperty("Breed")]
         public int Breed { get; set; }
+        [JsonProperty("Sex")]
         public int Sex { get; set; }
+        [JsonProperty("Head")]
         public int Head { get; set; }
+        [JsonProperty("Colors")]
         public List<int> Colors { get; set; }
+        [JsonProperty("ParametersToCopy")]
         public string ParametersToCopy { get; set; }
+        [JsonProperty("FightsConfigurationToCopy")]
         public string FightsConfigurationToCopy { get; set; }
+        [JsonProperty("CompleteTutorial")]
         public bool CompleteTutorial { get; set; }
-
-
-        public void Save(BinaryWriter writer)
-        {
-            writer.Write(Create);
-
-            if (!Create)
-                return;
-
-            writer.Write(Name);
-            writer.Write(Server);
-            writer.Write(Breed);
-            writer.Write(Sex);
-            writer.Write(Head);
-            Colors?.ForEach(writer.Write);
-            writer.Write(ParametersToCopy);
-            writer.Write(FightsConfigurationToCopy);
-            writer.Write(CompleteTutorial);
-        }
-
-        public void Load(BinaryReader reader)
-        {
-            Create = reader.ReadBoolean();
-
-            if (!Create)
-                return;
-
-            Name = reader.ReadString();
-            Server = reader.ReadString();
-            Breed = reader.ReadInt32();
-            Sex = reader.ReadInt32();
-            Head = reader.ReadInt32();
-            Colors = new List<int>();
-            for (var i = 0; i < 5; i++)
-                Colors.Add(reader.ReadInt32());
-            ParametersToCopy = reader.ReadString();
-            FightsConfigurationToCopy = reader.ReadString();
-            CompleteTutorial = reader.ReadBoolean();
-        }
     }
 }

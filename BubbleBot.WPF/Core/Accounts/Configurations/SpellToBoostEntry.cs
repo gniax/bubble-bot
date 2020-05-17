@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace BubbleBot.Core.Accounts.Configurations
 {
     public class SpellToBoostEntry
@@ -11,8 +13,11 @@ namespace BubbleBot.Core.Accounts.Configurations
         }
 
         // Properties
+        [JsonProperty("Id")]
         public int Id { get; }
+        [JsonProperty("Name")]
         public string Name { get; }
+        [JsonProperty("Level")]
         public byte Level { get; }
     }
 }

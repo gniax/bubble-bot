@@ -1,5 +1,6 @@
 using System.IO;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration.Enums;
+using Newtonsoft.Json;
 
 namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
 {
@@ -30,22 +31,54 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
         }
 
         // Properties
+        [JsonProperty("SpellId")]
         public int SpellId { get; }
+
+        [JsonProperty("SpellName")]
         public string SpellName { get; }
+
+        [JsonProperty("Target")]
         public SpellTargets Target { get; }
+
+        [JsonProperty("Turns")]
         public byte Turns { get; }
+
+        [JsonProperty("LastTurn")]
         public byte LastTurn { get; set; }
+
+        [JsonProperty("Relaunchs")]
         public byte Relaunchs { get; }
+
+        [JsonProperty("RemainingRelaunchs")]
         public byte RemainingRelaunchs { get; set; }
+
+        [JsonProperty("TargetHp")]
         public byte TargetHp { get; }
+
+        [JsonProperty("CharacterHp")]
         public byte CharacterHp { get; }
+
+        [JsonProperty("Resistance")]
         public SpellResistances Resistance { get; }
+
+        [JsonProperty("ResistanceValue")]
         public byte ResistanceValue { get; }
+
+        [JsonProperty("DistanceToClosestMonster")]
         public byte DistanceToClosestMonster { get; }
+
+        [JsonProperty("HandToHand")]
         public bool HandToHand { get; }
+
+        [JsonProperty("AOE")]
         public bool AOE { get; }
+
+        [JsonProperty("CarefulAOE")]
         public bool CarefulAOE { get; }
+
+        [JsonProperty("AvoidAllies")]
         public bool AvoidAllies { get; }
+
 
 
         public void Save(BinaryWriter bw)
