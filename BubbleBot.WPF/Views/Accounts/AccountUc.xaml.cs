@@ -166,7 +166,7 @@ namespace BubbleBot.Views.Accounts
             switch (message.Functionality)
             {
                 case Functionalities.STATISTICS:
-                    Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountStatisticsUc(), 8));
+                    Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountStatisticsUc(), 9));
                     break;
                 case Functionalities.HDV:
                     Application.Current.Dispatcher.Invoke(() => AddUserControlToTab(new AccountBidUc(), 6));

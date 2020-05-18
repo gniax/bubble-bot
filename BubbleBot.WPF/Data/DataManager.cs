@@ -87,10 +87,22 @@ namespace BubbleBot.Data
                     string filePath = Path.Combine(dir, $"{id}.bbot");
                     if (File.Exists(filePath))
                     {
-                        var dataEntry = (T)JsonConvert.DeserializeObject(File.ReadAllText(filePath), typeof(T));
-                        // Cache it then add it to the list
-                        _cache[className].TryAdd(dataEntry.Id, dataEntry);
-                        data.Add(dataEntry);
+                        bool isWrite = false;
+                        while (!isWrite)
+                        {
+                            try
+                            {
+                                var dataEntry = (T)JsonConvert.DeserializeObject(File.ReadAllText(filePath), typeof(T));
+                                // Cache it then add it to the list
+                                _cache[className].TryAdd(dataEntry.Id, dataEntry);
+                                data.Add(dataEntry);
+                                isWrite = true;
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Erreur Ouverture du fichier ");
+                            }
+                        }
                     }
                     // If not then we add it to the download list
                     else
@@ -113,7 +125,7 @@ namespace BubbleBot.Data
                 }
             }
 
-            Console.WriteLine($"Got {data.Count} entries in {sw.Elapsed.Milliseconds}ms.");
+            //Console.WriteLine($"Got {data.Count} entries in {sw.Elapsed.Milliseconds}ms.");
             return data;
         }
 
@@ -167,21 +179,6 @@ namespace BubbleBot.Data
 
             string dataToPost = "{class: " + '\'' + className + '\'' + ", ids: [" + listIdPost + "]}";
 
-            /*     var mainFrame = _browser.GetMainFrame();
-                 var dataRequest = mainFrame.CreateRequest();
-                 dataRequest.Url = $"https://proxyconnection.touch.dofus.com/data/map?lang={GlobalConfiguration.Instance.Lang}&v={DTConstants.AssetsVersion}";
-                 dataRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
-                 dataRequest.SetHeaderByName("accept-language", "fr", true);
-                 dataRequest.SetHeaderByName("user-agent", "Mozilla/5.0 (Linux; Android 7.1.1; K92 Build/NMF26V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.124 Mobile Safari/537.36", true);
-               */
-            //  dataRequest.SetHeaderByName("accept", "*/*", true);
-
-            // var bytes = Encoding.ASCII.GetBytes(bytesArray);
-
-            //await _browser.GetMainFrame().EvaluateScriptAsync("var request = new XMLHttpRequest();");
-            //Initialisation des valeurs de la requête 
-           // _sheduleDataRequest.Wait();
-
             string reqSalt = Utility.Randomize.GetRandomString(20);
             await _browser.GetMainFrame().EvaluateScriptAsync("var params"+ reqSalt + " = " + dataToPost + ";" +
                                                               "var xhr" + reqSalt + " = new XMLHttpRequest();" +
@@ -195,8 +192,6 @@ namespace BubbleBot.Data
             string specChar = string.Format("{0}{1}{2}{3}", @"\", @"\", @"\", "\"");
             string resultwork = resultCreate.Replace(specChar, "'");
             string resultClean = resultwork.Replace(@"\", "");
-           // Console.WriteLine("Resultat requête :" + resultClean.Substring(1, resultClean.Length - 2));
-            //_sheduleDataRequest.Release();
 
           try
           {
@@ -212,27 +207,62 @@ namespace BubbleBot.Data
           catch { return null; }
 }
 
+     
+        private static void LoadBrowser()
+        {
+            if (_browser == null || _browser.IsDisposed)
+            {
+                var browserSettings = new BrowserSettings
+                {
+                    ApplicationCache = CefState.Disabled,
+                    FileAccessFromFileUrls = CefState.Disabled,
+                    UniversalAccessFromFileUrls = CefState.Disabled,
+                    ImageLoading = CefState.Disabled,
+                    Javascript = CefState.Disabled,
+                    WebSecurity = CefState.Disabled,
+                    Plugins = CefState.Disabled,
+                    LocalStorage = CefState.Disabled,
+                    WebGl = CefState.Disabled,
+                    WindowlessFrameRate = 1
+            };
+
+                if (GlobalConfiguration.Instance.IsProxyValid)
+                {
+                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler(GlobalConfiguration.Instance.ProxyIp, GlobalConfiguration.Instance.ProxyPort.ToString())));
+                    _browser.RequestHandler = new BrowserRequestHandler(GlobalConfiguration.Instance.ProxyUsername, GlobalConfiguration.Instance.ProxyPassword);
+                }
+                else
+                {
+                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+                }
+
+                var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
+            }
+        }
+
+        #region OLD_VERSION
+
         /*         dataRequest.Method = "POST";
-                 dataRequest.InitializePostData();
-                 var element = dataRequest.PostData.CreatePostDataElement();
-                 element.Bytes = bytes;
-                 dataRequest.PostData.AddElement(element);
-                 mainFrame.LoadRequest(dataRequest);
+              dataRequest.InitializePostData();
+              var element = dataRequest.PostData.CreatePostDataElement();
+              element.Bytes = bytes;
+              dataRequest.PostData.AddElement(element);
+              mainFrame.LoadRequest(dataRequest);
 
-                 string responseString = null;
-                 int i = 0;
-                 _browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
-                 {
-                     i++;
-                     GetContent(RuntimeHelpers.GetObjectValue(sender), e);
-                     Console.WriteLine("Recept :" + i.ToString());
-                 };
+              string responseString = null;
+              int i = 0;
+              _browser.FrameLoadEnd += delegate (object sender, FrameLoadEndEventArgs e)
+              {
+                  i++;
+                  GetContent(RuntimeHelpers.GetObjectValue(sender), e);
+                  Console.WriteLine("Recept :" + i.ToString());
+              };
 
-                 var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
-                 endFrame = false;
-                 responseString = resultString;
-                 Console.WriteLine("SHEDULE : " + responseString);
-                 */
+              var endFrameLoad = SpinWait.SpinUntil(() => endFrame != false, TimeSpan.FromSeconds(20));
+              endFrame = false;
+              responseString = resultString;
+              Console.WriteLine("SHEDULE : " + responseString);
+              */
 
 
         /*      try
@@ -348,37 +378,7 @@ namespace BubbleBot.Data
                 }
             }
             */
-        private static void LoadBrowser()
-        {
-            if (_browser == null || _browser.IsDisposed)
-            {
-                var browserSettings = new BrowserSettings
-                {
-                    ApplicationCache = CefState.Disabled,
-                    FileAccessFromFileUrls = CefState.Disabled,
-                    UniversalAccessFromFileUrls = CefState.Disabled,
-                    ImageLoading = CefState.Disabled,
-                    Javascript = CefState.Disabled,
-                    WebSecurity = CefState.Disabled,
-                    Plugins = CefState.Disabled,
-                    LocalStorage = CefState.Disabled,
-                    WebGl = CefState.Disabled,
-                    WindowlessFrameRate = 1
-            };
-
-                if (GlobalConfiguration.Instance.IsProxyValid)
-                {
-                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler(GlobalConfiguration.Instance.ProxyIp, GlobalConfiguration.Instance.ProxyPort.ToString())));
-                    _browser.RequestHandler = new BrowserRequestHandler(GlobalConfiguration.Instance.ProxyUsername, GlobalConfiguration.Instance.ProxyPassword);
-                }
-                else
-                {
-                    _browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
-                }
-
-                var browserInit = SpinWait.SpinUntil(() => _browser.IsBrowserInitialized, TimeSpan.FromSeconds(20));
-            }
-        }
-
+        #endregion OLD_VERSION
+    
     }
 }
