@@ -185,7 +185,7 @@ namespace AccountGenerator.Core
 
                 for (int i = 0; i < MAX_THREAD; i++)
                 {
-                    currentGen.ElementAt(i).CreationCompteStart();
+                    Task.Run(() => currentGen.ElementAt(i).CreationCompteStart());
                     System.Threading.Thread.Sleep(1000);
                 }
 
@@ -332,9 +332,7 @@ namespace AccountGenerator.Core
 
 
         #region PROXY_MANAGEMENT
-#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task AddCertifiedProxy(string proxyVerifier)
-#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             _semaphoreProxy.Wait();
             proxyCertified.Add(proxyVerifier);
@@ -342,6 +340,100 @@ namespace AccountGenerator.Core
             _semaphoreProxy.Release();
         }
 
+        public async Task<bool> ProxyChecker(string proxy)
+        {
+            //bool proxyOpen = false;
+            //bool proxyChecked = false;
+           // string proxyStatut = "";
+           // HttpClient httpClient;
+           // HttpResponseMessage resp;
+            await AddCertifiedProxy(proxy);
+            return true;
+         /*  if (!string.IsNullOrWhiteSpace(proxy))
+           {
+           
+                   int nbTries = PROXY_NBTRY;
+                   Console.ForegroundColor = ConsoleColor.Blue;
+                   Console.WriteLine("Vérification du proxy {0} !", proxy);
+                   WebProxy webproxy = new WebProxy(proxy, false);
+                   HttpClientHandler httpClientHandler = new HttpClientHandler()
+                   {
+                       Proxy = (IWebProxy)webproxy,
+                       PreAuthenticate = false,
+                       UseDefaultCredentials = false
+                   };
+                   while (nbTries > 0)
+                   {
+                       try
+                       {
+                           httpClient = new HttpClient(httpClientHandler);
+                           resp = await httpClient.GetAsync("https://hidemyna.me/api/geoip.php?out=js&htmlentities");
+                           proxyStatut = await resp.Content.ReadAsStringAsync();
+                           Console.ForegroundColor = ConsoleColor.Green;
+                           //Console.WriteLine(proxyStatut);
+                           proxyOpen = true;
+                           break;
+                       }
+                       catch (Exception ex)
+                       {
+                           Console.ForegroundColor = ConsoleColor.Red;
+                           Console.WriteLine("Echec connexion au proxy, tentative restante: {0}", nbTries - 1);
+                       }
+                       nbTries--;
+                   }
+                  
+                
+                if (proxyOpen == true)
+                {
+                    for (int i = 0; i < alowedCountry.Length; i++)
+                    {
+                        if (proxyStatut.Contains(alowedCountry[i]))
+                        {
+                            proxyChecked = true;
+                        }
+                    }
+                    if (proxyChecked == true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Proxy valide !");
+                        if (MODE == 1)
+                        {
+                            await AddCertifiedProxy(proxy);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Erreur, pays du proxy invalide !");
+                        if (MODE == 1)
+                        {
+                            // await AddCertifiedProxy(proxy);
+                            proxyFailled++; //Peut être besoin du semaphore en cas de probleme
+                        }
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Erreur, proxy invalide !");
+                    if (MODE == 1)
+                    {
+                        // await AddCertifiedProxy(proxy);
+                        proxyFailled++; //Peut être besoin du semaphore en cas de probleme
+                    }
+                    return false;
+                }
+
+
+
+            }
+            return false;
+            */
+        }
+
+        /*
         public async Task<bool> ProxyChecker(string proxy)
         {
             bool proxyOpen = false;
@@ -431,6 +523,7 @@ namespace AccountGenerator.Core
             }
             return false;
         }
+        */
         #endregion PROXY_MANAGEMENT
 
         #region MAIL_MANAGEMENT
@@ -531,7 +624,7 @@ namespace AccountGenerator.Core
                                     if (modedate)
                                     {
                                         lastMail = date;
-                                        //Console.WriteLine("On a enregistrer la date du dernier mail reçue: {0}", lastMail);
+                                        Console.WriteLine("On a enregistrer la date du dernier mail reçue: {0}", lastMail);
                                         return;
                                     }
 
@@ -554,7 +647,7 @@ namespace AccountGenerator.Core
                                     int Index1 = body.IndexOf(posUrl1);
                                     int Index2 = body.IndexOf(@" ]", Index1 + posUrl1.Length);
                                     string validUrl = body.Substring(Index1 + posUrl1.Length, Index2 - Index1 - posUrl1.Length);
-                                    // Console.WriteLine(validUrl);
+                                     Console.WriteLine(validUrl);
                                     tempUrlValidation.Add(validUrl);
                                 }
                             }
@@ -564,7 +657,7 @@ namespace AccountGenerator.Core
                             }
 
                             //Console.Write(body);
-                            // Console.WriteLine("{0}  --  {1}  -- {2} ---{3}", subject, date, email.Id, body);
+                             Console.WriteLine("{0}  --  {1}  -- {2} ---{3}", subject, date, email.Id, body);
                             //Console.ReadKey();
                         }
                     }
