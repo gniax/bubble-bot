@@ -13,8 +13,8 @@ namespace AccountGenerator
     class Program
     {
         public static int PROXY_COUNTER = 0; //Start index proxy list
-        public static int PROGRAM_MODE = 0; //0-synchrone 1-Asynchrone
-        public static int MAX_THREAD = 50;   //si async nombre de compte simultanée
+        public static int PROGRAM_MODE = 1; //0-synchrone 1-Asynchrone
+        public static int MAX_THREAD = 100;   //si async nombre de compte simultanée
         public static int MAX_TRYBASIC = 5;
         public static int MAX_TRYPROXY = 3;
         public static string ACCOUNT_PASSWORD = "CHANGE_ME";
@@ -243,7 +243,7 @@ namespace AccountGenerator
             settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
                                                    Environment.Is64BitProcess ? "x64" : "x86",
                                                    "CefSharp.BrowserSubprocess.exe");
-            //settings.LogSeverity = LogSeverity.Disable;
+            settings.LogSeverity = LogSeverity.Disable;
             settings.CachePath = AppDomain.CurrentDomain.BaseDirectory + "cache";
             settings.CefCommandLineArgs.Add("disable-gpu-vsync", "1");
             settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache", "1");

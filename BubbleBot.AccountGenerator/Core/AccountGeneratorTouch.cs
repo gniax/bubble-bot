@@ -151,7 +151,41 @@ namespace AccountGenerator.Core
              */
         }
 
+        public static async Task MailValidation(List<string> mailList)
+        {
+            var browserSettings = new BrowserSettings
+            {
+                ApplicationCache = CefState.Disabled,
+                FileAccessFromFileUrls = CefState.Disabled,
+                UniversalAccessFromFileUrls = CefState.Disabled,
+                ImageLoading = CefState.Disabled,
+                Javascript = CefState.Disabled,
+                WebSecurity = CefState.Disabled,
+                Plugins = CefState.Disabled,
+                LocalStorage = CefState.Disabled,
+                WebGl = CefState.Disabled,
+                WindowlessFrameRate = 1
+            };
 
+            var mailBrowser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+
+
+            var browserInit = SpinWait.SpinUntil(() => mailBrowser.IsBrowserInitialized, TimeSpan.FromSeconds(30));
+            if (!browserInit)
+            {
+                Console.WriteLine("Mail browser error.");
+            }
+
+            Console.WriteLine("Mail validation...");
+            foreach (string urlToVal in mailList)
+            {
+                //Console.WriteLine(urlToVal);
+                mailBrowser.Load(urlToVal);
+                SpinWait.SpinUntil(() => !mailBrowser.IsLoading, TimeSpan.FromSeconds(60));
+
+                //Console.WriteLine(await mailBrowser.GetMainFrame().GetTextAsync());
+            }
+        }
 
 #pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task outDebugSafe(string dbgtxt)
@@ -171,6 +205,37 @@ namespace AccountGenerator.Core
                 string error;
                 bool success = rc.SetPreference("proxy", v, out error);
             });
+        }
+
+        private async Task<string> GetStringKeyCaptcha()
+        {
+            string captchares = await HandleRecaptcha("6Leicx0TAAAAAE-R05fbh9qqtID2XDtkOBd7-KnF", 3);
+            if (captchares == "Error")
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Impossible de résoudre le captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
+                browser.Dispose();
+                allfinished = true;
+                return "";
+            }
+
+            string ckey = "";
+            Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(captchares));
+            if (dictionaryRes.ContainsKey("data")) //On récupère la reponse anti-captcha
+            {
+                ckey = (string)dictionaryRes["data"];
+
+            }
+
+            if (ckey == "")
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Impossible de résoudre le captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
+                browser.Dispose();
+                allfinished = true;
+                return "";
+            }
+            return ckey;
         }
 
         public async void CreationCompteStart()
@@ -218,7 +283,8 @@ namespace AccountGenerator.Core
                 proxPseudo = infos[2];
                 proxPass = infos[3];
             }
-            Console.WriteLine(proxAdress + proxPort + proxPseudo + proxPass);
+            
+            //Console.WriteLine(proxAdress + proxPort + proxPseudo + proxPass);
             if (proxAdress != "" && proxPort != "")
             {
                 browser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext(new BrowserRequestContextHandler(proxAdress,proxPort)));
@@ -240,22 +306,6 @@ namespace AccountGenerator.Core
                 await outDebugSafe("Browser open !");
             }
 
-            //Chargement chromium
-            /*            bool browserInit;
-                        browser = new ChromiumWebBrowser("about:blank"); //about:blank
-                        browserInit = System.Threading.SpinWait.SpinUntil(() => (browser.IsBrowserInitialized), TimeSpan.FromSeconds(60));
-                        if (!browserInit)
-                        {
-                            await outDebugSafe("Erreur chargement WebBrowser !");//si le browser a pas chargé on annule
-                        }
-                        else
-                        {
-                            await outDebugSafe("Browser open !");
-                        }
-                        */
-
-            //await SetProxy(browser, "http://" + mProxyAdresse1);
-
             Console.WriteLine("Vérification du proxy... ");
             if (await ProxyChecker(mProxyAdresse1) == true)
             {
@@ -272,15 +322,12 @@ namespace AccountGenerator.Core
             //EDIT 1
             //  browser.Load("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993");//https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993
 
-            await DofusConnection().ConfigureAwait(false);
-
+            await DofusConnection().ConfigureAwait(true);
 
         }
 
         private async Task DofusConnection()
         {
-
-
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Connexion au site DofusTouch...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
             bool chargement = false;
@@ -289,13 +336,10 @@ namespace AccountGenerator.Core
             JavascriptResponse takeInfo21;
             while (chargement == false && nbtryload > 0)
             {
-
-
                 browser.Load("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=26167");
-                while (browser.IsLoading)
-                {
-                    await Task.Delay(1000);
-                }
+
+                SpinWait.SpinUntil(() => !browser.IsLoading, TimeSpan.FromSeconds(60));
+
                 await Task.Delay(1000);
 
                 takeInfo21 = await browser.GetMainFrame().EvaluateScriptAsync("document.querySelector('body > pre').innerText;");
@@ -310,7 +354,6 @@ namespace AccountGenerator.Core
                 else
                 {
                     chargement = false;
-                    browser.Load("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=26167");
                     nbtryload--;
                 }
             }
@@ -325,44 +368,16 @@ namespace AccountGenerator.Core
                 return;
             }
 
-            //Thread.Sleep(2000);
-
             bool getHeader = false;
             string headerGuest = "";
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Bypass du captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
 
-                string captchares = await HandleRecaptcha("6Leicx0TAAAAAE-R05fbh9qqtID2XDtkOBd7-KnF", 3);
-                if (captchares == "Error")
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Impossible de résoudre le captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
-                    browser.Dispose();
-                    allfinished = true;
-                    return;
-                }
+                 string ckey = await GetStringKeyCaptcha();
 
-                string ckey = "";
-                Dictionary<string, object> dictionaryRes = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(captchares));
-                if (dictionaryRes.ContainsKey("data")) //On récupère la reponse anti-captcha
-                {
-                    ckey = (string)dictionaryRes["data"];
+                 await outDebugSafe(ckey);
 
-                }
-
-                if (ckey == "")
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Impossible de résoudre le captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
-                    browser.Dispose();
-                    allfinished = true;
-                    return;
-                }
-
-                await outDebugSafe(ckey);
-
-                //Thread.Sleep(2000);
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Demande de creation de compte...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
                 getHeader = false;
@@ -371,14 +386,11 @@ namespace AccountGenerator.Core
                 int nbtryheader = MAX_TRY_REQUEST;
                 while (getHeader == false && nbtryheader > 0)
                 {
-                    await browser.GetMainFrame().EvaluateScriptAsync("var request = new XMLHttpRequest();");
-                    //Initialisation des valeurs de la requête 
-
-                    await browser.GetMainFrame().EvaluateScriptAsync("request.open('GET'," + '\'' + "https://haapi.ankama.com/json/Ankama/v2/Account/CreateGuest?game=18&lang=fr&web_params%5B%5D=&captcha_token=" + ckey + '\'' + ", false);");
-                   // Thread.Sleep(500);
+                //Initialisation des valeurs de la requête 
+                await browser.GetMainFrame().EvaluateScriptAsync("var request = new XMLHttpRequest();"); 
+                await browser.GetMainFrame().EvaluateScriptAsync("request.open('GET'," + '\'' + "https://haapi.ankama.com/json/Ankama/v2/Account/CreateGuest?game=18&lang=fr&web_params%5B%5D=&captcha_token=" + ckey + '\'' + ", false);");
                     //Envoie de la requête 
                     await browser.GetMainFrame().EvaluateScriptAsync("request.send();");
-                // Thread.Sleep(4000);
                     await Task.Delay(1000);
                     //Recuperation du header de la reponse
                     JavascriptResponse takeInfo85 = await browser.GetMainFrame().EvaluateScriptAsync("request.getAllResponseHeaders();");
@@ -396,9 +408,17 @@ namespace AccountGenerator.Core
                     else
                     {
                         await outDebugSafe("X-password non trouver !");
-                        //Console.WriteLine("X-password non trouver !");
-                        getHeader = false;
-                        nbtryheader--;
+                    JavascriptResponse takeInfo63410 = await browser.GetMainFrame().EvaluateScriptAsync("request.response;");
+                    string takeInfoValue63410 = JsonConvert.SerializeObject(takeInfo63410.Result);
+                       //Console.WriteLine(takeInfoValue63410);
+                    if (takeInfoValue63410.Contains("ankama_captcha_incorrect"))
+                    {
+                        Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Erreur captcha incorrect...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
+                        Console.WriteLine(string.Format("ACCOUNT[{0}/3]:Bypass du captcha...    TOTALACCOUNT:{1}", counterAccount, nombreAccount));
+                        ckey = await GetStringKeyCaptcha();
+                    }
+                       getHeader = false;
+                       nbtryheader--;
                     }
 
                 }
@@ -436,9 +456,6 @@ namespace AccountGenerator.Core
                 //Console.WriteLine(amountString);
                 await outDebugSafe(amountString);
 
-                //Recuperation de la reponse
-                Thread.Sleep(2000);
-
                 // Console.WriteLine(dataGuest.Substring(posId + 7, 18));
                 int Index1 = dataGuest.IndexOf("[GUEST]");
                 int Index2 = dataGuest.IndexOf(@"\", Index1);
@@ -450,8 +467,6 @@ namespace AccountGenerator.Core
                 await outDebugSafe(string.Format("INFO GUEST:  id:{0}    password:{1}", guestId, guestPass));
                 //Console.WriteLine(string.Format("INFO GUEST:  id:{0}    password:{1}", guestId, guestPass));
             }
-
-            Thread.Sleep(2000);
 
             if (counterAccount == 1)
             {
@@ -494,11 +509,9 @@ namespace AccountGenerator.Core
                 string postAccount = string.Format(@"https://proxyconnection.touch.dofus.com/haapi/validateGuest?login={0}&password={1}&email={2}&nickname={3}&birthDateTimestamp={4}&parentEmail=&guestLogin=%5BGUEST%5D{5}&guestPassword={6}&lang=fr", pLogin, pPassword, pMail, pNickname, pBirth, guestId, guestPass);
                 //Console.WriteLine(postAccount);
                 await outDebugSafe(postAccount);
-
                 await browser.GetMainFrame().EvaluateScriptAsync("request.open('GET'," + '\'' + postAccount + '\'' + ", false);");
-                Thread.Sleep(500);
                 await browser.GetMainFrame().EvaluateScriptAsync("request.send();");
-                Thread.Sleep(4000);
+
                 JavascriptResponse takeInfo100 = await browser.GetMainFrame().EvaluateScriptAsync("request.response;");
                 string resultCreate = JsonConvert.SerializeObject(takeInfo100.Result);
                 // Console.WriteLine(resultCreate);
@@ -561,11 +574,14 @@ namespace AccountGenerator.Core
                 counterAccount++;
                 browser.Dispose();
                 allfinished = true;
+                return;
             }
             else
             {
                 await outDebugSafe("Erreur, les comptes on déjà été créer...");
-                //Console.WriteLine("Erreur, les comptes on déjà été créer...");
+                browser.Dispose();
+                allfinished = true;
+                return;
             }
 
         }
@@ -573,7 +589,7 @@ namespace AccountGenerator.Core
         public async Task StartCaptchaBypass()
         {
             string mSitekey = "";
-            Thread.Sleep(500);
+
             Console.WriteLine("Captcha reçue.");
             Console.WriteLine("On passe au traitement du captcha...");
 
@@ -595,7 +611,7 @@ namespace AccountGenerator.Core
                 else
                 {
                     Console.WriteLine("Sitekey non trouver !");
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                     success = false;
                 }
             }
@@ -610,24 +626,18 @@ namespace AccountGenerator.Core
                 ckey = (string)dictionaryRes["data"];
 
             }
-            Thread.Sleep(500);
 
             Console.WriteLine(ckey);
 
             await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').style.display =  " + '\'' + "block" + '\'' + ";");
-            Thread.Sleep(1000);
             await browser.EvaluateScriptAsync(@"document.querySelector('#g-recaptcha-response').innerHTML = " + '\'' + ckey + '\'' + ";");
-            Thread.Sleep(1000);
             await MakeSnapshot(0);
-            Thread.Sleep(5000);
             await browser.EvaluateScriptAsync(@"document.querySelector('#challenge-form input[type=submit]').click();");
-            //Thread.Sleep(5000);
             //await MakeSnapshot(1);
             Console.WriteLine("Requête terminer Captcha !");
-            Thread.Sleep(5000);
+  
             await MakeSnapshot(6);
 
-            Thread.Sleep(5000);
             Console.WriteLine("Normalement on a passez le captcha !");
             // captchabypassed = true;
         }
@@ -753,11 +763,10 @@ namespace AccountGenerator.Core
                 while (nbTries > 0)
                 {
 
-                        browser.Load("https://hidemyna.me/api/geoip.php?out=js&htmlentities");
-                        while (browser.IsLoading)
-                        {
-                            await Task.Delay(1000);
-                        }
+                        browser.Load("http://ip-api.com/json/?fields=61439");
+
+                       SpinWait.SpinUntil(() => !browser.IsLoading, TimeSpan.FromSeconds(60));
+
                         await Task.Delay(1000);
                         int countTryReq = 5;
                         
@@ -766,7 +775,7 @@ namespace AccountGenerator.Core
                             await Task.Delay(1000);
                             countTryReq--;
                         }
-                        Console.WriteLine(await browser.GetMainFrame().GetTextAsync());
+                        //Console.WriteLine(await browser.GetMainFrame().GetTextAsync());
 /*
                         await browser.GetMainFrame().EvaluateScriptAsync("var requestx = new XMLHttpRequest();");
                         await browser.GetMainFrame().EvaluateScriptAsync("requestx.open('GET','https://hidemyna.me/api/geoip.php?out=js&htmlentities', false);");
@@ -796,7 +805,7 @@ namespace AccountGenerator.Core
         {
             for (int i = 0; i < alowedCountry.Length; i++)
             {
-                if (proxyStatut.Contains(alowedCountry[i]))
+                if (proxyStatut.Contains('\"' + "countryCode" + '\"' + ":" + '\"' + alowedCountry[i]+ '\"'))
                 {
                     proxyChecked = true;
                 }
