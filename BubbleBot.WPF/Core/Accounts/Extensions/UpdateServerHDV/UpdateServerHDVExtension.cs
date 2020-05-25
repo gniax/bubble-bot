@@ -39,7 +39,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
             Enabled = false;
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
            // if (_running)
            //     return;
@@ -50,10 +50,27 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
 
             //Recuperation des items a update 
             ItemsToUpdate = new Dictionary<uint, string>();
-            TakeItemToUpdate();
+            TakeItemToUpdate(); 
 
-            while (Enabled == true)
-                StartCollect();
+            while(Enabled == true)
+            {
+                await Task.Delay(3000);
+                if (_account.State != Enums.AccountStates.NONE)
+                {
+                    _account.Logger.LogError("UPDATE-SERVER", "Le compte est actuellement sur une autre occupation, fin de la collecte.");
+                    return;
+                }
+
+                if (await StartBuying() == false)
+                {
+                    _account.Logger.LogError("UPDATE-SERVER", "Erreur lors de l'ouverture de l'HDV.");
+                    return;
+                }
+                Console.WriteLine("HDV OPEN");
+                await Task.Delay(1000);
+                await StartCollect().ConfigureAwait(true);
+            }
+               
 
             //_timer = new Timer(Timer_Callback, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -82,24 +99,10 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
 
         }
 
-        private void StartCollect()
+        private async Task StartCollect()
         {
             if (!_running)
                 return;
-
-            if (_account.State != Enums.AccountStates.NONE)
-            {
-                _account.Logger.LogError("UPDATE-SERVER", "Le compte est actuellement sur une autre occupation, fin de la collecte.");
-                return;
-            }
-
-               if (StartBuying().Result == false)
-               {
-                   _account.Logger.LogError("UPDATE-SERVER", "Erreur lors de l'ouverture de l'HDV.");
-                   return;
-               }
-               Console.WriteLine("HDV OPEN");
-             
 
             //Pour chaque items a update 
             for (int i = 0; i < ItemsToUpdate.Count; i++)
@@ -110,7 +113,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
                     List<BidExchangerObjectInfo> itemsSelectedInHDV = new List<BidExchangerObjectInfo>();
                    // Console.WriteLine(ItemsToUpdate.ElementAt(i).Key.ToString());
 
-                    itemsSelectedInHDV = _account.Game.Bid.GetListOfItem(ItemsToUpdate.ElementAt(i).Key);
+                    itemsSelectedInHDV = await _account.Game.Bid.GetListOfItemAsync(ItemsToUpdate.ElementAt(i).Key);
                    // Console.WriteLine("Nombre item :" + itemsSelectedInHDV.Count.ToString());
 
                     if (itemsSelectedInHDV == null || itemsSelectedInHDV.Count <= 0)
