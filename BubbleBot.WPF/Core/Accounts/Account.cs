@@ -57,16 +57,19 @@ namespace BubbleBot.Core.Accounts
         public bool PreventPlanificationReconnection;
 
         // Used to force restart script after captcha or a fight...
-        public bool WaitForRestartScript;
+        public bool WaitForRestartScript { get; set; }
+        public bool IsInFight => IsFighting();
 
         // Constructor
         public Account(AccountConfiguration accountConfig)
         {
             GroupId = "-";
+            PartyId = 0;
             Group_Chief = 0;
             AccountConfig = accountConfig;
             State = AccountStates.DISCONNECTED;
 
+            FriendsListId = new List<uint>();
             FramesData = new FramesData();
             Configuration = new Configuration(this);
             Logger = new Logger(this);
@@ -77,7 +80,6 @@ namespace BubbleBot.Core.Accounts
             Extensions = new ExtensionsContainer(this);
             Statistics = new StatisticsManager(this);
             PlanificationTimer = new TimerWrapper(30000, Planification_Callback);
-            //DataManager = new DataManager(this);
 
             Network.Disconnected += Network_Disconnected;
             Game.Map.MapLoaded += Map_MapLoaded;
@@ -85,12 +87,12 @@ namespace BubbleBot.Core.Accounts
 
         // Properties
         public AccountConfiguration AccountConfig { get; private set; }
-        //public DataManager DataManager { get; private set; }
         public Configuration Configuration { get; private set; }
         public FramesData FramesData { get; private set; }
         public string Token { get; private set; }
         public string Login { get; internal set; }
         public string GroupId { get; internal set; }
+        public uint PartyId { get; set; }
         public byte Group_Chief { get; internal set; }
 
         public DateTime? SubscriptionEndDate
@@ -118,8 +120,10 @@ namespace BubbleBot.Core.Accounts
         }
 
         public Group Group { get; set; }
+        public List<uint> FriendsListId { get; set; }
         public TimerWrapper PlanificationTimer { get; private set; }
         public bool IsBusy => State != AccountStates.NONE && State != AccountStates.REGENERATING;
+        public bool IsReadyToParty = false;
         public Account Element => this;
         public KeyValuePair<string, DateTime> ConnectError { get; set; }
         public bool HasGroup => Group != null;
@@ -137,30 +141,30 @@ namespace BubbleBot.Core.Accounts
         public event Action<Account, bool> RecaptchaResolved;
 
         public async Task Connect()
+        => await Task.Run(async () =>
         {
-            await Task.Run(async () =>
+            if (State != AccountStates.DISCONNECTED)
+                return;
+
+            if (!PlanificationTimer.Enabled)
+                PlanificationTimer.Start();
+
+            PreventAutoReconnection = false;
+            FramesData.Clear();
+            Network.Clear();
+            Game.Clear();
+            Extensions.Clear();
+            Logger.LogInfo("", LanguageManager.Translate("10"));
+
+            if (await SetToken())
             {
-                if (State != AccountStates.DISCONNECTED)
-                    return;
-
-                if (!PlanificationTimer.Enabled)
-                    PlanificationTimer.Start();
-
-                PreventAutoReconnection = false;
-                FramesData.Clear();
-                Network.Clear();
-                Game.Clear();
-                Extensions.Clear();
-                Logger.LogInfo("", LanguageManager.Translate("10"));
-
-                if (await SetToken())
-                {
-                    State = AccountStates.CONNECTING;
-                    Logger.LogInfo("", LanguageManager.Translate("11"));
-                    await Network.ConnectToLoginServer();
-                }
-            });
-        }
+                State = AccountStates.CONNECTING;
+                Logger.LogInfo("", LanguageManager.Translate("11"));
+                await Network.ConnectToLoginServer();
+            }
+        });
+        
+        
         public bool LoadBrowser()
         {
             if (Browser == null || Browser.IsDisposed)
@@ -235,7 +239,7 @@ namespace BubbleBot.Core.Accounts
             // method : 1 => apikey
             // method : 2 => token
             // method : 3 => sid 
-            // 200 => Success => Read Token or Apikeycor Sid
+            // 200 => Success => Read Token or Apikey or Sid
             // 601 => Ban => Disconnect other accounts if needed
             // 429 => Too Many Requests => Retry after 
 
@@ -530,6 +534,9 @@ namespace BubbleBot.Core.Accounts
         {
             try
             {
+                PartyId = 0;
+                IsReadyToParty = false;
+
                 if (State != AccountStates.BANNED && !AccountConfig.IsBan)
                     State = AccountStates.DISCONNECTED;
                 Logger.LogWarning("Network", LanguageManager.Translate("31"));
@@ -582,8 +589,7 @@ namespace BubbleBot.Core.Accounts
             var localDate = DateTime.Now;
             var newDate = localDate.AddSeconds(Seconds);
 
-            var newDateToDay =
-                newDate.Day + " " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month);
+            var newDateToDay = $"{newDate.Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(newDate.Month)}";
             var newDateToTime = newDate.ToString("HH:mm:ss");
 
             Logger.LogMessage(LanguageManager.Translate("165"),
@@ -693,7 +699,7 @@ namespace BubbleBot.Core.Accounts
             // If the bot is connected and the script is not running as we want 
             else if (Network.Connected && !Scripts.Running && WaitForRestartScript && !IsBusy)
             {
-                if (HasGroup && IsGroupChief || !HasGroup)
+                if ((HasGroup && IsGroupChief) || !HasGroup)
                     Scripts.StartScript();
 
                 await Task.Delay(1500);
@@ -784,11 +790,13 @@ namespace BubbleBot.Core.Accounts
                     CloseBrowser();
                 }
 
-                Browser = null;
                 _taskCancelToken = null;
                 _state = AccountStates.NONE;
+                _fightLimitReached = false;
                 _apiKey = null;
                 _token = null;
+                Browser = null;
+                FriendsListId = null;
                 AccountConfig = null;
                 Configuration = null;
                 Token = null;
@@ -803,7 +811,8 @@ namespace BubbleBot.Core.Accounts
                 Commands = null;
                 PlanificationTimer = null;
 
-                _fightLimitReached = false;
+                PartyId = 0;
+                IsReadyToParty = false;
                 WaitForRestartScript = false;
                 IsIntentionalDisconnection = false;
                 PreventPlanificationReconnection = false;
