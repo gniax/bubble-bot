@@ -42,7 +42,9 @@ namespace BubbleBot.Core.Network
         {
             _socketIOtimer.Change(Timeout.Infinite, Timeout.Infinite);
             _socketIOtimer.Dispose();
-            //webSocket.Dispose(); TODO: Implement this
+
+            if (_webSocket != null && _webSocket.ReadyState == WebSocketState.Open)
+                _webSocket.Close();
 
             Url = null;
             Connected = false;
@@ -80,6 +82,7 @@ namespace BubbleBot.Core.Network
             }
 
             await OpenAsync().ConfigureAwait(false);
+            
         }
 
         public Task OpenAsync()
@@ -168,8 +171,7 @@ namespace BubbleBot.Core.Network
         private void InitializeWebsocket(string url, string sid, string proxyUrl, string proxyUsername,
             string proxyPassword)
         {
-            Url = new Uri(url + "&sid=" + sid + "&t=" + YeastAPI.GenerateKey() + "&b64=1");
-            Console.WriteLine(Url);
+            Url = new Uri($"{url}&sid={sid}&t={YeastAPI.GenerateKey()}&b64=1");
 
             _webSocket = new WebSocket(Url.AbsoluteUri);
             _webSocket.SetCookie(new Cookie("io", sid));
@@ -269,7 +271,7 @@ namespace BubbleBot.Core.Network
 
         private void WebSocket_Opened(object sender, EventArgs e)
         {
-            Console.WriteLine("Websocket open");
+            //Console.WriteLine("Websocket open");
 
             _webSocket.Send("2probe");
             _webSocket.Send("5");

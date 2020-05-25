@@ -124,6 +124,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 _fighters.TryAdd(informations.ContextualId, new FightPlayerEntry(informations));
             else if (informations is GameFightMonsterInformations mInfos)
                 _fighters.TryAdd(mInfos.ContextualId, new FightMonsterEntry(mInfos, informations));
+
             //Console.WriteLine(mInfos.CreatureGenericId);
         }
 
@@ -402,6 +403,39 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         #endregion
 
         #region Updates
+        public void Update(GameActionFightInvisibilityMessage message)
+        {
+            var fighter = GetFighter(message.TargetId);
+
+            if (fighter == null)
+            {
+                return;
+            }
+            else
+            {
+                fighter.Stats.InvisibilityState = message.State;
+            }
+
+            SortFighters();
+            FightersUpdated?.Invoke();
+        }
+
+        public void Update(GameActionFightInvisibleDetectedMessage message)
+        {
+            var fighter = GetFighter(message.SourceId);
+
+            if (fighter == null)
+            {
+                return;
+            }
+            else
+            {
+                fighter.CellId = (short) message.CellId;
+            }
+
+            SortFighters();
+            FightersUpdated?.Invoke();
+        }
 
         public void Update(GameFightJoinMessage message)
         {
@@ -629,7 +663,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 TurnEnded?.Invoke();
             }
 
-            fighter.Update(message);
+            fighter?.Update(message);
         }
 
         public void Update(GameActionFightDispellableEffectMessage message)
@@ -653,10 +687,21 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
         public void Update(GameFightEndMessage message)
         {
+
             Clear();
             _account.State = AccountStates.NONE;
 
             FightEnded?.Invoke();
+
+            if (_account.WaitForRestartScript)
+            {
+                Task.Run(() =>
+                {
+                    Task.Delay(2000).Wait();
+                    _account.Scripts.StartScript();
+                    _account.WaitForRestartScript = false;
+                });
+            }
         }
 
         public async Task UpdateAsync(GameActionFightSpellCastMessage message)

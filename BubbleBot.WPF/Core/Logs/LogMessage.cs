@@ -20,7 +20,7 @@ namespace BubbleBot.Core.Logs
         // Properties
         public string Source { get; }
         public string Color { get; }
-        public string Message { get; }
+        public string Message { get; set; }
         public DateTime Time { get; }
         public List<ObjectItem> ObjectItems { get; }
 

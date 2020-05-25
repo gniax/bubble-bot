@@ -519,24 +519,73 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         {
             Status = (PlayerStatusEnum) message.Status.StatusId;
         }
-      /*  private async Task GetSpellList(SpellListMessage message)
+        /*  private async Task GetSpellList(SpellListMessage message)
+          {
+              Spells.Clear();
+
+              var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
+              for (var i = 0; i < message.Spells.Count; i++)
+               Spells.Add(new SpellEntry(message.Spells[i], spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
+
+              SpellsUpdated?.Invoke();
+
+          }
+          */
+        public void Update(FriendsListMessage message)
         {
-            Spells.Clear();
-
-            var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
-            for (var i = 0; i < message.Spells.Count; i++)
-             Spells.Add(new SpellEntry(message.Spells[i], spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
-
-            SpellsUpdated?.Invoke();
-
+            if (message.FriendsList != null && message.FriendsList?.Count > 0 && _account.FriendsListId != null)
+            {
+                _account.FriendsListId.AddRange(message.FriendsList.Select(u => u.AccountId));
+                _account.FriendsListId = _account.FriendsListId.Distinct().ToList();
+            }
         }
-        */
+        public async Task UpdateAsync(PartyInvitationMessage message)
+        {
+            if (_account.HasGroup && _account.Group?.Chief.Game.Character.Id == message.FromId)
+            {
+                //Console.WriteLine("Account : {0} PartyID : {1}", _account.Game.Character.Name, message.PartyId);
+                await _account.Network.SendMessageAsync(new PartyAcceptInvitationMessage(message.PartyId));
+
+                _account.PartyId = message.PartyId;
+                _account.Group.Chief.PartyId = message.PartyId;
+                _account.Group.PartyId = message.PartyId;
+                
+
+                // This task will verify if everyone is in the party to notify the leader
+                await Task.Run(() =>
+                {
+                    short allInParty = 0;
+                    foreach (var member in _account.Group.Members)
+                    {
+                        if (member.PartyId == _account.Group.PartyId)
+                        {
+                            allInParty++;
+                        }
+                    }
+                    if (_account.Group.Chief.PartyId == _account.Group.PartyId)
+                        allInParty++;
+
+                    if (allInParty == _account.Group.Members.Count + 1)
+                    {
+                        _account.Group.Chief.Logger.LogDofus("Party", LanguageManager.Translate("735"));
+                    }
+                }).ConfigureAwait(false);
+                
+
+                if (!_account.FriendsListId.Contains(message.FromId))
+                {
+                    await _account.Network.SendMessageAsync(new FriendAddRequestMessage(message.FromName));
+                }
+
+            }
+        }
+        public void Update(PartyJoinMessage message)
+        {
+            _account.PartyId = message.PartyId;
+        }
+
         public async Task UpdateAsync(SpellListMessage message)
         {
-            /* Console.WriteLine("UPDATE SPELLLLLLLLLLLL");
-            var t = Task.Run(async() => await GetSpellList(message)).ConfigureAwait(true);
-             Console.WriteLine("FIN UPDATE SPELLLLLLLLLLLL");
-             */
             var spells = await DataManager.GetListAsync<Spells>(message.Spells.Select(f => f.SpellId));
 
             if(spells != null)
@@ -551,9 +600,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 
                     SpellsUpdated?.Invoke();
                 });
-            }
-
-            
+            }          
         }
 
         public void Update(SpellUpgradeSuccessMessage message)

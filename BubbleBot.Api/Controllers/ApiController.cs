@@ -46,6 +46,7 @@ namespace BubbleBot.Api.Controllers
                     id = user.Id,
                     name = user.Username,
                     avatar = user.AvatarUrl,
+                    usergroup = user.UserGroup,
                 },
                 subscribed = user.IsSubscribedToTouch,
                 touchEndDate = user.TouchEndDate,
@@ -159,12 +160,12 @@ namespace BubbleBot.Api.Controllers
         }
 
         [HttpGet("iteminformations")]
-        public async Task<JsonResult> ItemInformationsRequest(string itemname, int itemid, string itemserver, string token)
+        public JsonResult ItemInformationsRequest(string itemname, int itemid, string itemserver, string token)
         {
             if (token != _token)
                 return Json(new { success = false, errorId = 0 });
 
-            List<CollectedHDVItem> collectedItemsSelectedList = await _hdvService.GetItemInfos(itemname, itemid, itemserver).ConfigureAwait(true);
+            List<CollectedHDVItem> collectedItemsSelectedList = _hdvService.GetItemInfos(itemname, itemid, itemserver);
             if (collectedItemsSelectedList == null)
                 return Json(new { success = false, errorId = 1 });
 

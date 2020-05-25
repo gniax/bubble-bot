@@ -31,22 +31,65 @@ namespace BubbleBot.Core.Groups
         {
             _groupId = GenerateGroupId(16);
             _grouping = new Grouping(this);
+            MembersToParty = new List<Account>();
             _membersAccountsFinished = new Dictionary<Account, ManualResetEvent>();
             Chief = chief;
             chief.Group_Chief = 1;
             chief.GroupId = _groupId;
 
             Members = new ObservableCollection<Account>();
+            PartyId = 0;
 
+            PlayerIsOnline += Group_PlayerIsOnline;
             Chief.Group = this;
             Chief.Game.Fight.FightIdReceived += Chief_FightIdReceived;
             Chief.RecaptchaResolved += Account_RecaptchaResolved;
         }
 
+
         // Properties
+        public List<Account> MembersToParty { get; private set; }
+        public Action<Account> PlayerIsOnline { get; private set; }
+        public uint PartyId { get; set; }
         public Account Chief { get; private set; }
         public ObservableCollection<Account> Members { get; private set; }
 
+        private async void Group_PlayerIsOnline(Account account)
+            => await Task.Run(async () =>
+            {
+                // Note: this party handler works while considering that the leader will invite other members
+                // However, I forgot they could invite between each other waiting chief is joining
+                // In the case the chief is online and the eventPlayer is'nt the chief (then if it's PartyId is different than the group's PartyId) we invite him friend/party
+                if (account != Chief && Chief.IsReadyToParty)
+                {
+                    //Console.WriteLine("Account : {0}", account.Game.Character.Name);
+                    if (!Chief.FriendsListId.Contains((uint)account.Game?.Character?.Id))
+                    {
+                        await Chief.Network.SendMessageAsync(new FriendAddRequestMessage(account.Game?.Character?.Name));
+                        await Task.Delay(200);
+                    }
+                    await Chief.Network.SendMessageAsync(new PartyInvitationRequestMessage(account.Game?.Character?.Name));
+                }
+                // Else if the chief is not connected yet, we store the players to invite
+                else if (account != Chief && !Chief.IsReadyToParty)
+                {
+                    MembersToParty.Add(account);
+                }
+                // Then if it is the chief and there is members to invite, we add them
+                else if (account == Chief && MembersToParty.Count > 0)
+                {
+                    for (int i = MembersToParty.Count - 1; i >= 0; i--)
+                    {
+                        if (!Chief.FriendsListId.Contains(MembersToParty.ElementAt(i).Game.Character.Id))
+                        {
+                            await Chief.Network.SendMessageAsync(new FriendAddRequestMessage(MembersToParty.ElementAt(i).Game.Character.Name));
+                            await Task.Delay(BubbleBot.Utility.Randomize.GetRandomInt(180, 240));
+                        }
+                        await Chief.Network.SendMessageAsync(new PartyInvitationRequestMessage(MembersToParty.ElementAt(i).Game.Character.Name));
+                        MembersToParty.Remove(MembersToParty.ElementAt(i));
+                    }
+                }
+            });
         public string GenerateGroupId(int size)
         {
             // Characters except I, l, O, 1, and 0 to decrease confusion when hand typing tokens
@@ -271,6 +314,7 @@ namespace BubbleBot.Core.Groups
                 Members.Clear();
                 Members = null;
                 Chief = null;
+                PartyId = 0;
 
                 _disposedValue = true;
             }

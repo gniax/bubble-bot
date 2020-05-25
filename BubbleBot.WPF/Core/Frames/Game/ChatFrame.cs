@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
@@ -150,6 +153,6 @@ namespace BubbleBot.Core.Frames.Game
                 default:
                     return true;
             }
-        }
+        }     
     }
 }

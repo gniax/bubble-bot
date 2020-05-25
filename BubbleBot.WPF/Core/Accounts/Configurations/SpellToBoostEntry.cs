@@ -13,7 +13,7 @@ namespace BubbleBot.Core.Accounts.Configurations
         }
 
         // Properties
-        [JsonProperty("Id")]
+        [JsonProperty("SpellId")]
         public int Id { get; }
         [JsonProperty("Name")]
         public string Name { get; }

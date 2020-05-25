@@ -15,17 +15,19 @@ namespace BubbleBot.Server.Messages
         public string BuildVersion { get; private set; }
         public string AssetsVersion { get; private set; }
         public string StaticDataVersion { get; private set; }
+        public bool IsFromUpdate { get; private set; }
 
 
         // Constructor
         public DTVersionsMessage() { }
 
-        public DTVersionsMessage(string appVersion, string buildVersion, string assetsVersion, string staticDataVersion)
+        public DTVersionsMessage(string appVersion, string buildVersion, string assetsVersion, string staticDataVersion, bool isfromupdate = false)
         {
             AppVersion = appVersion;
             BuildVersion = buildVersion;
             AssetsVersion = assetsVersion;
             StaticDataVersion = staticDataVersion;
+            IsFromUpdate = isfromupdate;
         }
 
 
@@ -35,6 +37,7 @@ namespace BubbleBot.Server.Messages
             writer.Write(BuildVersion);
             writer.Write(AssetsVersion);
             writer.Write(StaticDataVersion);
+            writer.Write(IsFromUpdate);
         }
 
         public void Deserialize(BinaryReader reader)
@@ -43,6 +46,7 @@ namespace BubbleBot.Server.Messages
             BuildVersion = reader.ReadString();
             AssetsVersion = reader.ReadString();
             StaticDataVersion = reader.ReadString();
+            IsFromUpdate = reader.ReadBoolean();
         }
 
     }

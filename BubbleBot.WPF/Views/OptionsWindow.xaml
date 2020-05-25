@@ -113,6 +113,9 @@
                             <CheckBox Content="{_:Lang 701}"
                                               Margin="4"
                                               IsChecked="{Binding DisplayItemsInLogs}" />
+                            <CheckBox Content="{_:Lang 737}"
+                                              Margin="4"
+                                              IsChecked="{Binding FormattingLogs}" />
                         </StackPanel>
                     </GroupBox>
 

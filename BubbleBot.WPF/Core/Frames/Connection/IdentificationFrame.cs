@@ -9,6 +9,7 @@ using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
+using BubbleBot.Server.Messages;
 using BubbleBot.Utility;
 using BubbleBot.Views;
 
@@ -17,6 +18,7 @@ namespace BubbleBot.Core.Frames.Connection
     public static class IdentificationFrame
     {
         public static NicknameWindow nicknameWindow;
+        public static bool WarnServerVersionsLocker = false;
 
         public static Task NicknameRegistrationMessage(Account account, NicknameRegistrationMessage message)
         {
@@ -28,17 +30,7 @@ namespace BubbleBot.Core.Frames.Connection
                     {
                         nicknameWindow = new NicknameWindow(account);
                         nicknameWindow.ShowDialog();
-                    });
-
-                    while (nicknameWindow == null)
-                        Thread.Sleep(2000);
-
-                    while (nicknameWindow.nickname == null)
-                        Thread.Sleep(2000);
-
-                    await account.Network.SendMessageAsync(new NicknameChoiceRequestMessage(nicknameWindow.nickname));
-                    account.Logger.LogInfo(LanguageManager.Translate("85"),
-                        LanguageManager.Translate("615", nicknameWindow.nickname));
+                    });                   
                 }
                 else
                 {
@@ -102,8 +94,17 @@ namespace BubbleBot.Core.Frames.Connection
                 account.Logger.LogError("IdentificationFrame", LanguageManager.Translate("82", message.Reason));
                 if (message.Reason != "TIME_OUT" && message.Reason != "KICKED" && message.Reason != "OPT_TIMEOUT")
                 {
+                    if (message.Reason == "INCOMPATIBBUILDLEVERSIONS" && !WarnServerVersionsLocker)
+                    {
+                        // NOTES: 'HandleDTVersionsMessage' will set 'WarnServerVersionsLocker' to 'false' 
+                        // Its purpose is to prevent spamming server with IncompatibleVersionsMessage
+                        WarnServerVersionsLocker = true;
+                        BubbleBotMain.Instance.Server.SendMessage(new IncompatibleVersionsMessage());
+                    }
+
                     account.PreventAutoReconnection = true;
                     account.PreventPlanificationReconnection = true;
+
                 }
             });
         }

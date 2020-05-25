@@ -62,7 +62,19 @@ namespace BubbleBot.Views
                     // If the ip is valid, the proxy is working
                     if (text.Substring(0, text.Length - 1) == ip.ToString())
                     {
-                        await this.ShowMessageAsync(LanguageManager.Translate("357"), LanguageManager.Translate("355"));
+                        response = await http.GetAsync("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993");
+                        if ((int)response.StatusCode == 403)
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("731"));
+                        }
+                        else if ((int)response.StatusCode == 200)
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("357"), LanguageManager.Translate("355"));
+                        }
+                        else
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("732", response.StatusCode));
+                        }
                         return;
                     }
                 }

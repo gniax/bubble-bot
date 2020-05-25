@@ -33,7 +33,6 @@ namespace BubbleBot.Core.Accounts.InGame.Server
             Id = message.ServerId;
             var data = await DataManager.Get<Servers>(Id);
             Name = data.NameId;
-            Console.WriteLine(Name);
 
              ServerSelected?.Invoke();
 

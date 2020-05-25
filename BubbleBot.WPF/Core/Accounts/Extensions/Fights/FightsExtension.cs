@@ -94,7 +94,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
             _awaitingSequenceEnd = false;
 
             // For example mules that just need to move (or not) and pass turn
-            // Also end turn if there are no visibile monsters
+            // Also end turn if there are no visible monsters
             if (Spells.Count == 0 || !_account.Game.Fight.Ennemies.Any())
             {
                 await EndTurn();

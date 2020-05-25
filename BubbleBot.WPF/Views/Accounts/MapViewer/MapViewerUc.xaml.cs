@@ -1,22 +1,39 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BubbleBot.Configurations;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Utility.Extensions;
 using BubbleBot.Views.Accounts.MapViewer;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using Color = System.Windows.Media.Color;
+using Pen = System.Windows.Media.Pen;
+using Point = System.Windows.Point;
+using Image = System.Drawing.Image;
+using System.ComponentModel;
+using BubbleBot.Core.Accounts.InGame.Map.Entities;
 
 namespace BubbleBot.Views.Accounts
 {
-    public partial class MapViewerUc
+    public partial class MapViewerUc : INotifyPropertyChanged
     {
         // Fields
         private static List<MapViewerCell> _cellsPoints;
@@ -37,7 +54,10 @@ namespace BubbleBot.Views.Accounts
         private List<short> _path;
         private short _selectedCellId;
         private bool _showCellIds;
-
+        private bool _showRealMap;
+        private bool _showNames;
+        private bool _showIds;
+        private bool _showMonsters;
 
         // Constructor
         public MapViewerUc()
@@ -49,6 +69,16 @@ namespace BubbleBot.Views.Accounts
             MouseLeftButtonUp += MapViewerUc_MouseLeftButtonUp;
         }
 
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+
+        #endregion
 
         // Properties
         public bool ShowCellIds
@@ -57,19 +87,78 @@ namespace BubbleBot.Views.Accounts
             set
             {
                 _showCellIds = value;
+                OnPropertyChanged("ShowCellsIds");
                 InvalidateVisual();
+            }
+        }
+
+        public bool ShowNames
+        {
+            get => _showNames;
+            set
+            {
+                if (ShowIds) ShowIds = false;
+                _showNames = value;
+                OnPropertyChanged("ShowNames");
+                InvalidateVisual();
+            }
+        }
+
+        public bool ShowIds
+        {
+            get => _showIds;
+            set
+            {
+                if (ShowNames) ShowNames = false;
+                _showIds = value;
+                OnPropertyChanged("ShowIds");
+                InvalidateVisual();
+            }
+        }
+
+        public bool ShowMonsters
+        {
+            get => _showMonsters;
+            set
+            {
+                _showMonsters = value;
+                OnPropertyChanged("ShowMonsters");
+                InvalidateVisual();
+            }
+        }
+
+        public bool ShowRealMap
+        {
+            get => _showRealMap;
+            set
+            {
+                _showRealMap = value;
+                InvalidateVisual();
+
+                if (!_showRealMap && RealMap.ImageSource != null)
+                {
+                    RealMap.Dispatcher.Invoke(() => RealMap.ImageSource = null);
+                    _currentRealMapId = 0;
+                }
+                else if (RealMap != null && _showRealMap)
+                {
+                    GenerateRealMap();
+                }
+
             }
         }
 
         private Account Account => BubbleBotMain.Instance.SelectedAccount;
         private bool IsMapValid => Account?.Game?.Map?.Data != null;
-
+        private static ImageSource _realMap;
+        private static int _currentRealMapId;
 
         private static void Initialize()
         {
             if (_cellsPoints != null)
                 return;
 
+            _currentRealMapId = 0;
             _pen = new Pen(Brushes.White, 1);
             _walkableCellBrush = new SolidColorBrush(Colors.DarkGray);
             _losCellBrush = new SolidColorBrush(Colors.Transparent);
@@ -122,6 +211,7 @@ namespace BubbleBot.Views.Accounts
 
                 cell++;
             }
+
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -130,15 +220,17 @@ namespace BubbleBot.Views.Accounts
 
             for (short i = 0; i < _cellsPoints.Count; i++)
             {
+
                 var brush = GetCellBrush(i);
 
-                if (brush == _obstacleCellBrush && !ShowCellIds)
+                if (brush == _obstacleCellBrush && !ShowCellIds && !ShowRealMap)
                 {
                     _cellsPoints[i].DrawObstacle(drawingContext, brush, _pen);
                 }
                 else
                 {
-                    _cellsPoints[i].Draw(drawingContext, brush, _pen);
+                    if (!(_showRealMap && brush == _losCellBrush))
+                        _cellsPoints[i].Draw(drawingContext, brush, _pen, ShowRealMap);
 
 
                     if (_path?.Contains(i) == true) _cellsPoints[i].DrawCross(drawingContext, _pen);
@@ -154,6 +246,109 @@ namespace BubbleBot.Views.Accounts
                             _cellsPoints[i].Points[1].Y - fText.Height / 2));
                 }
 
+                if (ShowNames)
+                {
+                    FormattedText fText = null;
+                    var player = Account.Game.Map.Players.FirstOrDefault(p => p.CellId == i);
+                    
+                    if (player != null)
+                    {
+                        fText = new FormattedText($"{player.Name} (Lvl {player.Level})", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _playersBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+                    else if (Account.Game.Map.PlayedCharacter?.CellId == i)
+                    {
+                        fText = new FormattedText($"{Account.Game.Map.PlayedCharacter.Name} (Lvl {Account.Game.Map.PlayedCharacter.Level})", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _ourPlayerBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+                    else if (Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == i) != null)
+                    {
+                        var npc = Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == i);
+
+                        fText = new FormattedText($"{npc.Name}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _npcsBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+
+                    if (fText != null)
+                    {
+                        fText.SetFontWeight(FontWeights.Bold);
+
+                        drawingContext.DrawText(fText,
+                        new Point(_cellsPoints[i].Points[0].X - fText.Width / 2,
+                                  _cellsPoints[i].Points[1].Y - fText.Height * 2));
+                    }
+                }
+
+                if (ShowIds)
+                {
+                    FormattedText fText = null;
+                    var player = Account.Game.Map.Players.FirstOrDefault(p => p.CellId == i);
+
+                    if (player != null)
+                    {
+                        fText = new FormattedText($"{player.Id}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _playersBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+                    else if (Account.Game.Map.PlayedCharacter?.CellId == i)
+                    {
+                        fText = new FormattedText($"{Account.Game.Map.PlayedCharacter.Id}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _ourPlayerBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+                    else if (Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == i) != null)
+                    {
+                        var npc = Account.Game.Map.Npcs.FirstOrDefault(n => n.CellId == i);
+
+                        fText = new FormattedText($"{npc.NpcId}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        new Typeface("Segoe UI"), 10, brush == _losCellBrush ? Brushes.White : _npcsBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    }
+
+                    if (fText != null)
+                    {
+                        fText.SetFontWeight(FontWeights.Bold);
+
+                        drawingContext.DrawText(fText,
+                        new Point(_cellsPoints[i].Points[0].X - fText.Width / 2,
+                                  _cellsPoints[i].Points[1].Y - fText.Height * 2));
+                    }
+                }
+
+                if (ShowMonsters)
+                {
+                    var monsterGroup = Account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == i);
+                    if (monsterGroup != null)
+                    {
+                        string monsterInfos = null;
+                        List<MonsterEntry> monsters = new List<MonsterEntry>();
+                        monsters.Add(monsterGroup.Leader);
+                        monsters.AddRange(monsterGroup.Followers);
+                        foreach (var monster in monsters)
+                        {
+                            if (monster != monsters.Last())
+                                monsterInfos += $"{monster.Name} ({monster.Level})\n";
+                            else
+                                monsterInfos += $"{monster.Name} ({monster.Level})";
+                        }
+
+                        string newTotalXp = String.Format("{0:n0}", monsterGroup.TotalXp).Replace(NumberFormatInfo.CurrentInfo.NumberGroupSeparator, " ");
+                        var fText = new FormattedText($"Rang {monsterGroup.TotalLevel}\n{newTotalXp} XP\n{monsterInfos}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                            new Typeface("Arial"), 10, brush == _losCellBrush ? Brushes.White : _monstersGroupsBrush,
+                            VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+                        fText.TextAlignment = TextAlignment.Center;
+                        fText.SetFontWeight(FontWeights.Bold);
+
+                        drawingContext.DrawText(fText,
+                        new Point(_cellsPoints[i].Points[0].X,
+                                  _cellsPoints[i].Points[1].Y - fText.Height * 1.2));
+                    }
+                }
+
                 if (IsMapValid)
                 {
                     // Draw the sun image if this cell has it
@@ -161,7 +356,7 @@ namespace BubbleBot.Views.Accounts
                         _cellsPoints[i].DrawImage(drawingContext, _sunImage);
                     else if (Account.Game.Map.Phenixs.FirstOrDefault(p => p.CellId == i) != null)
                         _cellsPoints[i].DrawImage(drawingContext, _phenixImage);
-                    else if (Account.Game.Map.LockedStroages.FirstOrDefault(ls => ls.CellId == i) != null)
+                    else if (Account.Game.Map.LockedStorages.FirstOrDefault(ls => ls.CellId == i) != null)
                         _cellsPoints[i].DrawImage(drawingContext, _lockedStorageImage);
 
                     DrawTileContent(drawingContext, i);
@@ -272,6 +467,239 @@ namespace BubbleBot.Views.Accounts
                 Console.WriteLine(Account.Game.Managers.Movements.MoveToCell(cell));
         }
 
+        #region GenerateRealMap
+
+        private object bufferLock = new object();
+       
+        public static List<Task> TaskList = new List<Task>();
+        private void GenerateRealMap()
+        {
+            if (Account.Game?.Map?.Id == (default) || Account.Game?.Map?.Id == 0)
+                return;
+
+            if (Account.Game?.Map?.Id == _currentRealMapId)
+                return;
+
+            var mapid = Account.Game.Map.Id;
+
+            string jsonMap = null;
+            WebClient wc = new WebClient();
+            SetProxy(wc);
+
+            jsonMap = wc.DownloadString($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/maps/{mapid}.json");
+            if (jsonMap == null)
+            {
+                wc?.Dispose();
+                return;
+            }
+
+            byte[] bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/backgrounds/{mapid}.jpg");
+
+            if (bytes == null)
+            {
+                wc?.Dispose();
+                return;
+            }
+
+            MemoryStream ms = new MemoryStream(bytes);
+            Image background = Image.FromStream(ms);
+            //ms?.Dispose();
+            
+            JsonMap content = JsonConvert.DeserializeObject<JsonMap>(jsonMap);
+            var canvas = Graphics.FromImage(background);
+
+            var midgroundLayer = content.MidgroundLayer.Keys;
+            foreach (var key in midgroundLayer)
+            {
+                if (content.MidgroundLayer[key] != null)
+                {
+                    foreach (var element in content.MidgroundLayer[key])
+                    {
+                        if (element.G != null)
+                        {
+                            var task = Task.Run(() => {
+                                if (element.Sx != null && element.Sy != null)
+                                {
+                                    DownloadAsset(element.G, element.X * -1 - 58, element.Y * -1 - 15, element.Sx, element.Sy, element.Hue, background);
+                                }
+                                else if (element.Sx != null && element.Sy == null)
+                                {
+                                    DownloadAsset(element.G, element.X * -1 - 58, element.Y + 15, element.Sx, 1, element.Hue, background);
+                                }
+                                else if (element.Sx == null && element.Sy != null)
+                                {
+                                    DownloadAsset(element.G, element.X + 58, element.Y * -1 - 15, 1, element.Sy, element.Hue, background);
+                                }
+                                else DownloadAsset(element.G, element.X + 58, element.Y + 15, 1, 1, element.Hue, background);
+                            });
+                            TaskList.Add(task);
+                        }
+                    }
+                }
+
+            }
+
+            if (content.Foreground != null)
+            {
+                bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/foregrounds/{mapid}.png");
+
+                if (bytes == null)
+                {
+                    canvas?.Dispose();
+                    wc?.Dispose();
+                    return;
+                }
+
+                ms = new MemoryStream(bytes);
+                Image foreground = Image.FromStream(ms);
+                //ms?.Dispose();
+                
+                lock (bufferLock)
+                {
+                    canvas.DrawImage(foreground, 0, 0, (float)background.Width, (float)background.Height);
+                }
+
+                foreground?.Dispose();
+            }
+
+            Task.WaitAll(TaskList.ToArray());
+
+            _realMap = ToImageSource(background, ImageFormat.Jpeg);
+            _currentRealMapId = Account.Game.Map.Id;
+            _realMap.Freeze();
+
+            RealMap.Dispatcher.Invoke(() =>
+            {
+                RealMap.ImageSource = _realMap;
+            });
+
+            background?.Dispose();
+            canvas?.Dispose();
+            wc?.Dispose();
+        }        
+
+        private void DownloadAsset(long? asset, float x, float y, float? sx, float? sy, List<long> hue, System.Drawing.Image background)
+        {
+
+            if (asset == null)
+                return;
+
+            Image img;
+            using (WebClient wc = new WebClient())
+            {
+                SetProxy(wc);
+                byte[] bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/world/png/{asset}.png");
+                if (bytes == null)
+                {
+                    wc?.Dispose();
+                    return;
+                }
+
+                MemoryStream ms = new MemoryStream(bytes);
+                img = Image.FromStream(ms);
+                //ms?.Dispose();
+            }
+
+            lock (bufferLock)
+            {
+                var ctx = Graphics.FromImage(background);
+                ctx.ScaleTransform((float)sx, (float)sy);
+                if (hue[0] == -128 && hue[1] == -128 && hue[2] == -128)
+                {
+                    ctx.RotateTransform(0);
+                    img = AdjustBrightness(img, 0);
+                }
+                ctx.ResetTransform();
+                ctx.DrawImage(img, x, y, img.Width, img.Height);
+                img?.Dispose();
+                ctx?.Dispose();
+            }
+        }
+
+        public static ImageSource ToImageSource(Image image, ImageFormat imageFormat)
+        {
+            BitmapImage bitmap = new BitmapImage();
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                // Save to the stream
+                image.Save(stream, imageFormat);
+
+                // Rewind the stream
+                stream.Seek(0, SeekOrigin.Begin);
+
+                // Tell the WPF BitmapImage to use this stream
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+            }
+
+            return bitmap;
+        }
+
+        private Image AdjustBrightness(Image image, float brightness)
+        {
+            // Make the ColorMatrix.
+            float b = brightness;
+            ColorMatrix cm = new ColorMatrix(new float[][]
+                {
+            new float[] {b, 0, 0, 0, 0},
+            new float[] {0, b, 0, 0, 0},
+            new float[] {0, 0, b, 0, 0},
+            new float[] {0, 0, 0, 1, 0},
+            new float[] {0, 0, 0, 0, 1},
+                });
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(cm);
+
+            // Draw the image onto the new bitmap while applying
+            // the new ColorMatrix.
+            System.Drawing.Point[] points =
+                {
+            new System.Drawing.Point(0, 0),
+            new System.Drawing.Point(image.Width, 0),
+            new System.Drawing.Point(0, image.Height),
+            };
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+
+            // Make the result bitmap.
+            Bitmap bm = new Bitmap(image.Width, image.Height);
+            using (Graphics gr = Graphics.FromImage(bm))
+            {
+                gr.DrawImage(image, points, rect,
+                    GraphicsUnit.Pixel, attributes);
+            }
+
+            // Return the result.
+            return bm;
+        }
+        private void SetProxy(WebClient wc)
+        {
+            if (Account.AccountConfig.Proxy.IsValid)
+            {
+                if (Account.AccountConfig.Proxy.Ip != "" && Account.AccountConfig.Proxy.Port != 0)
+                {
+                    wc.Proxy = new WebProxy(Account.AccountConfig.Proxy.Ip, Account.AccountConfig.Proxy.Port);
+
+                    if (Account.AccountConfig.Proxy.Username != "" && Account.AccountConfig.Proxy.Password != "")
+                        wc.Proxy.Credentials = new NetworkCredential(Account.AccountConfig.Proxy.Username, Account.AccountConfig.Proxy.Password);
+                }
+            }
+            else if (GlobalConfiguration.Instance.IsProxyValid)
+            {
+                if (GlobalConfiguration.Instance.ProxyIp != "" && GlobalConfiguration.Instance.ProxyPort != 0)
+                {
+                    wc.Proxy = new WebProxy(GlobalConfiguration.Instance.ProxyIp, GlobalConfiguration.Instance.ProxyPort);
+
+                    if (GlobalConfiguration.Instance.ProxyUsername != "" && GlobalConfiguration.Instance.ProxyPassword != "")
+                        wc.Proxy.Credentials = new NetworkCredential(GlobalConfiguration.Instance.ProxyUsername, GlobalConfiguration.Instance.ProxyPassword);
+                }
+            }
+        }
+
+        #endregion
+
         #region Invalidation
 
         private void MapViewerUc_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -312,6 +740,15 @@ namespace BubbleBot.Views.Accounts
 
         private void RefreshMapViewer()
         {
+            if (_showRealMap && IsMapValid)
+            {
+                GenerateRealMap();
+            }
+            else if (!_showRealMap && _currentRealMapId != 0)
+            {
+                _currentRealMapId = 0;
+            }
+
             Application.Current?.Dispatcher.Invoke(() => InvalidateVisual());
         }
 

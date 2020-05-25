@@ -1,6 +1,8 @@
 ﻿using BubbleBot.Server.Clients;
 using BubbleBot.Server.Messages;
+using BubbleBot.Server.Utility;
 using BubbleBot.Server.Utility.Extensions;
+using System;
 using System.Threading.Tasks;
 
 namespace BubbleBot.Server.Handlers
@@ -31,7 +33,17 @@ namespace BubbleBot.Server.Handlers
 
             });
 
-        public static Task HandleFilesHashesRequestMessage(Client client, FilesHashesRequestMessage message)
+        public static Task HandleIncompatibleVersionsMessage(Client client, IncompatibleVersionsMessage message)
+        => Task.Run(() =>
+        {
+            if (SetVersions.setVersions())
+            {
+                ServerMain.BroadcastMessage(new DTVersionsMessage(Constants.AppVersion, Constants.BuildVersion, Constants.AssetsVersion, Constants.StaticDataVersion, true), true);
+                Console.WriteLine("DT Versions updated and broadcasted.");
+            }
+        });
+
+            public static Task HandleFilesHashesRequestMessage(Client client, FilesHashesRequestMessage message)
             => Task.Run(() =>
             {
                 client.SendMessage(new FilesHashesMessage(Constants.FilesHashes));

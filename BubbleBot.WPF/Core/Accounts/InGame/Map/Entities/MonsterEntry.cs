@@ -12,9 +12,8 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
         {
             GenericId = infos.CreatureGenericId;
             Grade = (byte) infos.Grade;
+            Xp = infos.StaticInfos.Xp;
             SetMonsterInformations();
-
-
         }
 
         // Properties
@@ -25,6 +24,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
         public bool Boss { get; set; }
         public bool MiniBoss { get; set; }
         public bool QuestMonster { get; set; }
+        public long Xp { get; set; }
 
         private async void SetMonsterInformations()
         {
