@@ -21,12 +21,13 @@ namespace BubbleBot.Server.Clients
         public int Id { get; private set; }
         public string Name { get; private set; }
         public string Password { get; private set; }
+        public int UserGroup { get; private set; }
         public DateTime? TouchEndDate { get; private set; }
         public Dictionary<ExtensionsEnum, DateTime> Extensions { get; private set; }
 
         public bool IsSubscribedToTouch => TouchEndDate != null && DateTime.Now < TouchEndDate;
         public int MaxAccounts => !IsSubscribedToTouch ? 1 : 120;
-        public int MaxInstances => !IsSubscribedToTouch ? 1 : HasExtension(ExtensionsEnum.ThirdInstance) ? 3 : 2;
+        public int MaxInstances => !IsSubscribedToTouch ? 1 : UserGroup == 2 ? 99 : HasExtension(ExtensionsEnum.ThirdInstance) ? 3 : 2;
 
 
         // Constructor
@@ -43,6 +44,7 @@ namespace BubbleBot.Server.Clients
         {
             Id = json["user"].Value<int>("id");
             Name = json["user"].Value<string>("name");
+            UserGroup = json["user"].Value<int>("usergroup");
             Password = password;
 
             if (json.Value<bool>("subscribed"))
@@ -59,6 +61,7 @@ namespace BubbleBot.Server.Clients
         public void SetDefault()
         {
             Id = -1;
+            UserGroup = -1;
             Name = "";
             Password = "";
             TouchEndDate = null;

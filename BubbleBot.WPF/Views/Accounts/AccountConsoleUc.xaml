@@ -6,7 +6,9 @@
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:enums="clr-namespace:BubbleBot.Converters.Enums"
+             xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
              xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
+             xmlns:logs="clr-namespace:BubbleBot.Core.Logs"
              mc:Ignorable="d"
              Height="484"
              Width="798">
@@ -21,6 +23,7 @@
         </Style>
         <!-- Converters -->
         <enums:PlayerStatusEnumImageConverter x:Key="PlayerStatusEnumImageConverter" />
+        <specific:IsFightingConverter x:Key="IsFightingConverter" />
     </UserControl.Resources>
 
     <StackPanel>
@@ -33,8 +36,10 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:Name="LogsDataTemplate">
 
-                        <TextBlock
+                        <logs:SelectableTextBlock
+                            Focusable="True"
                             x:Name="LogsMessageTextBlock"
+                            Cursor="IBeam"
                             Foreground="{Binding Color}"
                             Text="{Binding}"
                             TextWrapping="Wrap"
@@ -48,7 +53,8 @@
         <StackPanel Orientation="Horizontal"
                     Margin="0 4 0 0">
             <TextBox Name="TxtCommand"
-                     Width="680"
+                     Cursor="IBeam"
+                     Width="660"
                      BorderThickness="0.5"
                      KeyDown="TxtCommand_KeyDown" />
             <Button Name="BtnClearLogs"
@@ -123,6 +129,18 @@
                               IsChecked="{Binding Configuration.ShowNoobMessages}" />
                 </Controls:DropDownButton.Items>
             </Controls:DropDownButton>
+            <Button Name="BtnLeaveFight"
+                    ToolTip="{_:Lang 736}"
+                    Height="26"
+                    BorderThickness="0"
+                    Background="Transparent"
+                    Margin="2 0 0 0"
+                    IsEnabled="{Binding Path=State,
+                                        Mode=OneWay, 
+                                        Converter={StaticResource IsFightingConverter}}"
+                    Click="BtnLeaveFight_Click">
+                <iconPacks:PackIconMaterial Width="12" Height="12" Kind="CloseOctagon" />
+            </Button>
             <Controls:DropDownButton ToolTip="{_:Lang 385}"
                                      Margin="2 0 0 0"
                                      ArrowVisibility="Collapsed"

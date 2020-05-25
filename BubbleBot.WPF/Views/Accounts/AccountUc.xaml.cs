@@ -17,14 +17,12 @@ using ExtensionsEnum = BubbleBot.Protocol.Server.Enums.Extensions;
 
 namespace BubbleBot.Views.Accounts
 {
-    [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     public partial class AccountUc : UserControl
     {
         private static bool removing;
         
         // Properties
         private bool _fixedTabs;
-        private Mutex mutConnection = new Mutex();
 
         // Constructor
         public AccountUc()
@@ -71,7 +69,7 @@ namespace BubbleBot.Views.Accounts
         {
             try
             {
-                // If the bot is connect, disconnect it
+                // If the bot is connected, disconnect it
                 if (Account.Network.Connected)
                 {
                     await Account.Network.Disconnect("CLIENT_CLOSING");
@@ -115,6 +113,13 @@ namespace BubbleBot.Views.Accounts
         {
             try
             {
+                if (Account.WaitForRestartScript == true && Account.Scripts.Enabled)
+                {
+                    Account.WaitForRestartScript = false;
+                    Account.Scripts.Enabled = false;
+                    Account.Logger.LogError(LanguageManager.Translate("165"), LanguageManager.Translate("739"));
+                    return;
+                }
                 Account.Scripts.StopScript();
             }
             catch (Exception ex)

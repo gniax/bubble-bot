@@ -55,7 +55,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
                         account.Game.Map.BlacklistedMonsters.Add(availableGroups[i].Id);
                         continue;
                     default: // FAILED
-                        account.Scripts.StopScript(LanguageManager.Translate("168"));
+                        //account.Scripts.StopScript(LanguageManager.Translate("168"));
                         return FailedResult;
                 }
             }

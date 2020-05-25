@@ -25,6 +25,7 @@ using BubbleBot.Protocol.Enums;
 using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Data;
 using Microsoft.Win32;
+using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -35,8 +36,8 @@ namespace BubbleBot.Views.Accounts
         {
             InitializeComponent();
             ContextMenus = new List<ContextMenu>();
-
             ((INotifyCollectionChanged) Logs.Items).CollectionChanged += Logs_CollectionChanged;
+            
         }
 
         // Properties
@@ -45,113 +46,425 @@ namespace BubbleBot.Views.Accounts
 
         private async void Logs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (GlobalConfiguration.Instance.DisplayItemsInLogs)
+            try
             {
-                if (e.Action == NotifyCollectionChangedAction.Add)
+                if (GlobalConfiguration.Instance.FormattingLogs)
                 {
-                    var msg = e.NewItems[0] as LogMessage;
-                    // If message contains objects...
-                    if (msg.ObjectItems != null && msg.ObjectItems?.Count > 0 && msg.Message.Contains("\uFFFC"))
+                    if (e.Action == NotifyCollectionChangedAction.Add)
+                    {
                         await Task.Run(async () =>
                         {
-                            // Here we have to retrieve textblock to update it with content
-                            var cp = Logs.ItemContainerGenerator.ContainerFromItem(e.NewItems[0]) as ContentPresenter;
-                            TextBlock messageBlock = null;
-                            await cp.Dispatcher.InvokeAsync(delegate
+                            var msg = e.NewItems[0] as LogMessage;
+
+                            if ((msg.Message.Contains("<b>") && msg.Message.Contains("</b>")) || (msg.Message.Contains("<a href=") && msg.Message.Contains("</a>")))
                             {
-                                cp.ApplyTemplate();
-                                messageBlock = (TextBlock) cp.ContentTemplate.FindName("LogsMessageTextBlock", cp);
-                            });
-
-                            if (messageBlock != null)
-                            {
-                                string content = null;
-                                messageBlock.Dispatcher.Invoke(delegate
-                                {
-                                    content = messageBlock.Text;
-                                    messageBlock.Text = ""; // clear the textbox to fill it later
-                                });
-
-                                var positionsObjects = new List<int>();
-                                // Here we store every object position in order to insert them later (\uFFFC => Object Unicode char)
-                                var regex = new Regex(Regex.Escape("\uFFFC"));
-                                for (var i = 0; i < msg.ObjectItems?.Count; i++)
-                                {
-                                    positionsObjects.Add(regex.Match(content, 1).Index);
-                                    content = regex.Replace(content, "", 1);
-                                }
-
-                                // Explanation :
-                                // We add every text between objects to textblock thanks to previous objects positions
-                                // To match with positions, we have to update the tmp list by introducing the object name into
-                                // While this is not the last object, we update the next position by adding the item length
-                                // Otherwise we add the remaining message 
-                                // Exception: if the object is at the beginning (pos 0) we just have to add it directly
-                                // index: message begin position to add <=> message: content between objects
-                                // position: current object position to add in the sentence
-                                var index = 0;
-                                var tmp = content;
-                                for (var i = 0; i < positionsObjects.Count; i++)
-                                {
-                                    var position = positionsObjects[i];
-                                    if (position == null || positionsObjects[i] == null)
-                                        return;
-
-                                    var registeredItem =
-                                        ObjectEnumFinder.GetObjectNameById((int) msg.ObjectItems[i].ObjectGID);
-                                    var item = await DataManager.Get<Items>((int) msg.ObjectItems[i].ObjectGID);
-                                    var itemEntry = new ObjectEntry(msg.ObjectItems[i], item);
-                                    var itemName = "[" + itemEntry.Name + "]";
-
-                                    if (position > 0)
+                                // Here we have to retrieve textblock to update it with content
+                                var cp = Logs.ItemContainerGenerator.ContainerFromItem(e.NewItems[0]) as ContentPresenter;
+                                    SelectableTextBlock messageBlock = null;
+                                    await cp.Dispatcher.InvokeAsync(delegate
                                     {
-                                        var messageToAdd = tmp.Substring(index, position - index);
+                                        cp.ApplyTemplate();
+                                        messageBlock = (SelectableTextBlock)cp.ContentTemplate.FindName("LogsMessageTextBlock", cp);
+                                    });
+
+                                    if (messageBlock != null)
+                                    {
+                                        string content = null;
+                                        messageBlock.Dispatcher.Invoke(delegate
+                                        {
+                                            content = messageBlock.Text;
+                                            messageBlock.Text = ""; // clear the textbox to fill it later
+                                    });
+
+                                    string pattern = @"(?s)<(?:(a)(?=\s)(?=(?:[^>""']|""[^""]*""|'[^']*')*?\shref\s*=(?:(['""])(.*?)\2))\s+(?:"".*?""|'.*?'|[^>]*?)+|b\s*)>(.*?)</(?(1)a|b)\s*>";
+                                        Match match = Regex.Match(content, pattern);
+                                        int rmvIndex = 0;
+                                        while (match.Success)
+                                        {
+                                            if (match.Groups[0].Value.Contains("<b>"))
+                                            {
+                                                messageBlock.Dispatcher.Invoke(delegate
+                                                {
+                                                    messageBlock.Inlines.Add(new Run(content.Substring(0, match.Index - rmvIndex)));
+                                                    messageBlock.Inlines.Add(new Bold(new Run(match.Groups[4].Value)));
+                                                    content = content.Substring(match.Index + match.Length - rmvIndex);
+                                                    rmvIndex += match.Index + match.Length;
+                                                });
+                                            }
+                                            else if (match.Groups[0].Value.Contains("<a href="))
+                                            {
+                                                messageBlock.Dispatcher.Invoke(delegate
+                                                {
+                                                    messageBlock.Inlines.Add(new Run(content.Substring(0, match.Index - rmvIndex)));
+                                                    Hyperlink hyperLink = new Hyperlink()
+                                                    {
+                                                        NavigateUri = new Uri(match.Groups[3].Value)
+                                                    };
+                                                    hyperLink.Inlines.Add(match.Groups[4].Value);
+                                                    hyperLink.RequestNavigate += HyperLink_RequestNavigate;
+                                                    messageBlock.Inlines.Add(hyperLink);
+                                                    content = content.Substring(match.Index + match.Length - rmvIndex);
+                                                    rmvIndex += match.Index + match.Length;
+                                                });
+                                            }
+                                            match = match.NextMatch();
+                                        }
 
                                         messageBlock.Dispatcher.Invoke(delegate
                                         {
-                                            messageBlock.Inlines.Add(new Run(messageToAdd));
+                                            messageBlock.Inlines.Add(new Run(content));
                                         });
-                                        AddItemToLog(messageBlock, msg, itemEntry);
-
-                                        tmp = tmp.Insert(position, itemName); // Keep update the temporary content
-                                        index = position + itemName.Length;
-
-                                        if (i != positionsObjects.Count - 1)
-                                            for (var j = i + 1; j < positionsObjects.Count; j++)
-                                                positionsObjects[j] += itemName.Length;
                                     }
-                                    else
+                            }
+                        });
+                    }
+                    else if (e.Action == NotifyCollectionChangedAction.Reset)
+                    {
+                        await Task.Run(async () =>
+                        {
+                            for (int k = Logs.Items.Count - 1; k >= 0; k--)
+                            {
+                                if (Logs.Items[k] is LogMessage)
+                                {
+                                    var msg = Logs.Items[k] as LogMessage;
+
+                                    if (msg.Message.Contains("<br />"))
+                                        msg.Message = msg.Message.Replace("<br />", "");
+
+                                    if (msg.Message.Contains("&lt;"))
+                                        msg.Message = msg.Message.Replace("&lt;", "<");
+
+                                    if (msg.Message.Contains("&gt;"))
+                                        msg.Message = msg.Message.Replace("&gt;", ">");
+
+                                    if (msg.Message.Contains("&amp;"))
+                                        msg.Message = msg.Message.Replace("&amp;", "&");
+
+                                    if (msg.Message.Contains("&quot;"))
+                                        msg.Message = msg.Message.Replace("&quot;", "\"");
+
+                                    if (msg.Message.Contains("{openSocial,0,0::ami(s)}"))
+                                        msg.Message = msg.Message.Replace("{openSocial,0,0::ami(s)}", "ami(s)");
+
+                                    string playerPattern = @"\(\{player,(\D+)\,(\d+)\}\)";
+                                    var regMatch = Regex.Match(msg.Message, playerPattern);
+                                    if (regMatch.Success)
                                     {
-                                        tmp = tmp.Insert(0, itemName);
-                                        AddItemToLog(messageBlock, msg, itemEntry);
-                                        index = itemName.Length;
+                                        msg.Message = msg.Message.Replace(regMatch.Value, regMatch.Groups[1].Value);
+                                    }
+
+                                    string itemPattern0 = @"\{item\,(\d{1,5})\,\d+}";
+                                    regMatch = Regex.Match(msg.Message, itemPattern0);
+                                    if (regMatch.Success)
+                                    {
+                                        var itemname = ObjectEnumFinder.GetObjectNameById(Int32.Parse(regMatch.Groups[1].Value));
+                                        if (itemname != null)
+                                            msg.Message = msg.Message.Replace(regMatch.Value, itemname);
+                                    }
+
+                                    string challengePattern = @"\$challenge(\d{1,2})";
+                                    regMatch = Regex.Match(msg.Message, challengePattern);
+                                    if (regMatch.Success)
+                                    {
+                                        msg.Message = msg.Message.Replace(regMatch.Value, ChallengesEnumFinder.GetChallengeById(Int32.Parse(regMatch.Groups[1].Value)));
+                                    }
+
+                                    string itemPattern = @"\$item(\d{1,5})";
+                                    regMatch = Regex.Match(msg.Message, itemPattern);
+                                    if (regMatch.Success)
+                                    {
+                                        var itemname = ObjectEnumFinder.GetObjectNameById(Int32.Parse(regMatch.Groups[1].Value));
+                                        if (itemname != null)
+                                            msg.Message = msg.Message.Replace(regMatch.Value, itemname);
+                                    }
+
+                                    string mapPattern = @"\{mapWithFlag,(.*),\d\}";
+                                    regMatch = Regex.Match(msg.Message, mapPattern);
+                                    if (regMatch.Success)
+                                    {
+                                        msg.Message = msg.Message.Replace(regMatch.Value, $"[{regMatch.Groups[1].Value}]");
+                                    }
+
+                                    if ((msg.Message.Contains("<b>") && msg.Message.Contains("</b>")) || (msg.Message.Contains("<a href=") && msg.Message.Contains("</a>")))
+                                    {
+                                        // Here we have to retrieve textblock to update it with content
+                                        var cp = Logs.ItemContainerGenerator.ContainerFromItem(Logs.Items[k]) as ContentPresenter;
+                                            SelectableTextBlock messageBlock = null;
+                                            await cp.Dispatcher.InvokeAsync(delegate
+                                            {
+                                                cp.ApplyTemplate();
+                                                messageBlock = (SelectableTextBlock)cp.ContentTemplate.FindName("LogsMessageTextBlock", cp);
+                                            });
+
+                                            if (messageBlock != null)
+                                            {
+                                                string content = null;
+                                                messageBlock.Dispatcher.Invoke(delegate
+                                                {
+                                                    content = messageBlock.Text;
+                                                    messageBlock.Text = ""; // clear the textbox to fill it later
+                                            });
+
+                                            //string pattern = "(<b>(.*)</b>)|(<a href=.*?>(.*)</a>)";
+                                            string pattern = @"(?s)<(?:(a)(?=\s)(?=(?:[^>""']|""[^""]*""|'[^']*')*?\shref\s*=(?:(['""])(.*?)\2))\s+(?:"".*?""|'.*?'|[^>]*?)+|b\s*)>(.*?)</(?(1)a|b)\s*>";
+                                                Match match = Regex.Match(content, pattern);
+                                                int rmvIndex = 0;
+                                                while (match.Success)
+                                                {
+                                                    if (match.Groups[0].Value.Contains("<b>"))
+                                                    {
+                                                        messageBlock.Dispatcher.Invoke(delegate
+                                                        {
+                                                            messageBlock.Inlines.Add(new Run(content.Substring(0, match.Index - rmvIndex)));
+                                                            messageBlock.Inlines.Add(new Bold(new Run(match.Groups[4].Value)));
+                                                            content = content.Substring(match.Index + match.Length - rmvIndex);
+                                                            rmvIndex += match.Index + match.Length;
+                                                        });
+                                                    }
+                                                    else if (match.Groups[0].Value.Contains("<a href="))
+                                                    {
+                                                        messageBlock.Dispatcher.Invoke(delegate
+                                                        {
+                                                            messageBlock.Inlines.Add(new Run(content.Substring(0, match.Index - rmvIndex)));
+                                                            Hyperlink hyperLink = new Hyperlink()
+                                                            {
+                                                                NavigateUri = new Uri(match.Groups[3].Value)
+                                                            };
+                                                            hyperLink.Inlines.Add(match.Groups[4].Value);
+                                                            hyperLink.RequestNavigate += HyperLink_RequestNavigate;                                                          
+                                                            messageBlock.Inlines.Add(hyperLink);
+                                                            content = content.Substring(match.Index + match.Length - rmvIndex);
+                                                            rmvIndex += match.Index + match.Length;
+                                                        });
+                                                    }
+                                                    match = match.NextMatch();
+                                                }
+
+                                                messageBlock.Dispatcher.Invoke(delegate
+                                                {
+                                                    messageBlock.Inlines.Add(new Run(content));
+                                                });
+                                            }
                                     }
                                 }
+                            }
+                    });
+                    }
+                }
 
-                                if (tmp.Length - index > 0)
+                if (GlobalConfiguration.Instance.DisplayItemsInLogs)
+                {
+                    if (e.Action == NotifyCollectionChangedAction.Add)
+                    {
+                        var msg = e.NewItems[0] as LogMessage;
+                        // If message contains objects...
+                        if (msg.ObjectItems != null && msg.ObjectItems?.Count > 0 && msg.Message.Contains("\uFFFC"))
+                        {
+                            await Task.Run(async () =>
+                            {
+                                // Here we have to retrieve textblock to update it with content
+                                var cp = Logs.ItemContainerGenerator.ContainerFromItem(e.NewItems[0]) as ContentPresenter;
+                                SelectableTextBlock messageBlock = null;
+                                await cp.Dispatcher.InvokeAsync(delegate
                                 {
-                                    var textToAdd = tmp.Substring(index);
+                                    cp.ApplyTemplate();
+                                    messageBlock = (SelectableTextBlock)cp.ContentTemplate.FindName("LogsMessageTextBlock", cp);
+                                });
+
+                                if (messageBlock != null)
+                                {
+                                    string content = null;
                                     messageBlock.Dispatcher.Invoke(delegate
                                     {
-                                        messageBlock.Inlines.Add(new Run(textToAdd));
+                                        content = messageBlock.Text;
+                                        messageBlock.Text = ""; // clear the textbox to fill it later
                                     });
+
+                                    var positionsObjects = new List<int>();
+                                    // Here we store every object position in order to insert them later (\uFFFC => Object Unicode char)
+                                    var regex = new Regex(Regex.Escape("\uFFFC"));
+                                    for (var i = 0; i < msg.ObjectItems?.Count; i++)
+                                    {
+                                        positionsObjects.Add(regex.Match(content, 1).Index);
+                                        content = regex.Replace(content, "", 1);
+                                    }
+
+                                    // Explanation :
+                                    // We add every text between objects to textblock thanks to previous objects positions
+                                    // To match with positions, we have to update the tmp list by introducing the object name into
+                                    // While this is not the last object, we update the next position by adding the item length
+                                    // Otherwise we add the remaining message 
+                                    // Exception: if the object is at the beginning (pos 0) we just have to add it directly
+                                    // index: message begin position to add <=> message: content between objects
+                                    // position: current object position to add in the sentence
+                                    var index = 0;
+                                    var tmp = content;
+                                    for (var i = 0; i < positionsObjects.Count; i++)
+                                    {
+                                        var position = positionsObjects[i];
+                                        if (position == (default) || positionsObjects[i] == (default))
+                                            return;
+
+                                        var registeredItem =
+                                            ObjectEnumFinder.GetObjectNameById((int)msg.ObjectItems[i].ObjectGID);
+                                        var item = DataManager.Get<Items>((int)msg.ObjectItems[i].ObjectGID).Result;
+                                        var itemEntry = new ObjectEntry(msg.ObjectItems[i], item);
+                                        var itemName = $"[{itemEntry.Name}]";
+
+                                        if (position > 0)
+                                        {
+                                            var messageToAdd = tmp.Substring(index, position - index);
+
+                                            messageBlock.Dispatcher.Invoke(delegate
+                                            {
+                                                messageBlock.Inlines.Add(new Run(messageToAdd));
+                                            });
+                                            AddItemToLog(messageBlock, msg, itemEntry);
+
+                                            tmp = tmp.Insert(position, itemName); // Keep update the temporary content
+                                            index = position + itemName.Length;
+
+                                            if (i != positionsObjects.Count - 1)
+                                                for (var j = i + 1; j < positionsObjects.Count; j++)
+                                                    positionsObjects[j] += itemName.Length;
+                                        }
+                                        else
+                                        {
+                                            tmp = tmp.Insert(0, itemName);
+                                            AddItemToLog(messageBlock, msg, itemEntry);
+                                            index = itemName.Length;
+                                        }
+                                    }
+
+                                    if (tmp.Length - index > 0)
+                                    {
+                                        var textToAdd = tmp.Substring(index);
+                                        messageBlock.Dispatcher.Invoke(delegate
+                                        {
+                                            messageBlock.Inlines.Add(new Run(textToAdd));
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else if (e.Action == NotifyCollectionChangedAction.Reset)
+                    {
+                        await Task.Run(async () =>
+                        {
+                            for (int k = Logs.Items.Count - 1; k >= 0; k--)
+                            {
+                                if (Logs.Items[k] is LogMessage)
+                                {
+                                    var msg = Logs.Items[k] as LogMessage;
+                                    // If message contains objects...
+                                    if (msg.ObjectItems != null && msg.ObjectItems?.Count > 0 && msg.Message.Contains("\uFFFC"))
+                                    {
+                                        // Here we have to retrieve textblock to update it with content
+                                        var cp = Logs.ItemContainerGenerator.ContainerFromItem(Logs.Items[k]) as ContentPresenter;
+                                        SelectableTextBlock messageBlock = null;
+                                        await cp.Dispatcher.InvokeAsync(delegate
+                                        {
+                                            cp.ApplyTemplate();
+                                            messageBlock = (SelectableTextBlock)cp.ContentTemplate.FindName("LogsMessageTextBlock", cp);
+                                        });
+
+                                        if (messageBlock != null)
+                                        {
+                                            string content = null;
+                                            messageBlock.Dispatcher.Invoke(delegate
+                                            {
+                                                content = messageBlock.Text;
+                                                messageBlock.Text = ""; // clear the textbox to fill it later
+                                            });
+
+                                            var positionsObjects = new List<int>();
+                                            // Here we store every object position in order to insert them later (\uFFFC => Object Unicode char)
+                                            var regex = new Regex(Regex.Escape("\uFFFC"));
+                                            for (var i = 0; i < msg.ObjectItems?.Count; i++)
+                                            {
+                                                positionsObjects.Add(regex.Match(content, 1).Index);
+                                                content = regex.Replace(content, "", 1);
+                                            }
+
+                                            // Explanation :
+                                            // We add every text between objects to textblock thanks to previous objects positions
+                                            // To match with positions, we have to update the tmp list by introducing the object name into
+                                            // While this is not the last object, we update the next position by adding the item length
+                                            // Otherwise we add the remaining message 
+                                            // Exception: if the object is at the beginning (pos 0) we just have to add it directly
+                                            // index: message begin position to add <=> message: content between objects
+                                            // position: current object position to add in the sentence
+                                            var index = 0;
+                                            var tmp = content;
+                                            for (var i = 0; i < positionsObjects.Count; i++)
+                                            {
+                                                var position = positionsObjects[i];
+                                                if (position == (default) || positionsObjects[i] == (default))
+                                                    return;
+
+                                                var registeredItem =
+                                                    ObjectEnumFinder.GetObjectNameById((int)msg.ObjectItems[i].ObjectGID);
+                                                var ditem = DataManager.Get<Items>((int)msg.ObjectItems[i].ObjectGID).Result;
+                                                var itemEntry = new ObjectEntry(msg.ObjectItems[i], ditem);
+                                                var itemName = $"[{itemEntry.Name}]";
+
+                                                if (position > 0)
+                                                {
+                                                    var messageToAdd = tmp.Substring(index, position - index);
+
+                                                    messageBlock.Dispatcher.Invoke(delegate
+                                                    {
+                                                        messageBlock.Inlines.Add(new Run(messageToAdd));
+                                                    });
+                                                    AddItemToLog(messageBlock, msg, itemEntry);
+
+                                                    tmp = tmp.Insert(position, itemName); // Keep update the temporary content
+                                                    index = position + itemName.Length;
+
+                                                    if (i != positionsObjects.Count - 1)
+                                                        for (var j = i + 1; j < positionsObjects.Count; j++)
+                                                            positionsObjects[j] += itemName.Length;
+                                                }
+                                                else
+                                                {
+                                                    tmp = tmp.Insert(0, itemName);
+                                                    AddItemToLog(messageBlock, msg, itemEntry);
+                                                    index = itemName.Length;
+                                                }
+                                            }
+
+                                            if (tmp.Length - index > 0)
+                                            {
+                                                var textToAdd = tmp.Substring(index);
+                                                messageBlock.Dispatcher.Invoke(delegate
+                                                {
+                                                    messageBlock.Inlines.Add(new Run(textToAdd));
+                                                });
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         });
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    // dispose textblock and childs / events
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Logs error : {0}", ex.Message);
+            }
         }
+    
 
         private void AddItemToLog(TextBlock messageBlock, LogMessage msg, ObjectEntry item)
         {
             messageBlock.Dispatcher.Invoke(delegate
             {
-                var run = new Run("[" + item.Name + "]");
+                var run = new Run($"[{item.Name}]");
                 var bold = new Bold(run);
+                bold.Focusable = false;
+                messageBlock.Focusable = false;
                 messageBlock.Inlines.Add(bold);
                 run.MouseLeftButtonUp += (sender, e) => LogItem_Click(sender, e, messageBlock, msg, item);
                 run.MouseEnter += ObjectLog_MouseEnter;
@@ -321,7 +634,7 @@ namespace BubbleBot.Views.Accounts
                 {
                     var tbContainer = new TextBlock();
                     var hyperMonsterImg = new Hyperlink();
-                    hyperMonsterImg.RequestNavigate += HyperMonsterImg_RequestNavigate;
+                    hyperMonsterImg.RequestNavigate += HyperLink_RequestNavigate;
                     if (monster != "7777")
                     {
                         hyperMonsterImg.ToolTip = LanguageManager.Translate("698");
@@ -443,7 +756,7 @@ namespace BubbleBot.Views.Accounts
                 Mouse.OverrideCursor = Cursors.Hand;
         }
 
-        private void HyperMonsterImg_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void HyperLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             if (e.Uri.ToString() != "")
             {
@@ -475,6 +788,12 @@ namespace BubbleBot.Views.Accounts
         {
             if (Mouse.OverrideCursor != Cursors.Hand)
                 Mouse.OverrideCursor = Cursors.Hand;
+        }
+
+        private void BtnLeaveFight_Click(object sender, RoutedEventArgs e)
+        {
+            Account.Network.SendMessage(new GameContextQuitMessage());
+            Account.Network.SendMessage(new GameActionAcknowledgementMessage(true, 2));
         }
 
         private void BtnClearLogs_Click(object sender, RoutedEventArgs e)

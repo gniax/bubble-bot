@@ -348,6 +348,18 @@ namespace BubbleBot.Server
             DTConstants.BuildVersion = message.BuildVersion;
             DTConstants.AssetsVersion = message.AssetsVersion;
             DTConstants.StaticDataVersion = message.StaticDataVersion;
+
+            if (message.IsFromUpdate) // In the case the message come from an update from the server
+            {
+                foreach (var account in BubbleBotMain.Instance.ConnectedAccounts)
+                {
+                    if (account.Network.Connected && account.Game.Character.IsSelected)
+                    {
+                        account.Logger.LogWarning("", LanguageManager.Translate("733"));
+                    }
+                }
+            }
+            BubbleBot.Core.Frames.Connection.IdentificationFrame.WarnServerVersionsLocker = false;
         }
 
         private void HandlePingMessage(PingMessage message)

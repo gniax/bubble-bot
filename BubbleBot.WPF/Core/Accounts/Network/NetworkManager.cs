@@ -113,8 +113,6 @@ namespace BubbleBot.Core.Accounts.Network
             if (Phase != NetworkPhases.NONE)
                 Phase = NetworkPhases.NONE;
 
-       
-
             _sessionId = 16.ToRandomString();
             _primus = YeastAPI.GenerateKey();
 
@@ -159,9 +157,7 @@ namespace BubbleBot.Core.Accounts.Network
             _serverAddress = address;
             _serverPort = port;
             _serverId = serverId;
-            _access =
-                $"{access.Replace("https", "wss")}/primus/?STICKER={_sessionId}&_primuscb={_primus}&EIO=3&transport=websocket";
-            Console.WriteLine(_access);
+            _access = $"{access.Replace("https", "wss")}/primus/?STICKER={_sessionId}&_primuscb={_primus}&EIO=3&transport=websocket";
 
             Phase = NetworkPhases.SWITCHING_TO_GAME;
 
@@ -172,7 +168,9 @@ namespace BubbleBot.Core.Accounts.Network
         {
             try
             {
+                Account.IsReadyToParty = false;
                 Account.FightLimitReached = false;
+                Account.PartyId = 0;
 
                 if (!Connected)
                     return;
@@ -468,7 +466,7 @@ namespace BubbleBot.Core.Accounts.Network
                 var message = MessagesBuilder.GetMessage(messageType, json);
                 if (message == null)
                 {
-                    Console.WriteLine($"Message not found: {messageType}");
+                    //Console.WriteLine($"Message not found: {messageType}");
                     return;
                 }
                 //Console.WriteLine("message recu: " + message); //123456
@@ -598,12 +596,11 @@ namespace BubbleBot.Core.Accounts.Network
             string fullUrl;
             if (url == null)
             {
-                fullUrl = "https://proxyconnection.touch.dofus.com/primus/?STICKER=" + sticker + "&_primuscb=" +
-                          _primus + "&EIO=3&transport=polling&t=" + yeastValue + "&b64=1";
+                fullUrl = $"https://proxyconnection.touch.dofus.com/primus/?STICKER={sticker}&_primuscb={_primus}&EIO=3&transport=polling&t={yeastValue}&b64=1";
             }
             else
             {
-                var tempUrl = url.Substring(0, url.LastIndexOf('&')) + "&transport=polling&t=" + yeastValue + "&b64=1";
+                var tempUrl = $"{url.Substring(0, url.LastIndexOf('&'))}&transport=polling&t={yeastValue}&b64=1";
                 fullUrl = tempUrl.Replace("wss", "https");
             }
 
@@ -612,7 +609,7 @@ namespace BubbleBot.Core.Accounts.Network
             sidRequest.Url = fullUrl;
 
             sidRequest.Method = "GET";
-            Console.WriteLine(fullUrl);
+            //Console.WriteLine(fullUrl);
 
             sidRequest.SetHeaderByName("accept-encoding", "gzip, deflate, br", true);
             sidRequest.SetHeaderByName("accept-language", "fr", true);

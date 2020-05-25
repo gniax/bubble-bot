@@ -117,7 +117,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Bid
                 _pricesInBid = new Dictionary<uint, uint[]>();
                 foreach (var gid in Configuration.ObjectsToSell.Select(o => o.GID).Distinct())
                 {
-                    _pricesInBid.Add(gid, await _account.Game.Bid.GetItemPricesAsync(gid));
+                    _pricesInBid.Add(gid, _account.Game.Bid.GetItemPrices(gid));
                     await Task.Delay(800);
                 }
 

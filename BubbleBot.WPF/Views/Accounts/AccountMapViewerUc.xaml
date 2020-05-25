@@ -63,15 +63,36 @@
                 </StackPanel>
             </StackPanel>
             <CheckBox Content="{_:Lang 336}"
-                      Margin="20 0"
+                      Margin="10 0"
                       IsChecked="{Binding ShowCellIds,
                                           ElementName=mapViewer}" />
+            <CheckBox x:Name="BtnShowRealMap"
+                      Content="{_:Lang 740}"
+                      Margin="10 10"
+                      IsChecked="{Binding ShowRealMap,
+                                          ElementName=mapViewer}" />
+
+            <CheckBox Content="{_:Lang 741}"
+                      Margin="10 0"
+                      IsChecked="{Binding ShowNames,
+                                          ElementName=mapViewer}" />
+
+            <CheckBox Content="{_:Lang 742}"
+                      Margin="10 10"
+                      IsChecked="{Binding ShowIds,
+                                          ElementName=mapViewer}" />
+
+            <CheckBox Content="{_:Lang 743}"
+                      Margin="10 0"
+                      IsChecked="{Binding ShowMonsters,
+                                          ElementName=mapViewer}" />
+            
         </StackPanel>
 
-        <local:MapViewerUc x:Name="mapViewer"
-                           DataContext="{Binding}"
-                           Grid.Column="1"
-                           HorizontalAlignment="Right"
-                           Margin="0 0 10 0" />
-    </Grid>
+            <local:MapViewerUc x:Name="mapViewer"
+                               DataContext="{Binding}"
+                               Grid.Column="1"
+                               Margin="0 0 10 0">
+            </local:MapViewerUc>
+        </Grid>
 </UserControl>

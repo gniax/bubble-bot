@@ -9,14 +9,25 @@ namespace BubbleBot.Core.Frames.Game
 {
     public static class MapFrame
     {
+        // Supposed to be fully connected here
         public static Task HandleCurrentMapMessage(Account account, CurrentMapMessage message)
         {
             return Task.Run(async () =>
             {
+                // Notify when a group member or chief is connected
+                if (account.Configuration.CreateParty && account.HasGroup && account.PartyId == 0)
+                {
+                    if (account == account.Group.Chief)
+                        account.IsReadyToParty = true;
+
+                    account.Group.PlayerIsOnline?.Invoke(account);
+                }
+
                 if (account.Network.ConnectTimeout != null)
                     account.Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
 
-                if (account.State != AccountStates.RECAPTCHA) account.State = AccountStates.NONE;
+                if (account.State != AccountStates.RECAPTCHA) 
+                    account.State = AccountStates.NONE;
 
                 await account.Network.SendMessageAsync(new MapInformationsRequestMessage(message.MapId))
                     .ConfigureAwait(false);

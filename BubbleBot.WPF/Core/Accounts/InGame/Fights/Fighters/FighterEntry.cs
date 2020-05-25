@@ -16,7 +16,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights.Fighters
         // Properties
         public int ContextualId { get; private set; }
         public bool Alive { get; private set; }
-        public short CellId { get; private set; }
+        public short CellId { get; set; }
         public TeamEnum Team { get; private set; }
         public GameFightMinimalStats Stats { get; private set; }
         public int LifePoints { get; private set; }

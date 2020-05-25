@@ -10,10 +10,10 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
         public MonstersGroupEntry(GameRolePlayGroupMonsterInformations infos)
         {
             Id = infos.ContextualId;
-            CellId = (short) infos.Disposition.CellId;
+            CellId = (short)infos.Disposition.CellId;
             Followers = new List<MonsterEntry>(infos.StaticInfos.Underlings.Count);
-
             Leader = new MonsterEntry(infos.StaticInfos.MainCreatureLightInfos);
+
             infos.StaticInfos.Underlings.ForEach(u => Followers.Add(new MonsterEntry(u)));
         }
 
@@ -21,9 +21,9 @@ namespace BubbleBot.Core.Accounts.InGame.Map.Entities
         public int Id { get; }
         public MonsterEntry Leader { get; }
         public List<MonsterEntry> Followers { get; }
-
         public int MonstersCount => Followers.Count + 1;
         public int TotalLevel => Leader.Level + Followers.Sum(f => f.Level);
+        public long TotalXp => Leader.Xp + Followers.Sum(f => f.Xp);
 
 
         public bool ContainsMonster(int gid)

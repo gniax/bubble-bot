@@ -196,6 +196,7 @@
     <Compile Include="Enums\AllianceRightsBitEnum.cs" />
     <Compile Include="Enums\BreedEnum.cs" />
     <Compile Include="Enums\BuildTypeEnum.cs" />
+    <Compile Include="Enums\ChallengesEnum.cs" />
     <Compile Include="Enums\CharacterCreationResultEnum.cs" />
     <Compile Include="Enums\CharacterDeletionErrorEnum.cs" />
     <Compile Include="Enums\CharacterInventoryPositionEnum.cs" />
@@ -1222,6 +1223,7 @@
     <Compile Include="Server\Messages\DTVersionsMessage.cs" />
     <Compile Include="Server\Messages\FilesHashesMessage.cs" />
     <Compile Include="Server\Messages\FilesHashesRequestMessage.cs" />
+    <Compile Include="Server\Messages\IncompatibleVersionsMessage.cs" />
     <Compile Include="Server\Messages\InvalidOperationMessage.cs" />
     <Compile Include="Server\Messages\IServerMessage.cs" />
     <Compile Include="Server\Messages\LoadAccountMessage.cs" />
@@ -1416,6 +1418,7 @@
     <Compile Include="Types\JobDescription.cs" />
     <Compile Include="Types\JobExperience.cs" />
     <Compile Include="Types\KrosmasterFigure.cs" />
+    <Compile Include="Types\MainCreatureLightInfosStaticInfos.cs" />
     <Compile Include="Types\MapCoordinates.cs" />
     <Compile Include="Types\MapCoordinatesAndId.cs" />
     <Compile Include="Types\MapCoordinatesExtended.cs" />

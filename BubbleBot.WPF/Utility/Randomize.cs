@@ -33,6 +33,13 @@ namespace BubbleBot.Utility
                 .Select(s => s[random2.Next(s.Length)]).ToArray());
         }
 
+        public static string GetRandomLargeString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random2.Next(s.Length)]).ToArray());
+        }
+
         public static int GetRandomInt(int min, int max)
         {
             lock (lockObj)

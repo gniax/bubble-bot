@@ -56,7 +56,6 @@ namespace BubbleBot.Core.Groups
             while (_group.Chief.Scripts.Enabled &&
                    missingMember.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition)
             {
-                Console.WriteLine("test1");
                 tcs = new TaskCompletionSource<bool>();
                 MoveMissingMember(missingMember);
                 await tcs.Task;

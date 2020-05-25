@@ -8,7 +8,9 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
     xmlns:others="clr-namespace:BubbleBot.Converters.Others"
+    xmlns:enums="clr-namespace:BubbleBot.Converters.Enums"
     xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    xmlns:local="clr-namespace:BubbleBot.Views"
     mc:Ignorable="d"
     GlowBrush="{DynamicResource AccentColorBrush}"
     BorderBrush="{StaticResource AccentColorBrush}"
@@ -16,13 +18,14 @@
     WindowStartupLocation="CenterOwner"
     ResizeMode="CanMinimize"
     Title="{_:Lang 237}"
-    Height="544.049"
+    Height="550"
     Width="855.285">
 
     <Window.Resources>
 
         <!-- Converters -->
         <others:NullImageConverter x:Key="NullImageConverter" />
+        <enums:EnumBooleanConverter x:Key="EnumBooleanConverter" />
 
     </Window.Resources>
 
@@ -96,20 +99,6 @@
                                 <MenuItem.Icon>
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ArrowLeftBoldCircle" />
                                 </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="Connecter au serveur">
-                                <MenuItem.Icon>
-                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="CastConnected" />
-                                </MenuItem.Icon>
-                                <MenuItem.Items>
-                                    <MenuItem Header="-" />
-                                    <MenuItem Header="Terra Cogita" />
-                                    <MenuItem Header="Herdegrize" />
-                                    <MenuItem Header="Oshimo" />
-                                    <MenuItem Header="Dodge" />
-                                    <MenuItem Header="Brutas" />
-                                    <MenuItem Header="Grandapan" />
-                                </MenuItem.Items>
                             </MenuItem>
                             <MenuItem Header="Trier">
                                 <MenuItem.Icon>
@@ -261,14 +250,21 @@
 
                             <StackPanel Margin="4 0" VerticalAlignment="Center">
                                 <DockPanel Margin="4">
-                                    <TextBlock Text="{_:Lang 546}" VerticalAlignment="Center" />
+                                    <RadioButton x:Name="RdbtnDefault"  GroupName="ImportFormat" VerticalAlignment="Center" IsChecked="True" Click="ImportDefaultRdbtn_Click" />
+                                    <TextBlock Text="{_:Lang 738}" VerticalAlignment="Center" />
+                                    <TextBox x:Name="TxtSeparatorDefaultPreview"
+                                             IsEnabled="False"
+                                             VerticalAlignment="Center" />
+                                    <TextBlock Text="{_:Lang 546}" Margin="4 0" VerticalAlignment="Center" />
                                     <TextBox x:Name="TxtSeparator"
                                              Margin="4 0"
                                              TextChanged="TxtSeparator_OnTextChanged" />
                                 </DockPanel>
-                                <TextBlock x:Name="TxtSeparatorPreview"
-                                           HorizontalAlignment="Right"
-                                           Margin="8 0" />
+                                <DockPanel Margin="4">
+                                    <RadioButton x:Name="RdbtnCustom" GroupName="ImportFormat" VerticalAlignment="Center" Click="ImportCustomRdbtn_Click"/>
+                                    <TextBlock Text="{_:Lang 739}" VerticalAlignment="Center" />
+                                    <TextBox x:Name="TxtCustomImportFormat" Text="..." VerticalAlignment="Center" IsEnabled="False" />
+                                </DockPanel>
                                 <StackPanel Margin="4">
                                     <TextBlock Text="{_:Lang 547}" Margin="0 0 0 4" />
                                     <DockPanel>
@@ -279,7 +275,7 @@
                                 <Button x:Name="BtnImportAccounts"
                                         Width="90" Height="32"
                                         HorizontalAlignment="Right"
-                                        Margin="4 8 4 0"
+                                        Margin="4 4 4 0"
                                         Click="BtnImportAccounts_OnClick"
                                         Background="{StaticResource AccentColorBrush}">
                                     <StackPanel Orientation="Horizontal">
@@ -618,7 +614,7 @@
                                 <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
                             </Button>
                         </StackPanel>
-                        <ListBox ItemsSource="{Binding AccountsList}"
+                        <ListBox ItemsSource="{Binding Accounts}"
                                  Name="LbAccountsCopier"
                                  SelectionMode="Multiple"
                                  Width="160" Height="440"

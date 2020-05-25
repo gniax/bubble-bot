@@ -211,6 +211,16 @@ namespace BubbleBot.Core.Frames.Game
             });
         }
 
+        public static Task HandleGameActionFightInvisibilityMessage(Account account, GameActionFightInvisibilityMessage message)
+        {
+            return Task.Run(() => account.Game.Fight.Update(message));
+        }
+
+        public static Task HandleGameActionFightInvisibleDetectedMessage(Account account, GameActionFightInvisibleDetectedMessage message)
+        {
+            return Task.Run(() => account.Game.Fight.Update(message));
+        }
+
         public static Task HandleGameFightOptionStateUpdateMessage(Account account,
             GameFightOptionStateUpdateMessage message)
         {

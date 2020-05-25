@@ -6,7 +6,7 @@ namespace BubbleBot.Utility.Extensions
     public static class StringsExtensions
     {
         // Fields
-        private static readonly string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%";
+        private static readonly string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 
         public static string ToCamelCase(this string text)
