@@ -42,7 +42,7 @@ namespace BubbleBot.Website.Services
             _panelDb.SaveChanges();
         }
 
-        public async Task<List<CollectedHDVItem>> GetItemInfos(string object_name, int object_id, string object_server)
+        public List<CollectedHDVItem> GetItemInfos(string object_name, int object_id, string object_server)
         {
             if (_panelDb == null)
                 return null;

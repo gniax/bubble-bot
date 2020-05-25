@@ -28,7 +28,7 @@ namespace BubbleBot.Server
 
         // Dofus Touch
         public static string AppVersion { get; set; } = "2.0.4";
-        public static string BuildVersion { get; set; } = "1.46.9";
+        public static string BuildVersion { get; set; } = "1.46.10";
         public static string AssetsVersion { get; set; } = "2.31.2_GgYeQVuuYVUEkPO6ozwD0cOQeo-E'y'e";
         public static string StaticDataVersion { get; set; } = "1.15.10";
 
@@ -49,8 +49,8 @@ namespace BubbleBot.Server
             server.ErrorOccured += Server_ErrorOccured;
             server.ClientDisconnected += Server_ClientDisconnected;
 
-            //AppDomain.CurrentDomain.AssemblyResolve += Resolver;
-            //InitializeCefSharp();
+            AppDomain.CurrentDomain.AssemblyResolve += Resolver;
+            InitializeCefSharp();
 
             ConsoleLogger(1);
             CommandsManager.Initialize();
@@ -210,8 +210,33 @@ namespace BubbleBot.Server
                     break;
             }
         }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void InitializeCefSharp()
+        {
+            var settings = new CefSettings();
 
-        
+            settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
+                                                   Environment.Is64BitProcess ? "x64" : "x86",
+                                                   "CefSharp.BrowserSubprocess.exe");
+
+            Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
+        }
+
+        private static Assembly Resolver(object sender, ResolveEventArgs args)
+        {
+            if (args.Name.StartsWith("CefSharp"))
+            {
+                string assemblyName = args.Name.Split(new[] { ',' }, 2)[0] + ".dll";
+                string archSpecificPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
+                                                       Environment.Is64BitProcess ? "x64" : "x86",
+                                                       assemblyName);
+
+                return File.Exists(archSpecificPath)
+                           ? Assembly.LoadFile(archSpecificPath)
+                           : null;
+            }
+
+            return null;
+        }
     }
-
 }

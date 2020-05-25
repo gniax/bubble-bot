@@ -96,7 +96,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             if (elementCellId < 0 || elementCellId > 559)
                 return false;
 
-            var lockedStorage = _account.Game.Map.LockedStroages.FirstOrDefault(ls => ls.CellId == elementCellId);
+            var lockedStorage = _account.Game.Map.LockedStorages.FirstOrDefault(ls => ls.CellId == elementCellId);
             if (lockedStorage?.Element.Usable == false)
                 return false;
 

@@ -63,6 +63,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>logo.ico</ApplicationIcon>
@@ -299,6 +300,7 @@
     <Compile Include="Converters\Enums\AccountStatesStringConverter.cs" />
     <Compile Include="Converters\Enums\BidirectionalEnumAndNumberConverter.cs" />
     <Compile Include="Converters\Enums\ChannelsStringConverter.cs" />
+    <Compile Include="Converters\Enums\EnumBooleanConverter.cs" />
     <Compile Include="Converters\Enums\ObjectEffectColorConverter.cs" />
     <Compile Include="Converters\Enums\ObjectEntryPositionStringConverter.cs" />
     <Compile Include="Converters\Enums\PlayerStatusEnumImageConverter.cs" />
@@ -314,6 +316,7 @@
     <Compile Include="Converters\Specific\DropMonsterIdsToImage.cs" />
     <Compile Include="Converters\Specific\DropMonsterIdsVisibiltyBoolean.cs" />
     <Compile Include="Converters\Specific\EquipementActionConverter.cs" />
+    <Compile Include="Converters\Specific\IsFightingConverter.cs" />
     <Compile Include="Converters\Specific\IsSubscribedEnabilityConverter.cs" />
     <Compile Include="Converters\Specific\LanguagesToIndexConverter.cs" />
     <Compile Include="Converters\Specific\SubscriptionEndDateConverter.cs" />
@@ -525,6 +528,7 @@
     <Compile Include="Core\Logs\Logger.cs" />
     <Compile Include="Core\Logs\LogMessage.cs" />
     <Compile Include="Core\Logs\LogTypes.cs" />
+    <Compile Include="Core\Logs\SelectableTextBlock.cs" />
     <Compile Include="Core\Network\PrimusWebSocket.cs" />
     <Compile Include="Core\Pathfinding\CellData.cs" />
     <Compile Include="Core\Pathfinding\CellPath.cs" />
@@ -611,11 +615,15 @@
     <Compile Include="Views\Accounts\AccountUc.xaml.cs">
       <DependentUpon>AccountUc.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Accounts\MapViewer\JsonMap.cs" />
     <Compile Include="Views\Others\ExportFormatWindow.xaml.cs">
       <DependentUpon>ExportFormatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Others\ImportFormatWindow.xaml.cs">
+      <DependentUpon>ImportFormatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Others\NicknameWindow.xaml.cs">
       <DependentUpon>NicknameWindow.xaml</DependentUpon>
@@ -718,6 +726,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Accounts\AccountUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Others\ImportFormatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

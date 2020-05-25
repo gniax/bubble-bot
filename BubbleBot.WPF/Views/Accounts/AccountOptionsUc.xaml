@@ -9,7 +9,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
              mc:Ignorable="d"
-             Height="494"
+             Height="570"
              Width="798"
              FontSize="12">
 
@@ -21,7 +21,7 @@
 
     </UserControl.Resources>
 
-    <ScrollViewer Height="484">
+    <ScrollViewer Height="514">
         <StackPanel>
 
             <!-- Automatic boosting -->
@@ -153,6 +153,15 @@
                 </StackPanel>
             </GroupBox>
 
+            <!-- Groupe -->
+            <GroupBox Header="{_:Lang 222}">
+                <StackPanel>
+                    <CheckBox Content="{_:Lang 734}"
+                              IsChecked="{Binding Configuration.CreateParty}"
+                              Margin="4" />
+                </StackPanel>
+            </GroupBox>
+            
             <!-- Others -->
             <GroupBox Header="{_:Lang 365}">
                 <StackPanel>

@@ -1,14 +1,58 @@
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BubbleBot.Views.Accounts.MapViewer
 {
-    public class MapViewerCell
+    public class MapViewerCell : UIElement
     {
+        #region UIElementHeritage
+        private readonly UIElementCollection children;
+        public void AddChild(UIElement element)
+        {
+            children.Add(element);
+        }
+
+        public void RemoveChild(UIElement element)
+        {
+            children.Remove(element);
+        }
+
+        protected override int VisualChildrenCount
+        {
+            get { return children.Count; }
+        }
+
+        protected override Visual GetVisualChild(int index)
+        {
+            return children[index];
+        }
+
+        protected override Size MeasureCore(Size availableSize)
+        {
+            foreach (UIElement element in children)
+            {
+                element.Measure(availableSize);
+            }
+
+            return new Size();
+        }
+
+        protected override void ArrangeCore(Rect finalRect)
+        {
+            foreach (UIElement element in children)
+            {
+                element.Arrange(finalRect);
+            }
+        }
+
+        #endregion
+
         // Constructor
         public MapViewerCell(Point[] points)
         {
+            children = new UIElementCollection(this, null);
             Points = points;
         }
 
@@ -16,9 +60,9 @@ namespace BubbleBot.Views.Accounts.MapViewer
         public Point[] Points { get; }
 
 
-        public void Draw(DrawingContext drawingContext, Brush brush, Pen pen)
+        public void Draw(DrawingContext drawingContext, Brush brush, Pen pen, bool realmap)
         {
-            DrawPolygonOrPolyline(drawingContext, brush, pen, Points);
+            DrawPolygonOrPolyline(drawingContext, brush, pen, Points, realmap);
         }
 
         public void DrawObstacle(DrawingContext drawingContext, Brush brush, Pen pen)
@@ -43,11 +87,17 @@ namespace BubbleBot.Views.Accounts.MapViewer
             newPoints[13] = Points[2];
             newPoints[14] = new Point(Points[2].X, Points[2].Y - 10);
 
-            DrawPolygonOrPolyline(drawingContext, brush, pen, newPoints);
+            DrawPolygonOrPolyline(drawingContext, brush, pen, newPoints, false);
         }
 
         public void DrawPie(DrawingContext drawingContext, Brush brush)
         {
+            drawingContext.DrawEllipse(brush, null, new Point(Points[0].X, Points[1].Y), 5, 5);
+        }
+
+        public void DrawPlayer(DrawingContext drawingContext, Brush brush)
+        {
+
             drawingContext.DrawEllipse(brush, null, new Point(Points[0].X, Points[1].Y), 5, 5);
         }
 
@@ -59,7 +109,7 @@ namespace BubbleBot.Views.Accounts.MapViewer
         public void DrawCross(DrawingContext drawingContext, Pen pen)
         {
             drawingContext.DrawLine(pen, new Point(Points[0].X - 4, Points[0].Y + 8),
-                new Point(Points[0].X + 4, Points[1].Y + 2));
+                new Point(Points[0].X + 4, Points[1].Y + 2)); ;
             drawingContext.DrawLine(pen, new Point(Points[0].X + 4, Points[0].Y + 8),
                 new Point(Points[0].X - 4, Points[1].Y + 2));
         }
@@ -87,7 +137,7 @@ namespace BubbleBot.Views.Accounts.MapViewer
         }
 
 
-        private static void DrawPolygonOrPolyline(DrawingContext drawingContext, Brush brush, Pen pen, Point[] points)
+        private static void DrawPolygonOrPolyline(DrawingContext drawingContext, Brush brush, Pen pen, Point[] points, bool realMap)
         {
             // Make a StreamGeometry to hold the drawing objects.
             var geo = new StreamGeometry();
@@ -103,8 +153,15 @@ namespace BubbleBot.Views.Accounts.MapViewer
                 context.PolyLineTo(points.Skip(1).ToArray(), true, false);
             }
 
+            if (realMap)
+            {
+                drawingContext.DrawGeometry(brush, new Pen(new SolidColorBrush(Colors.White) { Opacity = 0.5 }, 1), geo);
+            }
+            else
+            {
+                drawingContext.DrawGeometry(brush, pen, geo);
+            }
             // Draw.
-            drawingContext.DrawGeometry(brush, pen, geo);
         }
     }
 }

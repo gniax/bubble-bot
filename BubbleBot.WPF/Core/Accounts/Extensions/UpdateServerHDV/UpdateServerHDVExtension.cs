@@ -39,7 +39,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
             Enabled = false;
         }
 
-        public async Task Initialize()
+        public void Initialize()
         {
            // if (_running)
            //     return;
@@ -50,10 +50,10 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
 
             //Recuperation des items a update 
             ItemsToUpdate = new Dictionary<uint, string>();
-            TakeItemToUpdate(); 
+            TakeItemToUpdate();
 
-            while(Enabled == true)
-                await StartCollect().ConfigureAwait(true);
+            while (Enabled == true)
+                StartCollect();
 
             //_timer = new Timer(Timer_Callback, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -82,7 +82,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
 
         }
 
-        private async Task StartCollect()
+        private void StartCollect()
         {
             if (!_running)
                 return;
@@ -93,7 +93,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
                 return;
             }
 
-               if (await StartBuying() == false)
+               if (StartBuying().Result == false)
                {
                    _account.Logger.LogError("UPDATE-SERVER", "Erreur lors de l'ouverture de l'HDV.");
                    return;
@@ -110,7 +110,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
                     List<BidExchangerObjectInfo> itemsSelectedInHDV = new List<BidExchangerObjectInfo>();
                    // Console.WriteLine(ItemsToUpdate.ElementAt(i).Key.ToString());
 
-                    itemsSelectedInHDV = await _account.Game.Bid.GetListOfItemAsync(ItemsToUpdate.ElementAt(i).Key);
+                    itemsSelectedInHDV = _account.Game.Bid.GetListOfItem(ItemsToUpdate.ElementAt(i).Key);
                    // Console.WriteLine("Nombre item :" + itemsSelectedInHDV.Count.ToString());
 
                     if (itemsSelectedInHDV == null || itemsSelectedInHDV.Count <= 0)

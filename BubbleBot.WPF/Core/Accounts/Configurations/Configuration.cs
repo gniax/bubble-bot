@@ -19,6 +19,7 @@ namespace BubbleBot.Core.Accounts.Configurations
         private bool _acceptAchivements;
         private Account _account;
         private bool _autoMount;
+        private bool _createParty;
         private bool _autoRegenAccepted;
         private int _banReconnectionDelay;
         private bool _disconnectOnBan;
@@ -50,6 +51,7 @@ namespace BubbleBot.Core.Accounts.Configurations
             ShowSaleMessages = true;
             ShowSeekMessages = true;
             ShowNoobMessages = true;
+            CreateParty = true;
             AutoRegenAccepted = true;
             AcceptAchievements = true;
             StatToBoost = BoostableStats.NONE;
@@ -141,6 +143,16 @@ namespace BubbleBot.Core.Accounts.Configurations
             set
             {
                 Set(ref _showNoobMessages, value);
+                Save();
+            }
+        }
+
+        public bool CreateParty
+        {
+            get => _createParty;
+            set
+            {
+                Set(ref _createParty, value);
                 Save();
             }
         }
@@ -253,47 +265,58 @@ namespace BubbleBot.Core.Accounts.Configurations
                     using (var sr = new StreamReader(File.Open(ConfigFilePath, FileMode.Open, FileAccess.ReadWrite,
                         FileShare.ReadWrite), Encoding.UTF8))
                     {
-                        var json = JObject.Parse(sr.ReadToEnd());
 
-                        AutoRegenAccepted = json.SelectToken("AutoRegenAccepted").Value<bool>();
-                        AcceptAchievements = json.SelectToken("AcceptAchievements").Value<bool>();
-                        StatToBoost = (BoostableStats) json.SelectToken("StatToBoost").Value<byte>();
-                        IgnoreNonAuthorizedTrades = json.SelectToken("IgnoreNonAuthorizedTrades").Value<bool>();
-                        DisconnectUponFightsLimit = json.SelectToken("DisconnectUponFightsLimit").Value<bool>();
-                        SpeedHack = json.SelectToken("SpeedHack").Value<bool>();
-                        DisconnectOnBan = json.SelectToken("DisconnectOnBan").Value<bool>();
-                        BanReconnectionDelay = json.SelectToken("BanReconnectionDelay").Value<int>();
-                        AutoMount = json.SelectToken("AutoMount").Value<bool>();
-                        ShowGeneralMessages = json.SelectToken("Channel.ShowGeneralMessages").Value<bool>();
-                        ShowPartyMessages = json.SelectToken("Channel.ShowPartyMessages").Value<bool>();
-                        ShowFightMessages = json.SelectToken("Channel.ShowFightMessages").Value<bool>();
-                        ShowGuildMessages = json.SelectToken("Channel.ShowGuildMessages").Value<bool>();
-                        ShowAllianceMessages = json.SelectToken("Channel.ShowAllianceMessages").Value<bool>();
-                        ShowSaleMessages = json.SelectToken("Channel.ShowSaleMessages").Value<bool>();
-                        ShowSeekMessages = json.SelectToken("Channel.ShowSeekMessages").Value<bool>();
-                        ShowNoobMessages = json.SelectToken("Channel.ShowNoobMessages").Value<bool>();
+                        var json = JObject.Parse(sr.ReadToEnd());
+                        CreateParty = json["CreateParty"] != null ? (bool)json["CreateParty"] : true;
+                        AutoRegenAccepted = json["AutoRegenAccepted"] != null ? (bool)json["AutoRegenAccepted"] : true;
+                        AcceptAchievements = json["AcceptAchievements"] != null ? (bool)json["AcceptAchievements"] : true;
+                        StatToBoost = json["StatToBoost"] != null ? (BoostableStats)(byte)json["StatToBoost"] : BoostableStats.NONE;
+                        IgnoreNonAuthorizedTrades = json["IgnoreNonAuthorizedTrades"] != null ? (bool)json["IgnoreNonAuthorizedTrades"] : false;
+                        DisconnectUponFightsLimit = json["DisconnectUponFightsLimit"] != null ? (bool)json["DisconnectUponFightsLimit"] : false;
+                        SpeedHack = json["SpeedHack"] != null ? (bool)json["SpeedHack"] : false;
+                        DisconnectOnBan = json["DisconnectOnBan"] != null ? (bool)json["DisconnectOnBan"] : false;
+                        BanReconnectionDelay = json["BanReconnectionDelay"] != null ? (int)json["BanReconnectionDelay"] : 0;
+                        AutoMount = json["AutoMount"] != null ? (bool)json["AutoMount"] : true;
+                        ShowGeneralMessages = json["Channel"]["ShowGeneralMessages"] != null ? (bool)json["Channel"]["ShowGeneralMessages"] : true;
+                        ShowPartyMessages = json["Channel"]["ShowPartyMessages"] != null ? (bool)json["Channel"]["ShowPartyMessages"] : true;
+                        ShowFightMessages = json["Channel"]["ShowFightMessages"] != null ? (bool)json["Channel"]["ShowFightMessages"] : true;
+                        ShowGuildMessages = json["Channel"]["ShowGuildMessages"] != null ? (bool)json["Channel"]["ShowGuildMessages"] : true;
+                        ShowAllianceMessages = json["Channel"]["ShowAllianceMessages"] != null ? (bool)json["Channel"]["ShowAllianceMessages"] : true;
+                        ShowSaleMessages = json["Channel"]["ShowSaleMessages"] != null ? (bool)json["Channel"]["ShowSaleMessages"] : true;
+                        ShowSeekMessages = json["Channel"]["ShowSeekMessages"] != null ? (bool)json["Channel"]["ShowSeekMessages"] : true;
+                        ShowNoobMessages = json["Channel"]["ShowNoobMessages"] != null ? (bool)json["Channel"]["ShowNoobMessages"] : true;
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             SpellsToBoost.Clear();
                             var value = json["SpellsToBoost"];
-                            var spells = value.ToObject<List<SpellToBoostEntry>>();
-                            foreach (var spell in spells)
+                            if (value != null)
                             {
-                                if (!SpellsToBoost.Contains(spell))
+                                var spells = value.ToObject<List<SpellToBoostEntry>>();
+                                foreach (var spell in spells)
                                 {
-                                    SpellsToBoost.Add(new SpellToBoostEntry(spell.Id, spell.Name, spell.Level));
+                                    if (!SpellsToBoost.Contains(spell))
+                                    {
+                                        SpellsToBoost.Add(new SpellToBoostEntry(spell.Id, spell.Name, spell.Level));
+                                    }
+                                    else
+                                    {
+                                        SpellsToBoost[SpellsToBoost.IndexOf(spell)] = spell;
+                                    }
                                 }
                             }
 
                             AuthorizedTradesFrom.Clear();
                             value = json["AuthorizedTradesFrom"];
-                            var ids = value.ToObject<List<int>>();
-                            foreach (var id in ids)
+                            if (value != null)
                             {
-                                if (!AuthorizedTradesFrom.Contains(id))
+                                var ids = value.ToObject<List<int>>();
+                                foreach (var id in ids)
                                 {
-                                    AuthorizedTradesFrom.Add(id);
+                                    if (!AuthorizedTradesFrom.Contains(id))
+                                    {
+                                        AuthorizedTradesFrom.Add(id);
+                                    }
                                 }
                             }
                         });
@@ -322,6 +345,7 @@ namespace BubbleBot.Core.Accounts.Configurations
                     FileShare.ReadWrite), Encoding.UTF8))
                 {
                     dynamic json = new ExpandoObject();
+                    json.CreateParty = CreateParty;
                     json.AutoRegenAccepted = AutoRegenAccepted;
                     json.AcceptAchievements = AcceptAchievements;
                     json.StatToBoost = (byte) StatToBoost;

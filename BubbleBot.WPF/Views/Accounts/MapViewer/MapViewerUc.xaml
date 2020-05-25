@@ -8,4 +8,11 @@
              Width="624"
              Height="442">
 
+    <Grid x:Name="GridArea" Opacity="1" >
+        <Grid.Background>
+            <ImageBrush x:Name="RealMap" Stretch="UniformToFill" Opacity="0.6"/>
+        </Grid.Background>
+    </Grid>
+
+
 </UserControl>

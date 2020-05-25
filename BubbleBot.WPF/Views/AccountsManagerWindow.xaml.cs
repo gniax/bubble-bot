@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.Configurations;
 using BubbleBot.Core.Accounts.Extensions.Fights.Configuration;
 using BubbleBot.Protocol.Data;
@@ -60,6 +62,14 @@ namespace BubbleBot.Views
                         Path.Combine(FightsConfiguration.ConfigurationsPath,
                             CmbFightsConfigurationsCopier.SelectedItem.ToString()),
                         Path.Combine(FightsConfiguration.ConfigurationsPath, $"{account.Username}.fconfig"), true);
+
+                Account connectedAccount = BubbleBotMain.Instance.ConnectedAccounts.Where(a => a.AccountConfig == account).FirstOrDefault();
+                if (connectedAccount != null)
+                {
+                    connectedAccount.Configuration.Load();
+                    connectedAccount.Extensions.Fights.Configuration.Load();
+                }
+                
             }
         }
 
@@ -245,55 +255,165 @@ namespace BubbleBot.Views
 
         private void TxtSeparator_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            TxtSeparatorPreview.Text = TxtSeparator.Text.Length == 0
-                ? $"{LanguageManager.Translate("494")}-"
-                : $"{LanguageManager.Translate("494")}{LanguageManager.Translate("495", TxtSeparator.Text)}";
+            TxtSeparatorDefaultPreview.Text = TxtSeparator.Text.Length == 0
+                ? $"-"
+                : $"{LanguageManager.Translate("495", TxtSeparator.Text)}";
+        }
+        private void ImportDefaultRdbtn_Click(object sender, RoutedEventArgs e)
+        {
+            TxtCustomImportFormat.Text = "...";
+        }
+
+        private void ImportCustomRdbtn_Click(object sender, RoutedEventArgs e)
+        {
+            var importDialog = new ImportFormatWindow(this);
+            importDialog.ShowDialog();
         }
 
         private async void BtnImportAccounts_OnClick(object sender, RoutedEventArgs e)
         {
-            if (TxtSeparator.Text.Length == 0 || TxtFilePath.Text.Length == 0 || !File.Exists(TxtFilePath.Text))
+            if (RdbtnDefault.IsChecked == true)
             {
-                await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("496"));
-                return;
-            }
-
-            var lines = File.ReadAllLines(TxtFilePath.Text);
-            var accounts = new List<AccountConfiguration>();
-
-            for (var i = 0; i < lines.Length; i++)
-            {
-                var infos = lines[i].Split(new[] {TxtSeparator.Text}, StringSplitOptions.RemoveEmptyEntries);
-
-                if (infos.Length < 2)
-                    continue;
-
-                var nbparameters = infos.Length;
-
-                if (nbparameters == 2)
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "", "", false));
-
-                if (nbparameters == 3)
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-
-                if (nbparameters == 5)
+                if (TxtSeparator.Text.Length == 0 || TxtFilePath.Text.Length == 0 || !File.Exists(TxtFilePath.Text))
                 {
-                    accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-                    accounts.ElementAt(i).Proxy.Ip = infos[3];
-                    ushort.TryParse(infos[4], out var paramport);
-                    accounts.ElementAt(i).Proxy.Port = paramport;
+                    await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("496"));
+                    return;
+                }
+
+                var lines = File.ReadAllLines(TxtFilePath.Text);
+                var accounts = new List<AccountConfiguration>();
+
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var infos = lines[i].Split(new[] {TxtSeparator.Text}, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (infos.Length < 2)
+                        continue;
+
+                    var nbparameters = infos.Length;
+
+                    if (nbparameters == 2)
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "", "", false));
+
+                    if (nbparameters == 3)
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
+
+                    if (nbparameters == 5)
+                    {
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[3];
+                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.ElementAt(i).Proxy.Port = paramport;
+                    }
+                }
+
+                if (accounts.Count > 0)
+                {
+                    GlobalConfiguration.Instance.AddAccountsAndSave(accounts);
+                    await this.ShowMessageAsync(LanguageManager.Translate("492"),
+                        LanguageManager.Translate("497", accounts.Count));
+                }
+                else
+                {
+                    await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("498"));
                 }
             }
+            else if (RdbtnCustom.IsChecked == true)
+            {
+                if (TxtCustomImportFormat.Text != "...")
+                {
+                    if (TxtFilePath.Text.Length == 0 || !File.Exists(TxtFilePath.Text))
+                    {
+                        await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("496"));
+                        return;
+                    }
 
-            if (accounts.Count > 0)
-            {
-                GlobalConfiguration.Instance.AddAccountsAndSave(accounts);
-                await this.ShowMessageAsync(LanguageManager.Translate("492"),
-                    LanguageManager.Translate("497", accounts.Count));
-            }
-            else
-            {
-                await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("498"));
+                    var lines = File.ReadAllLines(TxtFilePath.Text);
+                    var accounts = new List<AccountConfiguration>();
+                    short errors = 0;
+
+                    for (var i = 0; i < lines.Length; i++)
+                    {
+                        string delimiter = null;
+                        string pattern = @"^[a-zA-Z]+(\W)";
+                        var regMatch = Regex.Match(TxtCustomImportFormat.Text, pattern);
+                        if (regMatch.Success)
+                        {
+                            delimiter = regMatch.Groups[1].Value;
+                        }
+
+                        if (delimiter == null)
+                            return;
+
+                        var content = lines[i].Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
+                        var keys = TxtCustomImportFormat.Text.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        var account = new AccountConfiguration("", "", "-", "", "", "", false);
+
+                        for (int j = 0; j < keys.Count; j++)
+                        {
+                            switch (keys[j])
+                            {
+                                case "username":
+                                    account.Username = content[j] != null ? content[j] : "";
+                                    break;
+                                case "password":
+                                    account.Password = content[j] != null ? content[j] : "";
+                                    break;
+                                case "ip":
+                                    account.Proxy.Ip = content[j] != null ? content[j] : "";
+                                    break;
+                                case "port":
+                                    if (content[j] != null)
+                                    {
+                                        var isNumeric = UInt16.TryParse(content[j], out ushort value);
+                                        account.Proxy.Port = isNumeric ? value : (ushort) 0;
+                                    }
+                                    break;
+                                case "pxy-user":
+                                    account.Proxy.Username = content[j] != null ? content[j] : "";
+                                    break;
+                                case "pxy-pass":
+                                    account.Proxy.Password = content[j] != null ? content[j] : "";
+                                    break;
+                                case "id":
+                                    account.Identifiant = content[j] != null ? content[j] : "";
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        if (account.Username == "" && account.Password == "")
+                        {
+                            errors++;
+                            break;
+                        }
+
+                        accounts.Add(account);
+                        
+                    }
+
+                    if (accounts.Count > 0)
+                    {
+                        GlobalConfiguration.Instance.AddAccountsAndSave(accounts);
+                        if (errors > 0)
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("742", lines.Length, errors));
+                        }
+                        else
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("492"), LanguageManager.Translate("497", accounts.Count));
+                        }
+                    }
+                    else
+                    {
+                        await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("498"));
+                    }
+                }
+                else
+                {
+                    await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("741"));
+                }
             }
         }
 
@@ -533,7 +653,19 @@ namespace BubbleBot.Views
                     // If the ip is valid, the proxy is working
                     if (text.Substring(0, text.Length - 1) == ip.ToString())
                     {
-                        await this.ShowMessageAsync(LanguageManager.Translate("357"), LanguageManager.Translate("355"));
+                        response = await http.GetAsync("https://proxyconnection.touch.dofus.com/haapi/getForumPostsList?lang=fr&topicId=24993");
+                        if ((int)response.StatusCode == 403)
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("731"));
+                        }
+                        else if ((int)response.StatusCode == 200)
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("357"), LanguageManager.Translate("355"));
+                        }
+                        else
+                        {
+                            await this.ShowMessageAsync(LanguageManager.Translate("249"), LanguageManager.Translate("732", response.StatusCode));
+                        }
                         return;
                     }
                 }

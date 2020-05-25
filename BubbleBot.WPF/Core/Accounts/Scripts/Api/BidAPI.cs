@@ -32,9 +32,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return true;
         }
 
-        public async Task<uint> GetItemPrice(uint gid, uint lot)
+        public uint GetItemPrice(uint gid, uint lot)
         {
-            return await _account.Game.Bid.GetItemPriceAsync(gid, lot);
+            return  _account.Game.Bid.GetItemPrice(gid, lot);
         }
 
         public int GetAverageItemPrice(uint gid)

@@ -648,7 +648,7 @@
 656|Echec de la complétion du tutoriel ... Nouvelle tentative avec la création d'un nouveau personnage...
 657| Retrait invendu au bout de {0} secondes.
 658|Le délais de remise en vente doit être supérieur ou égale à 0.
-659|Démarrage du script lorsque le Captcha est terminé ! (Timeout: 5 minutes)
+659|Démarrage du script lorsque le Captcha est terminé !
 660|Format d'exportation
 661|Balises disponibles:
 662|username:password
@@ -659,8 +659,8 @@
 667|username ; password ; ip ; port ; id ; pxy-user ; pxy-pass 
 668|:
 669|Appliquer aux comptes sélectionnés
-670|Cloudflare a banni temporairement votre IP (TOO_MANY_REQUESTS) ! 
-671|Reconnectez-vous dans {0} secondes...
+670|Cloudflare a banni temporairement votre IP ! [TOO_MANY_REQUESTS] 
+671|Reconnectez-vous dans environ {0} secondes...
 672|Erreur d'accés Internet, vérifiez la validité de votre Proxy
 673|Erreur d'accés Internet, vérifiez l'état de votre connexion...
 674|Ajout de l'id à la liste des autorisations.
@@ -720,3 +720,16 @@
 728|Le proxy ci-dessus sera attribué au programme qui gère les bots, ainsi que tous les bots sans proxy...
 729|Gestion du proxy global
 730|Adresse IP utilisée : {0}
+731|Le proxy est fonctionnel mais banni pour Dofus par Cloudflare (403 Interdit)
+732|Le proxy est fonctionnel mais ne semble pas compatible avec Dofus (HTTP-Code : {0})
+733|BubbleBot est désormais compatible avec la dernière version de Dofus Touch !
+734|Former un groupe dès que les bots sont connectés (subséquemment les bots s'ajouteront en amis).
+735|Tous les membres du groupe ont rejoint l'équipe !
+736|Abandonner le combat en cours.
+737|Formatter les messages des différents canaux de la console.
+738|Démarrage du script prévu lorsque le combat sera terminé.
+739|Le démarrage du script prévu est annulé.
+740|Afficher la map
+741|Afficher les noms
+742|Afficher les ids
+743|Afficher les monstres

@@ -24,7 +24,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
         private BlockSpectatorScenarios _blockSpectatorScenario;
         private FightSpeeds _fightsSpeed;
         private FightStartPlacements _fightStartPlacements;
-        private bool _ignoreSommonedEnnemies;
+        private bool _ignoreSummonedEnnemies;
         private bool _loaded;
         private bool _lockFight;
         private byte _maxCells;
@@ -44,6 +44,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
             SpellToApproach = -1;
             BlockSpectatorScenario = BlockSpectatorScenarios.NEVER;
             LockFight = false;
+            IgnoreSummonedEnnemies = false;
             Tactic = FightTactics.FUGITIVE;
             MaxCells = 12;
             ApproachWhenNoSpellWasCasted = false;
@@ -176,10 +177,10 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
 
         public bool IgnoreSummonedEnnemies
         {
-            get => _ignoreSommonedEnnemies;
+            get => _ignoreSummonedEnnemies;
             set
             {
-                Set(ref _ignoreSommonedEnnemies, value);
+                Set(ref _ignoreSummonedEnnemies, value);
                 Save();
             }
         }
@@ -207,30 +208,37 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights.Configuration
                     {
                         var json = JObject.Parse(sr.ReadToEnd());
 
-                        FightStartPlacement = (FightStartPlacements) json.SelectToken("FightStartPlacement").Value<byte>();
-                        BlockSpectatorScenario = (BlockSpectatorScenarios) json.SelectToken("BlockSpectatorScenario").Value<byte>();
-                        Tactic = (FightTactics) json.SelectToken("Tactic").Value<byte>();
-                        FightsSpeed = (FightSpeeds) json.SelectToken("FightsSpeed").Value<byte>();
-                        MonsterToApproach = json.SelectToken("MonsterToApproach").Value<int>();
-                        SpellToApproach = json.SelectToken("SpellToApproach").Value<int>();
-                        LockFight = json.SelectToken("LockFight").Value<bool>();
-                        MaxCells = json.SelectToken("MaxCells").Value<byte>();
-                        ApproachWhenNoSpellWasCasted = json.SelectToken("ApproachWhenNoSpellWasCasted").Value<bool>();
-                        BaseApproachOnAllMonsters = json.SelectToken("BaseApproachOnAllMonsters").Value<bool>();
-                        RegenStart = json.SelectToken("RegenStart").Value<byte>();
-                        RegenEnd = json.SelectToken("RegenEnd").Value<byte>();
-                        IgnoreSummonedEnnemies = json.SelectToken("IgnoreSummonedEnnemies").Value<bool>();
+                        FightStartPlacement = json["FightStartPlacement"] != null ? (FightStartPlacements)(byte)json["FightStartPlacement"] : FightStartPlacements.FAR_FROM_ENNEMIS;
+                        BlockSpectatorScenario = json["BlockSpectatorScenario"] != null ? (BlockSpectatorScenarios)(byte)json["BlockSpectatorScenario"] : BlockSpectatorScenarios.NEVER;
+                        Tactic = json["Tactic"] != null ? (FightTactics)(byte)json["Tactic"] : FightTactics.FUGITIVE;
+                        FightsSpeed = json["FightsSpeed"] != null ? (FightSpeeds)(byte)json["FightsSpeed"] : FightSpeeds.NORMAL;
+                        MonsterToApproach = json["MonsterToApproach"] != null ? (int)json["MonsterToApproach"] : -1;
+                        SpellToApproach = json["SpellToApproach"] != null ? (int)json["SpellToApproach"] : -1;
+                        LockFight = json["LockFight"] != null ? (bool)json["LockFight"] : false;
+                        MaxCells = json["MaxCells"] != null ? (byte) json["MaxCells"] : (byte) 12;
+                        ApproachWhenNoSpellWasCasted = json["ApproachWhenNoSpellWasCasted"] != null ? (bool)json["ApproachWhenNoSpellWasCasted"] : false;
+                        BaseApproachOnAllMonsters = json["BaseApproachOnAllMonsters"] != null ? (bool)json["BaseApproachOnAllMonsters"] : false;
+                        RegenStart = json["RegenStart"] != null ? (byte)json["RegenStart"] : (byte)0;
+                        RegenEnd = json["RegenEnd"] != null ? (byte)json["RegenEnd"] : (byte)100;
+                        IgnoreSummonedEnnemies = json["IgnoreSummonedEnnemies"] != null ? (bool)json["IgnoreSummonedEnnemies"] : false;
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             Spells.Clear();
                             var value = json["Spells"];
-                            var spells = value.ToObject<List<Spell>>();
-                            foreach (var spell in spells)
+                            if (value != null)
                             {
-                                if (!Spells.Contains(spell))
+                                var spells = value.ToObject<List<Spell>>();
+                                foreach (var spell in spells)
                                 {
-                                    Spells.Add(spell);
+                                    if (!Spells.Contains(spell))
+                                    {
+                                        Spells.Add(spell);
+                                    }
+                                    else
+                                    {
+                                        Spells[Spells.IndexOf(spell)] = spell;
+                                    }
                                 }
                             }
                         });

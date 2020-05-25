@@ -33,7 +33,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         private ConcurrentDictionary<int, ElementInCellEntry> _lockedStorages;
         private ConcurrentDictionary<int, MonstersGroupEntry> _monstersGroups;
         private ConcurrentDictionary<int, NpcEntry> _npcs;
-        private bool _oneTime = true;
         private ConcurrentDictionary<int, ElementInCellEntry> _phenixs;
         private ConcurrentDictionary<int, PlayerEntry> _players;
         private bool _running;
@@ -88,7 +87,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         public IEnumerable<ElementInCellEntry> Doors => _doors.Values;
         public IEnumerable<StatedElementEntry> StatedElements => _statedElements.Values;
         public IEnumerable<ElementInCellEntry> Phenixs => _phenixs.Values;
-        public IEnumerable<ElementInCellEntry> LockedStroages => _lockedStorages.Values;
+        public IEnumerable<ElementInCellEntry> LockedStorages => _lockedStorages.Values;
         public int Id => Data != null ? Data.Id : 0;
 
         public List<short> OccupiedCells => Players.Select(f => f.CellId)
@@ -106,7 +105,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map
             PosX = 0;
             PosY = 0;
             _firstTime = true;
-            _oneTime = true;
             RaisePropertyChanged("CurrentPosition");
         }
 

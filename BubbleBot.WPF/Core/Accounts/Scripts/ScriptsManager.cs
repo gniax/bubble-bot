@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.Scripts.Actions;
@@ -21,6 +22,7 @@ using BubbleBot.Properties;
 using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility.Extensions;
+using ControlzEx.Standard;
 using GalaSoft.MvvmLight;
 using MoonSharp.Interpreter;
 
@@ -195,8 +197,24 @@ namespace BubbleBot.Core.Accounts.Scripts
             if (string.IsNullOrEmpty(CurrentScriptName))
                 return;
 
-            if (Enabled || _account.IsBusy)
+            if (Enabled && _account.WaitForRestartScript == false)
                 return;
+
+            if (_account.IsBusy && !_account.IsFighting() && !(_account.State == AccountStates.RECAPTCHA))
+                return;
+
+            if (_account.IsFighting() || _account.State == AccountStates.RECAPTCHA)
+            {
+                if (_account.IsFighting())
+                    _account.Logger.LogInfo(LanguageManager.Translate("165"), LanguageManager.Translate("738"));
+                else
+                    _account.Logger.LogInfo(LanguageManager.Translate("165"), LanguageManager.Translate("659"));
+
+                _account.WaitForRestartScript = true;
+                Enabled = true;
+                return;
+            }
+
 
             if (!BubbleBotMain.Instance.Server.IsSubscribedToTouch && _account.Game.Character.Level >= 9)
             {
@@ -220,6 +238,7 @@ namespace BubbleBot.Core.Accounts.Scripts
                 }
 
             Enabled = true;
+            _account.WaitForRestartScript = false;
             _account.Logger.LogInfo(LanguageManager.Translate("165"), LanguageManager.Translate("479"));
             ScriptStarted?.Invoke();
 

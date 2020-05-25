@@ -12,6 +12,7 @@ using System.Windows.Data;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Groups;
+using BubbleBot.Utility.Security;
 using GalaSoft.MvvmLight;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,6 +30,7 @@ namespace BubbleBot.Configurations
         private string _antiCaptchaKey;
         private bool _automaticReconnection;
         private bool _displayItemsInLogs;
+        private bool _formattingLogs;
         private Languages _language;
         private bool _loaded;
         private bool _randomNickname;
@@ -46,6 +48,7 @@ namespace BubbleBot.Configurations
 
             AntiCaptchaKey = "";
             ShowDebugMessages = true;
+            FormattingLogs = true;
             DisplayItemsInLogs = true;
             RandomNickname = false;
             AutomaticReconnection = true;
@@ -62,6 +65,7 @@ namespace BubbleBot.Configurations
         // Properties
         public ObservableCollection<AccountConfiguration> Accounts { get; set; }
 
+        [JsonConverter(typeof(EncryptingJsonConverter), "Bûbbl€Bôt")]
         public string AntiCaptchaKey
         {
             get => _antiCaptchaKey;
@@ -81,7 +85,15 @@ namespace BubbleBot.Configurations
                 Save();
             }
         }
-
+        public bool FormattingLogs
+        {
+            get => _formattingLogs;
+            set
+            {
+                Set(ref _formattingLogs, value);
+                Save();
+            }
+        }
         public bool DisplayItemsInLogs
         {
             get => _displayItemsInLogs;
@@ -198,30 +210,41 @@ namespace BubbleBot.Configurations
                         {
                             var json = JObject.Parse(sr.ReadToEnd());
 
-                            AntiCaptchaKey = json.SelectToken("AntiCaptchaKey").Value<string>();
-                            ShowDebugMessages = json.SelectToken("ShowDebugMessages").Value<bool>();
-                            DisplayItemsInLogs = json.SelectToken("DisplayItemsInLogs").Value<bool>();
-                            RandomNickname = json.SelectToken("RandomNickname").Value<bool>();
-                            AutomaticReconnection = json.SelectToken("AutomaticReconnection").Value<bool>();
-                            Username = json.SelectToken("Username").Value<string>();
-                            Language = (Languages) json.SelectToken("Language").Value<byte>();
-                            ProxyIp = json.SelectToken("Proxy.Ip").Value<string>();
-                            ProxyPort = json.SelectToken("Proxy.Port").Value<ushort>();
-                            ProxyUsername = json.SelectToken("Proxy.Username").Value<string>();
-                            ProxyPassword = json.SelectToken("Proxy.Password").Value<string>();
+                            AntiCaptchaKey = json["AntiCaptchaKey"] != null ? (string)json["AntiCaptchaKey"] : "";
+                            ShowDebugMessages = json["ShowDebugMessages"] != null ? (bool)json["ShowDebugMessages"] : true;
+                            DisplayItemsInLogs = json["DisplayItemsInLogs"] != null ? (bool)json["DisplayItemsInLogs"] : true;
+                            FormattingLogs = json["FormattingLogs"] != null ? (bool)json["FormattingLogs"] : true;
+                            RandomNickname = json["RandomNickname"] != null ? (bool)json["RandomNickname"] : false;
+                            AutomaticReconnection = json["AutomaticReconnection"] != null ? (bool)json["AutomaticReconnection"] : true;
+                            Username = json["Username"] != null ? (string)json["Username"] : "";
+                            Language = json["Language"] != null ? (Languages)(byte)json["Language"] : Languages.FRENCH;
+                            ProxyIp = json["Proxy"]["Ip"] != null ? (string)json["Proxy"]["Ip"] : "";
+                            ProxyPort = json["Proxy"]["Port"] != null ? (ushort)json["Proxy"]["Port"] : (ushort) 0;
+                            ProxyUsername = json["Proxy"]["Username"] != null ? (string)json["Proxy"]["Username"] : "";
+                            ProxyPassword = json["Proxy"]["Password"] != null ? (string)json["Proxy"]["Password"] : "";
 
                             var value = json["Accounts"];
                             var accounts = value.ToObject<List<AccountConfiguration>>();
-
-                            foreach (var acc in accounts)
+                            if (value != null)
                             {
-                                if (!Accounts.Contains(acc))
+                                foreach (var acc in accounts)
                                 {
-                                    while (acc.Planification.Count > 24)
+                                    if (!Accounts.Contains(acc))
                                     {
-                                        acc.Planification.RemoveAt(0);
+                                        while (acc.Planification.Count > 24)
+                                        {
+                                            acc.Planification.RemoveAt(0);
+                                        }
+                                        Accounts.Add(acc);
                                     }
-                                    Accounts.Add(acc);
+                                    else
+                                    {
+                                        while (acc.Planification.Count > 24)
+                                        {
+                                            acc.Planification.RemoveAt(0);
+                                        }
+                                        Accounts[Accounts.IndexOf(acc)] = acc;
+                                    }
                                 }
                             }
                         }
@@ -250,6 +273,7 @@ namespace BubbleBot.Configurations
                 json.AntiCaptchaKey = AntiCaptchaKey;
                 json.ShowDebugMessages = ShowDebugMessages;
                 json.DisplayItemsInLogs = DisplayItemsInLogs;
+                json.FormattingLogs = FormattingLogs;
                 json.RandomNickname = RandomNickname;
                 json.AutomaticReconnection = AutomaticReconnection;
                 json.Username = Username;

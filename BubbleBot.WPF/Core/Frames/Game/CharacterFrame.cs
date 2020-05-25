@@ -78,6 +78,19 @@ namespace BubbleBot.Core.Frames.Game
             return Task.Run(() => account.Game.Character.UpdateAsync(message));
         }
 
+        public static Task HandleFriendsListMessage(Account account, FriendsListMessage message)
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
+        public static Task HandlePartyInvitationMessage(Account account, PartyInvitationMessage message)
+        {
+            return Task.Run(() => account.Game.Character.UpdateAsync(message));
+        }
+        public static Task HandlePartyJoinMessage(Account account, PartyJoinMessage message)
+        {
+            return Task.Run(() => account.Game.Character.Update(message));
+        }
+
         public static Task HandleSpellUpgradeSuccessMessage(Account account, SpellUpgradeSuccessMessage message)
         {
             return Task.Run(() => account.Game.Character.Update(message));

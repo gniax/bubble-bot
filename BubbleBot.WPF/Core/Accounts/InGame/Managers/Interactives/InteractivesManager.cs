@@ -57,7 +57,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
                 return phenix.Element;
 
             // Search for a locked storage in the cell
-            var lockedStorage = _account.Game.Map.LockedStroages.First(ls => ls.CellId == cellId);
+            var lockedStorage = _account.Game.Map.LockedStorages.First(ls => ls.CellId == cellId);
             if (lockedStorage != null)
                 return lockedStorage.Element;
 
