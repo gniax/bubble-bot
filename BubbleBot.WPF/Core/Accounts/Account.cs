@@ -138,25 +138,28 @@ namespace BubbleBot.Core.Accounts
 
         public async Task Connect()
         {
-            if (State != AccountStates.DISCONNECTED)
-                return;
-
-            if (!PlanificationTimer.Enabled)
-                PlanificationTimer.Start();
-
-            PreventAutoReconnection = false;
-            FramesData.Clear();
-            Network.Clear();
-            Game.Clear();
-            Extensions.Clear();
-            Logger.LogInfo("", LanguageManager.Translate("10"));
-
-            if (await SetToken())
+            await Task.Run(async () =>
             {
-                State = AccountStates.CONNECTING;
-                Logger.LogInfo("", LanguageManager.Translate("11"));
-                await Network.ConnectToLoginServer();
-            }
+                if (State != AccountStates.DISCONNECTED)
+                    return;
+
+                if (!PlanificationTimer.Enabled)
+                    PlanificationTimer.Start();
+
+                PreventAutoReconnection = false;
+                FramesData.Clear();
+                Network.Clear();
+                Game.Clear();
+                Extensions.Clear();
+                Logger.LogInfo("", LanguageManager.Translate("10"));
+
+                if (await SetToken())
+                {
+                    State = AccountStates.CONNECTING;
+                    Logger.LogInfo("", LanguageManager.Translate("11"));
+                    await Network.ConnectToLoginServer();
+                }
+            });
         }
         public bool LoadBrowser()
         {

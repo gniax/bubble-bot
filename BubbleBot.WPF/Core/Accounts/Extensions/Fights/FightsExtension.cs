@@ -408,8 +408,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Fights
                 return false;
 
             var spell = await DataManager.Get<Spells>(Configuration.SpellToApproach);
-            var spellLevel =
-                await DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
+            var spellLevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[_account.Game.Character.GetSpell(spell.Id).Level - 1]);
 
             // Check if we can cast the spell from our current position
             if (_utility.SpellIsHittingAnyEnnemy(_account.Game.Fight.PlayedFighter.CellId, spellLevel))
