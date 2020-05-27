@@ -66,53 +66,92 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
         public async Task BypassTuto()
         {
             _inTutorial = true;
+            int delay = 60;
+            int maxdelay = delay;
 
             await Task.Delay(1000);
             Console.WriteLine("On se déplace");
             _account.Game.Managers.Movements.MoveToCell(259);
-            //while()
-            //var tutorial = SpinWait.SpinUntil(() => _account.Game.Map.PlayedCharacter.CellId != 259, TimeSpan.FromSeconds(180));
+            maxdelay = delay;
+            while (_account.Game.Map.PlayedCharacter.CellId != 259 && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
+            //SpinWait.SpinUntil(() => _account.Game.Map.PlayedCharacter.CellId != 259, TimeSpan.FromSeconds(180));
 
             await Task.Delay(200);
-            //await Task.Delay(2000);
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489,3499));
 
             await Task.Delay(200);
             Console.WriteLine("On essai de parler au pnj");
-            _account.Game.Npcs.UseNpc(-1, 1);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.UseNpc(-1, 1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(2000);
+            await Task.Delay(500);
             Console.WriteLine("On repond au pnj");
-            _account.Game.Npcs.Reply(-1);
-
-            await Task.Delay(2000);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.Reply(-1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
+            
+            await Task.Delay(1000);
             Console.WriteLine("On équipe l'anneau");
-            _account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.FirstEquipItem));
+            maxdelay = delay;
+            while (!_account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.FirstEquipItem)) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(2000);
+            await Task.Delay(200);
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3502));
 
-            await Task.Delay(2000);
+            await Task.Delay(500);
             Console.WriteLine("On change de map");
             _account.Game.Managers.Movements.ChangeMap(MapChangeDirections.RIGHT);
-
-            await Task.Delay(5000);
-            Console.WriteLine("On attaque le mob");
-            _account.Game.Managers.Movements.MoveToCell(_account.Game.Map.MonstersGroups.First().CellId);
-
-            await Task.Delay(5000);
-            Console.WriteLine("On attaque !");
-            var mg = _account.Game.Map.MonstersGroups.FirstOrDefault();
-            if (mg != null && mg.CellId == _account.Game.Map.PlayedCharacter.CellId)
-                _account.Network.SendMessage(new GameRolePlayAttackMonsterRequestMessage(mg.Id));
+            maxdelay = delay;
+            while (_account.Game.Map.Id != TutorialHelper.TutorialMapIdSecondBeforeFight && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
             await Task.Delay(1000);
+            Console.WriteLine("On attaque le mob");
+            _account.Game.Managers.Movements.MoveToCell(_account.Game.Map.MonstersGroups.First().CellId);
+            maxdelay = delay;
+            while (_account.Game.Map.PlayedCharacter.CellId != _account.Game.Map.MonstersGroups.First().CellId && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
+
+            await Task.Delay(3000);
+            Console.WriteLine("On attaque !");
+            var mg = _account.Game.Map.MonstersGroups.FirstOrDefault();
+            maxdelay = delay;
+            while (mg == null || mg.CellId != _account.Game.Map.PlayedCharacter.CellId && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                mg = _account.Game.Map.MonstersGroups.FirstOrDefault();
+                maxdelay--;
+            }
+            await Task.Delay(1000);
+            _account.Network.SendMessage(new GameRolePlayAttackMonsterRequestMessage(mg.Id));
+
+            await Task.Delay(2000);
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3504));
 
-            await Task.Delay(1000);
             //Console.WriteLine("On change de position");
             //var cells = _account.Game.Fight.PositionsForChallengers.Except(new[] { _account.Game.Fight.PlayedFighter.CellId }).ToArray();
             //_account.Network.SendMessage(new GameFightPlacementPositionRequestMessage((uint)cells[0]));
@@ -129,17 +168,32 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3508));
 
-            await Task.Delay(10000);
+            maxdelay = delay;
+            while (_account.Game.Map.Id != TutorialHelper.TutorialMapIdSecondAfterFight && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3509));
 
             await Task.Delay(1000);
             Console.WriteLine("On essai de parler au pnj");
-            _account.Game.Npcs.UseNpc(-1, 1);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.UseNpc(-1, 1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(2000);
+            await Task.Delay(1000);
             Console.WriteLine("On repond au pnj");
-            _account.Game.Npcs.Reply(-1);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.Reply(-1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
             await Task.Delay(2000);
             Console.WriteLine("On equipe les items");
@@ -154,23 +208,42 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             _account.Game.Character.Inventory.EquipObject(_account.Game.Character.Inventory.GetObjectByGID(TutorialHelper.SecondEquipItems[4]));
             await Task.Delay(200);
 
-            await Task.Delay(1000);
+            await Task.Delay(800);
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3530));
 
             await Task.Delay(1000);
             Console.WriteLine("On change de map ");
             _account.Game.Managers.Movements.ChangeMap(MapChangeDirections.RIGHT);
+            maxdelay = delay;
+            while (_account.Game.Map.Id != TutorialHelper.TutorialMapIdThirdBeforeFight && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(6000);
+            await Task.Delay(1000);
             Console.WriteLine("On se deplace sur le mulou");
             _account.Game.Managers.Movements.MoveToCell(_account.Game.Map.MonstersGroups.First().CellId);
+            maxdelay = delay;
+            while (_account.Game.Map.PlayedCharacter.CellId != _account.Game.Map.MonstersGroups.First().CellId && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(5000);
+            await Task.Delay(3000);
             Console.WriteLine("On attaque !");
             var mg2 = _account.Game.Map.MonstersGroups.FirstOrDefault();
-            if (mg2 != null && mg2.CellId == _account.Game.Map.PlayedCharacter.CellId)
-                _account.Network.SendMessage(new GameRolePlayAttackMonsterRequestMessage(mg2.Id));
+            maxdelay = delay;
+            while (mg2 == null || mg2.CellId != _account.Game.Map.PlayedCharacter.CellId && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                mg2 = _account.Game.Map.MonstersGroups.FirstOrDefault();
+                maxdelay--;
+            }
+            await Task.Delay(1000);
+            _account.Network.SendMessage(new GameRolePlayAttackMonsterRequestMessage(mg2.Id));
 
             await Task.Delay(1000);
             Console.WriteLine("On envoie la validation de la quête");
@@ -180,18 +253,31 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             Console.WriteLine("On lance le combat");
             _account.Network.SendMessage(new GameFightReadyMessage(true));
 
-            await Task.Delay(12000);
-            Console.WriteLine("On essai de parler au pnj");
-            _account.Game.Npcs.UseNpc(-1, 1);
+            maxdelay = delay;
+            while (_account.Game.Map.Id != TutorialHelper.TutorialMapIdThirdAfterFight && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(2000);
+            await Task.Delay(1000);
+            Console.WriteLine("On essai de parler au pnj");
+            maxdelay = delay;
+            while (!_account.Game.Npcs.UseNpc(-1, 1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
+
+            await Task.Delay(1000);
+            maxdelay = delay;
+            while (!_account.IsInDialog() && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
             Console.WriteLine("On repond au pnj");
             _account.LeaveDialog();
-            /*
-            if (_account.IsInDialog())
-            {
-                
-            }*/
 
             await Task.Delay(1000);
             Console.WriteLine("On envoie la validation de la quête");
@@ -206,25 +292,23 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
             await Task.Delay(1000);
             Console.WriteLine("On essai de parler au pnj");
-            _account.Game.Npcs.UseNpc(-1, 1);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.UseNpc(-1, 1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            await Task.Delay(2000);
+            await Task.Delay(800);
             Console.WriteLine("On repond au pnj");
-            _account.Game.Npcs.Reply(-1);
+            maxdelay = delay;
+            while (!_account.Game.Npcs.Reply(-1) && maxdelay > 0)
+            {
+                await Task.Delay(1000);
+                maxdelay--;
+            }
 
-            /*
-            await Task.Delay(200);
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3508));
-            await Task.Delay(200);
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3509));
-            await Task.Delay(200);
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3530));
-            await Task.Delay(200);
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3513));
-            await Task.Delay(200);
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 8078));
-            await Task.Delay(200);
-            */
+            Console.WriteLine("Tutoriel Terminer !");
         }
 
         private void ProcessTutorialSteps()
