@@ -30,6 +30,7 @@ using Point = System.Windows.Point;
 using Image = System.Drawing.Image;
 using System.ComponentModel;
 using BubbleBot.Core.Accounts.InGame.Map.Entities;
+using System.Threading;
 
 namespace BubbleBot.Views.Accounts
 {
@@ -140,7 +141,7 @@ namespace BubbleBot.Views.Accounts
                     RealMap.Dispatcher.Invoke(() => RealMap.ImageSource = null);
                     _currentRealMapId = 0;
                 }
-                else if (RealMap != null && _showRealMap)
+                else if (_showRealMap)
                 {
                     GenerateRealMap();
                 }
@@ -229,7 +230,7 @@ namespace BubbleBot.Views.Accounts
                 }
                 else
                 {
-                    if (!(_showRealMap && brush == _losCellBrush))
+                    if (!(_showRealMap && brush == _losCellBrush) && !(_showRealMap && brush == _obstacleCellBrush))
                         _cellsPoints[i].Draw(drawingContext, brush, _pen, ShowRealMap);
 
 
@@ -472,110 +473,132 @@ namespace BubbleBot.Views.Accounts
         private object bufferLock = new object();
        
         public static List<Task> TaskList = new List<Task>();
+        private static bool running = false;
         private void GenerateRealMap()
         {
-            if (Account.Game?.Map?.Id == (default) || Account.Game?.Map?.Id == 0)
-                return;
-
-            if (Account.Game?.Map?.Id == _currentRealMapId)
-                return;
-
-            var mapid = Account.Game.Map.Id;
-
-            string jsonMap = null;
-            WebClient wc = new WebClient();
-            SetProxy(wc);
-
-            jsonMap = wc.DownloadString($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/maps/{mapid}.json");
-            if (jsonMap == null)
+            if (!running)
             {
-                wc?.Dispose();
-                return;
-            }
-
-            byte[] bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/backgrounds/{mapid}.jpg");
-
-            if (bytes == null)
-            {
-                wc?.Dispose();
-                return;
-            }
-
-            MemoryStream ms = new MemoryStream(bytes);
-            Image background = Image.FromStream(ms);
-            //ms?.Dispose();
-            
-            JsonMap content = JsonConvert.DeserializeObject<JsonMap>(jsonMap);
-            var canvas = Graphics.FromImage(background);
-
-            var midgroundLayer = content.MidgroundLayer.Keys;
-            foreach (var key in midgroundLayer)
-            {
-                if (content.MidgroundLayer[key] != null)
+                running = true;
+                if (Account.Game?.Map?.Id == (default) || Account.Game?.Map?.Id == 0)
                 {
-                    foreach (var element in content.MidgroundLayer[key])
-                    {
-                        if (element.G != null)
-                        {
-                            var task = Task.Run(() => {
-                                if (element.Sx != null && element.Sy != null)
-                                {
-                                    DownloadAsset(element.G, element.X * -1 - 58, element.Y * -1 - 15, element.Sx, element.Sy, element.Hue, background);
-                                }
-                                else if (element.Sx != null && element.Sy == null)
-                                {
-                                    DownloadAsset(element.G, element.X * -1 - 58, element.Y + 15, element.Sx, 1, element.Hue, background);
-                                }
-                                else if (element.Sx == null && element.Sy != null)
-                                {
-                                    DownloadAsset(element.G, element.X + 58, element.Y * -1 - 15, 1, element.Sy, element.Hue, background);
-                                }
-                                else DownloadAsset(element.G, element.X + 58, element.Y + 15, 1, 1, element.Hue, background);
-                            });
-                            TaskList.Add(task);
-                        }
-                    }
-                }
-
-            }
-
-            if (content.Foreground != null)
-            {
-                bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/foregrounds/{mapid}.png");
-
-                if (bytes == null)
-                {
-                    canvas?.Dispose();
-                    wc?.Dispose();
+                    running = false;
                     return;
                 }
 
-                ms = new MemoryStream(bytes);
-                Image foreground = Image.FromStream(ms);
-                //ms?.Dispose();
-                
-                lock (bufferLock)
+                if (Account.Game?.Map?.Id == _currentRealMapId)
                 {
-                    canvas.DrawImage(foreground, 0, 0, (float)background.Width, (float)background.Height);
+                    running = false;
+                    return;
                 }
 
-                foreground?.Dispose();
+                var mapid = Account.Game.Map.Id;
+
+                string jsonMap = null;
+                WebClient wc = new WebClient();
+                SetProxy(wc);
+
+                jsonMap = wc.DownloadString($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/maps/{mapid}.json");
+                if (jsonMap == null)
+                {
+                    wc?.Dispose();
+                    running = false;
+                    return;
+                }
+
+                byte[] bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/backgrounds/{mapid}.jpg");
+
+                if (bytes == null)
+                {
+                    wc?.Dispose();
+                    running = false;
+                    return;
+                }
+
+                MemoryStream ms = new MemoryStream(bytes);
+                Image background = Image.FromStream(ms);
+                //ms?.Dispose();
+
+                JsonMap content = JsonConvert.DeserializeObject<JsonMap>(jsonMap);
+                var canvas = Graphics.FromImage(background);
+
+                var midgroundLayer = content.MidgroundLayer.Keys;
+                foreach (var key in midgroundLayer)
+                {
+                    var task = Task.Run(() =>
+                    {
+                        if (content.MidgroundLayer[key] != null)
+                        {
+                            foreach (var element in content.MidgroundLayer[key])
+                            {
+                                if (element.G != null)
+                                {
+                                    if (element.Sx != null && element.Sy != null)
+                                    {
+                                        DownloadAsset(element.G, element.X * -1 - 58, element.Y * -1 - 15, element.Sx, element.Sy, element.Hue, background);
+                                    }
+                                    else if (element.Sx != null && element.Sy == null)
+                                    {
+                                        DownloadAsset(element.G, element.X * -1 - 58, element.Y + 15, element.Sx, 1, element.Hue, background);
+                                    }
+                                    else if (element.Sx == null && element.Sy != null)
+                                    {
+                                        DownloadAsset(element.G, element.X + 58, element.Y * -1 - 15, 1, element.Sy, element.Hue, background);
+                                    }
+                                    else DownloadAsset(element.G, element.X + 58, element.Y + 15, 1, 1, element.Hue, background);
+
+                                }
+                            }
+                        }
+                    });
+                    TaskList.Add(task);
+                }
+
+                if (content.Foreground != null)
+                {
+                    bytes = wc.DownloadData($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/foregrounds/{mapid}.png");
+
+                    if (bytes == null)
+                    {
+                        canvas?.Dispose();
+                        wc?.Dispose();
+                        running = false;
+                        return;
+                    }
+
+                    ms = new MemoryStream(bytes);
+                    Image foreground = Image.FromStream(ms);
+                    //ms?.Dispose();
+
+                    lock (bufferLock)
+                    {
+                        canvas.DrawImage(foreground, 0, 0, (float)background.Width, (float)background.Height);
+                    }
+
+                    foreground?.Dispose();
+                }
+
+                Task.WaitAll(TaskList.ToArray());
+
+                foreach (var task in TaskList)
+                    if (task.IsCompleted || task.IsCanceled || task.IsFaulted)
+                        task.Dispose();
+
+                TaskList.Clear();
+
+                _realMap = ToImageSource(background, ImageFormat.Png);
+                _currentRealMapId = Account.Game.Map.Id;
+                _realMap.Freeze();
+
+                RealMap.Dispatcher.Invoke(() =>
+                {
+                    RealMap.ImageSource = _realMap;
+                });
+
+                background?.Dispose();
+                canvas?.Dispose();
+                wc?.Dispose();
+                running = false;
             }
-
-            Task.WaitAll(TaskList.ToArray());
-
-            _realMap = ToImageSource(background, ImageFormat.Jpeg);
-            _currentRealMapId = Account.Game.Map.Id;
-            _realMap.Freeze();
-
-            RealMap.Dispatcher.Invoke(() =>
-            {
-                RealMap.ImageSource = _realMap;
-            });
-
-            background?.Dispose();
-            canvas?.Dispose();
-            wc?.Dispose();
         }        
 
         private void DownloadAsset(long? asset, float x, float y, float? sx, float? sy, List<long> hue, System.Drawing.Image background)
@@ -740,7 +763,7 @@ namespace BubbleBot.Views.Accounts
 
         private void RefreshMapViewer()
         {
-            if (_showRealMap && IsMapValid)
+            if (_showRealMap && IsMapValid && Account.Game?.Map?.Id != _currentRealMapId)
             {
                 GenerateRealMap();
             }

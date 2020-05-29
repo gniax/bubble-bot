@@ -57,7 +57,7 @@
                     <Run Text="{_:Lang 667}" />
                     <LineBreak />
                     <LineBreak />
-                    <Run Text="{_:Lang 666}" />
+                    <Run Text="{_:Lang 746}" />
                 </TextBlock>
 
             </StackPanel>

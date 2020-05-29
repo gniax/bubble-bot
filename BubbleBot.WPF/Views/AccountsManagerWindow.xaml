@@ -251,7 +251,7 @@
                             <StackPanel Margin="4 0" VerticalAlignment="Center">
                                 <DockPanel Margin="4">
                                     <RadioButton x:Name="RdbtnDefault"  GroupName="ImportFormat" VerticalAlignment="Center" IsChecked="True" Click="ImportDefaultRdbtn_Click" />
-                                    <TextBlock Text="{_:Lang 738}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{_:Lang 744}" VerticalAlignment="Center" />
                                     <TextBox x:Name="TxtSeparatorDefaultPreview"
                                              IsEnabled="False"
                                              VerticalAlignment="Center" />
@@ -262,7 +262,7 @@
                                 </DockPanel>
                                 <DockPanel Margin="4">
                                     <RadioButton x:Name="RdbtnCustom" GroupName="ImportFormat" VerticalAlignment="Center" Click="ImportCustomRdbtn_Click"/>
-                                    <TextBlock Text="{_:Lang 739}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{_:Lang 745}" VerticalAlignment="Center" />
                                     <TextBox x:Name="TxtCustomImportFormat" Text="..." VerticalAlignment="Center" IsEnabled="False" />
                                 </DockPanel>
                                 <StackPanel Margin="4">

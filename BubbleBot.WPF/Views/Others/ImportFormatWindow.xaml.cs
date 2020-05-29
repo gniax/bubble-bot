@@ -80,7 +80,9 @@ namespace BubbleBot.Views
                     {
                         format += $"{tag}{DelimiterPreview.Text}";
                     }
-                    format = format.Remove(format.Length - 1);
+
+                    if (DelimiterPreview.Text != null && DelimiterPreview.Text != "" && format.EndsWith(DelimiterPreview.Text))
+                        format = format.Remove(format.Length - 1);
 
                     if (_parent != null)
                     {

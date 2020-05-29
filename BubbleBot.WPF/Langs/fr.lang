@@ -651,13 +651,13 @@
 659|Démarrage du script lorsque le Captcha est terminé !
 660|Format d'exportation
 661|Balises disponibles:
-662|username:password
+662|Exemple: username:password:ip:port
 663|Erreur: {0} balise(s) introuvable... Vérifiez le séparateur ou l'orthographe...
 664|Erreur lors du traitement des données d'un compte...
 665|Exportation de Compte en Texte
 666|Séparateur disponible: 
 667|username ; password ; ip ; port ; id ; pxy-user ; pxy-pass 
-668|:
+668|Importation de comptes
 669|Appliquer aux comptes sélectionnés
 670|Cloudflare a banni temporairement votre IP ! [TOO_MANY_REQUESTS] 
 671|Reconnectez-vous dans environ {0} secondes...
@@ -733,3 +733,6 @@
 741|Afficher les noms
 742|Afficher les ids
 743|Afficher les monstres
+744|Format par défaut : 
+745|Format personnalisé : 
+746|Un séparateur unique doit être utilisé !

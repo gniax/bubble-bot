@@ -8,7 +8,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
     mc:Ignorable="d"
-    Title="{_:Lang 660}"
+    Title="{_:Lang 668}"
     ResizeMode="NoResize"
     ShowMaxRestoreButton="False"
     Height="300" Width="339"
@@ -57,7 +57,7 @@
                     <Run Text="{_:Lang 667}" />
                     <LineBreak />
                     <LineBreak />
-                    <Run Text="{_:Lang 666}" />
+                    <Run Text="{_:Lang 746}" />
                 </TextBlock>
 
             </StackPanel>

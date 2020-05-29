@@ -113,7 +113,7 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
                     List<BidExchangerObjectInfo> itemsSelectedInHDV = new List<BidExchangerObjectInfo>();
                    // Console.WriteLine(ItemsToUpdate.ElementAt(i).Key.ToString());
 
-                    itemsSelectedInHDV = await _account.Game.Bid.GetListOfItemAsync(ItemsToUpdate.ElementAt(i).Key);
+                    itemsSelectedInHDV = _account.Game.Bid.GetListOfItem(ItemsToUpdate.ElementAt(i).Key);
                    // Console.WriteLine("Nombre item :" + itemsSelectedInHDV.Count.ToString());
 
                     if (itemsSelectedInHDV == null || itemsSelectedInHDV.Count <= 0)

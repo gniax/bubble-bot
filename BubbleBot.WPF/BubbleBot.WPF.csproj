@@ -293,6 +293,9 @@
     <Reference Include="PresentationFramework">
       <Private>False</Private>
     </Reference>
+    <Reference Include="WpfAnimatedGif, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9e7cd3b544a090dc, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.2.0.0\lib\net40\WpfAnimatedGif.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -914,6 +917,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Langs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Langs\" />
+    <Resource Include="Resources\loading.gif" />
     <Resource Include="Resources\close_btn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

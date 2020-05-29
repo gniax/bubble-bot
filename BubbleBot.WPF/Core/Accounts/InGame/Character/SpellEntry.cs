@@ -5,6 +5,7 @@ using BubbleBot.Utility.DofusTouch;
 using GalaSoft.MvvmLight;
 using BubbleBot.Data;
 using System.Threading.Tasks;
+using System;
 
 namespace BubbleBot.Core.Accounts.InGame.Character
 {
@@ -22,7 +23,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
 
         public SpellEntry(int spellId, uint level)
         {
-            SetSpeelEntryInformations( spellId, level);
+            SetSpellEntryInformations( spellId, level);
         }
 
         // Properties
@@ -35,7 +36,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         public string IconUrl =>
             $"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/spells/sort_{IconId}.png";
 
-        private async void SetSpeelEntryInformations(int spellId, uint level)
+        private async void SetSpellEntryInformations(int spellId, uint level)
         {
             var spell = await DataManager.Get<Spells>(spellId);
 
@@ -47,9 +48,12 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         }
         private async void SetMinPlayerLevelAsync(Spells spell)
         {
-            var spelllevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[Level - 1]);
-            if (spelllevel != null)
-                MinPlayerLevel = spelllevel.MinPlayerLevel;
+            if (Level > 0)
+            {
+                var spelllevel = await DataManager.Get<SpellLevels>(spell.SpellLevels[Level - 1]);
+                if (spelllevel != null)
+                    MinPlayerLevel = spelllevel.MinPlayerLevel;
+            }
         }
 
         #region Updates
