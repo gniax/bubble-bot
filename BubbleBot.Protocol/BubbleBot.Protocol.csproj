@@ -191,6 +191,7 @@
     <Compile Include="Data\Maps\GraphicalElement.cs" />
     <Compile Include="Data\Maps\Map.cs" />
     <Compile Include="Data\Maps\MapsManager.cs" />
+    <Compile Include="Enums\AggressiveMonstersEnum.cs" />
     <Compile Include="Enums\AggressableStatusEnum.cs" />
     <Compile Include="Enums\AlignmentSideEnum.cs" />
     <Compile Include="Enums\AllianceRightsBitEnum.cs" />

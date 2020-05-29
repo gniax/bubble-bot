@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Map;
+using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Core.Enums;
 using BubbleBot.Core.Pathfinding;
 using BubbleBot.Core.Pathfinding.Fights;
+using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Utility;
 
@@ -77,9 +79,44 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             {
                 var cellId = changeMapCells[Randomize.GetRandomInt(0, changeMapCells.Count)];
 
+                List<short> aggressiveMonstersGroupCell = new List<short>();
+                foreach (var group in _account.Game.Map.MonstersGroups)
+                {
+                    List<MonsterEntry> Monsters = new List<MonsterEntry>();
+                    if (group.Followers?.Count > 0)
+                        Monsters.AddRange(group.Followers);
+
+                    Monsters.Add(group.Leader);
+                    if (!Monsters.TrueForAll(i => !AggressiveMonstersEnumFinder.Exists(i.GenericId)))
+                    {
+                        aggressiveMonstersGroupCell.Add(group.CellId);
+                        for (int i = 0; i < 2; i++)
+                        {
+                            aggressiveMonstersGroupCell.Add((short)(group.CellId - ((15 * (i + 1)) - i)));
+                            aggressiveMonstersGroupCell.Add((short)(group.CellId + ((15 * (i + 1)) - 1)));
+
+                            aggressiveMonstersGroupCell.Add((short)(group.CellId - ((14 * (i + 1)) - i)));
+                            aggressiveMonstersGroupCell.Add((short)(group.CellId + ((14 * (i + 1)) - i)));
+
+                            if (i == 0)
+                            {
+                                aggressiveMonstersGroupCell.Add((short)(group.CellId + 1));
+                                aggressiveMonstersGroupCell.Add((short)(group.CellId + 28));
+                            }
+                            else
+                            {
+                                aggressiveMonstersGroupCell.Add((short)(group.CellId - 1));
+                                aggressiveMonstersGroupCell.Add((short)(group.CellId - 28));
+                            }
+                        }
+                        aggressiveMonstersGroupCell = aggressiveMonstersGroupCell.Where(c => c >= 0 && c <= 560).ToList();
+                    }
+                }
+
                 // Ignore this cell if a group of monsters is on it
                 if (_account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == cellId) != null)
                     continue;
+
 
                 var neighbourMapId = GetNeighbourMapId(direction);
 

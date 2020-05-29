@@ -9,7 +9,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
              mc:Ignorable="d"
-             Height="570"
+             Height="450"
              Width="798"
              FontSize="12">
 
@@ -21,7 +21,7 @@
 
     </UserControl.Resources>
 
-    <ScrollViewer Height="514">
+    <ScrollViewer Height="404">
         <StackPanel>
 
             <!-- Automatic boosting -->

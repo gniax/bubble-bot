@@ -10,6 +10,7 @@ using CefSharp.OffScreen;
 using CefSharp;
 using System.Runtime.CompilerServices;
 using BubbleBot.Server.Utility.ChromiumExtensions;
+using System.Text.RegularExpressions;
 
 namespace BubbleBot.Server.Utility
 {
@@ -17,14 +18,12 @@ namespace BubbleBot.Server.Utility
     {
         private static ChromiumWebBrowser _browser;
         // Note: this function retrieves the build, app, assets and static data versions
-        // this uses Lindo emu to get build and app version, and directly dofus server the both remaining
-        // it could be optimize with some HttpRequest / return true : works / return false : didnt works
         private static string _frameContent = null;
         private static bool _endFrame = false;
         public static bool setVersions()
         {
             string host = "",
-                   service = "",
+                   service = "0",
                    username = "",
                    password = "";
 
@@ -34,7 +33,7 @@ namespace BubbleBot.Server.Utility
                 string[] array = text.Split(':');
 
                 host = (array[0] == null || array[0] == "") ? "" : array[0];
-                service = (array[1] == null || array[1] == "") ? "" : array[1];
+                service = (array[1] == null || array[1] == "") ? "0" : array[1];
                 username = (array[2] == null || array[2] == "") ? "" : array[2];
                 password = (array[3] == null || array[3] == "") ? "" : array[3];
             }
@@ -43,13 +42,15 @@ namespace BubbleBot.Server.Utility
 
             try
             {
-                string JSONversions = PerformXmlHttpRequest("http://api.no-emu.co/version.json");
-                Dictionary<string, object> dictionaryVersions = JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(JSONversions));
+                string jsVersions = PerformXmlHttpRequest("https://proxyconnection.touch.dofus.com/build/script.js", host, service, username, password);
+                jsVersions = jsVersions.Substring(jsVersions.IndexOf("window.buildVersion=\"") + 21);
+                string buildVersion = jsVersions.Substring(0, jsVersions.IndexOf("\""));
+                if (buildVersion != null && buildVersion != "null")
+                Constants.BuildVersion = buildVersion;
 
-                if ((string)dictionaryVersions["buildVersion"] != null && (string)dictionaryVersions["buildVersion"] != "null")
-                Constants.BuildVersion = (string)dictionaryVersions["buildVersion"];
-                if ((string)dictionaryVersions["appVersion"] != null && (string)dictionaryVersions["appVersion"] != "null")
-                Constants.AppVersion = (string)dictionaryVersions["appVersion"];
+                string appVersion = getPlayStoreAppVersion($"https://play.google.com/store/apps/details?id=com.ankama.dofustouch&hl=en");
+                if (appVersion != null && appVersion != "Unknown")
+                Constants.AppVersion = appVersion;
 
                 var mainFrame = _browser.GetMainFrame();
                 var staticReq = mainFrame.CreateRequest(false);
@@ -96,12 +97,49 @@ namespace BubbleBot.Server.Utility
                 return false;
             }
         }
-        public static string PerformXmlHttpRequest(string urlString)
+
+        private static string getPlayStoreAppVersion(string appUrlString, string host = "", string service = "0", string username = "", string password = "")
+        {
+            // Get the current version pattern sequence 
+            string responseHTML = PerformXmlHttpRequest(appUrlString, host, service, username, password);
+            if (responseHTML == null)
+            {
+                return null;
+            }
+            else
+            {
+                try
+                {
+                    var rx = new Regex(@"(?<=""htlgb"">)(\d{1,3}\.\d{1,3}\.{0,1}\d{0,3})(?=<\/span>)", RegexOptions.Compiled);
+                    MatchCollection matches = rx.Matches(responseHTML);
+                    return matches.Count > 0 ? matches[0].Value : "Unknown";
+                }
+                catch
+                {
+                    return "Unknown";
+                }
+            }
+        }
+
+        public static string PerformXmlHttpRequest(string urlString, string host = "", string service = "0", string username = "", string password = "")
         {
             //Creates an HttpWebRequest for the specified URL.
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(urlString);
 
-            //Set HttpWebRequest properties
+            if (host != "" && service != "0")
+            {
+                WebProxy proxy = new WebProxy(host, Int32.Parse(service));
+                proxy.BypassProxyOnLocal = false;
+                httpWebRequest.Proxy = proxy;
+                httpWebRequest.Method = "GET";
+                proxy = (WebProxy)httpWebRequest.Proxy;
+
+                if (username != "" && password != "")
+                    proxy.Credentials = new NetworkCredential(username, password);
+
+                httpWebRequest.Proxy = proxy;
+            }
+
             httpWebRequest.Headers.Add("Origin", "file://");
             httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
             httpWebRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
