@@ -305,6 +305,16 @@ namespace BubbleBot.Views
                         ushort.TryParse(infos[4], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
                     }
+
+                    if (nbparameters == 7)
+                    {
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[3];
+                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.ElementAt(i).Proxy.Port = paramport;
+                        accounts.ElementAt(i).Proxy.Username = infos[5];
+                        accounts.ElementAt(i).Proxy.Password = infos[6];
+                    }
                 }
 
                 if (accounts.Count > 0)
@@ -377,6 +387,9 @@ namespace BubbleBot.Views
                                     break;
                                 case "id":
                                     account.Identifiant = content[j] != null ? content[j] : "";
+                                    break;
+                                case "groupe":
+                                    account.Nickname = content[j] != null ? content[j] : "";
                                     break;
                                 default:
                                     break;

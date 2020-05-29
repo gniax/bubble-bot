@@ -35,7 +35,7 @@
             </GroupBox>
 
             <!-- Add an object to sell -->
-            <GroupBox Header="{_:Lang 703}">
+            <GroupBox Header="{_:Lang 703}" Height="215">
                 <StackPanel>
                     <DockPanel Margin="4">
                         <TextBlock Text="{_:Lang 704}" VerticalAlignment="Center" />
