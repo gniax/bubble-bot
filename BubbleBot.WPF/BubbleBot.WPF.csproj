@@ -364,6 +364,7 @@
     <Compile Include="Core\Accounts\Extensions\PetBreeder\PetBreederConfiguration.cs" />
     <Compile Include="Core\Accounts\Extensions\PetBreeder\PetBreederExtension.cs" />
     <Compile Include="Core\Accounts\Extensions\PetBreeder\PetsToBreedEntry.cs" />
+    <Compile Include="Core\Accounts\Extensions\PushBullet\PushBulletExtension.cs" />
     <Compile Include="Core\Accounts\Extensions\UpdateServerHDV\UpdateServerHDVExtension.cs" />
     <Compile Include="Core\Accounts\FramesData.cs" />
     <Compile Include="Core\Accounts\IClearable.cs" />
@@ -430,6 +431,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeGroupByNameAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteVariable.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueIntAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\CreateFileAction.cs" />
@@ -450,7 +452,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\EquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UnEquipItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UseItemAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeActionByName.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeByNameAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />

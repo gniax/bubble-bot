@@ -60,6 +60,7 @@ namespace BubbleBot.Core.Accounts
         public bool WaitForRestartScript { get; set; }
         public bool IsInFight => IsFighting();
 
+
         // Constructor
         public Account(AccountConfiguration accountConfig)
         {

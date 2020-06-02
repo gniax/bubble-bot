@@ -6,6 +6,7 @@ using BubbleBot.Core.Accounts.Extensions.Fights;
 using BubbleBot.Core.Accounts.Extensions.Flood;
 using BubbleBot.Core.Accounts.Extensions.UpdateServerHDV;
 using BubbleBot.Core.Accounts.Extensions.PetBreeder;
+using BubbleBot.Core.Accounts.Extensions.PushBullet;
 
 namespace BubbleBot.Core.Accounts.Extensions
 {
@@ -21,6 +22,7 @@ namespace BubbleBot.Core.Accounts.Extensions
             CharacterCreation = new CharacterCreatorExtension(account);
             UpdateServerHDV = new UpdateServerHDVExtension(account);
             PetBreeder = new PetBreederExtension(account);
+            PushBullet = new PushBulletExtension(account);
         }
 
         // Properties
@@ -31,6 +33,7 @@ namespace BubbleBot.Core.Accounts.Extensions
         public CharacterCreatorExtension CharacterCreation { get; private set; }
         public UpdateServerHDVExtension UpdateServerHDV { get; private set; }
         public PetBreederExtension PetBreeder { get; private set; }
+        public PushBulletExtension PushBullet { get; private set; }
 
         public void Clear()
         {
@@ -55,6 +58,7 @@ namespace BubbleBot.Core.Accounts.Extensions
                     Flood.Dispose();
                     CharacterCreation.Dispose();
                     PetBreeder.Dispose();
+                    PushBullet.Dispose();
                 }
 
                 Fights = null;
@@ -63,6 +67,7 @@ namespace BubbleBot.Core.Accounts.Extensions
                 Flood = null;
                 CharacterCreation = null;
                 PetBreeder = null;
+                PushBullet = null;
 
                 _disposedValue = true;
             }

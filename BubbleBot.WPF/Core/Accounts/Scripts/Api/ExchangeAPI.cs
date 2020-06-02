@@ -42,7 +42,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public void StartExchangeByName(string playerName)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeActionByName(playerName), true);
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeByNameAction(playerName), true);
+        }
+
+        public void StartExchangeGroupByName(string playerName)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeGroupByNameAction(playerName), true);
+            //return _account.Game.Exchange.StartExchangeGroupByName(playerName);
+            //_account.Scripts.ActionsManager.EnqueueAction(new StartExchangeGroupByNameAction(playerName), true);
         }
 
         public void SendReady()

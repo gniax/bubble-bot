@@ -2,10 +2,10 @@
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
 {
-    public class StartExchangeActionByName : ScriptAction
+    public class StartExchangeByNameAction : ScriptAction
     {
         // Constructor
-        public StartExchangeActionByName(string playername)
+        public StartExchangeByNameAction(string playername)
         {
             PlayerName = playername;
         }

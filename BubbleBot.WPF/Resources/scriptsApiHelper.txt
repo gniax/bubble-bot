@@ -242,6 +242,10 @@ exchange = {
                        api.Exchange.StartExchangeByName(playerName)
                        coroutine.yield()
 	                end,
+	startExchangeGroupByName = function(playerName)
+                       api.Exchange.StartExchangeGroupByName(playerName)
+                       coroutine.yield()
+	                end,
 	addAccountManagerId = function()
                        api.Exchange.AddAccountManagerId()
                        coroutine.yield()

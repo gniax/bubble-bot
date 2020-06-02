@@ -240,12 +240,12 @@
 240|NOM DE COMPTE
 241|SERVEUR
 242|PERSONNAGE
-243|PSEUDO
+243|GROUPE
 244|Nom de compte
 245|Mot de passe
 246|Serveur
 247|Personnage (optionnel)
-248|Pseudo (optionnel)
+248|Groupe (optionnel)
 249|Erreur
 250|Veuillez vérifier les informations du compte.
 251|Caractéristiques

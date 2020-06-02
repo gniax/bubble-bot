@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Character.Inventory;
@@ -10,12 +11,13 @@ using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Exchange
 {
+    
     public class ExchangeGame : IDisposable
     {
         // Fields
         private Account _account;
         private uint _step;
-        public List<uint> AuthorizedPlayersList = new List<uint>();
+        public static List<uint> AuthorizedPlayersList { get; set; }
 
 
         // Constructor
@@ -25,6 +27,11 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
             Objects = new List<ObjectEntry>();
             RemoteObjects = new List<ObjectEntry>();
+
+            if (AuthorizedPlayersList == null)
+            {
+                AuthorizedPlayersList = new List<uint>();
+            }
         }
 
 
@@ -73,6 +80,30 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
             _account.Network.SendMessage(new ExchangePlayerRequestMessage(1,
                 (uint) _account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+            return true;
+        }
+
+        public async Task<bool> StartExchangeGroupByName(string targetName)
+        {
+            if (!_account.IsGroupChief)
+                return false;
+
+            for (int i = 0; i < _account.Group.Members.Count; i++)
+            {
+                _account.Group.Members[i].Game.Exchange.StartExchangeByName(targetName);
+
+                SpinWait.SpinUntil(() => _account.Group.Members[i].State == AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+                SpinWait.SpinUntil(() => _account.Group.Members[i].State != AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+
+                await Task.Delay(500);
+            }
+
+            _account.Game.Exchange.StartExchangeByName(targetName);
+
+            SpinWait.SpinUntil(() => _account.State == AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+            SpinWait.SpinUntil(() => _account.State != AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+
+            await Task.Delay(500);
 
             return true;
         }

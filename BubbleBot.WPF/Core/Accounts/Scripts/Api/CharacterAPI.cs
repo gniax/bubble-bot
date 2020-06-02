@@ -40,6 +40,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return _account.Game.Character.Name;
         }
 
+        public string GroupMng()
+        {
+            return _account.AccountConfig.Nickname;
+        }
+
+        public string IdMng()
+        {
+            return _account.AccountConfig.Identifiant;
+        }
+
         public byte Level()
         {
             return _account.Game.Character.Level;

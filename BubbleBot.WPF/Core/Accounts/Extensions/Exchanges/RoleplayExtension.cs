@@ -28,7 +28,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
             var defautAuthorized = false;
 
             //Si un personnage du bot ajoute sont id il est accepter pour echange
-            foreach (var playerIdTmp in _account.Game.Exchange.AuthorizedPlayersList)
+            foreach (var playerIdTmp in InGame.Exchange.ExchangeGame.AuthorizedPlayersList)
                 if (playerIdTmp == from)
                     defautAuthorized = true;
 

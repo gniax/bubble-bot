@@ -89,7 +89,9 @@ namespace BubbleBot.Views.Accounts
 
         private void BtnCollect_HDV(object sender, RoutedEventArgs e)
         {
-            if(Account.Extensions.UpdateServerHDV.Enabled == false)
+            Task.Run(()=> Account.Extensions.PushBullet.Initialize());
+            return;
+            if (Account.Extensions.UpdateServerHDV.Enabled == false)
             {
                 Account.Extensions.UpdateServerHDV.Enabled = true;
                 Task.Run(() => Account.Extensions.UpdateServerHDV.Initialize());
