@@ -76,15 +76,28 @@ namespace BubbleBot.Core.Accounts.Extensions.PetBreeder
                 }
 
                 ObjectEntry food = _account.Game.Character.Inventory.GetObjectByGID((int)pet.FoodID);
-                if (food == null)
+                if (food == null || food.Quantity < pet.FoodQuantity)
                 {
-                    _account.Logger.LogError(LanguageManager.Translate("720"), LanguageManager.Translate("722", pet.NameFood));
-                    continue;
-                }
-                if (food.Quantity < pet.FoodQuantity)
-                {
-                    _account.Logger.LogError(LanguageManager.Translate("720"), LanguageManager.Translate("723", pet.NameFood));
-                    continue;
+                    _account.Logger.LogWarning(LanguageManager.Translate("720"), LanguageManager.Translate("723", pet.NameFood));
+                    await Task.Delay(1000);
+                    if (_account.Game.Bid.StartBuying())
+                    {
+                        await Task.Delay(1000);
+                        if (_account.Game.Bid.BuyItem(pet.FoodID,100))
+                        {
+                            _account.Logger.LogInfo(LanguageManager.Translate("720"), LanguageManager.Translate("722", pet.NameFood));
+                        }
+                        else
+                        {
+                            _account.Logger.LogError(LanguageManager.Translate("720"), LanguageManager.Translate("722", pet.NameFood));
+                        }
+                        await Task.Delay(200);
+                        _account.LeaveDialog();
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 foreach (var item in inventoryItems)

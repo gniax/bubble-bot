@@ -41,38 +41,65 @@ namespace BubbleBot.Core.Accounts.Extensions.UpdateServerHDV
 
         public async Task Initialize()
         {
-           // if (_running)
-           //     return;
+            // if (_running)
+            //     return;
 
             Console.WriteLine("Démarrage de la collecte des données de l'HDV.");
-            
+
             _running = true;
 
             //Recuperation des items a update 
             ItemsToUpdate = new Dictionary<uint, string>();
-            TakeItemToUpdate(); 
+            TakeItemToUpdate();
 
-            while(Enabled == true)
+            while (Enabled == true)
             {
-                await Task.Delay(3000);
-                if (_account.State != Enums.AccountStates.NONE)
+                await Task.Delay(2000);
+                while (_account.State != AccountStates.NONE && Enabled == true)
                 {
-                    _account.Logger.LogError("UPDATE-SERVER", "Le compte est actuellement sur une autre occupation, fin de la collecte.");
-                    return;
+                    _account.Logger.LogError("UPDATE-SERVER", "Le compte est actuellement sur une autre occupation, tentative de relance de la collecte.");
+                    if (_account.State == AccountStates.BANNED)
+                    {
+                        _account.Logger.LogError("UPDATE-SERVER", "Le compte est ban ! :[");
+                        Enabled = false;
+                    }
+                    if (_account.State == AccountStates.BUYING)
+                    {
+                        _account.LeaveDialog();
+                        await Task.Delay(1000);
+                    }
+                    if (_account.State == AccountStates.DISCONNECTED)
+                    {
+                        await _account.Connect();
+                        await Task.Delay(2000);
+                    }
+                    if (_account.State == AccountStates.CONNECTING)
+                    {
+                        bool spinner = SpinWait.SpinUntil(() => _account.State == AccountStates.NONE, 180000);
+                        if (!spinner)
+                        {
+                            await _account.Network.Disconnect("");
+                            await Task.Delay(2000);
+                        }
+                    }
                 }
 
-                if (await StartBuying() == false)
+                await Task.Delay(2000);
+                await StartBuying();
+                bool waitBuying = SpinWait.SpinUntil(() => _account.State == AccountStates.BUYING, 15000);
+                if (!waitBuying)
                 {
                     _account.Logger.LogError("UPDATE-SERVER", "Erreur lors de l'ouverture de l'HDV.");
-                    return;
                 }
-                Console.WriteLine("HDV OPEN");
-                await Task.Delay(1000);
-                await StartCollect().ConfigureAwait(true);
-            }
-               
+                else
+                {
+                    Console.WriteLine("HDV OPEN");
+                    await Task.Delay(1000);
+                    await StartCollect().ConfigureAwait(true);
+                }
 
-            //_timer = new Timer(Timer_Callback, null, Timeout.Infinite, Timeout.Infinite);
+            }
+
         }
         private void TakeItemToUpdate()
         {
