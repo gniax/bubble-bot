@@ -150,6 +150,8 @@
                     </GroupBox>
                     <CheckBox Content="{_:Lang 381}"
                               Margin="4" IsChecked="{Binding Configuration.IgnoreNonAuthorizedTrades}" />
+                    <CheckBox Content="{_:Lang 748}"
+                              Margin="4" IsChecked="{Binding Configuration.AcceptBotsTrades}" />
                 </StackPanel>
             </GroupBox>
 
@@ -176,6 +178,9 @@
                               Margin="4" />
                     <CheckBox Content="{_:Lang 571}"
                               IsChecked="{Binding Configuration.AutoMount}"
+                              Margin="4" />
+                    <CheckBox Content="{_:Lang 747}"
+                              IsChecked="{Binding Configuration.AntiAggro}"
                               Margin="4" />
                     <CheckBox Content="{_:Lang 626}"
                               IsChecked="{Binding Configuration.SpeedHack}"

@@ -17,7 +17,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Exchange
         internal override Task<ScriptActionResults> Process(Account account)
         {
             if (account.Game.Exchange.StartExchange(PlayerId))
-                return ProcessingResult;
+                return DoneResult;
 
             return DoneResult;
         }

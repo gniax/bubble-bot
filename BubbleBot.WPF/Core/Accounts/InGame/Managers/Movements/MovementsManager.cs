@@ -79,40 +79,6 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             {
                 var cellId = changeMapCells[Randomize.GetRandomInt(0, changeMapCells.Count)];
 
-                List<short> aggressiveMonstersGroupCell = new List<short>();
-                foreach (var group in _account.Game.Map.MonstersGroups)
-                {
-                    List<MonsterEntry> Monsters = new List<MonsterEntry>();
-                    if (group.Followers?.Count > 0)
-                        Monsters.AddRange(group.Followers);
-
-                    Monsters.Add(group.Leader);
-                    if (!Monsters.TrueForAll(i => !AggressiveMonstersEnumFinder.Exists(i.GenericId)))
-                    {
-                        aggressiveMonstersGroupCell.Add(group.CellId);
-                        for (int i = 0; i < 2; i++)
-                        {
-                            aggressiveMonstersGroupCell.Add((short)(group.CellId - ((15 * (i + 1)) - i)));
-                            aggressiveMonstersGroupCell.Add((short)(group.CellId + ((15 * (i + 1)) - 1)));
-
-                            aggressiveMonstersGroupCell.Add((short)(group.CellId - ((14 * (i + 1)) - i)));
-                            aggressiveMonstersGroupCell.Add((short)(group.CellId + ((14 * (i + 1)) - i)));
-
-                            if (i == 0)
-                            {
-                                aggressiveMonstersGroupCell.Add((short)(group.CellId + 1));
-                                aggressiveMonstersGroupCell.Add((short)(group.CellId + 28));
-                            }
-                            else
-                            {
-                                aggressiveMonstersGroupCell.Add((short)(group.CellId - 1));
-                                aggressiveMonstersGroupCell.Add((short)(group.CellId - 28));
-                            }
-                        }
-                        aggressiveMonstersGroupCell = aggressiveMonstersGroupCell.Where(c => c >= 0 && c <= 560).ToList();
-                    }
-                }
-
                 // Ignore this cell if a group of monsters is on it
                 if (_account.Game.Map.MonstersGroups.FirstOrDefault(mg => mg.CellId == cellId) != null)
                     continue;
@@ -178,8 +144,44 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             if (cellId == _account.Game.Map.PlayedCharacter.CellId)
                 return MovementRequestResults.ALREADY_THERE;
 
+            List<short> aggressiveMonstersGroupCell = new List<short>();
+            if (_account.Configuration.AntiAggro)
+            {
+                foreach (var group in _account.Game.Map.MonstersGroups)
+                {
+                    List<MonsterEntry> Monsters = new List<MonsterEntry>();
+                    if (group.Followers?.Count > 0)
+                        Monsters.AddRange(group.Followers);
+
+                    Monsters.Add(group.Leader);
+                    if (!Monsters.TrueForAll(i => !AggressiveMonstersEnumFinder.Exists(i.GenericId)))
+                    {
+                        aggressiveMonstersGroupCell.Add(group.CellId);
+                        foreach (var adjCell1 in MapPoint.GetNeighbourCells(group.CellId, false))
+                        {
+                            if (adjCell1?.CellId != null && adjCell1.CellId >= 0 && adjCell1.CellId <= 560 && !aggressiveMonstersGroupCell.Contains(adjCell1.CellId))
+                                aggressiveMonstersGroupCell.Add(adjCell1.CellId);
+
+                            if (adjCell1?.CellId != null)
+                            {
+                                foreach (var adjCell2 in MapPoint.GetNeighbourCells(adjCell1.CellId, false))
+                                {
+                                    if (adjCell2?.CellId != null && adjCell2.CellId >= 0 && adjCell2.CellId <= 560 && !aggressiveMonstersGroupCell.Contains(adjCell2.CellId))
+                                        aggressiveMonstersGroupCell.Add(adjCell2.CellId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var forbiddenCells = _account.Game.Map.OccupiedCells;
+
+            if (aggressiveMonstersGroupCell?.Count > 0)
+                forbiddenCells.AddRange(aggressiveMonstersGroupCell);
+
             var tempPath = _pathFinder.GetPath(_account.Game.Map.PlayedCharacter.CellId, cellId,
-                _account.Game.Map.OccupiedCells, true, stopNearTarget);
+                forbiddenCells, true, stopNearTarget);
 
             if (tempPath.Count == 0)
             {
@@ -196,8 +198,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                 return MovementRequestResults.ALREADY_THERE;
 
             // StopNearTarget=true case, the character is already next to the target
-            if (stopNearTarget && tempPath.Count == 2 && tempPath[0] == _account.Game.Map.PlayedCharacter.CellId &&
-                tempPath[1] == cellId)
+            if (stopNearTarget && tempPath.Count == 2 && tempPath[0] == _account.Game.Map.PlayedCharacter.CellId && tempPath[1] == cellId)
                 return MovementRequestResults.ALREADY_THERE;
 
             _currentPath = tempPath;

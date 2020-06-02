@@ -30,6 +30,11 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return _account.Game.Exchange.RemoteWeightPercent;
         }
 
+        public int TargetPlayerId()
+        {
+            return _account.Game.Exchange.RemoteCharacterId;
+        }
+
         public void StartExchange(uint playerId)
         {
             _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int) playerId), true);

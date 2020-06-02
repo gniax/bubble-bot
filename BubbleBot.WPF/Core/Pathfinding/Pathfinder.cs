@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using BubbleBot.Core.Accounts;
+using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Protocol.Data.Maps;
 
 namespace BubbleBot.Core.Pathfinding
@@ -37,7 +39,7 @@ namespace BubbleBot.Core.Pathfinding
                 UpdateCellPath(p == null ? null : map.Cells[p.CellId], _grid[i, j]);
             }
         }
-
+   
         public List<short> GetPath(short source, short target, List<short> occupiedCells, bool allowDiagonals,
             bool stopNextToTarget)
         {
