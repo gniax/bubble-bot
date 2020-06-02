@@ -438,6 +438,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\EmitSignalAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GuidedModeQuit.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\JoinFriendAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\LeaveDialogAction.cs" />
@@ -445,6 +446,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Global\LoadFightConfigurationAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\ReconnectAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\SubscribeAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\WaitSignalAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\DeleteItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\DropItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\EquipItemAction.cs" />

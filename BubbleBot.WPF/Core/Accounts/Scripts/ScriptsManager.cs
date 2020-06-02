@@ -35,6 +35,7 @@ namespace BubbleBot.Core.Accounts.Scripts
         private API _api;
         private FunctionTypes _currentFunctionType;
         private string _currentScriptName;
+        private string _signalMessage;
         private bool _enabled;
         private List<IFlag> _entryFlags;
         private int _entryFlagsIndex;
@@ -49,6 +50,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             ActionsManager = new ActionsManager(account);
             _entryFlags = new List<IFlag>();
             _api = new API(_account);
+            _signalMessage = "";
 
             _account.Game.Fight.FightJoined += Fight_FightJoined;
             _account.Game.Fight.FightEnded += Fight_FightEnded;
@@ -69,6 +71,12 @@ namespace BubbleBot.Core.Accounts.Scripts
         {
             get => _enabled;
             set => Set(ref _enabled, value);
+        }
+
+        public string SignalMessage
+        {
+            get => _signalMessage;
+            set => Set(ref _signalMessage, value);
         }
 
         public bool Paused { get; private set; }
@@ -124,6 +132,10 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("job", _api.Jobs);
 
             // Set the globals and mount functions directly too
+            ScriptManager.SetGlobal("emitSignalFunc",
+                new Action<string, string>((targetId, msg) => ActionsManager.EnqueueAction(new EmitSignalAction(targetId, msg), true)));
+            ScriptManager.SetGlobal("waitSignalFunc",
+                new Action<string, int>((msg, timeout) => ActionsManager.EnqueueAction(new WaitSignalAction(msg, timeout), true)));
             ScriptManager.SetGlobal("loadFightConfigurationFunc",
                 new Action<string>(msg => ActionsManager.EnqueueAction(new LoadFightConfigurationAction(msg), true)));
             ScriptManager.SetGlobal("loadConfigurationFunc",
@@ -146,6 +158,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("delayFunc",
                 new Action<int>(ms => ActionsManager.EnqueueAction(new DelayAction(ms), true)));
             ScriptManager.SetGlobal("getTimestamp", new Func<long>(() => DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            ScriptManager.SetGlobal("getServerName", new Func<string>(() => _account.Game.Server.Name));
             ScriptManager.SetGlobal("isSubscribed", (Func<bool>) _account.IsSubscribed);
             ScriptManager.SetGlobal("isFighting", (Func<bool>) _account.IsFighting);
             ScriptManager.SetGlobal("isGathering", (Func<bool>) _account.IsGathering);

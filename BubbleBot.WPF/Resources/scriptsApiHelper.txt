@@ -53,6 +53,14 @@ function mapTeleport()
 	mapTeleportation()
 	coroutine.yield()
 end
+function emitSignal(target, msg)
+	emitSignalFunc(target, msg)
+	coroutine.yield()
+end
+function waitSignal(msg, timeout)
+	waitSignalFunc(msg, timeout)
+	coroutine.yield()
+end
 
 -- Inventory
 inventory = {
@@ -234,6 +242,7 @@ storage = {
 exchange = {
 	weightP = api.Exchange.WeightP,
 	targetWeightP = api.Exchange.TargetWeightP,
+	targetPlayerId = api.Exchange.TargetPlayerId,
 	startExchange = function(playerId)
                        api.Exchange.StartExchange(playerId)
                        coroutine.yield()

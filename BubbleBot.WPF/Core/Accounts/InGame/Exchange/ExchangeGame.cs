@@ -37,6 +37,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         public uint MaxWeight { get; private set; }
         public uint RemoteCurrentWeight { get; private set; }
         public uint RemoteMaxWeight { get; private set; }
+        public int RemoteCharacterId { get; private set; }
         public bool IsReady { get; private set; }
         public bool RemoteIsReady { get; private set; }
 
@@ -227,6 +228,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 MaxWeight = message.FirstCharacterMaxWeight;
                 RemoteCurrentWeight = message.SecondCharacterCurrentWeight;
                 RemoteMaxWeight = message.SecondCharacterMaxWeight;
+                RemoteCharacterId = message.SecondCharacterId;
             }
             else
             {
@@ -234,6 +236,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 MaxWeight = message.SecondCharacterMaxWeight;
                 RemoteCurrentWeight = message.FirstCharacterCurrentWeight;
                 RemoteMaxWeight = message.FirstCharacterMaxWeight;
+                RemoteCharacterId = message.FirstCharacterId;
             }
 
             ExchangeStarted?.Invoke();
@@ -329,6 +332,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             Objects.Clear();
             RemoteObjects.Clear();
             Kamas = RemoteKamas = 0;
+            RemoteCharacterId = 0;
             CurrentWeight = MaxWeight = RemoteCurrentWeight = RemoteMaxWeight = 0;
             _step = 0;
             _account.State = AccountStates.NONE;

@@ -35,6 +35,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return _account.Game.Character.LifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM;
         }
 
+        public uint PlayerId()
+        {
+            return _account.Game.Character.Id;
+        }
+
+        public string GroupId()
+        {
+            return _account.GroupId;
+        }
+
         public string Name()
         {
             return _account.Game.Character.Name;

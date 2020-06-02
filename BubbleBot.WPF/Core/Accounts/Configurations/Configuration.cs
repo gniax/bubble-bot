@@ -19,12 +19,14 @@ namespace BubbleBot.Core.Accounts.Configurations
         private bool _acceptAchivements;
         private Account _account;
         private bool _autoMount;
+        private bool _antiAggro;
         private bool _createParty;
         private bool _autoRegenAccepted;
         private int _banReconnectionDelay;
         private bool _disconnectOnBan;
         private bool _disconnectUponFightsLimit;
         private bool _ignoreNonAuthorizedTrades;
+        private bool _acceptBotsTrades;
         private bool _loaded;
         private bool _showAllianceMessages;
         private bool _showFightMessages;
@@ -58,11 +60,13 @@ namespace BubbleBot.Core.Accounts.Configurations
             SpellsToBoost = new ObservableCollection<SpellToBoostEntry>();
             AuthorizedTradesFrom = new ObservableCollection<int>();
             IgnoreNonAuthorizedTrades = false;
+            AcceptBotsTrades = true;
             DisconnectUponFightsLimit = false;
             DisconnectOnBan = false;
             BanReconnectionDelay = 0;
             SpeedHack = false;
             AutoMount = true;
+            AntiAggro = true;
         }
 
 
@@ -202,6 +206,16 @@ namespace BubbleBot.Core.Accounts.Configurations
             }
         }
 
+        public bool AcceptBotsTrades
+        {
+            get => _acceptBotsTrades;
+            set
+            {
+                Set(ref _acceptBotsTrades, value);
+                Save();
+            }
+        }
+
         public bool DisconnectUponFightsLimit
         {
             get => _disconnectUponFightsLimit;
@@ -252,6 +266,16 @@ namespace BubbleBot.Core.Accounts.Configurations
             }
         }
 
+        public bool AntiAggro
+        {
+            get => _antiAggro;
+            set
+            {
+                Set(ref _antiAggro, value);
+                Save();
+            }
+        }
+
         private string ConfigFilePath => Path.Combine(ConfigurationsPath, $"{_account.AccountConfig.Username}.config");
 
 
@@ -272,11 +296,13 @@ namespace BubbleBot.Core.Accounts.Configurations
                         AcceptAchievements = json["AcceptAchievements"] != null ? (bool)json["AcceptAchievements"] : true;
                         StatToBoost = json["StatToBoost"] != null ? (BoostableStats)(byte)json["StatToBoost"] : BoostableStats.NONE;
                         IgnoreNonAuthorizedTrades = json["IgnoreNonAuthorizedTrades"] != null ? (bool)json["IgnoreNonAuthorizedTrades"] : false;
+                        AcceptBotsTrades = json["AcceptBotsTrades"] != null ? (bool)json["AcceptBotsTrades"] : true;
                         DisconnectUponFightsLimit = json["DisconnectUponFightsLimit"] != null ? (bool)json["DisconnectUponFightsLimit"] : false;
                         SpeedHack = json["SpeedHack"] != null ? (bool)json["SpeedHack"] : false;
                         DisconnectOnBan = json["DisconnectOnBan"] != null ? (bool)json["DisconnectOnBan"] : false;
                         BanReconnectionDelay = json["BanReconnectionDelay"] != null ? (int)json["BanReconnectionDelay"] : 0;
                         AutoMount = json["AutoMount"] != null ? (bool)json["AutoMount"] : true;
+                        AntiAggro = json["AntiAggro"] != null ? (bool)json["AntiAggro"] : true;
                         ShowGeneralMessages = json["Channel"]["ShowGeneralMessages"] != null ? (bool)json["Channel"]["ShowGeneralMessages"] : true;
                         ShowPartyMessages = json["Channel"]["ShowPartyMessages"] != null ? (bool)json["Channel"]["ShowPartyMessages"] : true;
                         ShowFightMessages = json["Channel"]["ShowFightMessages"] != null ? (bool)json["Channel"]["ShowFightMessages"] : true;
@@ -350,11 +376,13 @@ namespace BubbleBot.Core.Accounts.Configurations
                     json.AcceptAchievements = AcceptAchievements;
                     json.StatToBoost = (byte) StatToBoost;
                     json.IgnoreNonAuthorizedTrades = IgnoreNonAuthorizedTrades;
+                    json.AcceptBotsTrades = AcceptBotsTrades;
                     json.DisconnectUponFightsLimit = DisconnectUponFightsLimit;
                     json.SpeedHack = SpeedHack;
                     json.DisconnectOnBan = DisconnectOnBan;
                     json.BanReconnectionDelay = BanReconnectionDelay;
                     json.AutoMount = AutoMount;
+                    json.AntiAggro = AntiAggro;
 
                     json.Channel = new ExpandoObject();
                     json.Channel.ShowGeneralMessages = ShowGeneralMessages;

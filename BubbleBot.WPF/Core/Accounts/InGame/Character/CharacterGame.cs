@@ -519,18 +519,18 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         {
             Status = (PlayerStatusEnum) message.Status.StatusId;
         }
-        /*  private async Task GetSpellList(SpellListMessage message)
-          {
-              Spells.Clear();
+        private async Task GetSpellList(SpellListMessage message)
+        {
+            Spells.Clear();
 
-              var spells = DataManager.GetList<Spells>(message.Spells.Select(f => f.SpellId));
-              for (var i = 0; i < message.Spells.Count; i++)
-               Spells.Add(new SpellEntry(message.Spells[i], spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
+            var spells = await DataManager.GetListAsync<Spells>(message.Spells.Select(f => f.SpellId));
+            for (var i = 0; i < message.Spells.Count; i++)
+            Spells.Add(new SpellEntry(message.Spells[i], spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
 
-              SpellsUpdated?.Invoke();
+            SpellsUpdated?.Invoke();
 
-          }
-          */
+        }
+          
         public void Update(FriendsListMessage message)
         {
             if (message.FriendsList != null && message.FriendsList?.Count > 0 && _account.FriendsListId != null)
@@ -584,17 +584,17 @@ namespace BubbleBot.Core.Accounts.InGame.Character
             _account.PartyId = message.PartyId;
         }
 
-        public async Task UpdateAsync(SpellListMessage message)
+        public void UpdateAsync(SpellListMessage message)
         {
-            var spells = await DataManager.GetListAsync<Spells>(message.Spells.Select(f => f.SpellId));
+            var spells = DataManager.GetListAsync<Spells>(message.Spells.Select(f => f.SpellId)).Result;
 
-            if(spells != null)
+            if (spells != null)
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Spells.Clear();
 
-                    for (var i = 0; i < message.Spells.Count-1; i++)
+                    for (var i = 0; i < message.Spells.Count; i++)
                         Spells.Add(new SpellEntry(message.Spells[i],
                             spells.FirstOrDefault(f => f.Id == message.Spells[i].SpellId)));
 

@@ -370,7 +370,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
                                 continue;
 
                             // Zaap
-                            if (kvp.Value[i].g == 15363 || kvp.Value[i].g == 38003)
+                            if (kvp.Value[i].g == 15363 || kvp.Value[i].g == 38003 || kvp.Value[i].g == 24193)
                                 Zaap = new ElementInCellEntry(interactive, kvp.Key);
                             // Zaapi
                             else if (kvp.Value[i].g == 15004)
