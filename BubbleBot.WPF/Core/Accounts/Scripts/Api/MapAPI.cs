@@ -52,6 +52,20 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return true;
         }
 
+        public bool FromBotMoveToCell(string groupMng, string idMng,short cellId)
+        {
+            if (cellId < 0 || cellId > 559)
+                return false;
+
+            _account.Scripts.ActionsManager.EnqueueAction(new FromBotMoveToCellAction(groupMng,idMng,cellId), true);
+            return true;
+        }
+        public bool GroupMapTeleportation(int destId)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new GroupMapTeleportationAction(destId), true);
+            return true;
+        }
+
         public bool UseById(int elementId, int skillInstanceUid = -1)
         {
             var interactive = _account.Game.Map.GetInteractiveElement(elementId);

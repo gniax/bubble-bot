@@ -15,7 +15,19 @@ namespace BubbleBot.Core.Frames.Game
         {
             return Task.Run(() => account.Game.Npcs.Update(message));
         }
-
+        public static Task HandleExchangeStartOkNpcShopMessage(Account account, ExchangeStartOkNpcShopMessage message)
+        {
+            return Task.Run(() => account.Game.Npcs.Update(message));
+        }
+        public static Task HandleExchangeSellOkMessage(Account account, ExchangeSellOkMessage message)
+        {
+            return Task.Run(() => account.Game.Npcs.Update(message));
+        }
+        public static Task HandleExchangeLeaveMessage(Account account, ExchangeLeaveMessage message)
+        {
+            return Task.Run(() => account.Game.Npcs.Update(message));
+        }
+        
         public static Task HandleLeaveDialogMessage(Account account, LeaveDialogMessage message)
         {
             return Task.Run(() => account.Game.Npcs.Update(message));

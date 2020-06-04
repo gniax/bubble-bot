@@ -41,7 +41,29 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             return _account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int) o.Quantity);
         }
-
+        public int FromBotItemCount(string groupMng, string idMng, int gid)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                //Si le compte est en groupe on vérifie les membres
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == groupMng && member.AccountConfig.Identifiant == idMng)
+                        {
+                            return member.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
+                        }
+                    }
+                }
+                //On vérifie les comptes principal
+                if (acc.AccountConfig.Nickname == groupMng && acc.AccountConfig.Identifiant == idMng)
+                {
+                   return _account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
+                }
+            }
+            return -1;
+        }
         public int ItemWeight(int gid)
         {
             return _account.Game.Character.Inventory.GetObjectByGID(gid)?.RealWeight ?? 0;

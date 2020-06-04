@@ -466,11 +466,15 @@ namespace BubbleBot.Core.Accounts.Scripts
 
             // If we processed all the flags
             if (_entryFlagsIndex == _entryFlags.Count)
-                // This should never happen, since a door or changeMap would change you the map so it'll re-process the script
-                // But if no door or changeMap was found in the entry, stop the script !
-                StopScript(LanguageManager.Translate("144") + " 2");
+            {
+                  // This should never happen, since a door or changeMap would change you the map so it'll re-process the script
+                 // But if no door or changeMap was found in the entry, stop the script !
+                 //StopScript(LanguageManager.Translate("144") + " 2");
+            }
             else
+            {
                 ProcessCurrentEntryFlag();
+            }
         }
 
         private void ProcessCurrentEntryFlag(ScriptAction alreadyParsedAction = null,

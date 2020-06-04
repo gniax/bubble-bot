@@ -12,6 +12,8 @@ using BubbleBot.Protocol.Enums;
 using BubbleBot.Protocol.Messages;
 using BubbleBot.Protocol.Types;
 using BubbleBot.Data;
+using BubbleBot.Configurations.Language;
+using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Accounts.InGame.Fights
 {
@@ -130,6 +132,71 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
 
         #region Public Methods
+        public async Task<bool> Fight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null,
+    int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        {
+            await Task.Delay(1);
+        //    await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint)_account.Game.Map.Id)).ConfigureAwait(false);
+         //   await Task.Delay(1000);
+            var availableGroups = _account.Game.Map.GetMonstersGroup(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters);
+
+            if (availableGroups.Count <= 0)
+                return false;
+
+            for (var i = 0; i < availableGroups.Count; i++)
+            {
+                if (_account.Game.Map.BlacklistedMonsters.Contains(availableGroups[i].Id))
+                    continue;
+                
+                switch (_account.Game.Managers.Movements.MoveToCell(availableGroups[i].CellId))
+                {
+                    case MovementRequestResults.MOVED:
+                        _account.Scripts.ActionsManager.MonstersGroupToAttack = availableGroups[i].Id;
+                        _account.Logger.LogDebug(LanguageManager.Translate("165"),
+                            LanguageManager.Translate("166", availableGroups[i].CellId,
+                                availableGroups[i].MonstersCount, availableGroups[i].TotalLevel));
+                        return true;
+                    case MovementRequestResults.ALREADY_THERE:
+                    case MovementRequestResults.PATH_BLOCKED:
+                        if(_account.Game.Map.PlayedCharacter.CellId == availableGroups[i].CellId)
+                        {
+                            _account.Scripts.ActionsManager.MonstersGroupToAttack = availableGroups[i].Id;
+                            _account.Logger.LogDebug(LanguageManager.Translate("165"),
+                                LanguageManager.Translate("166", availableGroups[i].CellId,
+                                    availableGroups[i].MonstersCount, availableGroups[i].TotalLevel));
+                            return true;
+                        }
+                        else
+                        {
+                            _account.Logger.LogWarning(LanguageManager.Translate("165"), LanguageManager.Translate("167"));
+                            _account.Game.Map.BlacklistedMonsters.Add(availableGroups[i].Id);
+                            continue;
+                        }
+                    default: // FAILED
+                        //account.Scripts.StopScript(LanguageManager.Translate("168"));
+                        return false;
+                }
+            }
+
+            return false;
+        }
+        public async Task<bool> ForceFight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null,
+            int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        {
+            //await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint)_account.Game.Map.Id)).ConfigureAwait(false);
+            while (!_account.Game.Map.CanFight(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters))
+               await Task.Delay(1000);
+
+            while (_account.State != AccountStates.FIGHTING)
+            {
+                if (_account.Game.Map.CanFight(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters))
+                    await Fight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel);
+
+                await Task.Delay(6000);
+            }
+
+            return true;
+        }
 
         public async Task ToggleOption(FightOptionsEnum option)
         {

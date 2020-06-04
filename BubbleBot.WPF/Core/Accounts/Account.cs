@@ -762,7 +762,7 @@ namespace BubbleBot.Core.Accounts
         public bool IsInDialog()
         {
             return State == AccountStates.STORAGE || State == AccountStates.TALKING ||
-                   State == AccountStates.EXCHANGE || State == AccountStates.BUYING || State == AccountStates.SELLING;
+                   State == AccountStates.EXCHANGE || State == AccountStates.BUYING || State == AccountStates.SELLING || State == AccountStates.SHOPPING;
         }
 
         #endregion

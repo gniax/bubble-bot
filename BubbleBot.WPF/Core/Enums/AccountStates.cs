@@ -13,6 +13,7 @@ namespace BubbleBot.Core.Enums
         EXCHANGE,
         BUYING,
         SELLING,
+        SHOPPING,
         REGENERATING,
         RECAPTCHA,
         BANNED

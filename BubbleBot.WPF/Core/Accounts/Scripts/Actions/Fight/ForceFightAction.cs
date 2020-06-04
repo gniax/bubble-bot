@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
@@ -6,10 +6,10 @@ using BubbleBot.Core.Accounts.InGame.Fights;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 {
-    public class FightAction : ScriptAction
+    public class ForceFightAction : ScriptAction
     {
         // Constructor
-        public FightAction(int minMonsters, int maxMonsters, int minMonstersLevel, int maxMonstersLevel,
+        public ForceFightAction(int minMonsters, int maxMonsters, int minMonstersLevel, int maxMonstersLevel,
             List<int> forbiddenMonsters, List<int> mandatoryMonsters)
         {
             MinMonsters = minMonsters;
@@ -31,7 +31,10 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            if(account.Game.Fight.Fight(ForbiddenMonsters, MandatoryMonsters, MinMonsters, MaxMonsters, MinMonstersLevel, MaxMonstersLevel).Result)
+            if (account.HasGroup && !account.IsGroupChief)
+                return DoneResult;
+
+            if (account.Game.Fight.ForceFight(ForbiddenMonsters, MandatoryMonsters, MinMonsters, MaxMonsters, MinMonstersLevel, MaxMonstersLevel).Result)
                 return DoneResult;
             else
                 return FailedResult;

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using BubbleBot.Core.Accounts.Scripts.Actions.Npcs;
+using BubbleBot.Core.Enums;
 using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
@@ -36,6 +37,24 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                 return false;
 
             _account.Scripts.ActionsManager.EnqueueAction(new NpcAction(npcId, actionIndex), true);
+            return true;
+        }
+
+        public bool NpcShop(int npcId, uint actionIndex)
+        {
+            if (npcId > 0 && _account.Game.Map.Npcs.FirstOrDefault(n => n.NpcId == npcId) == null)
+                return false;
+
+            _account.Scripts.ActionsManager.EnqueueAction(new NpcOpenShopAction(npcId, actionIndex), true);
+            return true;
+        }
+
+        public bool NpcShopSellItem(uint gid, int quantity)
+        {
+            if (_account.State != AccountStates.SHOPPING)
+                return false;
+
+            _account.Scripts.ActionsManager.EnqueueAction(new NpcShopSellItemAction(gid, quantity), true);
             return true;
         }
 

@@ -27,6 +27,8 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
         // Events
         public event Action DialogCreated;
         public event Action QuestionReceived;
+        public event Action ShopOpened;
+        public event Action ShopItemSelled; 
         public event Action DialogLeft;
 
 
@@ -53,6 +55,35 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
             }
 
             return false;
+        }
+
+        public bool NpcShopSellItem(uint gid, int quantity)
+        {
+            if (_account.State != AccountStates.SHOPPING)
+                return false;
+            
+            if (_account.Game.Character.Inventory.GetObjectsByGID((int)gid).Sum(o => (int)o.Quantity) == 0)
+                return false;
+
+            var objectToSell = _account.Game.Character.Inventory.GetObjectByGID((int)gid);
+
+            if (objectToSell == null)
+                return false;
+
+            if (quantity > 0)
+            {
+                if(quantity > objectToSell.Quantity)
+                    _account.Network.SendMessage(new ExchangeSellMessage(objectToSell.UID, objectToSell.Quantity));
+                else
+                    _account.Network.SendMessage(new ExchangeSellMessage(objectToSell.UID, (uint)quantity));
+            }
+            else
+            {
+                _account.Network.SendMessage(new ExchangeSellMessage(objectToSell.UID, objectToSell.Quantity));
+            }
+                
+
+            return true;
         }
 
         public bool UseNpc(int npcId, int actionIndex)
@@ -112,6 +143,26 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
 
             PossibleReplies = new List<uint>(message.VisibleReplies);
             QuestionReceived?.Invoke();
+        }
+        public void Update(ExchangeStartOkNpcShopMessage message)
+        {
+            _account.State = AccountStates.SHOPPING;
+            ShopOpened?.Invoke();
+        }
+        public void Update(ExchangeSellOkMessage message)
+        {
+            if (_account.State != AccountStates.SHOPPING)
+                return;
+
+            ShopItemSelled?.Invoke();
+        }
+        public void Update(ExchangeLeaveMessage message)
+        {
+            if (_account.State != AccountStates.SHOPPING)
+                return;
+
+            _account.State = AccountStates.NONE;
+            DialogLeft?.Invoke();
         }
 
         public void Update(LeaveDialogMessage message)

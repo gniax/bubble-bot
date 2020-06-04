@@ -11,7 +11,7 @@ using BubbleBot.Protocol.Messages;
 
 namespace BubbleBot.Core.Accounts.InGame.Exchange
 {
-    
+
     public class ExchangeGame : IDisposable
     {
         // Fields
@@ -48,8 +48,8 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         public bool IsReady { get; private set; }
         public bool RemoteIsReady { get; private set; }
 
-        public int WeightPercent => (int) ((double) CurrentWeight / MaxWeight * 100);
-        public int RemoteWeightPercent => (int) ((double) RemoteCurrentWeight / RemoteMaxWeight * 100);
+        public int WeightPercent => (int)((double)CurrentWeight / MaxWeight * 100);
+        public int RemoteWeightPercent => (int)((double)RemoteCurrentWeight / RemoteMaxWeight * 100);
 
 
         // Events
@@ -67,8 +67,142 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             if (_account.Game.Map.Players.FirstOrDefault(p => p.Id == id) == null)
                 return false;
 
-            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint) id));
+            _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
             return true;
+        }
+        public async Task<bool> FromBotPutAllItems(string botGroupMng, string botIdMng)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
+                        {
+                            if (member.State != AccountStates.EXCHANGE)
+                                return false;
+
+                            member.Logger.LogDebug(LanguageManager.Translate("117"), LanguageManager.Translate("531"));
+
+                            foreach (var obj in member.Game.Character.Inventory.Equipements)
+                            {
+                                if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                                    continue;
+
+                                member.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                                await Task.Delay(600);
+                            }
+
+                            foreach (var obj in member.Game.Character.Inventory.Consumables)
+                            {
+                                if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                                    continue;
+
+                                member.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                                await Task.Delay(600);
+                            }
+
+                            foreach (var obj in member.Game.Character.Inventory.Resources)
+                            {
+                                if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                                    continue;
+
+                                member.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                                await Task.Delay(600);
+                            }
+
+                            member.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("532"));
+                            return true;
+                        }
+
+                    }
+                }
+
+                if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
+                {
+                    if (acc.State != AccountStates.EXCHANGE)
+                        return false;
+
+                    acc.Logger.LogDebug(LanguageManager.Translate("117"), LanguageManager.Translate("531"));
+
+                    foreach (var obj in acc.Game.Character.Inventory.Equipements)
+                    {
+                        if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                            continue;
+
+                        acc.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                        await Task.Delay(600);
+                    }
+
+                    foreach (var obj in acc.Game.Character.Inventory.Consumables)
+                    {
+                        if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                            continue;
+
+                        acc.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                        await Task.Delay(600);
+                    }
+
+                    foreach (var obj in acc.Game.Character.Inventory.Resources)
+                    {
+                        if (!obj.Exchangeable || obj.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                            continue;
+
+                        acc.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)obj.Quantity));
+                        await Task.Delay(600);
+                    }
+
+                    acc.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("532"));
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+        public async Task<bool> FromBotExchangeByName(string botGroupMng, string botIdMng, string targetName)
+        {
+            await Task.Delay(1);
+
+            if (_account.IsBusy)
+                return false;
+
+            if (botGroupMng == "" && botIdMng == "")
+                return false;
+
+            //Si le compte est en groupe on cherche le compte où executer l'action 
+                foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+                {
+                    if(acc.IsGroupChief && acc.HasGroup)
+                    {
+                        foreach (var member in acc.Group.Members)
+                        {
+                            if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
+                            {
+                                if (member.Game.Map.Players.FirstOrDefault(p => p.Name == targetName) == null)
+                                    return false;
+
+                                member.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)member.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+                                SpinWait.SpinUntil(() => member.State == AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+                                return true;
+                            }
+
+                        }
+                    }
+
+                    if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
+                    {
+                        if (acc.Game.Map.Players.FirstOrDefault(p => p.Name == targetName) == null)
+                            return false;
+
+                        acc.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)acc.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+                        SpinWait.SpinUntil(() => acc.State == AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+                        return true;
+                    }
+                }
+
+            return false;
         }
 
         public bool StartExchangeByName(string targetName)
@@ -81,6 +215,9 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
 
             _account.Network.SendMessage(new ExchangePlayerRequestMessage(1,
                 (uint) _account.Game.Map.Players.FirstOrDefault(p => p.Name == targetName).Id));
+
+            SpinWait.SpinUntil(() => _account.State == AccountStates.EXCHANGE, TimeSpan.FromSeconds(30));
+
             return true;
         }
 

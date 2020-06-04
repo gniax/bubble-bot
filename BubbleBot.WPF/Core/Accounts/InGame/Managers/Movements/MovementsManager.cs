@@ -207,6 +207,28 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             _maxretries = 0;
             return MovementRequestResults.MOVED;
         }
+        public MovementRequestResults FromBotMoveToCell(string botGroupMng, string botIdMng, short cellId, bool stopNearTarget = false)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
+                        {
+                            return member.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                        }
+                    }
+                }
+
+                if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
+                {
+                    return acc.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                }
+            }
+            return MovementRequestResults.FAILED;
+        }
 
         public async Task MoveToCellInFight(KeyValuePair<short, MoveNode>? node)
         {

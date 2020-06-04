@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Protocol.Messages;
@@ -27,10 +28,17 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
         {
             var defautAuthorized = false;
 
-            //Si un personnage du bot ajoute sont id il est accepter pour echange
+            //Si un personnage du bot ajoute son id il est accepté pour l'échange
             foreach (var playerIdTmp in InGame.Exchange.ExchangeGame.AuthorizedPlayersList)
                 if (playerIdTmp == from)
                     defautAuthorized = true;
+
+            if (_account.Configuration.AcceptBotsTrades && BubbleBotMain.Instance.ConnectedAccounts.Select(c => c.Game?.Character.Id == from).Any())
+            {
+                _account.Network.SendMessage(new ExchangeAcceptMessage());
+                _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("384"));
+                return;
+            }
 
             // If this character isn't authorized to trade us, refuse it
             if (!_account.Configuration.AuthorizedTradesFrom.Contains(from) && defautAuthorized == false)

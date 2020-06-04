@@ -5,6 +5,11 @@ function fight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, m
 		coroutine.yield()
 	end	
 end
+function forceFight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel)
+	if api.Fight.ForceFight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel) then
+		coroutine.yield()
+	end	
+end
 fightsCount = api.Fight.FightsCount
 
 -- Gather
@@ -68,6 +73,7 @@ inventory = {
 	podsMax = api.Inventory.PodsMax,
 	podsP = api.Inventory.PodsP,
 	itemCount = api.Inventory.ItemCount,
+	fromBotItemCount = api.Inventory.FromBotItemCount,
 	itemWeight = api.Inventory.itemWeight,
 	useItem = function(gid, qty)
 			      if api.Inventory.UseItem(gid, qty) then
@@ -104,6 +110,16 @@ function changeMap(where)
 end
 function moveToCell(cellId)
 	if api.Map.MoveToCell(cellId) then
+		coroutine.yield()
+	end
+end
+function fromBotMoveToCell(groupMng,idMng,cellId)
+	if api.Map.FromBotMoveToCell(groupMng,idMng,cellId) then
+		coroutine.yield()
+	end
+end
+function groupMapTeleportation(destId)
+	if api.Map.GroupMapTeleportation(destId) then
 		coroutine.yield()
 	end
 end
@@ -166,6 +182,16 @@ npc = {
 			  end,
 	npc = function(npcId, actionIndex)
 		      if api.Npc.Npc(npcId, actionIndex) then
+ 			      coroutine.yield()
+		      end
+		  end,
+	npcShop = function(npcId, actionIndex)
+		      if api.Npc.NpcShop(npcId, actionIndex) then
+ 			      coroutine.yield()
+		      end
+		  end,
+	npcShopSellItem = function(gid, quantity)
+		      if api.Npc.NpcShopSellItem(gid, quantity) then
  			      coroutine.yield()
 		      end
 		  end,
@@ -243,12 +269,26 @@ exchange = {
 	weightP = api.Exchange.WeightP,
 	targetWeightP = api.Exchange.TargetWeightP,
 	targetPlayerId = api.Exchange.TargetPlayerId,
+	isInExchange = api.Exchange.IsInExchange,
+	fromBotIsInExchange = api.Exchange.FromBotIsInExchange,
 	startExchange = function(playerId)
                        api.Exchange.StartExchange(playerId)
                        coroutine.yield()
 	                end,
 	startExchangeByName = function(playerName)
                        api.Exchange.StartExchangeByName(playerName)
+                       coroutine.yield()
+	                end,
+	fromBotExchangeByName = function(groupMng,idMng,playerName)
+                       api.Exchange.FromBotExchangeByName(groupMng,idMng,playerName)
+                       coroutine.yield()
+	                end,
+	fromBotPutAllItems = function(groupMng,idMng)
+                       api.Exchange.FromBotPutAllItems(groupMng,idMng)
+                       coroutine.yield()
+	                end,
+	fromBotSendReady = function(groupMng,idMng)
+                       api.Exchange.FromBotSendReady(groupMng,idMng)
                        coroutine.yield()
 	                end,
 	startExchangeGroupByName = function(playerName)

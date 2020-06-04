@@ -1,27 +1,33 @@
-using System.Threading.Tasks;
+ï»¿using System.Threading.Tasks;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 {
-    public class MoveToCellAction : ScriptAction
+    public class FromBotMoveToCellAction : ScriptAction
     {
         // Constructor
-        public MoveToCellAction(short cellId)
+        public FromBotMoveToCellAction(string groupmng, string idmng,short cellId)
         {
+            GroupMng = groupmng;
+            IdMng = idmng;
             CellId = cellId;
         }
 
         // Properties
+        public string GroupMng { get; }
+        public string IdMng { get; }
         public short CellId { get; }
 
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            //A mon avis modifier pour que l'action s'éffectue aussi sur les membres du groupe, a gérer dans ApiMap
-            switch (account.Game.Managers.Movements.MoveToCell(CellId))
+            if (account.HasGroup && !account.IsGroupChief)
+                return DoneResult;
+
+            switch (account.Game.Managers.Movements.FromBotMoveToCell(GroupMng, IdMng,CellId))
             {
                 case MovementRequestResults.MOVED:
-                    return ProcessingResult;
+                    return DoneResult;
                 case MovementRequestResults.PATH_BLOCKED:
                 case MovementRequestResults.ALREADY_THERE:
                     return DoneResult;

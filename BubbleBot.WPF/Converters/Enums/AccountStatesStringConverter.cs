@@ -34,6 +34,8 @@ namespace BubbleBot.Converters.Enums
                     return LanguageManager.Translate("18");
                 case AccountStates.SELLING:
                     return LanguageManager.Translate("19");
+                case AccountStates.SHOPPING:
+                    return LanguageManager.Translate("749");
                 case AccountStates.REGENERATING:
                     return LanguageManager.Translate("23");
                 case AccountStates.BANNED:

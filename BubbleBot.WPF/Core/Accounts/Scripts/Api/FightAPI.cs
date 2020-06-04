@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using BubbleBot.Core.Accounts.Scripts.Actions.Fight;
+using BubbleBot.Core.Accounts.InGame.Fights;
 using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
@@ -46,6 +49,14 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         public uint FightsCount()
         {
             return _account.Statistics.FightsCount;
+        }
+
+        public bool ForceFight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null, int minMonsters = 1,
+    int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction( new ForceFightAction(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters), true);
+
+            return true;
         }
 
         #region IDisposable Support

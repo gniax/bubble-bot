@@ -26,7 +26,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
         private Account _account;
         private ConcurrentQueue<ScriptAction> _actionsQueue;
         private ScriptAction _currentAction;
-        private DynValue _currentCoroutine;
+        public DynValue _currentCoroutine;
         private int _fightsCounter;
         private int _gathersCounter;
         private bool _mapChanged;
@@ -47,6 +47,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             _account.Game.Managers.Gathers.GatherFinished += Gathers_GatherFinished;
             _account.Game.Managers.Gathers.GatherStarted += Gathers_GatherStarted;
             _account.Game.Npcs.QuestionReceived += Npcs_QuestionReceived;
+            _account.Game.Npcs.ShopOpened += Npcs_ShopOpened;
+            _account.Game.Npcs.ShopItemSelled += Npcs_ShopItemSelled;
             _account.Game.Storage.StorageStarted += Storage_StorageStarted;
             _account.Game.Storage.StorageLeft += Storage_StorageLeft;
             _account.Game.Npcs.DialogLeft += Npcs_DialogLeft;
@@ -246,13 +248,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             //_account.Logger.LogDebug("ActionsManager", $"MapChanged, Action: {_currentAction?.GetType().Name}");
 
             // Reset FightsOnThisMap if the current action is not a FightAction (since a fight makes you "change the map")
-            if (!(_currentAction is FightAction))
+            if (!(_currentAction is FightAction) || !(_currentAction is ForceFightAction))
                 FightsOnThisMap = 0;
 
             // In case the bot gets into a fight (wheiter wanted or not)
             // Added UseAction here because the character can get aggressed in his path and we need to re-run the script after it
             // Added coroutine here also because the character can get into a fight thanks to a custom function (fight() or gather() or even pnj)
-            if (!(_currentAction is ChangeMapAction) && !(_currentAction is FightAction) &&
+            if (!(_currentAction is ChangeMapAction) && !(_currentAction is FightAction) && !(_currentAction is ForceFightAction) &&
                 !(_currentAction is GatherAction) && !(_currentAction is UseAction) &&
                 _currentCoroutine == null)
                 return;
@@ -262,12 +264,21 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 return;
 
             ClearActions();
-
-            if (!_account.HasGroup)
-                DequeueActions(1500);
-
+            if(_account.Configuration.SpeedHack == true)
+            {
+                if (!_account.HasGroup)
+                    DequeueActions(0);
+                else
+                    DequeueActions(0);
+            }
             else
-                DequeueActions(3000);
+            {
+                if (!_account.HasGroup)
+                    DequeueActions(1500);
+                else
+                    DequeueActions(3000);
+            }
+
         }
 
         private async void Movements_MovementFinished(bool success)
@@ -275,7 +286,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             if (!_account.Scripts.Running)
                 return;
 
-            if (_currentAction is FightAction && MonstersGroupToAttack != 0)
+            if ((_currentAction is FightAction || _currentAction is ForceFightAction) && MonstersGroupToAttack != 0)
             {
                 if (success)
                 {
@@ -398,7 +409,22 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 DequeueActions(400);
             }
         }
+        private void Npcs_ShopOpened()
+        {
+            if (!_account.Scripts.Running)
+                return;
 
+           if (_currentAction is NpcOpenShopAction) DequeueActions(400);
+        }
+
+        private void Npcs_ShopItemSelled()
+        {
+            if (!_account.Scripts.Running)
+                return;
+
+            if (_currentAction is NpcShopSellItemAction) DequeueActions(400);
+        }
+        
         private void Npcs_DialogLeft()
         {
             if (!_account.Scripts.Running)

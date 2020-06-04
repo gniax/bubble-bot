@@ -429,6 +429,9 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangePutKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangeByNameAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutAllItemsAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotSendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeGroupByNameAction.cs" />
@@ -438,9 +441,11 @@
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\DeleteFileAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ExtendScript\EditValueStringAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Fight\ForceFightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\EmitSignalAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\GroupMapTeleportationAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GuidedModeQuit.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\JoinFriendAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\LeaveDialogAction.cs" />
@@ -456,6 +461,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Inventory\UseItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeByNameAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Map\FromBotMoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\UseAction.cs" />
@@ -468,6 +474,8 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Mount\ToggleRidingAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Npcs\NpcAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Npcs\NpcBankAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Npcs\NpcOpenShopAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Npcs\NpcShopSellItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Npcs\ReplyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\ScriptAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Storage\StorageGetAllItemsAction.cs" />
