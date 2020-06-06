@@ -73,6 +73,10 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account.Scripts.ActionsManager.EnqueueAction(new FromBotExchangePutAllItemsAction(groupMng, idMng), true);
         }
+        public void FromBotPutItem(string groupMng, string idMng, int gid, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new FromBotExchangePutItemAction(groupMng, idMng, gid, qty), true);
+        }
         public void FromBotSendReady(string groupMng, string idMng)
         {
             _account.Scripts.ActionsManager.EnqueueAction(new FromBotSendReadyAction(groupMng, idMng), true);
@@ -106,98 +110,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             }
             return false;
         }
-             
-
-            //Si le compte est en groupe on cherche le compte où executer l'action 
-            /*      if (_account.HasGroup)
-                  {
-                      if (groupMng != "" && idMng != "")
-                      {
-                          var tmpAccount = _account.Group.Members.Where(b => b.AccountConfig.Nickname == groupMng && b.AccountConfig.Identifiant == idMng).Single();
-                          if (tmpAccount == null)
-                          {
-                              if (_account.AccountConfig.Nickname == groupMng && _account.AccountConfig.Identifiant == idMng)
-                              {
-                                  if (_account.State == AccountStates.EXCHANGE)
-                                      return true;
-                                  else
-                                      return false;
-                              }
-                              else
-                              {
-                                  return false;
-                              }
-                          }
-                          else
-                          {
-                              if (tmpAccount.State == AccountStates.EXCHANGE)
-                                  return true;
-                              else
-                                  return false;
-                          }
-                      }
-                      else if (groupMng != "")
-                      {
-                          var tmpAccount = _account.Group.Members.Where(b => b.AccountConfig.Nickname == groupMng).Single();
-                          if (tmpAccount == null)
-                          {
-                              if (_account.AccountConfig.Nickname == groupMng)
-                              {
-                                  if (_account.State == AccountStates.EXCHANGE)
-                                      return true;
-                                  else
-                                      return false;
-                              }
-                              else
-                              {
-                                  return false;
-                              }
-                          }
-                          else
-                          {
-                              if (tmpAccount.State == AccountStates.EXCHANGE)
-                                  return true;
-                              else
-                                  return false;
-                          }
-                      }
-                      else if (idMng != "")
-                      {
-                          var tmpAccount = _account.Group.Members.Where(b => b.AccountConfig.Identifiant == idMng).Single();
-                          if (tmpAccount == null)
-                          {
-                              if (_account.AccountConfig.Identifiant == idMng)
-                              {
-                                  if (_account.State == AccountStates.EXCHANGE)
-                                      return true;
-                                  else
-                                      return false;
-                              }
-                              else
-                              {
-                                  return false;
-                              }
-                          }
-                          else
-                          {
-                              if (tmpAccount.State == AccountStates.EXCHANGE)
-                                  return true;
-                              else
-                                  return false;
-                          }
-                      }
-                      else
-                      {
-                          return false;
-                      }
-                  }
-                  else
-                  {
-                      //Futur amélioration pour communniquer entre tout les bots
-                      return false;
-                  }
-                  */
-    
+            
         public void SendReady()
         {
             _account.Scripts.ActionsManager.EnqueueAction(new SendReadyAction(), true);

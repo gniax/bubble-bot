@@ -13,8 +13,8 @@ namespace AccountGenerator
     class Program
     {
         public static int PROXY_COUNTER = 0; //Start index proxy list
-        public static int PROGRAM_MODE = 0; //0-synchrone 1-Asynchrone
-        public static int MAX_THREAD = 3;   //si async nombre de compte simultanée
+        public static int PROGRAM_MODE = 1; //0-synchrone 1-Asynchrone
+        public static int MAX_THREAD = 200;   //si async nombre de compte simultanée
         public static int MAX_TRYBASIC = 5;
         public static int MAX_TRYPROXY = 3;
         public static string ACCOUNT_PASSWORD = "CHANGE_ME";
@@ -233,16 +233,29 @@ namespace AccountGenerator
         private static void InitializeCefSharp()
         {
             var settings = new CefSettings();
+            settings.SetOffScreenRenderingBestPerformanceArgs();
+
+            settings.IgnoreCertificateErrors = true;
+            settings.PersistSessionCookies = false;
+            settings.PersistUserPreferences = false;
+            settings.WindowlessRenderingEnabled = true;
 
             settings.BrowserSubprocessPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
                                                    Environment.Is64BitProcess ? "x64" : "x86",
                                                    "CefSharp.BrowserSubprocess.exe");
             settings.LogSeverity = LogSeverity.Disable;
             settings.CachePath = AppDomain.CurrentDomain.BaseDirectory + "cache";
+            settings.CefCommandLineArgs.Add("disable-gpu-vsync", "1");
+            settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache", "1");
             settings.CefCommandLineArgs.Add("disable-application-cache", "1");
             settings.CefCommandLineArgs.Add("disable-session-storage", "1");
-            settings.CefCommandLineArgs.Add("disable-web-security", "1");
+            settings.CefCommandLineArgs.Add("disable-web-security", "0");
+
             settings.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A403 Safari/602.1";
+
+
+            CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
+
             //settings.CefCommandLineArgs.Add("proxy-server", "http://proxy.example.com:8080");  //"http://proxy.example.com:8811"proxy.example.com:8811 / proxy.example.com:8811 proxy.example.com:8080
             //proxy.example.com:8811 // proxy.example.com:8811 / proxy.example.com:8811 / proxy.example.com:8811
 

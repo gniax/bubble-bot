@@ -132,6 +132,40 @@ namespace BubbleBot.Core.Accounts.Scripts
             ScriptManager.SetGlobal("job", _api.Jobs);
 
             // Set the globals and mount functions directly too
+            ScriptManager.SetGlobal("fromBotIsConnected", new Func<string, string, bool>((groupmng, idmng) =>
+            {
+                if (_account.HasGroup && !_account.IsGroupChief)
+                    return false;
+
+                foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+                {
+                    if (acc.IsGroupChief && acc.HasGroup)
+                    {
+                        foreach (var member in acc.Group.Members)
+                        {
+                            if (member.AccountConfig.Nickname == groupmng && member.AccountConfig.Identifiant == idmng)
+                            {
+                                if (member.State == AccountStates.DISCONNECTED || member.State == AccountStates.BANNED)
+                                    return false;
+                                else
+                                    return true;
+                            }
+                        }
+                    }
+                    if (acc.AccountConfig.Nickname == groupmng && acc.AccountConfig.Identifiant == idmng)
+                    {
+                        if (acc.State == AccountStates.DISCONNECTED || acc.State == AccountStates.BANNED)
+                            return false;
+                        else
+                            return true;
+                    }
+                }
+                return false;
+            }));
+            ScriptManager.SetGlobal("fromBotConnectFunc",
+                new Action<string, string, bool>((groupmng, idmng, rs) => ActionsManager.EnqueueAction(new FromBotConnectAction(groupmng, idmng, rs), true)));
+            ScriptManager.SetGlobal("fromBotDisconnectFunc",
+                new Action<string, string>((groupmng, idmng) => ActionsManager.EnqueueAction(new FromBotDisconnectAction(groupmng, idmng), true)));
             ScriptManager.SetGlobal("emitSignalFunc",
                 new Action<string, string>((targetId, msg) => ActionsManager.EnqueueAction(new EmitSignalAction(targetId, msg), true)));
             ScriptManager.SetGlobal("waitSignalFunc",

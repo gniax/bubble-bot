@@ -66,6 +66,14 @@ function waitSignal(msg, timeout)
 	waitSignalFunc(msg, timeout)
 	coroutine.yield()
 end
+function fromBotConnect(groupMng,idMng,rs)
+	fromBotConnectFunc(groupMng,idMng,rs)
+	coroutine.yield()
+end
+function fromBotDisconnect(groupMng,idMng)
+	fromBotDisconnectFunc(groupMng,idMng)
+	coroutine.yield()
+end
 
 -- Inventory
 inventory = {
@@ -285,6 +293,10 @@ exchange = {
 	                end,
 	fromBotPutAllItems = function(groupMng,idMng)
                        api.Exchange.FromBotPutAllItems(groupMng,idMng)
+                       coroutine.yield()
+	                end,
+	fromBotPutItem = function(groupMng,idMng,gid,qty)
+                       api.Exchange.FromBotPutItem(groupMng,idMng,gid,qty)
                        coroutine.yield()
 	                end,
 	fromBotSendReady = function(groupMng,idMng)

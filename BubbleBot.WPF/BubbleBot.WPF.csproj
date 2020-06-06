@@ -431,6 +431,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\ExchangeRemoveKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangeByNameAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutAllItemsAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutItemAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotSendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />
@@ -445,6 +446,9 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\EmitSignalAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotConnectAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotDisconnectAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotIsConnectedAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GroupMapTeleportationAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GuidedModeQuit.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\JoinFriendAction.cs" />

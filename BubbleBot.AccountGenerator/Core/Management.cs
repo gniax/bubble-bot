@@ -1,4 +1,6 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using CefSharp;
+using CefSharp.OffScreen;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
@@ -77,14 +79,12 @@ namespace AccountGenerator.Core
                     }
                     else
                     {
+                        //await MailVerification(false);
+                        //await MailValidation(allUrlValidation);
+                        //allUrlValidation = new List<string>();
                         await StartGeneration();
                     }
 
-                    /* foreach (string value in proxyList)
-                     {
-                         Console.WriteLine(value);
-                         ProxyChecker(value);
-                     }*/
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace AccountGenerator.Core
             while (true)
             {
                 accountcreated = false;
-                IList<AccountGeneratorTouch> currentGen = new List<AccountGeneratorTouch>();
+                List<AccountGeneratorTouch> currentGen = new List<AccountGeneratorTouch>();
 
                 if (counterProxy > maxProxy)
                 {
@@ -173,20 +173,18 @@ namespace AccountGenerator.Core
                             proxyFailled--;
                         }
                     }
-                    System.Threading.Thread.Sleep(1000);
                 }
 
                 for (int i = 0; i < MAX_THREAD; i++)
                 {
                     currentGen.Add(new AccountGeneratorTouch("", PASSWORD, MAIL, proxyCertified.ElementAt(i), "", nbaccount));
-                    System.Threading.Thread.Sleep(200);
                     ingen++;
                 }
 
                 for (int i = 0; i < MAX_THREAD; i++)
                 {
-                    currentGen.ElementAt(i).CreationCompteStart();
-                    System.Threading.Thread.Sleep(1000);
+                    await Task.Run(() => currentGen.ElementAt(i).CreationCompteStart()).ConfigureAwait(false);
+                    await Task.Delay(1000);
                 }
 
                 while (ingen > 0)
@@ -199,7 +197,7 @@ namespace AccountGenerator.Core
                             ingen--;
                         }
                     }
-                    System.Threading.Thread.Sleep(1000);
+                    await Task.Delay(1000);
                 }
 
                 for (int i = 0; i < MAX_THREAD; i++)
@@ -234,7 +232,8 @@ namespace AccountGenerator.Core
                 if (accountcreated == true)
                 {
                     await MailVerification(false);
-                    await ValidationAccount();
+                    await MailValidation(allUrlValidation);
+                    allUrlValidation = new List<string>();
                 }
 
                 ingen = 0;
@@ -267,7 +266,7 @@ namespace AccountGenerator.Core
                 accountCreating.CreationCompteStart();
                 while (accountCreating.allfinished == false)
                 {
-                    System.Threading.Thread.Sleep(1000);
+                    await Task.Delay(1000);
                 }
 
                 //Console.WriteLine("Fin de la creation du compte: 1");
@@ -299,7 +298,8 @@ namespace AccountGenerator.Core
                 if (resAccount1 != "")
                 {
                     await MailVerification(false);
-                    await ValidationAccount();
+                    await MailValidation(allUrlValidation);
+                    allUrlValidation = new List<string>();
                 }
 
 
@@ -332,9 +332,7 @@ namespace AccountGenerator.Core
 
 
         #region PROXY_MANAGEMENT
-#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         public async Task AddCertifiedProxy(string proxyVerifier)
-#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
         {
             _semaphoreProxy.Wait();
             proxyCertified.Add(proxyVerifier);
@@ -342,6 +340,97 @@ namespace AccountGenerator.Core
             _semaphoreProxy.Release();
         }
 
+        public async Task<bool> ProxyChecker(string proxy)
+        {
+            //bool proxyOpen = false;
+            //bool proxyChecked = false;
+            // string proxyStatut = "";
+            // HttpClient httpClient;
+            // HttpResponseMessage resp;
+            await AddCertifiedProxy(proxy);
+            return true;
+            /*  if (!string.IsNullOrWhiteSpace(proxy))
+              {
+
+                      int nbTries = PROXY_NBTRY;
+                      Console.ForegroundColor = ConsoleColor.Blue;
+                      Console.WriteLine("Vérification du proxy {0} !", proxy);
+                      WebProxy webproxy = new WebProxy(proxy, false);
+                      HttpClientHandler httpClientHandler = new HttpClientHandler()
+                      {
+                          Proxy = (IWebProxy)webproxy,
+                          PreAuthenticate = false,
+                          UseDefaultCredentials = false
+                      };
+                      while (nbTries > 0)
+                      {
+                          try
+                          {
+                              httpClient = new HttpClient(httpClientHandler);
+                              resp = await httpClient.GetAsync("https://hidemyna.me/api/geoip.php?out=js&htmlentities");
+                              proxyStatut = await resp.Content.ReadAsStringAsync();
+                              Console.ForegroundColor = ConsoleColor.Green;
+                              //Console.WriteLine(proxyStatut);
+                              proxyOpen = true;
+                              break;
+                          }
+                          catch (Exception ex)
+                          {
+                              Console.ForegroundColor = ConsoleColor.Red;
+                              Console.WriteLine("Echec connexion au proxy, tentative restante: {0}", nbTries - 1);
+                          }
+                          nbTries--;
+                      }
+
+
+                   if (proxyOpen == true)
+                   {
+                       for (int i = 0; i < alowedCountry.Length; i++)
+                       {
+                           if (proxyStatut.Contains(alowedCountry[i]))
+                           {
+                               proxyChecked = true;
+                           }
+                       }
+                       if (proxyChecked == true)
+                       {
+                           Console.ForegroundColor = ConsoleColor.Green;
+                           Console.WriteLine("Proxy valide !");
+                           if (MODE == 1)
+                           {
+                               await AddCertifiedProxy(proxy);
+                           }
+                           return true;
+                       }
+                       else
+                       {
+                           Console.ForegroundColor = ConsoleColor.Red;
+                           Console.WriteLine("Erreur, pays du proxy invalide !");
+                           if (MODE == 1)
+                           {
+                               // await AddCertifiedProxy(proxy);
+                               proxyFailled++; //Peut être besoin du semaphore en cas de probleme
+                           }
+                           return false;
+                       }
+                   }
+                   else
+                   {
+                       Console.ForegroundColor = ConsoleColor.Red;
+                       Console.WriteLine("Erreur, proxy invalide !");
+                       if (MODE == 1)
+                       {
+                           // await AddCertifiedProxy(proxy);
+                           proxyFailled++; //Peut être besoin du semaphore en cas de probleme
+                       }
+                       return false;
+                   }
+               }
+               return false;
+               */
+        }
+
+        /*
         public async Task<bool> ProxyChecker(string proxy)
         {
             bool proxyOpen = false;
@@ -382,7 +471,6 @@ namespace AccountGenerator.Core
                     }
                     nbTries--;
                 }
-
                 if (proxyOpen == true)
                 {
                     for (int i = 0; i < alowedCountry.Length; i++)
@@ -425,27 +513,54 @@ namespace AccountGenerator.Core
                     }
                     return false;
                 }
-
-
-
             }
             return false;
         }
+        */
         #endregion PROXY_MANAGEMENT
 
         #region MAIL_MANAGEMENT
 
-        public async Task ValidationAccount()
+
+        public async Task MailValidation(List<string> mailList)
         {
-            HttpResponseMessage resp;
-            HttpClientHandler httpClientHandler = new HttpClientHandler();
-            HttpClient httpClient = new HttpClient(httpClientHandler);
-            foreach (string urlToVal in allUrlValidation)
+            var browserSettings = new BrowserSettings
             {
-                resp = await httpClient.GetAsync(urlToVal);
-                //   Console.Write(await resp.Content.ReadAsStringAsync());
+                ApplicationCache = CefState.Disabled,
+                FileAccessFromFileUrls = CefState.Disabled,
+                UniversalAccessFromFileUrls = CefState.Disabled,
+                ImageLoading = CefState.Disabled,
+                Javascript = CefState.Disabled,
+                WebSecurity = CefState.Disabled,
+                Plugins = CefState.Disabled,
+                LocalStorage = CefState.Disabled,
+                WebGl = CefState.Disabled,
+                WindowlessFrameRate = 1
+            };
+
+            var mailBrowser = new ChromiumWebBrowser("about:blank", browserSettings, new RequestContext());
+
+
+            var browserInit = SpinWait.SpinUntil(() => mailBrowser.IsBrowserInitialized, TimeSpan.FromSeconds(30));
+            if (!browserInit)
+            {
+                Console.WriteLine("Mail browser error.");
             }
-            allUrlValidation = new List<string>();
+
+            Console.WriteLine("Mail validation...");
+            foreach (string urlToVal in mailList)
+            {
+                Console.WriteLine(urlToVal);
+                mailBrowser.Load(urlToVal);
+
+                while (mailBrowser.IsLoading)
+                {
+                    await Task.Delay(1000);
+                }
+                Console.WriteLine(await mailBrowser.GetMainFrame().GetTextAsync());
+            }
+
+            mailBrowser.Dispose();
         }
 
 #pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
@@ -531,7 +646,7 @@ namespace AccountGenerator.Core
                                     if (modedate)
                                     {
                                         lastMail = date;
-                                        //Console.WriteLine("On a enregistrer la date du dernier mail reçue: {0}", lastMail);
+                                        Console.WriteLine("On a enregistrer la date du dernier mail reçue: {0}", lastMail);
                                         return;
                                     }
 
@@ -545,16 +660,18 @@ namespace AccountGenerator.Core
                                 }
 
                             }
-
+                            //Console.WriteLine(body);
+                            //Console.WriteLine("Decoupe address mail validation");
                             if (date != lastMail)
                             {
-                                if (body.Contains("Confirmer mon adresse email [ "))
+                                //Console.WriteLine("Chek value validation");
+                                if (body.Contains("https://www.dofus-touch.com/fr/mmorpg/jouer?guid="))
                                 {
-                                    string posUrl1 = "Confirmer mon adresse email [ ";
+                                    string posUrl1 = "https://www.dofus-touch.com/fr/mmorpg/jouer?guid=";
                                     int Index1 = body.IndexOf(posUrl1);
-                                    int Index2 = body.IndexOf(@" ]", Index1 + posUrl1.Length);
-                                    string validUrl = body.Substring(Index1 + posUrl1.Length, Index2 - Index1 - posUrl1.Length);
-                                    // Console.WriteLine(validUrl);
+                                    int Index2 = body.IndexOf(@" ]", Index1);
+                                    string validUrl = body.Substring(Index1, Index2 - Index1);
+                                    Console.WriteLine(validUrl);
                                     tempUrlValidation.Add(validUrl);
                                 }
                             }
@@ -564,7 +681,7 @@ namespace AccountGenerator.Core
                             }
 
                             //Console.Write(body);
-                            // Console.WriteLine("{0}  --  {1}  -- {2} ---{3}", subject, date, email.Id, body);
+                            //Console.WriteLine("{0}  --  {1}  -- {2} ---{3}", subject, date, email.Id, body);
                             //Console.ReadKey();
                         }
                     }

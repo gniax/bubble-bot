@@ -160,6 +160,57 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             }
             return false;
         }
+        public bool FromBotPutItem(string botGroupMng, string botIdMng, int gid, uint quantity)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
+                        {
+                            if (member.State != AccountStates.EXCHANGE)
+                                return false;
+
+                            var obj = member.Game.Character.Inventory.GetObjectByGID(gid);
+
+                            if (obj == null)
+                                return false;
+
+                            quantity = quantity == 0 ? obj.Quantity :
+                                quantity > obj.Quantity ? obj.Quantity : quantity;
+
+                            member.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)quantity));
+                            member.Logger.LogInfo(LanguageManager.Translate("117"),
+                                LanguageManager.Translate("118", quantity, obj.Name));
+                            return true;
+                        }
+
+                    }
+                }
+
+                if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
+                {
+                    if (acc.State != AccountStates.EXCHANGE)
+                        return false;
+
+                    var obj = acc.Game.Character.Inventory.GetObjectByGID(gid);
+
+                    if (obj == null)
+                        return false;
+
+                    quantity = quantity == 0 ? obj.Quantity :
+                        quantity > obj.Quantity ? obj.Quantity : quantity;
+
+                    acc.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int)quantity));
+                    acc.Logger.LogInfo(LanguageManager.Translate("117"),LanguageManager.Translate("118", quantity, obj.Name));
+                    return true;
+                }
+
+            }
+            return false;
+        }
 
         public async Task<bool> FromBotExchangeByName(string botGroupMng, string botIdMng, string targetName)
         {
