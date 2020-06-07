@@ -18,11 +18,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         public string Value { get; }
 
 
-        internal override async Task<ScriptActionResults> Process(Account account)
+        internal override Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.ExtendScript.EditValueString(FileName, Name, Value)) await Task.Delay(1);
+            if (account.HasGroup && !account.IsGroupChief)
+                return DoneResult;
 
-            return ScriptActionResults.DONE;
+            if (account.Game.ExtendScript.EditValueString(FileName, Name, Value).Result) 
+                Task.Delay(200);
+
+            return DoneResult;
         }
     }
 }

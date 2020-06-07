@@ -14,11 +14,15 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.ExtendScript
         public string FileName { get; }
 
 
-        internal override async Task<ScriptActionResults> Process(Account account)
+        internal override Task<ScriptActionResults> Process(Account account)
         {
-            if (account.Game.ExtendScript.DeleteFile(FileName)) await Task.Delay(700);
+            if (account.HasGroup && !account.IsGroupChief)
+                return DoneResult;
 
-            return ScriptActionResults.DONE;
+            if (account.Game.ExtendScript.DeleteFile(FileName).Result) 
+                Task.Delay(700);
+
+            return DoneResult;
         }
     }
 }

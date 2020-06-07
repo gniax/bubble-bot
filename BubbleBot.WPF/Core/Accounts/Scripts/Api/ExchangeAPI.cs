@@ -77,6 +77,11 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account.Scripts.ActionsManager.EnqueueAction(new FromBotExchangePutItemAction(groupMng, idMng, gid, qty), true);
         }
+        public void FromBotPutKamas(string groupMng, string idMng, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new FromBotExchangePutKamasAction(groupMng, idMng, qty), true);
+        }
+
         public void FromBotSendReady(string groupMng, string idMng)
         {
             _account.Scripts.ActionsManager.EnqueueAction(new FromBotSendReadyAction(groupMng, idMng), true);

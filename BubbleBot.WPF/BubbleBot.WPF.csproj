@@ -432,6 +432,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangeByNameAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutAllItemsAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutItemAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotExchangePutKamasAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\FromBotSendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\SendReadyAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Exchange\StartExchangeAction.cs" />

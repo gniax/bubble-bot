@@ -84,20 +84,25 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             if (!_account.Scripts.Running)
                 return;
 
-            try
+            if (_currentCoroutine.Coroutine.State != CoroutineState.Running)
             {
-                var result = _currentCoroutine.Coroutine.Resume();
-                _account.Logger.LogDebug("Scripts",
-                    $"Processing coroutine: (last action: {_currentAction?.GetType().Name}, result: {result}).");
+                try
+                {
 
-                // Check if the custom function ended
-                if (result.Type == DataType.Void)
-                    //_account.Logger.LogDebug("", "Ending coroutine.");
-                    OnCustomHandled();
-            }
-            catch (Exception ex)
-            {
-                _account.Scripts.StopScript(ex.ToString());
+                    var result = _currentCoroutine.Coroutine.Resume();
+                    _account.Logger.LogDebug("Scripts",
+                        $"Processing coroutine: (last action: {_currentAction?.GetType().Name}, result: {result}).");
+
+                    // Check if the custom function ended
+                    if (result.Type == DataType.Void)
+                        //_account.Logger.LogDebug("", "Ending coroutine.");
+                        OnCustomHandled();
+                }
+                catch (Exception ex)
+                {
+                    //_account.Scripts.StopScript(ex.ToString());
+                    _account.Scripts.StopScript(ex.ToString());
+                }
             }
         }
 

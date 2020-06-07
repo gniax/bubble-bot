@@ -388,6 +388,61 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("532"));
             return true;
         }
+        public bool FromBotPutKamas(string botGroupMng, string botIdMng, uint quantity)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
+                        {
+                            if (member.State != AccountStates.EXCHANGE)
+                                return false;
+
+                            quantity = quantity == 0 ? (uint)member.Game.Character.Inventory.Kamas :
+                            quantity > member.Game.Character.Inventory.Kamas ? (uint)member.Game.Character.Inventory.Kamas :
+                            quantity;
+
+                            if (quantity > 0)
+                            {
+                                member.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("120", quantity));
+                                member.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int)quantity));
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+
+                    }
+                }
+
+                if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
+                {
+                    if (acc.State != AccountStates.EXCHANGE)
+                        return false;
+
+                    quantity = quantity == 0 ? (uint)acc.Game.Character.Inventory.Kamas :
+                    quantity > acc.Game.Character.Inventory.Kamas ? (uint)acc.Game.Character.Inventory.Kamas :
+                    quantity;
+
+                    if (quantity > 0)
+                    {
+                        acc.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("120", quantity));
+                        acc.Network.SendMessage(new ExchangeObjectMoveKamaMessage((int)quantity));
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
 
         public bool PutKamas(uint quantity)
         {

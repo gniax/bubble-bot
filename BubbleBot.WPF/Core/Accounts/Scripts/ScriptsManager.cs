@@ -116,6 +116,10 @@ namespace BubbleBot.Core.Accounts.Scripts
                 throw new Exception(LanguageManager.Translate("140"));
 
             ScriptManager.LoadFromFile(filePath, BeforeDoFile);
+
+            //Empeche le bug de thread
+            ScriptManager.Script.Options.CheckThreadAccess = false;
+
             CurrentScriptName = Path.GetFileNameWithoutExtension(filePath).Truncate(25);
 
             _account.Logger.LogInfo(LanguageManager.Translate("165"), $"'{Path.GetFileName(filePath)}' Chargé.");

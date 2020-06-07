@@ -299,6 +299,10 @@ exchange = {
                        api.Exchange.FromBotPutItem(groupMng,idMng,gid,qty)
                        coroutine.yield()
 	                end,
+	fromBotPutKamas = function(groupMng,idMng,qty)
+                       api.Exchange.FromBotPutKamas(groupMng,idMng,qty)
+                       coroutine.yield()
+	                end,
 	fromBotSendReady = function(groupMng,idMng)
                        api.Exchange.FromBotSendReady(groupMng,idMng)
                        coroutine.yield()

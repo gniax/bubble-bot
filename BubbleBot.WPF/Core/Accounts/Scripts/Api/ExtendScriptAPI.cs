@@ -46,12 +46,12 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
 
         public int GetValueInt(string filename, string name)
         {
-            return _account.Game.ExtendScript.GetValueInt(filename, name);
+            return _account.Game.ExtendScript.GetValueInt(filename, name).Result;
         }
 
         public string GetValueString(string filename, string name)
         {
-            return _account.Game.ExtendScript.GetValueString(filename, name);
+            return _account.Game.ExtendScript.GetValueString(filename, name).Result;
         }
 
         #region IDisposable Support

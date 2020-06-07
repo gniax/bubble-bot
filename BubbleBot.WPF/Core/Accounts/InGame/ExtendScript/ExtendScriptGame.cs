@@ -25,7 +25,7 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
         }
 
-        public bool CreateFile(string filename)
+        public async Task<bool> CreateFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
@@ -36,10 +36,11 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (File.Exists(configurationsPath + filename + FileExtension)) return false;
 
             File.Create(configurationsPath + filename + FileExtension);
+            await Task.Delay(500);
             return true;
         }
 
-        public bool DeleteFile(string filename)
+        public async Task<bool> DeleteFile(string filename)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
@@ -50,20 +51,21 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (File.Exists(configurationsPath + filename + FileExtension))
             {
                 File.Delete(configurationsPath + filename + FileExtension);
+                await Task.Delay(500);
                 return true;
             }
-
             return false;
         }
 
-        public bool EditValueInt(string filename, string name, int value)
+        public async Task<bool> EditValueInt(string filename, string name, int value)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
             var nbtry = 0;
             var maxNbtry = 200;
 
-            while (nbtry < maxNbtry)
+            while (true)
+            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
@@ -158,17 +160,20 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                         return true;
                     }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 catch
                 {
-                    Task.Delay(500);
-                    nbtry++;
+                    await Task.Delay(200);
+                    //nbtry++;
                 }
-
-            return true;
+            }
         }
 
-        public bool EditValueString(string filename, string name, string value)
+        public async Task<bool> EditValueString(string filename, string name, string value)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
@@ -176,7 +181,8 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             var nbtry = 0;
             var maxNbtry = 200;
 
-            while (nbtry < maxNbtry)
+            while (true)
+            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
@@ -264,17 +270,20 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                         return true;
                     }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 catch
                 {
-                    Task.Delay(500);
-                    nbtry++;
+                    await Task.Delay(200);
+                   // nbtry++;
                 }
-
-            return true;
+            }
         }
 
-        public bool DeleteVariable(string filename, string name)
+        public async Task<bool> DeleteVariable(string filename, string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
@@ -365,22 +374,24 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
                 }
                 catch
                 {
-                    Task.Delay(500);
+                    await Task.Delay(200);
                     nbtry++;
                 }
 
             return true;
         }
 
-        public int GetValueInt(string filename, string name)
+        public async Task<int> GetValueInt(string filename, string name)
         {
+
             if (string.IsNullOrEmpty(filename))
                 return 0;
 
             var nbtry = 0;
             var maxNbtry = 200;
 
-            while (nbtry < maxNbtry)
+            while (true)
+            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
@@ -425,27 +436,31 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                             br.Close();
                         }
-
+                        return 0;
+                    }
+                    else
+                    {
                         return 0;
                     }
                 }
                 catch
                 {
-                    Task.Delay(700);
-                    nbtry++;
+                   await Task.Delay(200);
+                   //nbtry++;
                 }
-
-            return 0;
+            }
+          //  return 0;
         }
 
-        public string GetValueString(string filename, string name)
+        public async Task<string> GetValueString(string filename, string name)
         {
             if (string.IsNullOrEmpty(filename))
                 return "";
-            var nbtry = 0;
-            var maxNbtry = 200;
+           // var nbtry = 0;
+            //var maxNbtry = 200;
 
-            while (nbtry < maxNbtry)
+            while (true)
+            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
@@ -500,14 +515,17 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                         return "";
                     }
+                    else
+                    {
+                        return "";
+                    }
                 }
                 catch
                 {
-                    Task.Delay(500);
-                    nbtry++;
+                    await Task.Delay(200);
+                   // nbtry++;
                 }
-
-            return "";
+            }
         }
 
         #region IDisposable Support

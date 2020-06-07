@@ -38,9 +38,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                             if(member.State != AccountStates.DISCONNECTED)
                                 return ScriptActionResults.DONE;
 
+                            if (RestartScript)
+                            {
+                                member.WaitForRestartScript = true;
+                                // member.Scripts.StartScript();
+                            }
+
                             await member.Connect().ConfigureAwait(true);
-                            await Task.Delay(500);
-                            member.Scripts.StartScript();
+                            await Task.Delay(1000);
+
+
 
                             return ScriptActionResults.DONE;
                         }
@@ -51,9 +58,13 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     if (acc.State != AccountStates.DISCONNECTED)
                         return ScriptActionResults.DONE;
 
+                    if (RestartScript)
+                    {
+                        acc.WaitForRestartScript = true;
+                        //acc.Scripts.StartScript();
+                    }
                     await acc.Connect().ConfigureAwait(true);
-                    await Task.Delay(500);
-                    acc.Scripts.StartScript();
+                    await Task.Delay(1000);
 
                     return ScriptActionResults.DONE;
                 }
