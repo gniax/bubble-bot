@@ -61,8 +61,8 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
-            var nbtry = 0;
-            var maxNbtry = 200;
+            //var nbtry = 0;
+            //var maxNbtry = 200;
 
             while (true)
             {
@@ -178,8 +178,8 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (string.IsNullOrEmpty(filename))
                 return false;
 
-            var nbtry = 0;
-            var maxNbtry = 200;
+          //  var nbtry = 0;
+          //  var maxNbtry = 200;
 
             while (true)
             {
@@ -287,10 +287,11 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
         {
             if (string.IsNullOrEmpty(filename))
                 return false;
-            var nbtry = 0;
-            var maxNbtry = 200;
+         //   var nbtry = 0;
+        //    var maxNbtry = 200;
 
-            while (nbtry < maxNbtry)
+            while (true)
+            {
                 try
                 {
                     if (File.Exists(configurationsPath + filename + FileExtension))
@@ -371,14 +372,17 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
 
                         return true;
                     }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 catch
                 {
                     await Task.Delay(200);
-                    nbtry++;
+                    // nbtry++;
                 }
-
-            return true;
+            }
         }
 
         public async Task<int> GetValueInt(string filename, string name)
@@ -387,8 +391,8 @@ namespace BubbleBot.Core.Accounts.InGame.ExtendScript
             if (string.IsNullOrEmpty(filename))
                 return 0;
 
-            var nbtry = 0;
-            var maxNbtry = 200;
+         //   var nbtry = 0;
+          //  var maxNbtry = 200;
 
             while (true)
             {

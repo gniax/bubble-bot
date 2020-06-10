@@ -596,6 +596,9 @@
     <Compile Include="ViewModel\MapViewer\MapViewerCellViewModel.cs" />
     <Compile Include="ViewModel\MapViewer\MapViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="Views\AccountsCharacterCreator.xaml.cs">
+      <DependentUpon>AccountsCharacterCreator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Accounts\AccountBreederUc.xaml.cs">
       <DependentUpon>AccountBreederUc.xaml</DependentUpon>
     </Compile>
@@ -664,6 +667,10 @@
       <DependentUpon>QuickActionsWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Theme\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AccountsCharacterCreator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

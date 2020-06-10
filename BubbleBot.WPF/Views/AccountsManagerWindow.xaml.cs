@@ -490,6 +490,17 @@ namespace BubbleBot.Views
 
         #region Characters creator
 
+        //Lors de la création dans la liste de compte
+        private void BtnCreateCharacter_Click(object sender, RoutedEventArgs e)
+        {
+            if (LvAccounts.SelectedItems == null)
+                return;
+            Console.WriteLine(LvAccounts.SelectedItems.Count.ToString());
+            var selectedAccounts = LvAccounts.SelectedItems.Cast<AccountConfiguration>().ToList();
+            var accountCreatorInterface = new AccountsCharacterCreator(selectedAccounts);
+            accountCreatorInterface.ShowDialog();
+        }
+
         private void CmbRace_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             RefreshBreedInfos();
@@ -626,7 +637,7 @@ namespace BubbleBot.Views
 
         private async void CmbCompleteTutorial_OnChecked(object sender, RoutedEventArgs e)
         {
-            await this.ShowMessageAsync(LanguageManager.Translate("513"), LanguageManager.Translate("515"));
+           // await this.ShowMessageAsync(LanguageManager.Translate("513"), LanguageManager.Translate("515"));
         }
 
         #endregion
@@ -770,6 +781,9 @@ namespace BubbleBot.Views
             exportInterface.ShowDialog();
         }
 
+
         #endregion
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
 
 namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
@@ -24,16 +25,10 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
             if (account.HasGroup && !account.IsGroupChief)
                 return DoneResult;
 
-            switch (account.Game.Managers.Movements.FromBotMoveToCell(GroupMng, IdMng,CellId))
-            {
-                case MovementRequestResults.MOVED:
-                    return DoneResult;
-                case MovementRequestResults.PATH_BLOCKED:
-                case MovementRequestResults.ALREADY_THERE:
-                    return DoneResult;
-                default: // FAILED
-                    return FailedResult;
-            }
+            if (account.Game.Managers.Movements.FromBotMoveToCell(GroupMng, IdMng, CellId))
+                return DoneResult;
+
+            return FailedResult;
         }
     }
 }

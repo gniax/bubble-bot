@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts.InGame.Map;
@@ -207,7 +208,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             _maxretries = 0;
             return MovementRequestResults.MOVED;
         }
-        public MovementRequestResults FromBotMoveToCell(string botGroupMng, string botIdMng, short cellId, bool stopNearTarget = false)
+        public bool FromBotMoveToCell(string botGroupMng, string botIdMng, short cellId, bool stopNearTarget = false)
         {
             foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
             {
@@ -217,17 +218,44 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                     {
                         if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
                         {
-                            return member.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                            switch (member.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget))
+                            {
+                                case MovementRequestResults.MOVED:
+                                    bool result = SpinWait.SpinUntil(() => member.Game.Map.PlayedCharacter.CellId == cellId, TimeSpan.FromSeconds(15));
+                                    if (result)
+                                        return true;
+                                    else
+                                        return false;
+                                case MovementRequestResults.PATH_BLOCKED:
+                                case MovementRequestResults.ALREADY_THERE:
+                                    return true;
+                                default: // FAILED
+                                    return false;
+                            }
                         }
                     }
                 }
 
                 if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
                 {
-                    return acc.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                    switch (acc.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget))
+                    {
+                        case MovementRequestResults.MOVED:
+                            bool result = SpinWait.SpinUntil(() => acc.Game.Map.PlayedCharacter.CellId == cellId, TimeSpan.FromSeconds(15));
+                            if (result)
+                                return true;
+                            else
+                                return false;
+                        case MovementRequestResults.PATH_BLOCKED:
+                        case MovementRequestResults.ALREADY_THERE:
+                            return true;
+                        default: // FAILED
+                            return false;
+                    }
                 }
             }
-            return MovementRequestResults.FAILED;
+
+            return false;
         }
 
         public async Task MoveToCellInFight(KeyValuePair<short, MoveNode>? node)

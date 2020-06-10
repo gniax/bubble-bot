@@ -261,7 +261,7 @@ namespace BubbleBot.Core.Groups
         public void EnqueueActionToMembers(ScriptAction action, bool startDequeuingActions = false)
         {
             // Avoid enquing a FightAction to group members, since they will be joining the chief
-            if (action is FightAction)
+            if (action is FightAction || action is ForceFightAction)
             {
                 // We will also set the manual reset events so that the chief continues the script after the fight
                 // Since the members don't get this action, ActionSFinished never gets fired
