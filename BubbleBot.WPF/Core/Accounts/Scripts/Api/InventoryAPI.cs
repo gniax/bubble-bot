@@ -59,7 +59,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
                 //On vérifie les comptes principal
                 if (acc.AccountConfig.Nickname == groupMng && acc.AccountConfig.Identifiant == idMng)
                 {
-                   return _account.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
+                   return acc.Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
                 }
             }
             return -1;

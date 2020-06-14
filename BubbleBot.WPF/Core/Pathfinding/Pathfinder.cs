@@ -46,6 +46,7 @@ namespace BubbleBot.Core.Pathfinding
             int c;
             CellPath candidate;
 
+            //Position de départ et position d'arrivé
             var srcPos = MapPoint.FromCellId(source);
             var dstPos = MapPoint.FromCellId(target);
 

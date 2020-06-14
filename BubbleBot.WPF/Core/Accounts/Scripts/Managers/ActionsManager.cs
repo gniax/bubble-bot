@@ -201,8 +201,17 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 return;
 
             _account.Logger.LogWarning("Scripts", "Timed out.");
-            _account.Scripts.StopScript();
-            _account.Scripts.StartScript();
+            if(_account.HasGroup && _account.IsGroupChief)
+            {
+                _account.Scripts.StopScript();
+                _account.Scripts.StartScript();
+            }
+            else if(!_account.HasGroup)
+            {
+                _account.Scripts.StopScript();
+                _account.Scripts.StartScript();
+            }
+            
         }
 
         private void ClearActions()
@@ -267,6 +276,18 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             // WaitMapChangeAction and UseTeleportableAction handle themselves so we ignore this event to not get a double-actions
             if (_currentAction is WaitMapChangeAction || _currentAction is UseTeleportableAction)
                 return;
+
+            //Si le changeMap est utiliser avec un groupe 
+            if(_account.HasGroup && _currentAction is ChangeMapAction)
+            {
+                foreach(var acc in _account.Group.Members)
+                {
+                    while (acc.Game.Map.Id != _account.Game.Map.Id)
+                    {
+                        Task.Delay(200);
+                    }
+                }
+            }
 
             ClearActions();
             if(_account.Configuration.SpeedHack == true)

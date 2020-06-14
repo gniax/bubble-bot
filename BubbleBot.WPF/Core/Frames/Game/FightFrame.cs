@@ -188,6 +188,11 @@ namespace BubbleBot.Core.Frames.Game
             return Task.Run(() => account.Game.Fight.Update(message));
         }
 
+        public static Task HandleGameActionFightCloseCombatMessage(Account account, GameActionFightCloseCombatMessage message)
+        {
+            return Task.Run(() => account.Game.Fight.Update(message));
+        }
+
         public static Task HandleFighterStatsListMessage(Account account, FighterStatsListMessage message)
         {
             return Task.Run(async () =>

@@ -298,23 +298,42 @@ namespace BubbleBot.Views
                     if (nbparameters == 3)
                         accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
 
-                    if (nbparameters == 5)
+                    if (nbparameters == 4)
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+
+                    if (nbparameters == 6)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-                        accounts.ElementAt(i).Proxy.Ip = infos[3];
-                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
                     }
 
-                    if (nbparameters == 7)
+                    if (nbparameters == 8)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-                        accounts.ElementAt(i).Proxy.Ip = infos[3];
-                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
-                        accounts.ElementAt(i).Proxy.Username = infos[5];
-                        accounts.ElementAt(i).Proxy.Password = infos[6];
+                        accounts.ElementAt(i).Proxy.Username = infos[6];
+                        accounts.ElementAt(i).Proxy.Password = infos[7];
                     }
+
+                    if (nbparameters == 9)
+                    {
+                        string serveurChar = infos[8];
+                        if(serveurChar == "Terra Cogita" || serveurChar == "Herdegrize" || serveurChar == "Oshimo" || serveurChar == "Dodge" || serveurChar == "Brutas" || serveurChar == "Grandapan")
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], serveurChar, "", infos[2], infos[3], false));
+                        else
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
+                        accounts.ElementAt(i).Proxy.Port = paramport;
+                        accounts.ElementAt(i).Proxy.Username = infos[6];
+                        accounts.ElementAt(i).Proxy.Password = infos[7];
+                    }
+
                 }
 
                 if (accounts.Count > 0)

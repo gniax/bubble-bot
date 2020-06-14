@@ -25,8 +25,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
             if (account.HasGroup && !account.IsGroupChief)
                 return DoneResult;
 
-            if (account.Game.Managers.Movements.FromBotMoveToCell(GroupMng, IdMng, CellId))
-                return DoneResult;
+           if (account.Game.Managers.Movements.FromBotMoveToCell(GroupMng, IdMng, CellId))
+               return DoneResult;
 
             return FailedResult;
         }

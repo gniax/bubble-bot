@@ -110,6 +110,29 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             return _account.Game.Character.Inventory.Kamas;
         }
 
+        public int FromBotKamas(string groupMng, string idMng)
+        {
+            foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+            {
+                //Si le compte est en groupe on vérifie les membres
+                if (acc.IsGroupChief && acc.HasGroup)
+                {
+                    foreach (var member in acc.Group.Members)
+                    {
+                        if (member.AccountConfig.Nickname == groupMng && member.AccountConfig.Identifiant == idMng)
+                        {
+                            return member.Game.Character.Inventory.Kamas;
+                        }
+                    }
+                }
+                //On vérifie les comptes principal
+                if (acc.AccountConfig.Nickname == groupMng && acc.AccountConfig.Identifiant == idMng)
+                {
+                    return acc.Game.Character.Inventory.Kamas;
+                }
+            }
+            return -1;
+        }
         public void Sit()
         {
             _account.Game.Character.Sit();
