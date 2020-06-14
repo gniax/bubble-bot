@@ -28,6 +28,7 @@ namespace BubbleBot.Core.Accounts.InGame.Character
         private bool _isSelected;
         private byte _level;
         private string _name;
+        private uint _id;
         private Timer _regenTimer;
         private string _skinUrl;
         private PlayerStatusEnum _status;
@@ -54,7 +55,11 @@ namespace BubbleBot.Core.Accounts.InGame.Character
             private set => Set(ref _isSelected, value);
         }
 
-        public uint Id { get; private set; }
+        public uint Id
+        {
+            get => _id;
+            set => Set(ref _id, value);
+        }
 
         public string Name
         {

@@ -62,7 +62,7 @@ namespace BubbleBot.Core.Frames.Connection
                     (ServerStatusEnum) message.Server.Status == ServerStatusEnum.ONLINE)
                 {
                     await Task.Delay(2000);
-                    account.Network?.ConnectTimeout?.Change(120000, 120000);
+                    account.Network?.ConnectTimeout?.Change(20000, 20000);
                     account.Logger.LogDebug(LanguageManager.Translate("87"),
                         LanguageManager.Translate("90", message.Server.Name));
                     await account.Network.SendMessageAsync(new ServerSelectionMessage((int) message.Server.Id));

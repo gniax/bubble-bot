@@ -132,11 +132,10 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
 
 
         #region Public Methods
-        public async Task<bool> Fight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null,
-    int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
+        public async Task<bool> Fight(List<int> forbiddenMonsters = null, List<int> mandatoryMonsters = null, int minMonsters = 1, int maxMonsters = 8, int minMonstersLevel = 1, int maxMonstersLevel = 1000)
         {
             await Task.Delay(1);
-        //    await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint)_account.Game.Map.Id)).ConfigureAwait(false);
+            await _account.Network.SendMessageAsync(new MapInformationsRequestMessage((uint)_account.Game.Map.Id)).ConfigureAwait(false);
          //   await Task.Delay(1000);
             var availableGroups = _account.Game.Map.GetMonstersGroup(minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel, forbiddenMonsters, mandatoryMonsters);
 
@@ -148,7 +147,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
                 if (_account.Game.Map.BlacklistedMonsters.Contains(availableGroups[i].Id))
                     continue;
                 
-                switch (_account.Game.Managers.Movements.MoveToCell(availableGroups[i].CellId))
+                switch (_account.Game.Managers.Movements.MoveToCell(availableGroups[i].CellId, true))
                 {
                     case MovementRequestResults.MOVED:
                         _account.Scripts.ActionsManager.MonstersGroupToAttack = availableGroups[i].Id;

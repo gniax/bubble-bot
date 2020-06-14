@@ -73,7 +73,7 @@ namespace BubbleBot.Core.Frames.Common
 
                     // Here we have to disconnect every bot which has set his auto disconnection
                     if (account.Game.Character != null && account.Game.Character.IsSelected)
-                        foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+                        foreach (var acc in BubbleBotMain.Instance.ConnectedAllAccounts)
                             if (acc.Network.Connected && acc.Configuration.DisconnectOnBan &&
                                 acc.AccountConfig.Username != account.AccountConfig.Username)
                             {
@@ -83,6 +83,7 @@ namespace BubbleBot.Core.Frames.Common
                                         LanguageManager.Translate("653", account.Game.Character.Name,
                                             account.Game.Server.Name));
                                     acc.PreventPlanificationReconnection = true;
+                                    if (!acc.OnGoingReconnection)
                                     acc.Reconnect(acc.Configuration.BanReconnectionDelay);
                                 }
                                 else

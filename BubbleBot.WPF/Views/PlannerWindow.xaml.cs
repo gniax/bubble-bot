@@ -1,7 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using BubbleBot.Configurations;
 
 namespace BubbleBot.Views.Planner
@@ -65,11 +68,17 @@ namespace BubbleBot.Views.Planner
 
         private void LbAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Binding tempActivated = new Binding("TempActivated");
+            tempActivated.Source = this;
+            Binding tempForceScript = new Binding("TempForceScript");
+            tempForceScript.Source = this;
+            
             if (LbAccounts.SelectedItems != null && LbAccounts.SelectedItems.Count > 1)
             {
+                var acc = LbAccounts.SelectedItem as AccountConfiguration;
                 LbPlanification.ItemsSource = TempCollection;
-                PlanificationActivatedCheckbox.IsChecked = TempActivated;
-                PlanificationForceScriptCheckbox.IsChecked = TempForceScript;
+                BindingOperations.SetBinding(PlanificationActivatedCheckbox, CheckBox.IsCheckedProperty, tempActivated);
+                BindingOperations.SetBinding(PlanificationForceScriptCheckbox, CheckBox.IsCheckedProperty, tempForceScript);
                 BtnSaveMultipleAccounts.Visibility = Visibility.Visible;
                 return;
             }
@@ -80,15 +89,21 @@ namespace BubbleBot.Views.Planner
             if (LbAccounts.SelectedItems != null && LbAccounts.SelectedItems.Count == 0)
             {
                 LbPlanification.ItemsSource = null;
-                PlanificationActivatedCheckbox.IsChecked = false;
-                PlanificationForceScriptCheckbox.IsChecked = false;
+                BindingOperations.SetBinding(PlanificationActivatedCheckbox, CheckBox.IsCheckedProperty, tempActivated);
+                BindingOperations.SetBinding(PlanificationForceScriptCheckbox, CheckBox.IsCheckedProperty, tempForceScript);
                 return;
             }
 
             var account = LbAccounts.SelectedItem as AccountConfiguration;
+
+            Binding planificationActivated = new Binding("PlanificationActivated");
+            planificationActivated.Source = account;
+            Binding forceStartScript = new Binding("ForceStartScript");
+            forceStartScript.Source = account;
+
             LbPlanification.ItemsSource = account.Planification;
-            PlanificationActivatedCheckbox.IsChecked = account.PlanificationActivated;
-            PlanificationForceScriptCheckbox.IsChecked = account.ForceStartScript;
+            BindingOperations.SetBinding(PlanificationActivatedCheckbox, CheckBox.IsCheckedProperty, planificationActivated);
+            BindingOperations.SetBinding(PlanificationForceScriptCheckbox, CheckBox.IsCheckedProperty, forceStartScript);
 
             TempCollection = new ObservableCollection<bool>(Enumerable.Repeat(false, 24));
             TempActivated = false;

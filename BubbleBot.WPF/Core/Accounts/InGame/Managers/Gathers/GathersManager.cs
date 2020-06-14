@@ -133,7 +133,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Gathers
             _elementToGather = element.Key;
 
             // Assuming there is no way statedElem will be null
-            switch (_account.Game.Managers.Movements.MoveToCell(element.Value, true))
+            switch (_account.Game.Managers.Movements.MoveToCell(element.Value, false, true))
             {
                 case MovementRequestResults.MOVED:
                     _account.Logger.LogDebug(LanguageManager.Translate("133"),

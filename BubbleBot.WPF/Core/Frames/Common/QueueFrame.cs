@@ -13,7 +13,7 @@ namespace BubbleBot.Core.Frames.Common
             {
                 account.Logger.LogDofus(LanguageManager.Translate("69"),
                     LanguageManager.Translate("70", message.Position, message.Total));
-                account.Network?.ConnectTimeout?.Change(120000, 120000);
+                account.Network?.ConnectTimeout?.Change(20000, 20000);
             });
         }
 
@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Frames.Common
             {
                 account.Logger.LogDofus(LanguageManager.Translate("69"),
                     LanguageManager.Translate("70", message.Position, message.Total));
-                account.Network?.ConnectTimeout?.Change(120000, 120000);
+                account.Network?.ConnectTimeout?.Change(20000, 20000);
             });
         }
     }

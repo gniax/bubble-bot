@@ -49,12 +49,16 @@
                     <StackPanel HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Height="390"
-                                Margin="0 20 0 0">
+                                Margin="0 0 0 0">
                         <TextBlock Text="{Binding Game.Character.Name}"
                                    HorizontalAlignment="Center"
                                    FontSize="24"
-                                   FontWeight="DemiBold" />
-                        <TextBlock Text="{Binding Game.Character.Level, StringFormat=Niveau {0}}"
+                                   FontWeight="DemiBold"/>
+                        <TextBlock Text="{Binding Game.Character.Id, StringFormat=({0})}"
+                                   FontSize="16"
+                                   HorizontalAlignment="Center"
+                                   Margin="0 0 0 5" />
+                        <TextBlock Text="{Binding Game.Character.Level, StringFormat=Lvl {0}}"
                                    FontSize="18"
                                    HorizontalAlignment="Center"
                                    Margin="0 0 0 10" />

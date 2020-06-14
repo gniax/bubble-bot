@@ -53,6 +53,8 @@ namespace BubbleBot.Views.Accounts
         private static BitmapImage _phenixImage;
         private static BitmapImage _lockedStorageImage;
         private List<short> _path;
+        private CancellationToken _cancelToken;
+        private CancellationTokenSource _cancelTokenSource;
         private short _selectedCellId;
         private bool _showCellIds;
         private bool _showRealMap;
@@ -143,7 +145,18 @@ namespace BubbleBot.Views.Accounts
                 }
                 else if (_showRealMap)
                 {
-                    GenerateRealMap();
+                    _cancelTokenSource?.Dispose();
+                    _cancelTokenSource = new CancellationTokenSource();
+                    _cancelToken = _cancelTokenSource.Token;
+
+                    Task.Run(() => {                       
+                        GenerateRealMap();
+                    }, _cancelToken);
+                }
+                else
+                {
+                    _cancelTokenSource?.Cancel();
+                    _currentRealMapId = 0;
                 }
 
             }
@@ -429,7 +442,7 @@ namespace BubbleBot.Views.Accounts
             for (short i = 0; i < _cellsPoints.Count; i++)
                 if (_cellsPoints[i].IsPointInside(pos))
                 {
-                    if (Account.Game.Map.Data.Cells[i].IsWalkable(false))
+                    if (Account.Game.Map.Data.Cells[i].IsWalkable(false) || Account.Game.Map.Doors.FirstOrDefault(d => d.CellId == i) != null)
                     {
                         _selectedCellId = i;
                         InvalidateVisual();
@@ -445,15 +458,20 @@ namespace BubbleBot.Views.Accounts
                             }
                         });
 
-                        HandleWalkableCellClicked(i);
-                    }
+                        HandleWalkableCellClicked(i, Account.Game.Map.Doors.FirstOrDefault(d => d.CellId == i) != null ? true : false);
+                    }                  
 
                     break;
                 }
         }
 
-        private void HandleWalkableCellClicked(short cell)
+        private void HandleWalkableCellClicked(short cell, bool door = false)
         {
+            if (door == true)
+            {
+                Account.Game.Managers.Interactives.UseInteractive(cell, -1);
+            }
+
             // Check if we can change the map from this cell
             if (Account.Game.Managers.Movements.CanChangeMap(cell, MapChangeDirections.LEFT))
                 Account.Game.Managers.Movements.ChangeMap(MapChangeDirections.LEFT, cell);
@@ -524,33 +542,34 @@ namespace BubbleBot.Views.Accounts
                 var midgroundLayer = content.MidgroundLayer.Keys;
                 foreach (var key in midgroundLayer)
                 {
-                    var task = Task.Run(() =>
-                    {
                         if (content.MidgroundLayer[key] != null)
                         {
                             foreach (var element in content.MidgroundLayer[key])
                             {
-                                if (element.G != null)
-                                {
-                                    if (element.Sx != null && element.Sy != null)
-                                    {
-                                        DownloadAsset(element.G, element.X * -1 - 58, element.Y * -1 - 15, element.Sx, element.Sy, element.Hue, background);
-                                    }
-                                    else if (element.Sx != null && element.Sy == null)
-                                    {
-                                        DownloadAsset(element.G, element.X * -1 - 58, element.Y + 15, element.Sx, 1, element.Hue, background);
-                                    }
-                                    else if (element.Sx == null && element.Sy != null)
-                                    {
-                                        DownloadAsset(element.G, element.X + 58, element.Y * -1 - 15, 1, element.Sy, element.Hue, background);
-                                    }
-                                    else DownloadAsset(element.G, element.X + 58, element.Y + 15, 1, 1, element.Hue, background);
+                                CheckToken();
 
-                                }
+                                var task = Task.Run(() =>
+                                {
+                                    if (element.G != null)
+                                    {
+                                        if (element.Sx != null && element.Sy != null)
+                                        {
+                                            DownloadAsset(element.G, element.X * -1 - 58, element.Y * -1 - 15, element.Sx, element.Sy, element.Hue, background);
+                                        }
+                                        else if (element.Sx != null && element.Sy == null)
+                                        {
+                                            DownloadAsset(element.G, element.X * -1 - 58, element.Y + 15, element.Sx, 1, element.Hue, background);
+                                        }
+                                        else if (element.Sx == null && element.Sy != null)
+                                        {
+                                            DownloadAsset(element.G, element.X + 58, element.Y * -1 - 15, 1, element.Sy, element.Hue, background);
+                                        }
+                                        else DownloadAsset(element.G, element.X + 58, element.Y + 15, 1, 1, element.Hue, background);
+                                    }
+                                });
+                                TaskList.Add(task);
                             }
                         }
-                    });
-                    TaskList.Add(task);
                 }
 
                 if (content.Foreground != null)
@@ -577,6 +596,8 @@ namespace BubbleBot.Views.Accounts
                     foreground?.Dispose();
                 }
 
+                CheckToken();
+
                 Task.WaitAll(TaskList.ToArray());
 
                 foreach (var task in TaskList)
@@ -584,6 +605,8 @@ namespace BubbleBot.Views.Accounts
                         task.Dispose();
 
                 TaskList.Clear();
+
+                CheckToken();
 
                 _realMap = ToImageSource(background, ImageFormat.Png);
                 _currentRealMapId = Account.Game.Map.Id;
@@ -601,6 +624,14 @@ namespace BubbleBot.Views.Accounts
             }
         }        
 
+        private void CheckToken()
+        {
+            if (_cancelToken.IsCancellationRequested)
+            {
+                running = false;
+                _cancelToken.ThrowIfCancellationRequested();
+            }
+        }
         private void DownloadAsset(long? asset, float x, float y, float? sx, float? sy, List<long> hue, System.Drawing.Image background)
         {
 
@@ -743,6 +774,7 @@ namespace BubbleBot.Views.Accounts
                 oldAccount.Game.Fight.PlayedFighterMoving -= PlayedCharacterMoving;
             }
 
+
             _selectedCellId = -1;
             _path = null;
 
@@ -757,15 +789,32 @@ namespace BubbleBot.Views.Accounts
                 newAccount.Game.Fight.FightStarted += RefreshMapViewer;
                 newAccount.Game.Fight.FightersUpdated += RefreshMapViewer;
                 newAccount.Game.Fight.PlayedFighterMoving += PlayedCharacterMoving;
+
+                if (ShowRealMap && running)
+                {
+                    _cancelTokenSource?.Cancel();
+                    _currentRealMapId = 0;
+                }
+                else if (ShowRealMap && RealMap.ImageSource != null && _currentRealMapId != newAccount.Game?.Map?.Id)
+                {
+                    RealMap.Dispatcher.Invoke(() => RealMap.ImageSource = null);
+                    _currentRealMapId = 0;
+                }
                 InvalidateVisual();
             }
         }
 
         private void RefreshMapViewer()
         {
-            if (_showRealMap && IsMapValid && Account.Game?.Map?.Id != _currentRealMapId)
+            if (_showRealMap && IsMapValid && Account.Game?.Map?.Id != _currentRealMapId && !running)
             {
-                GenerateRealMap();
+                _cancelTokenSource?.Dispose();
+                _cancelTokenSource = new CancellationTokenSource();
+                _cancelToken = _cancelTokenSource.Token;
+
+                Task.Run(() => { 
+                    GenerateRealMap();
+                }, _cancelToken);
             }
             else if (!_showRealMap && _currentRealMapId != 0)
             {

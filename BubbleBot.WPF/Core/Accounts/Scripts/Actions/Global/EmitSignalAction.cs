@@ -24,7 +24,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
             bool success = UInt32.TryParse(TargetId, out uint result);
             if (success)
             {
-                foreach (var bot in BubbleBotMain.Instance.ConnectedAccounts)
+                foreach (var bot in BubbleBotMain.Instance.ConnectedAllAccounts)
                 {
                     if (bot.Network.Connected && bot.Game.Character.IsSelected && bot.Game.Character.Id == result)
                     {

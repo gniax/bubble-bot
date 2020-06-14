@@ -126,7 +126,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             return MoveToChangeMap(cellId);
         }
 
-        public MovementRequestResults MoveToCell(short cellId, bool stopNearTarget = false)
+        public MovementRequestResults MoveToCell(short cellId, bool fight = false, bool stopNearTarget = false)
         {
             if (cellId < 0 || cellId > 560)
             {
@@ -149,11 +149,18 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             {
                 foreach (var group in _account.Game.Map.MonstersGroups)
                 {
+                    if (fight && group.CellId == cellId)
+                    {
+                        continue;
+                    }
+
                     List<MonsterEntry> Monsters = new List<MonsterEntry>();
                     if (group.Followers?.Count > 0)
                         Monsters.AddRange(group.Followers);
 
                     Monsters.Add(group.Leader);
+
+                    
                     if (!Monsters.TrueForAll(i => !AggressiveMonstersEnumFinder.Exists(i.GenericId)))
                     {
                         aggressiveMonstersGroupCell.Add(group.CellId);
@@ -217,14 +224,14 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
                     {
                         if (member.AccountConfig.Nickname == botGroupMng && member.AccountConfig.Identifiant == botIdMng)
                         {
-                            return member.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                            return member.Game.Managers.Movements.MoveToCell(cellId, false, stopNearTarget);
                         }
                     }
                 }
 
                 if (acc.AccountConfig.Nickname == botGroupMng && acc.AccountConfig.Identifiant == botIdMng)
                 {
-                    return acc.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget);
+                    return acc.Game.Managers.Movements.MoveToCell(cellId, false, stopNearTarget);
                 }
             }
             return MovementRequestResults.FAILED;

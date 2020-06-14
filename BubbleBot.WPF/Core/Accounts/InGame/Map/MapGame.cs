@@ -15,16 +15,17 @@ using BubbleBot.Protocol.Types;
 using BubbleBot.Server.Messages;
 using GalaSoft.MvvmLight;
 using BubbleBot.Data;
+using System.ComponentModel;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
-    public class MapGame : ViewModelBase, IClearable, IDisposable
+    public class MapGame : ViewModelBase, IClearable, IDisposable, INotifyPropertyChanged
     {
         // Fields
         private static readonly List<int> DoorsSkillIds = new List<int>(new[] {184, 183, 187, 198, 114, 84});
-
         private static readonly List<int> DoorsTypeIds = new List<int>(new[] {-1, 128, 168, 16});
         private Account _account;
+        private int _id;
         private string _area;
         private ConcurrentDictionary<int, ElementInCellEntry> _doors;
         private bool _firstTime = true;
@@ -72,6 +73,14 @@ namespace BubbleBot.Core.Accounts.InGame.Map
             set => Set(ref _subArea, value);
         }
 
+        public int Id => Data != null ? Data.Id : 0;
+
+        public int DisplayId
+        {
+            get => _id;
+            set => Set(ref _id, value);
+        }
+
         public sbyte PosX { get; private set; }
         public sbyte PosY { get; private set; }
         public PlayerEntry PlayedCharacter { get; private set; }
@@ -88,7 +97,6 @@ namespace BubbleBot.Core.Accounts.InGame.Map
         public IEnumerable<StatedElementEntry> StatedElements => _statedElements.Values;
         public IEnumerable<ElementInCellEntry> Phenixs => _phenixs.Values;
         public IEnumerable<ElementInCellEntry> LockedStorages => _lockedStorages.Values;
-        public int Id => Data != null ? Data.Id : 0;
 
         public List<short> OccupiedCells => Players.Select(f => f.CellId)
             .Union(MonstersGroups.Select(f => f.CellId))
@@ -267,6 +275,7 @@ namespace BubbleBot.Core.Accounts.InGame.Map
 
                 SubArea = subArea.NameId;
                 Area = area.NameId;
+                DisplayId = (int)message.MapId;
                 PosX = (sbyte) mp.PosX;
                 PosY = (sbyte) mp.PosY;
                 _account.Logger.LogDebug("", $"Got map infos [{CurrentPosition}] in {sw.Elapsed.TotalMilliseconds}ms.");

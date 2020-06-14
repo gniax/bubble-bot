@@ -16,10 +16,10 @@
     BorderBrush="{StaticResource AccentColorBrush}"
     ShowMaxRestoreButton="False"
     WindowStartupLocation="CenterOwner"
-    ResizeMode="CanMinimize"
+    
     Title="{_:Lang 237}"
     Height="550"
-    Width="855.285">
+    Width="855.285" IsManipulationEnabled="True" RightWindowCommandsOverlayBehavior="Never" ResizeMode="CanMinimize">
 
     <Window.Resources>
 
@@ -45,7 +45,8 @@
             <DockPanel LastChildFill="False">
                 <GroupBox Header="{_:Lang 390}"
                           Name="GbGroup"
-                          Visibility="Collapsed"
+                          IsEnabled="False"
+                          Visibility="Visible"
                           DockPanel.Dock="Bottom">
                     <StackPanel>
                         <DockPanel Margin="4">
@@ -83,8 +84,10 @@
                 </GroupBox>
                 <ListView Margin="4 6 4 4"
                           x:Name="LvAccounts"
+                          SelectionMode="Extended"
                           MouseDoubleClick="LvAccounts_MouseDoubleClick"
                           SelectionChanged="LvAccounts_SelectionChanged"
+                          IsSynchronizedWithCurrentItem="True"
                           ItemsSource="{Binding AccountsList}" Width="621">
                     <ListView.ContextMenu>
                         <ContextMenu Width="220">

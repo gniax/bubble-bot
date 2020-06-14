@@ -25,6 +25,11 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
         // Exception : reconnect(0, true||false) leads to an instant reconnection
         internal override async Task<ScriptActionResults> Process(Account account)
         {
+            if (account.OnGoingReconnection)
+                return ScriptActionResults.DONE;
+
+            account.OnGoingReconnection = true;
+
             var localDate = DateTime.Now;
             var newDate = localDate.AddSeconds(Seconds);
 
@@ -81,6 +86,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                 // update: there's a +4 secs offset every 1h20 => unable to fix it => 984 is not enough
                 await Task.Delay(985);
             }
+
+            account.OnGoingReconnection = false;
 
             if (account.Network.Connected)
                 return ScriptActionResults.FAILED;

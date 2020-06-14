@@ -43,22 +43,6 @@ namespace BubbleBot.Core.Accounts
         private bool _wasScriptEnabled;
         private bool _wasScriptRunning;
 
-        public ChromiumWebBrowser Browser;
-
-        public string SidResponse;
-
-        // This variable is used for auto-reconnection
-        public bool IsIntentionalDisconnection;
-
-        // Used to prevent auto-reconnection when it is impossible
-        public bool PreventAutoReconnection;
-
-        // This variable is used to prevent planfication reconnection (ex: when a bot is ban and others are disconnected or with function reconnect/disconnect)
-        public bool PreventPlanificationReconnection;
-
-        // Used to force restart script after captcha or a fight...
-        public bool WaitForRestartScript { get; set; }
-        public bool IsInFight => IsFighting();
 
 
         // Constructor
@@ -69,6 +53,7 @@ namespace BubbleBot.Core.Accounts
             Group_Chief = 0;
             AccountConfig = accountConfig;
             State = AccountStates.DISCONNECTED;
+            OnGoingReconnection = false;
 
             FriendsListId = new List<uint>();
             FramesData = new FramesData();
@@ -95,7 +80,23 @@ namespace BubbleBot.Core.Accounts
         public string GroupId { get; internal set; }
         public uint PartyId { get; set; }
         public byte Group_Chief { get; internal set; }
+        public ChromiumWebBrowser Browser { get; set; }
 
+        public string SidResponse { get; set; }
+
+        // This variable is used for auto-reconnection
+        public bool IsIntentionalDisconnection { get; set; }
+
+        // Used to prevent auto-reconnection when it is impossible
+        public bool PreventAutoReconnection { get; set; }
+
+        // This variable is used to prevent planfication reconnection (ex: when a bot is ban and others are disconnected or with function reconnect/disconnect)
+        public bool PreventPlanificationReconnection { get; set; }
+
+        public bool OnGoingReconnection { get; set; }
+        // Used to force restart script after captcha or a fight...
+        public bool WaitForRestartScript { get; set; }
+        public bool IsInFight => IsFighting();
         public DateTime? SubscriptionEndDate
         {
             get => _subscriptionEndDate;
@@ -150,6 +151,7 @@ namespace BubbleBot.Core.Accounts
             if (!PlanificationTimer.Enabled)
                 PlanificationTimer.Start();
 
+            OnGoingReconnection = false;
             PreventAutoReconnection = false;
             FramesData.Clear();
             Network.Clear();
@@ -299,13 +301,13 @@ namespace BubbleBot.Core.Accounts
                             if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection &&
                                 !PreventAutoReconnection && Game.Character != null && Game.Character.IsSelected)
                                 // Here we have to disconnect every bot which has set his auto disconnection
-                                foreach (var acc in BubbleBotMain.Instance.ConnectedAccounts)
+                                foreach (var acc in BubbleBotMain.Instance.ConnectedAllAccounts)
                                     if (acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc != this)
                                     {
                                         acc.Logger.LogWarning(LanguageManager.Translate("654"),
                                             LanguageManager.Translate("653", Game.Character.Name, Game.Server.Name));
                                         acc.PreventPlanificationReconnection = true;
-                                        if (acc.Configuration.BanReconnectionDelay > 0)
+                                        if (acc.Configuration.BanReconnectionDelay > 0 && !acc.OnGoingReconnection)
                                             acc.Reconnect(acc.Configuration.BanReconnectionDelay);
                                         else
                                             acc.Network.Disconnect("CLIENT_CLOSING").ConfigureAwait(false);
@@ -564,14 +566,14 @@ namespace BubbleBot.Core.Accounts
                             Network.ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
                         PreventPlanificationReconnection = true;
 
-                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("614", 60));
-                        await Task.Delay(60000).ConfigureAwait(false);
+                        Logger.LogMessage(LanguageManager.Translate("12"), LanguageManager.Translate("614", 5));
+                        await Task.Delay(5000).ConfigureAwait(false);
 
                         if (State != AccountStates.CONNECTING)
                             await Connect().ConfigureAwait(false);
                         PreventPlanificationReconnection = false;
-                        if (_wasScriptEnabled || _wasScriptRunning)
-                            WaitForRestartScript = true;
+                        WaitForRestartScript = true;
+
                     }
                 }
             }
@@ -587,6 +589,10 @@ namespace BubbleBot.Core.Accounts
 
         public async void Reconnect(int Seconds)
         {
+            if (OnGoingReconnection == true)
+                return;
+
+            OnGoingReconnection = true;
             var localDate = DateTime.Now;
             var newDate = localDate.AddSeconds(Seconds);
 
@@ -640,6 +646,8 @@ namespace BubbleBot.Core.Accounts
                 // update: there's a +4 secs offset every 1h20 => unable to fix it => 984 is not enough
                 await Task.Delay(985);
             }
+
+            OnGoingReconnection = false;
 
             if (Network.Connected)
                 return;
@@ -813,6 +821,7 @@ namespace BubbleBot.Core.Accounts
                 PlanificationTimer = null;
 
                 PartyId = 0;
+                OnGoingReconnection = false;
                 IsReadyToParty = false;
                 WaitForRestartScript = false;
                 IsIntentionalDisconnection = false;

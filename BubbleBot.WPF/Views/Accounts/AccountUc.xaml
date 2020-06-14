@@ -152,10 +152,11 @@
                     <MenuItem.Header>
                         <TextBlock>
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}({1}) [{2}]">
+                                <MultiBinding StringFormat="{}{0}({1}) / [{2}]({3})">
                                     <Binding Path="Game.Map.Area" />
                                     <Binding Path="Game.Map.SubArea" />
                                     <Binding Path="Game.Map.CurrentPosition" />
+                                    <Binding Path="Game.Map.DisplayId"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>

@@ -128,7 +128,7 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Interactives
             _skillInstanceUid = skillInstanceUid;
             _lockCode = lockCode;
 
-            switch (_account.Game.Managers.Movements.MoveToCell(interactiveCellId, true))
+            switch (_account.Game.Managers.Movements.MoveToCell(interactiveCellId, false, true))
             {
                 case MovementRequestResults.MOVED:
                     _account.Logger.LogDebug(LanguageManager.Translate("128"),

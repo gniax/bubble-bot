@@ -15,13 +15,14 @@
     xmlns:behaviors="clr-namespace:BubbleBot.Behaviors"
     xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
     xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
-    mc:Ignorable="d"
     GlowBrush="{DynamicResource AccentColorBrush}"
     BorderBrush="{StaticResource AccentColorBrush}"
     WindowStartupLocation="CenterScreen"
+    ResizeMode="CanMinimize"
     Title="{Binding Server.Name, Mode=OneWay, StringFormat=Bubble Bot Touch - {0}}"
     Height="720" Width="1080" FontSize="14"
-    ContentRendered="MetroWindow_ContentRendered">
+    ContentRendered="MetroWindow_ContentRendered" 
+    IsManipulationEnabled="True">
 
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -173,11 +174,6 @@
                 <i:Interaction.Behaviors>
                     <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" />
                 </i:Interaction.Behaviors>
-                <TreeView.Effect>
-                    <DropShadowEffect BlurRadius="14"
-                                      ShadowDepth="0"
-                                      Color="{DynamicResource ShadowColor}" />
-                </TreeView.Effect>
 
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type groupsNs:Group}" ItemsSource="{Binding Members}">
@@ -228,7 +224,9 @@
                             </Grid>
                         </StackPanel>
                     </HierarchicalDataTemplate>
+                    
                     <DataTemplate DataType="{x:Type accountsNs:Account}">
+                        
                         <Grid Height="40">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="22" />

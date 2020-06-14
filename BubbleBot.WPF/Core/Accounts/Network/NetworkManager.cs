@@ -116,7 +116,7 @@ namespace BubbleBot.Core.Accounts.Network
             _sessionId = 16.ToRandomString();
             _primus = YeastAPI.GenerateKey();
 
-            ConnectTimeout = new Timer(ConnectTimeoutCallback, null, 120000, 120000);
+            ConnectTimeout = new Timer(ConnectTimeoutCallback, null, 20000, 20000);
 
             // Url as null if it is the first time then we use the selected server as url
             if (!SetSid(null, _sessionId))

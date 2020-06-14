@@ -13,7 +13,11 @@ using BubbleBot.Server;
 using BubbleBot.Server.Messages;
 using BubbleBot.WPF.Views;
 using GalaSoft.MvvmLight;
+using System.Collections.Specialized;
 using MahApps.Metro.Controls.Dialogs;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace BubbleBot
 {
@@ -49,15 +53,16 @@ namespace BubbleBot
             Server.RegisterMessage<ConnectGroupMessage>(HandleConnectGroupMessage);
         }
 
-
         // Properties
         public ServerManager Server { get; }
         public ObservableCollection<IEntity> Entities { get; }
-
         public Account SelectedAccount
         {
             get => _selectedAccount;
-            set => Set(ref _selectedAccount, value);
+            set 
+            {
+                Set(ref _selectedAccount, value);
+            }
         }
 
         public IEnumerable<Account> ConnectedAccounts => Entities.Select(e =>
@@ -65,6 +70,23 @@ namespace BubbleBot
             if (e is Account a) return a;
             return (e as Group).Chief;
         });
+
+        public IEnumerable<Account> ConnectedAllAccounts
+        {
+            get
+            {
+                var accs = new List<Account>();
+                foreach (var member in ConnectedAccounts)
+                {
+                    if (member.IsGroupChief)
+                    {
+                        accs.AddRange(member.Group.Members);
+                    }
+                    accs.Add(member);
+                }
+                return accs;
+            }
+        }
 
         public void LoadAccounts(IEnumerable<AccountConfiguration> accountConfigs)
         {
@@ -94,7 +116,7 @@ namespace BubbleBot
                     try
                     {
                         var account = new Account(accountConfig);
-                        Application.Current.Dispatcher.Invoke(() => Entities.Add(account));
+                        Application.Current.Dispatcher.Invoke(() => Entities.Add(account));                  
                         SelectedAccount = account;
                         await Task.Run(account.Connect);
                     }
@@ -115,8 +137,9 @@ namespace BubbleBot
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Entities.Add(group);
-                SelectedAccount = group.Chief;
             });
+
+            SelectedAccount = group.Chief;
         }
 
         public void ConnectGroup(AccountConfiguration chief, IEnumerable<AccountConfiguration> members)
@@ -128,7 +151,6 @@ namespace BubbleBot
             {
                 Entities.Add(group);
                 SelectedAccount = group.Chief;
-
                 group.Connect();
             });
         }

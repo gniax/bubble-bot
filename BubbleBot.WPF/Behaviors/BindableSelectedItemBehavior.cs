@@ -1,9 +1,11 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 using BubbleBot.Core.Groups;
+using BubbleBot.Protocol.Types;
 
 namespace BubbleBot.Behaviors
 {
@@ -34,9 +36,13 @@ namespace BubbleBot.Behaviors
             set
             {
                 if (value is Group g)
+                {
                     SetValue(SelectedItemProperty, g.Chief);
+                }
                 else
+                {
                     SetValue(SelectedItemProperty, value);
+                }
             }
         }
 
@@ -65,6 +71,7 @@ namespace BubbleBot.Behaviors
                 if (itemsHostProperty == null) return;
                 var itemsHost = itemsHostProperty.GetValue(tree, null) as Panel;
                 if (itemsHost == null) return;
+                
                 foreach (var item in itemsHost.Children.OfType<TreeViewItem>())
                     if (WalkTreeViewItem(item, e.NewValue))
                         break;
@@ -88,6 +95,7 @@ namespace BubbleBot.Behaviors
             foreach (var item in itemsHost.Children.OfType<TreeViewItem>())
                 if (WalkTreeViewItem(item, selectedValue))
                     break;
+
             return false;
         }
 

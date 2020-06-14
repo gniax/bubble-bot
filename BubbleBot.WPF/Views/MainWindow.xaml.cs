@@ -23,6 +23,7 @@ using Application = System.Windows.Application;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using MessagesBuilder = BubbleBot.Protocol.Messages.MessagesBuilder;
+using System.Windows.Controls;
 
 namespace BubbleBot.WPF.Views
 {
