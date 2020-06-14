@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -42,6 +43,11 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             _account.Game.Character.Inventory.ObjectEquipped += Inventory_ObjectEquipped;
             _account.Game.Map.MapChanged += Map_MapChanged;
             _account.Game.Managers.Movements.MovementFinished += Movements_MovementFinished;
+            _account.Game.Fight.TurnEnded += Fight_TurnEnded;
+            _account.Game.Fight.FightJoined += Fight_FightJoined;
+            _account.Game.Fight.FightersUpdated += Fight_CharacterPlaced;
+            _account.Game.Fight.PlayedFighterMoving += Fight_CharacterMoving;
+            _account.Game.Fight.FighterAfterSpeelAction += Fight_AfterSpeel;
         }
 
         public bool IsDoingTutorial => _inTutorial;
@@ -150,32 +156,46 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
 
             await Task.Delay(2000);
             Console.WriteLine("On envoie la validation de la quête");
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3504));
+
 
             //Console.WriteLine("On change de position");
             //var cells = _account.Game.Fight.PositionsForChallengers.Except(new[] { _account.Game.Fight.PlayedFighter.CellId }).ToArray();
             //_account.Network.SendMessage(new GameFightPlacementPositionRequestMessage((uint)cells[0]));
 
-            await Task.Delay(1000);
+            /*await Task.Delay(1000);
             Console.WriteLine("On envoie la validation de la quête");
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3507));
+            
 
             await Task.Delay(2000);
             Console.WriteLine("On lance le combat");
             _account.Network.SendMessage(new GameFightReadyMessage(true));
 
-            await Task.Delay(1000);
+           // await Task.Delay(1000);
             Console.WriteLine("On envoie la validation de la quête");
             _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3508));
 
+            Console.WriteLine("On envoie la validation de la quête");
+            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3509));
+
+            Console.WriteLine("On envoie la validation de la quête");
+            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3510));
+
+            Console.WriteLine("On envoie la validation de la quête");
+            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3511));
+
+            Console.WriteLine("On envoie la validation de la quête");
+            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3512));
+
+            Console.WriteLine("On envoie la validation de la quête");
+            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3513));
+            */
+            await Task.Delay(1000);
             maxdelay = delay;
             while (_account.Game.Map.Id != TutorialHelper.TutorialMapIdSecondAfterFight && maxdelay > 0)
             {
                 await Task.Delay(1000);
                 maxdelay--;
             }
-            Console.WriteLine("On envoie la validation de la quête");
-            _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3509));
 
             await Task.Delay(1000);
             Console.WriteLine("On essai de parler au pnj");
@@ -309,6 +329,15 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             }
 
             Console.WriteLine("Tutoriel Terminer !");
+            _account.Game.Npcs.QuestionReceived -= Npcs_QuestionReceived;
+            _account.Game.Character.Inventory.ObjectEquipped -= Inventory_ObjectEquipped;
+            _account.Game.Map.MapChanged -= Map_MapChanged;
+            _account.Game.Managers.Movements.MovementFinished -= Movements_MovementFinished;
+            _account.Game.Fight.TurnEnded -= Fight_TurnEnded;
+            _account.Game.Fight.FightJoined -= Fight_FightJoined;
+            _account.Game.Fight.FightersUpdated -= Fight_CharacterPlaced;
+            _account.Game.Fight.PlayedFighterMoving -= Fight_CharacterMoving;
+            _account.Game.Fight.FighterAfterSpeelAction -= Fight_AfterSpeel;
         }
 
         private void ProcessTutorialSteps()
@@ -376,6 +405,56 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
                     _currentStep.Objectives[i].ObjectiveId));
         }
 
+        private void Fight_TurnEnded()
+        {
+            if (_account.Game.Map.Id == TutorialHelper.TutorialMapIdSecondBeforeFight)
+            {
+                Console.WriteLine("On envoie la validation de la quête 3510");
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3510));
+            }
+        }
+        private void Fight_FightJoined()
+        {
+            
+            if (_account.Game.Map.Id == TutorialHelper.TutorialMapIdSecondBeforeFight)
+            {
+                Console.WriteLine("On envoie la validation de la quête 3508");
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3504));
+            }
+                
+        }
+        
+        private void Fight_AfterSpeel()
+        {
+            if (_account.Game.Map.Id == TutorialHelper.TutorialMapIdSecondBeforeFight)
+            {
+                Console.WriteLine("On envoie la validation de la quête 3509");
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3509));
+            }
+        }
+
+        private void Fight_CharacterMoving(List<short> path)
+        {
+
+            if (_account.Game.Map.Id == TutorialHelper.TutorialMapIdSecondBeforeFight)
+            {
+                Console.WriteLine("On envoie la validation de la quête 3508");
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3508));
+            }
+
+        }
+
+        private void Fight_CharacterPlaced()
+        {
+            
+            if (_account.Game.Map.Id == TutorialHelper.TutorialMapIdSecondBeforeFight)
+            {
+                Console.WriteLine("On envoie la validation de la quête 3507");
+                _account.Network.SendMessage(new QuestObjectiveValidationMessage(489, 3507));
+            }
+                
+        }
+        
         private void Npcs_QuestionReceived()
         {
            /*

@@ -103,6 +103,12 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ArrowLeftBoldCircle" />
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem Header="{_:Lang 750}"
+                                      Click="BtnCreateCharacter_Click">
+                                <MenuItem.Icon>
+                                    <iconPacks:PackIconMaterial Margin="8 0 0 0" VerticalAlignment="Center" Kind="AccountMultiplePlus" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Trier">
                                 <MenuItem.Icon>
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Sort" />

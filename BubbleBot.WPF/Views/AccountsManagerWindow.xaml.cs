@@ -258,23 +258,42 @@ namespace BubbleBot.Views
                     if (nbparameters == 3)
                         accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
 
-                    if (nbparameters == 5)
+                    if (nbparameters == 4)
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+
+                    if (nbparameters == 6)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-                        accounts.ElementAt(i).Proxy.Ip = infos[3];
-                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
                     }
 
-                    if (nbparameters == 7)
+                    if (nbparameters == 8)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
-                        accounts.ElementAt(i).Proxy.Ip = infos[3];
-                        ushort.TryParse(infos[4], out var paramport);
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
-                        accounts.ElementAt(i).Proxy.Username = infos[5];
-                        accounts.ElementAt(i).Proxy.Password = infos[6];
+                        accounts.ElementAt(i).Proxy.Username = infos[6];
+                        accounts.ElementAt(i).Proxy.Password = infos[7];
                     }
+
+                    if (nbparameters == 9)
+                    {
+                        string serveurChar = infos[8];
+                        if(serveurChar == "Terra Cogita" || serveurChar == "Herdegrize" || serveurChar == "Oshimo" || serveurChar == "Dodge" || serveurChar == "Brutas" || serveurChar == "Grandapan")
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], serveurChar, "", infos[2], infos[3], false));
+                        else
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+
+                        accounts.ElementAt(i).Proxy.Ip = infos[4];
+                        ushort.TryParse(infos[5], out var paramport);
+                        accounts.ElementAt(i).Proxy.Port = paramport;
+                        accounts.ElementAt(i).Proxy.Username = infos[6];
+                        accounts.ElementAt(i).Proxy.Password = infos[7];
+                    }
+
                 }
 
                 if (accounts.Count > 0)
@@ -450,6 +469,17 @@ namespace BubbleBot.Views
 
         #region Characters creator
 
+        //Lors de la création dans la liste de compte
+        private void BtnCreateCharacter_Click(object sender, RoutedEventArgs e)
+        {
+            if (LvAccounts.SelectedItems == null)
+                return;
+            Console.WriteLine(LvAccounts.SelectedItems.Count.ToString());
+            var selectedAccounts = LvAccounts.SelectedItems.Cast<AccountConfiguration>().ToList();
+            var accountCreatorInterface = new AccountsCharacterCreator(selectedAccounts);
+            accountCreatorInterface.ShowDialog();
+        }
+
         private void CmbRace_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             RefreshBreedInfos();
@@ -586,7 +616,7 @@ namespace BubbleBot.Views
 
         private async void CmbCompleteTutorial_OnChecked(object sender, RoutedEventArgs e)
         {
-            await this.ShowMessageAsync(LanguageManager.Translate("513"), LanguageManager.Translate("515"));
+           // await this.ShowMessageAsync(LanguageManager.Translate("513"), LanguageManager.Translate("515"));
         }
 
         #endregion
@@ -731,50 +761,5 @@ namespace BubbleBot.Views
         }
 
         #endregion
-
-        #region Others
-
-        private void BtnSelectAll_OnClick(object sender, RoutedEventArgs e)
-        {
-            var i = Convert.ToInt32((sender as Button).Tag);
-            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
-            lb.SelectAll();
-        }
-
-        private void BtnUnselectAll_OnClick(object sender, RoutedEventArgs e)
-        {
-            var i = Convert.ToInt32((sender as Button).Tag);
-            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
-            lb.UnselectAll();
-        }
-
-        private void LoadConfigurations()
-        {
-            CmbParameters.Items.Add(LanguageManager.Translate("463"));
-            CmbParametersCopier.Items.Add(LanguageManager.Translate("463"));
-            if (Directory.Exists(Configuration.ConfigurationsPath))
-                foreach (var file in Directory.GetFiles(Configuration.ConfigurationsPath, "*.config"))
-                {
-                    CmbParameters.Items.Add(Path.GetFileName(file));
-                    CmbParametersCopier.Items.Add(Path.GetFileName(file));
-                }
-
-            CmbFightsConfigurations.Items.Add(LanguageManager.Translate("463"));
-            CmbFightsConfigurationsCopier.Items.Add(LanguageManager.Translate("463"));
-            if (Directory.Exists(FightsConfiguration.ConfigurationsPath))
-                foreach (var file in Directory.GetFiles(FightsConfiguration.ConfigurationsPath, "*.fconfig"))
-                {
-                    CmbFightsConfigurations.Items.Add(Path.GetFileName(file));
-                    CmbFightsConfigurationsCopier.Items.Add(Path.GetFileName(file));
-                }
-
-            CmbParameters.SelectedIndex = 0;
-            CmbParametersCopier.SelectedIndex = 0;
-            CmbFightsConfigurations.SelectedIndex = 0;
-            CmbFightsConfigurationsCopier.SelectedIndex = 0;
-        }
-
-        #endregion
-
     }
 }

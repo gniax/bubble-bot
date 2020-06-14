@@ -34,8 +34,8 @@ namespace BubbleBot.Views.Accounts
             Account.Password = txtPassword.Password;
             Account.Server = cmbServer.Text;
             Account.Character = txtCharacter.Text;
-            Account.Identifiant = txtGroup.Text;
-            Account.Nickname = txtPseudo.Text;
+            Account.Nickname = txtGroup.Text;
+            Account.Identifiant = txtPseudo.Text;
             GlobalConfiguration.Instance.Save();
             GlobalConfiguration.Instance.RaisePropertyChanged("AccountsList");
             Close();

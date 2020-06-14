@@ -31,8 +31,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Fight
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            if (account.HasGroup && !account.IsGroupChief)
-                return DoneResult;
+         //   if (account.HasGroup && !account.IsGroupChief)
+           //     return DoneResult;
 
             if (account.Game.Fight.ForceFight(ForbiddenMonsters, MandatoryMonsters, MinMonsters, MaxMonsters, MinMonstersLevel, MaxMonstersLevel).Result)
                 return DoneResult;

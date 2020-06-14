@@ -102,6 +102,7 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         public event Action FighterStatsUpdated;
         public event Action PossiblePositionsReceived;
         public event Action<List<short>> PlayedFighterMoving;
+        public event Action FighterAfterSpeelAction;
 
         private void SortFighters()
         {
@@ -606,6 +607,11 @@ namespace BubbleBot.Core.Accounts.InGame.Fights
         public void Update(GameActionFightPointsVariationMessage message)
         {
             GetFighter(message.TargetId)?.Update(message);
+        }
+
+        public void Update(GameActionFightCloseCombatMessage message)
+        {
+            FighterAfterSpeelAction?.Invoke();
         }
 
         public void Update(GameActionFightDeathMessage message)

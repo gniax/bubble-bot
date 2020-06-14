@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using BubbleBot.Core.Accounts.InGame.Map.Entities;
 using BubbleBot.Core.Enums;
 using BubbleBot.Protocol.Messages;
@@ -50,7 +51,9 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
 
             if (PossibleReplies.Contains((uint) replyId))
             {
+                PossibleReplies = null;
                 _account.Network.SendMessage(new NpcDialogReplyMessage((uint) replyId));
+                SpinWait.SpinUntil(() => PossibleReplies != null || !_account.IsInDialog(), TimeSpan.FromSeconds(10));
                 return true;
             }
 
@@ -171,7 +174,10 @@ namespace BubbleBot.Core.Accounts.InGame.Npcs
                 return;
 
             _account.State = AccountStates.NONE;
-            PossibleReplies.Clear();
+
+            if(PossibleReplies != null)
+                PossibleReplies.Clear();
+
             PossibleReplies = null;
             DialogLeft?.Invoke();
         }
