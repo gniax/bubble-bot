@@ -761,5 +761,45 @@ namespace BubbleBot.Views
         }
 
         #endregion
+
+        private void BtnSelectAll_OnClick(object sender, RoutedEventArgs e)
+        {
+            var i = Convert.ToInt32((sender as Button).Tag);
+            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
+            lb.SelectAll();
+        }
+
+        private void BtnUnselectAll_OnClick(object sender, RoutedEventArgs e)
+        {
+            var i = Convert.ToInt32((sender as Button).Tag);
+            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
+            lb.UnselectAll();
+        }
+
+        private void LoadConfigurations()
+        {
+            CmbParameters.Items.Add(LanguageManager.Translate("463"));
+            CmbParametersCopier.Items.Add(LanguageManager.Translate("463"));
+            if (Directory.Exists(Configuration.ConfigurationsPath))
+                foreach (var file in Directory.GetFiles(Configuration.ConfigurationsPath, "*.config"))
+                {
+                    CmbParameters.Items.Add(Path.GetFileName(file));
+                    CmbParametersCopier.Items.Add(Path.GetFileName(file));
+                }
+
+            CmbFightsConfigurations.Items.Add(LanguageManager.Translate("463"));
+            CmbFightsConfigurationsCopier.Items.Add(LanguageManager.Translate("463"));
+            if (Directory.Exists(FightsConfiguration.ConfigurationsPath))
+                foreach (var file in Directory.GetFiles(FightsConfiguration.ConfigurationsPath, "*.fconfig"))
+                {
+                    CmbFightsConfigurations.Items.Add(Path.GetFileName(file));
+                    CmbFightsConfigurationsCopier.Items.Add(Path.GetFileName(file));
+                }
+
+            CmbParameters.SelectedIndex = 0;
+            CmbParametersCopier.SelectedIndex = 0;
+            CmbFightsConfigurations.SelectedIndex = 0;
+            CmbFightsConfigurationsCopier.SelectedIndex = 0;
+        }
     }
 }
