@@ -69,6 +69,9 @@ namespace BubbleBot.Core.Accounts
 
             Network.Disconnected += Network_Disconnected;
             Game.Map.MapLoaded += Map_MapLoaded;
+
+            if (!PlanificationTimer.Enabled)
+                PlanificationTimer.Start();
         }
 
         // Properties
@@ -300,8 +303,9 @@ namespace BubbleBot.Core.Accounts
                             // it is the only case we have to kick others bots
                             if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection &&
                                 !PreventAutoReconnection && Game.Character != null && Game.Character.IsSelected)
+                            {
                                 // Here we have to disconnect every bot which has set his auto disconnection
-                                foreach (var acc in BubbleBotMain.Instance.ConnectedAllAccounts)
+                                foreach (var acc in BubbleBotMain.Instance.EveryConnectedAccount())
                                     if (acc.Network.Connected && acc.Configuration.DisconnectOnBan && acc != this)
                                     {
                                         acc.Logger.LogWarning(LanguageManager.Translate("654"),
@@ -318,10 +322,11 @@ namespace BubbleBot.Core.Accounts
                                             LanguageManager.Translate("655", Game.Character.Name, Game.Server.Name));
                                     }
 
-                            PreventPlanificationReconnection = true;
-                            State = AccountStates.BANNED;
-                            AccountConfig.IsBan = true;
-                            GlobalConfiguration.Instance.Save();
+                                PreventPlanificationReconnection = true;
+                                State = AccountStates.BANNED;
+                                AccountConfig.IsBan = true;
+                                GlobalConfiguration.Instance.Save();
+                            }
                         }
                     });
                 }

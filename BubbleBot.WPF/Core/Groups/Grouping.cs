@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BubbleBot.Configurations.Language;
 using BubbleBot.Core.Accounts;
 using BubbleBot.Core.Accounts.InGame.Managers.Movements;
+using BubbleBot.Utility;
 
 namespace BubbleBot.Core.Groups
 {
@@ -42,27 +43,36 @@ namespace BubbleBot.Core.Groups
         }
 
         private async Task GroupMissingMember(Account missingMember)
-        {
-            TaskCompletionSource<bool> tcs = null;
-
-            async void MapChanged()
+        => await Task.Run(async() => {
+            try
             {
-                await Task.Delay(3000);
-                tcs.SetResult(true);
+                if (missingMember.Game?.Map != null)
+                {
+                    TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+                    async void MapChanged()
+                    {
+                        await Task.Delay(3000);
+                        tcs.TrySetResult(true);
+                    }
+
+                    missingMember.Game.Map.MapChanged += MapChanged;
+
+                    while (_group.Chief.Scripts.Enabled && missingMember.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition)
+                    {
+                        tcs = new TaskCompletionSource<bool>();
+                        MoveMissingMember(missingMember);
+                        await tcs.Task;
+                    }
+
+                    missingMember.Game.Map.MapChanged -= MapChanged;
+                }
             }
-
-            missingMember.Game.Map.MapChanged += MapChanged;
-
-            while (_group.Chief.Scripts.Enabled &&
-                   missingMember.Game.Map.CurrentPosition != _group.Chief.Game.Map.CurrentPosition)
+            catch (InvalidOperationException exception)
             {
-                tcs = new TaskCompletionSource<bool>();
-                MoveMissingMember(missingMember);
-                await tcs.Task;
+                DebugFileWriter.WriteFile(exception.Message);
             }
-
-            missingMember.Game.Map.MapChanged -= MapChanged;
-        }
+        });
 
         private void MoveMissingMember(Account missingMember)
         {

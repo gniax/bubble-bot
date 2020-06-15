@@ -64,7 +64,7 @@ namespace BubbleBot.Views
                             CmbFightsConfigurationsCopier.SelectedItem.ToString()),
                         Path.Combine(FightsConfiguration.ConfigurationsPath, $"{account.Username}.fconfig"), true);
 
-                Account connectedAccount = BubbleBotMain.Instance.ConnectedAllAccounts.Where(a => a.AccountConfig == account).FirstOrDefault();
+                Account connectedAccount = BubbleBotMain.Instance.EveryConnectedAccount().Where(a => a.AccountConfig == account).FirstOrDefault();
                 if (connectedAccount != null)
                 {
                     connectedAccount.Configuration.Load();

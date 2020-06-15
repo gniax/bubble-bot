@@ -78,7 +78,6 @@
                 <MenuItem HorizontalAlignment="Left" Click="LoadScript_Click">
                     <MenuItem.IsEnabled>
                         <MultiBinding Converter="{StaticResource BooleanAndConverter}">
-                            <Binding Path="Game.Character.IsSelected" />
                             <Binding Path="Scripts.Enabled" Converter="{StaticResource InverseBooleanConverter}" />
                             <Binding Path="IsGroupChief" />
                         </MultiBinding>

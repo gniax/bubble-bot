@@ -94,9 +94,13 @@ namespace BubbleBot.Views.Accounts
 
                 var result = ofd.ShowDialog();
                 if (result.HasValue && result.Value)
+                {
                     BubbleBotMain.Instance.Server.SendMessage(
                         new LoadScriptRequestMessage(Account.AccountConfig.Username, ofd.FileName,
                             File.ReadAllText(ofd.FileName)));
+                    Console.WriteLine("lol");
+
+                }
             }
             catch (Exception ex)
             {

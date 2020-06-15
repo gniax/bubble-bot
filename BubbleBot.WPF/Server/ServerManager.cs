@@ -252,7 +252,7 @@ namespace BubbleBot.Server
         private static void HandleReconnectSuccessMessage(ReconnectSuccessMessage message)
         {
             if (BubbleBotMain.Instance.Entities.Count > 0)
-                foreach (var account in BubbleBotMain.Instance.ConnectedAllAccounts)
+                foreach (var account in BubbleBotMain.Instance.EveryConnectedAccount())
                 {
                     BubbleBotMain.Instance.Server.SendMessage(
                         new ConnectedAccountMessage(account.AccountConfig.Username));
@@ -351,7 +351,7 @@ namespace BubbleBot.Server
 
             if (message.IsFromUpdate) // In the case the message come from an update from the server
             {
-                foreach (var account in BubbleBotMain.Instance.ConnectedAllAccounts)
+                foreach (var account in BubbleBotMain.Instance.EveryConnectedAccount())
                 {
                     if (account.Network.Connected && account.Game.Character.IsSelected)
                     {

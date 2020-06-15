@@ -33,7 +33,7 @@ namespace BubbleBot.Core.Accounts.Extensions.Exchanges
                 if (playerIdTmp == from)
                     defautAuthorized = true;
 
-            if (_account.Configuration.AcceptBotsTrades && BubbleBotMain.Instance.ConnectedAllAccounts.Where(c => c.Game.Character.Id == from).Count() > 0)
+            if (_account.Configuration.AcceptBotsTrades && BubbleBotMain.Instance.EveryConnectedAccount().Where(c => c.Game.Character.Id == from).Count() > 0)
             {
                 _account.Network.SendMessage(new ExchangeAcceptMessage());
                 _account.Logger.LogInfo(LanguageManager.Translate("117"), LanguageManager.Translate("384"));

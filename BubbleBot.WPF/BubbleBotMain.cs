@@ -59,7 +59,7 @@ namespace BubbleBot
         public Account SelectedAccount
         {
             get => _selectedAccount;
-            set 
+            set
             {
                 Set(ref _selectedAccount, value);
             }
@@ -70,22 +70,28 @@ namespace BubbleBot
             if (e is Account a) return a;
             return (e as Group).Chief;
         });
-
-        public IEnumerable<Account> ConnectedAllAccounts
+        public List<Account> EveryConnectedAccount()
         {
-            get
+            List<Account> res = new List<Account>();
+            if (Entities != null && Entities?.Count > 0)
             {
-                var accs = new List<Account>();
-                foreach (var member in ConnectedAccounts)
+                foreach (var entity in Entities)
                 {
-                    if (member.IsGroupChief)
+                    if (entity is Account acc)
                     {
-                        accs.AddRange(member.Group.Members);
+                        res.Add(acc);
+                        continue;
                     }
-                    accs.Add(member);
+
+                    Group group = entity as Group;
+                    res.Add(group.Chief);
+                    foreach (var member in group.Members)
+                    {
+                        res.Add(member);
+                    }
                 }
-                return accs;
             }
+            return res;
         }
 
         public void LoadAccounts(IEnumerable<AccountConfiguration> accountConfigs)

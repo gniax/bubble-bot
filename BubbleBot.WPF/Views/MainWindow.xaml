@@ -20,7 +20,7 @@
     WindowStartupLocation="CenterScreen"
     ResizeMode="CanMinimize"
     Title="{Binding Server.Name, Mode=OneWay, StringFormat=Bubble Bot Touch - {0}}"
-    Height="720" Width="1080" FontSize="14"
+    Height="720" Width="1100" FontSize="14"
     ContentRendered="MetroWindow_ContentRendered" 
     IsManipulationEnabled="True">
 
@@ -168,7 +168,7 @@
             <TreeView x:Name="treeView"
                       Margin="10 0 10 10"
                       Height="584"
-                      Width="166"
+                      Width="186"
                       Background="{DynamicResource BaseBlackBrush}"
                       ItemsSource="{Binding Entities}">
                 <i:Interaction.Behaviors>

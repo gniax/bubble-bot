@@ -349,7 +349,7 @@ namespace BubbleBot.Core.Accounts.Network
 
         private async void ConnectTimeoutCallback(object state)
         {
-            if (Account.Game.Character.IsSelected && Account.State == AccountStates.CONNECTING &&
+            if (Account.Game?.Character?.IsSelected != null && Account.Game.Character.IsSelected && Account.State == AccountStates.CONNECTING &&
                 !Account.PreventAutoReconnection)
             {
                 _phase = NetworkPhases.NONE;
@@ -367,7 +367,7 @@ namespace BubbleBot.Core.Accounts.Network
                 Account.Network?.Clear();
             }
 
-            ConnectTimeout.Change(Timeout.Infinite, Timeout.Infinite);
+            ConnectTimeout?.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void AddEvents()

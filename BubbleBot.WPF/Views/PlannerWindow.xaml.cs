@@ -54,11 +54,8 @@ namespace BubbleBot.Views.Planner
 
             foreach (AccountConfiguration account in LbAccounts.SelectedItems)
             {
-                if (PlanificationActivatedCheckbox.IsChecked == true)
-                    account.PlanificationActivated = true;
-
-                if (PlanificationForceScriptCheckbox.IsChecked == true)
-                    account.ForceStartScript = true;
+                account.PlanificationActivated = (bool)PlanificationActivatedCheckbox.IsChecked;
+                account.ForceStartScript = (bool)PlanificationForceScriptCheckbox.IsChecked;
 
                 for (var i = 0; i < 24; i++) account.Planification[i] = TempCollection[i];
             }

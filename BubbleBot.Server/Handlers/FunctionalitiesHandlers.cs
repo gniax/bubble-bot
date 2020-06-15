@@ -82,7 +82,7 @@ namespace BubbleBot.Server.Handlers
                 if (!client.LoggedIn)
                     return;
 
-                if (!client.Accounts.TryGetValue(message.Account, out Account account) || !account.HasBot)
+                if (!client.Accounts.TryGetValue(message.Account, out Account account))
                     return;
 
                 if (!IsScriptValid(client, message.Content))
@@ -149,7 +149,7 @@ namespace BubbleBot.Server.Handlers
                 if (!client.LoggedIn)
                     return;
 
-                var accounts = client.Accounts.Values.Where(a => a.HasBot && message.Accounts.Contains(a.Username)).ToArray();
+                var accounts = client.Accounts.Values.Where(a => message.Accounts.Contains(a.Username)).ToArray();
 
                 switch (message.Action)
                 {
@@ -162,7 +162,7 @@ namespace BubbleBot.Server.Handlers
 
                         break;
                     case 1: // Start the script
-
+                        accounts = client.Accounts.Values.Where(a => a.HasBot).ToArray();
                         if (!client.Informations.IsSubscribedToTouch && accounts.Any(a => a.BotLevel >= 9))
                         {
                             client.SendMessage(new InvalidOperationMessage(InvalidOperations.MAX_LEVEL_REACHED));

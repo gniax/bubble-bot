@@ -73,7 +73,7 @@ namespace BubbleBot.Core.Frames.Common
 
                     // Here we have to disconnect every bot which has set his auto disconnection
                     if (account.Game.Character != null && account.Game.Character.IsSelected)
-                        foreach (var acc in BubbleBotMain.Instance.ConnectedAllAccounts)
+                        foreach (var acc in BubbleBotMain.Instance.EveryConnectedAccount())
                             if (acc.Network.Connected && acc.Configuration.DisconnectOnBan &&
                                 acc.AccountConfig.Username != account.AccountConfig.Username)
                             {
