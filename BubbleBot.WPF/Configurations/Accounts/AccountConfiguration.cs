@@ -83,7 +83,7 @@ namespace BubbleBot.Configurations
 
         [JsonProperty("UsernameColor")]
         public SolidColorBrush UsernameColor =>
-            IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
+            IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
 
         [JsonProperty("Planification")]
         public ObservableCollection<bool> Planification { get; }

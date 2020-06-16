@@ -40,7 +40,7 @@
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
 
-    <StackPanel>
+    <StackPanel Background="{x:Null}">
 
         <!-- Header -->
         <Grid Margin="30 0 40 8" Height="70" Background="{DynamicResource BaseBlackBrush}">
@@ -224,9 +224,9 @@
                             </Grid>
                         </StackPanel>
                     </HierarchicalDataTemplate>
-                    
+
                     <DataTemplate DataType="{x:Type accountsNs:Account}">
-                        
+
                         <Grid Height="40">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="22" />

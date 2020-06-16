@@ -941,6 +941,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Langs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Langs\" />
+    <Resource Include="Resources\home_window.png" />
     <Resource Include="Resources\loading.gif" />
     <Resource Include="Resources\close_btn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
