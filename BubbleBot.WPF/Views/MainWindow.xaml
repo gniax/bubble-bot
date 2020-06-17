@@ -20,7 +20,7 @@
     WindowStartupLocation="CenterScreen"
     ResizeMode="CanMinimize"
     Title="{Binding Server.Name, Mode=OneWay, StringFormat=Bubble Bot Touch - {0}}"
-    Height="720" Width="1100" FontSize="14"
+    Height="720" Width="1280" FontSize="14"
     ContentRendered="MetroWindow_ContentRendered" 
     IsManipulationEnabled="True">
 
@@ -40,10 +40,25 @@
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
 
-    <StackPanel Background="{x:Null}">
+    <StackPanel>
+        <StackPanel.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black" Offset="1"/>
+                <GradientStop Color="#FF00538D" Offset="1"/>
+                <GradientStop Color="#FF033680" Offset="0.558"/>
+                <GradientStop Color="#FF00050C" Offset="0"/>
+                <GradientStop Color="#FF00050C" Offset="1"/>
+            </LinearGradientBrush>
+        </StackPanel.Background>
 
         <!-- Header -->
-        <Grid Margin="30 0 40 8" Height="70" Background="{DynamicResource BaseBlackBrush}">
+
+        <!-- Content -->
+        <!-- Header -->
+
+        <!-- Content -->
+        <!-- Header -->
+        <Grid Margin="10,0,808,8" Height="70" Background="{DynamicResource BaseBlackBrush}">
             <Grid.Effect>
                 <DropShadowEffect Color="#ff403f3f" BlurRadius="10" ShadowDepth="4" Direction="270" />
             </Grid.Effect>
@@ -59,7 +74,7 @@
                 <Ellipse Fill="{DynamicResource BaseBlackBrush}" />
                 <Image Width="18"
                        Height="18"
-                       Source="{Binding Path=Server.State, Mode=OneWay, Converter={StaticResource ServerConnectionStatesConverter}}" />
+                       Source="{Binding Server.State, Converter={StaticResource ServerConnectionStatesConverter}, Mode=OneWay}" />
             </Grid>
 
             <!-- First column -->
@@ -79,7 +94,7 @@
                        Height="70">
 
                 <!-- Buttons -->
-                <Button Name="BtnAccountsManager"
+                <Button x:Name="BtnAccountsManager"
                         Click="BtnAccountsManager_Click"
                         Width="44"
                         Height="44"
@@ -90,7 +105,7 @@
                     </Button.Effect>
                     <iconPacks:PackIconMaterial Width="18" Height="18" Kind="AccountMultiple" Foreground="White" />
                 </Button>
-                <Button Name="BtnQuickActions"
+                <Button x:Name="BtnQuickActions"
                         Click="BtnQuickActions_Click"
                         Width="44"
                         Height="44"
@@ -101,7 +116,7 @@
                     </Button.Effect>
                     <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Flash" Foreground="White" />
                 </Button>
-                <Button Name="BtnPlanner"
+                <Button x:Name="BtnPlanner"
                         Click="BtnPlanner_Click"
                         Width="44"
                         Height="44"
@@ -112,7 +127,7 @@
                     </Button.Effect>
                     <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Timer" Foreground="White" />
                 </Button>
-                <Button Name="BtnOptions"
+                <Button x:Name="BtnOptions"
                         Click="BtnOptions_Click"
                         Width="44"
                         Height="44"
@@ -123,7 +138,7 @@
                     </Button.Effect>
                     <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Settings" Foreground="White" />
                 </Button>
-                <Button Name="BtnMinimize"
+                <Button x:Name="BtnMinimize"
                         Width="44"
                         Height="44"
                         ToolTip="{_:Lang 465}"
@@ -171,9 +186,6 @@
                       Width="186"
                       Background="{DynamicResource BaseBlackBrush}"
                       ItemsSource="{Binding Entities}">
-                <i:Interaction.Behaviors>
-                    <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" />
-                </i:Interaction.Behaviors>
 
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type groupsNs:Group}" ItemsSource="{Binding Members}">
@@ -207,18 +219,14 @@
                                        Grid.RowSpan="2"
                                        Width="18"
                                        Height="18"
-                                       Source="{Binding Path=Chief.State, 
-                                                        Mode=OneWay, 
-                                                        Converter={StaticResource AccountStatesImageConverter}}" />
+                                       Source="{Binding Chief.State, Converter={StaticResource AccountStatesImageConverter}, Mode=OneWay}" />
                                 <TextBlock Grid.Row="0"
                                            Grid.Column="1"
                                            Text="{Binding Chief.AccountConfig.Username}"
                                            Margin="4 2 0 0" />
                                 <TextBlock Grid.Row="1"
                                            Grid.Column="1"
-                                           Text="{Binding Path=Chief.State,
-                                                          Mode=OneWay,
-                                                          Converter={StaticResource AccountStatesStringConverter}}"
+                                           Text="{Binding Chief.State, Converter={StaticResource AccountStatesStringConverter}, Mode=OneWay}"
                                            Margin="4 0 0 0"
                                            FontSize="10" />
                             </Grid>
@@ -242,30 +250,29 @@
                                    Grid.RowSpan="2"
                                    Width="18"
                                    Height="18"
-                                   Source="{Binding Path=State, 
-                                                    Mode=OneWay, 
-                                                    Converter={StaticResource AccountStatesImageConverter}}" />
+                                   Source="{Binding State, Converter={StaticResource AccountStatesImageConverter}, Mode=OneWay}" />
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1"
                                        Text="{Binding AccountConfig.Username}"
                                        Margin="4 2 0 0" />
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1"
-                                       Text="{Binding Path=State,
-                                                      Mode=OneWay,
-                                                      Converter={StaticResource AccountStatesStringConverter}}"
+                                       Text="{Binding State, Converter={StaticResource AccountStatesStringConverter}, Mode=OneWay}"
                                        Margin="4 0 0 0"
                                        FontSize="10" />
                         </Grid>
                     </DataTemplate>
                 </TreeView.Resources>
+                <i:Interaction.Behaviors>
+                    <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+
             </TreeView>
 
             <!-- Account UserControl -->
-            <Grid Margin="4 0 0 10"
-                  Height="584"
-                  Width="854">
-                <Border BorderThickness="292" BorderBrush="{DynamicResource BaseBlackBrush}">
+            <Grid Margin="4,-82,0,13"
+                  Width="1056">
+                <Border BorderThickness="292" BorderBrush="{DynamicResource BaseBlackBrush}" Margin="0,85,11,0">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="14"
                                           Color="{DynamicResource ShadowColor}"
@@ -273,7 +280,7 @@
                     </Border.Effect>
                 </Border>
                 <accounts:AccountUc DataContext="{Binding SelectedAccount}"
-                                    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}" />
+                                    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}" BorderBrush="{x:Null}" />
             </Grid>
 
         </StackPanel>
