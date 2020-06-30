@@ -11,7 +11,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class JobsAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor

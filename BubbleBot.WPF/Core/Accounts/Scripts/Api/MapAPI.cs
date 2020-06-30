@@ -14,7 +14,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class MapAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor
@@ -23,7 +23,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account = account;
         }
 
-
+        #region Basic API
         public bool ChangeMap(string where)
         {
             if (_account.IsBusy)
@@ -195,7 +195,23 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             return _account.Game.Map.SubArea;
         }
+        #endregion
 
+        #region Group API
+
+        public bool MoveToCell(string username, short cellId)
+        {
+            if (cellId < 0 || cellId > 559)
+                return false;
+
+            var source = BubbleBotMain.Instance.GetAccountByUsername(username);
+
+            _account.Scripts.ActionsManager.EnqueueAction(new MoveToCellBotAction(source, cellId), true);
+
+            return true;
+        }
+
+        #endregion
         #region IDisposable Support
 
         private bool disposedValue;

@@ -93,6 +93,26 @@ namespace BubbleBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap accountmanager_hover {
+            get {
+                object obj = ResourceManager.GetObject("accountmanager_hover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap accountmanager_normal {
+            get {
+                object obj = ResourceManager.GetObject("accountmanager_normal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap agility {
             get {
                 object obj = ResourceManager.GetObject("agility", resourceCulture);
@@ -223,6 +243,16 @@ namespace BubbleBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap inactive {
+            get {
+                object obj = ResourceManager.GetObject("inactive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap initiative {
             get {
                 object obj = ResourceManager.GetObject("initiative", resourceCulture);
@@ -338,17 +368,8 @@ namespace BubbleBot.Properties {
         ///		coroutine.yield()
         ///	end	
         ///end
-        ///fightsCount = api.Fight.FightsCount
-        ///
-        ///-- Gather
-        ///canGather = api.Gather.CanGather
-        ///function gather(ressourcesids)
-        ///	if api.Gather.Gather(ressourcesIds) then
-        ///		coroutine.yield()
-        ///	end
-        ///end
-        ///
-        ///--  [rest of string was truncated]&quot;;.
+        ///function forceFight(forbiddenMonsters, mandatoryMonsters, minMonsters, maxMonsters, minMonstersLevel, maxMonstersLevel)
+        ///	if api.Fight.ForceFight(forbiddenMonsters, mandatoryMonsters, minMonsters, [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string scriptsApiHelper {
             get {

@@ -18,6 +18,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using BubbleBot.Views;
 
 namespace BubbleBot
 {
@@ -52,8 +53,9 @@ namespace BubbleBot
             Server.RegisterMessage<ConnectAccountsMessage>(HandleConnectAccountsMessage);
             Server.RegisterMessage<ConnectGroupMessage>(HandleConnectGroupMessage);
         }
-
         // Properties
+        public AccountsManagerWindow AccountsManagerWindow { get; set; }
+        public MainWindow MainWindow { get; set; }
         public ServerManager Server { get; }
         public ObservableCollection<IEntity> Entities { get; }
         public Account SelectedAccount
@@ -70,6 +72,7 @@ namespace BubbleBot
             if (e is Account a) return a;
             return (e as Group).Chief;
         });
+        public Account GetAccountByUsername(string username) => EveryConnectedAccount().Where(a => a.AccountConfig.Username == username).FirstOrDefault();
         public List<Account> EveryConnectedAccount()
         {
             List<Account> res = new List<Account>();
@@ -94,6 +97,48 @@ namespace BubbleBot
             return res;
         }
 
+        public async void ReplaceAccount(Account account)
+        {
+            // If the automatic replacement is activated
+            if (GlobalConfiguration.Instance.SubstituteAccounts?.Count > 0)
+            {
+                var substituteAccount = GlobalConfiguration.Instance.SubstituteAccounts.First();
+                account.AccountConfig.Username = substituteAccount.Username;
+                account.AccountConfig.Password = substituteAccount.Password;
+                GlobalConfiguration.Instance.RemoveAccount(substituteAccount);
+
+                if (BubbleBotMain.Instance.MainWindow != null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        BubbleBotMain.Instance.MainWindow.treeView.ItemsSource = BubbleBotMain.Instance.Entities;
+                        BubbleBotMain.Instance.MainWindow.treeView.Items.Refresh();
+                    });
+                }
+
+                // Add the same character creation if activated
+                if (account.AccountConfig.ReplacementConfiguration.SubstituteCharacterCreation.Create)
+                {
+                    account.AccountConfig.CharacterCreation = account.AccountConfig.ReplacementConfiguration.SubstituteCharacterCreation;
+                }
+
+                if (account.AccountConfig.ReplacementConfiguration.ConnectAfterReplacement)
+                {
+                    if (account.AccountConfig.ReplacementConfiguration.DisconnectTimer > 0)
+                    {
+                        account.Reconnect(account.AccountConfig.ReplacementConfiguration.DisconnectTimer, account.AccountConfig.ReplacementConfiguration.StartScript);
+                    }
+                    else
+                    {
+                        await account.Connect().ConfigureAwait(false);
+                        account.WaitForRestartScript = account.AccountConfig.ReplacementConfiguration.StartScript;
+                    }
+                }
+
+                // Refresh the UI
+
+            }
+        }
         public void LoadAccounts(IEnumerable<AccountConfiguration> accountConfigs)
         {
             Application.Current.Dispatcher.Invoke(async () =>
@@ -287,6 +332,12 @@ namespace BubbleBot
                 GlobalConfiguration.Instance.AccountsList.FirstOrDefault(a => a.Username == message.Username);
 
             if (accountConfig != null) LoadAccounts(new[] {accountConfig});
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
+            }
         }
 
         private void HandleLoadAccountsMessage(LoadAccountsMessage message)
@@ -297,6 +348,12 @@ namespace BubbleBot
                     accountsToLoad.Add(accountConfig);
 
             if (accountsToLoad.Count > 0) LoadAccounts(accountsToLoad);
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
+            }
         }
 
         private void HandleConnectAccountMessage(ConnectAccountMessage message)
@@ -305,6 +362,12 @@ namespace BubbleBot
                 GlobalConfiguration.Instance.AccountsList.FirstOrDefault(a => a.Username == message.Username);
 
             if (accountConfig != null) ConnectAccounts(new[] {accountConfig});
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
+            }
         }
 
         private void HandleConnectAccountsMessage(ConnectAccountsMessage message)
@@ -315,6 +378,12 @@ namespace BubbleBot
                     accountsToConnect.Add(accountConfig);
 
             if (accountsToConnect.Count > 0) ConnectAccounts(accountsToConnect);
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
+            }
         }
 
         private void HandleConnectGroupMessage(ConnectGroupMessage message)
@@ -341,6 +410,12 @@ namespace BubbleBot
                 // Only connect the group if the numbers fit
                 if (message.Usernames.Count == members.Count + 1) ConnectGroup(chief, members);
             }
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
+            }
         }
 
         private void HandleLoadGroupMessage(LoadGroupMessage message)
@@ -366,6 +441,12 @@ namespace BubbleBot
 
                 // Only connect the group if the numbers fit
                 if (message.Usernames.Count == members.Count + 1) LoadGroup(chief, members);
+            }
+
+            if (BubbleBotMain.Instance.AccountsManagerWindow != null)
+            {
+                AccountsManagerWindow.LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+                AccountsManagerWindow.LvAccounts.Items.Refresh();
             }
         }
 

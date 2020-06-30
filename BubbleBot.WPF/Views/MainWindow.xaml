@@ -1,6 +1,5 @@
 ﻿<Controls:MetroWindow
     xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-    x:Class="BubbleBot.WPF.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,42 +14,110 @@
     xmlns:behaviors="clr-namespace:BubbleBot.Behaviors"
     xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
     xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    x:Class="BubbleBot.WPF.Views.MainWindow"
     GlowBrush="{DynamicResource AccentColorBrush}"
-    BorderBrush="{StaticResource AccentColorBrush}"
     WindowStartupLocation="CenterScreen"
-    ResizeMode="CanMinimize"
-    Title="{Binding Server.Name, Mode=OneWay, StringFormat=Bubble Bot Touch - {0}}"
+    ResizeMode="CanResize"
     Height="720" Width="1100" FontSize="14"
     ContentRendered="MetroWindow_ContentRendered" 
     IsManipulationEnabled="True">
 
+    
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Name="Colors" Source="../Theme/Colors.xaml" />
+                
             </ResourceDictionary.MergedDictionaries>
-
+            
+            <Style x:Key="TransparentStyle" TargetType="{x:Type Button}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <ContentPresenter/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <!-- Converters -->
             <enumConverters:ServerConnectionStatesConverter x:Key="ServerConnectionStatesConverter" />
             <enumConverters:AccountStatesImageConverter x:Key="AccountStatesImageConverter" />
             <enumConverters:AccountStatesStringConverter x:Key="AccountStatesStringConverter" />
             <otherConverters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <specific:SubscriptionTextConverter x:Key="SubscriptionTextConverter" />
+            <specific:ToMainTitleValueConverter x:Key="ToMainTitleValueConverter" />
 
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
 
+    <Controls:MetroWindow.BorderBrush>
+        <StaticResource ResourceKey="AccentColorBrush"/>
+    </Controls:MetroWindow.BorderBrush>
+
+    <!-- Top Right Button -->
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <StackPanel Name="menuHolder" Orientation="Horizontal">
+                <Button Padding="10,5,10,5" 
+                        ToolTip="{_:Lang 465}"
+                        Click="BtnMinimize_OnClick">
+                    <Button.Content>
+                        <iconPacks:PackIconMaterial 
+                            Width="12" Margin="8 0 0 0" Kind="ArrowBottomRight" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <!-- Custom Title -->
+    <Controls:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Server.Name,
+                              Converter={StaticResource ToMainTitleValueConverter}}"
+                       Margin="60 0 0 0"
+                       TextTrimming="CharacterEllipsis"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="16"
+                       FontWeight="Thin"
+                       />
+        </DataTemplate>
+    </Controls:MetroWindow.TitleTemplate>
+
+    <!-- Custom Icon -->
+    <Controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}"
+                 Height="{TemplateBinding Height}"
+                 Margin="4"
+                 Background="Transparent"
+                 RenderOptions.EdgeMode="Aliased"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+                <Image Source="pack://application:,,,/Resources/FINAL.png"></Image>
+            </Grid>
+        </DataTemplate>
+    </Controls:MetroWindow.IconTemplate>
+    
     <StackPanel>
 
         <!-- Header -->
         <Grid Margin="30 0 40 8" Height="70" Background="{DynamicResource BaseBlackBrush}">
+            <Grid.Resources>
+                <Image x:Key="myImage" Source="/Bubble Bot;component/Resources/Buttons/buttons_background.png"/>
+                <VisualBrush x:Key="myBrush" Visual="{StaticResource myImage}"/>
+            </Grid.Resources>
+            
             <Grid.Effect>
                 <DropShadowEffect Color="#ff403f3f" BlurRadius="10" ShadowDepth="4" Direction="270" />
             </Grid.Effect>
 
             <!-- Header's grid definitions -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -59,82 +126,76 @@
                 <Ellipse Fill="{DynamicResource BaseBlackBrush}" />
                 <Image Width="18"
                        Height="18"
-                       Source="{Binding Path=Server.State, Mode=OneWay, Converter={StaticResource ServerConnectionStatesConverter}}" />
+                       Source="{Binding Server.State, Converter={StaticResource ServerConnectionStatesConverter}, Mode=OneWay}" />
             </Grid>
-
-            <!-- First column -->
-            <Ellipse Grid.Column="0" Width="50" Height="50" Stroke="#ff797979" StrokeThickness="2">
-                <Ellipse.Effect>
-                    <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.6" />
-                </Ellipse.Effect>
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{Binding Server.AvatarUrl, IsAsync=True}" />
-                </Ellipse.Fill>
-            </Ellipse>
-
+       
             <!-- Second column -->
             <DockPanel Width="900"
                        VerticalAlignment="Center"
                        Grid.Column="1"
                        Height="70">
 
-                <!-- Buttons -->
-                <Button Name="BtnAccountsManager"
-                        Click="BtnAccountsManager_Click"
-                        Width="44"
-                        Height="44"
+                <DockPanel Background="{StaticResource myBrush}" Height="60">
+                    <Ellipse Grid.Column="0" Width="60" Height="60" Margin="-5 0 0 0" Stroke="#d2dfe3" StrokeThickness="2">
+                        <Ellipse.Effect>
+                            <DropShadowEffect BlurRadius="1" Color="Black" Opacity="0.6" />
+                        </Ellipse.Effect>
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding Server.AvatarUrl, IsAsync=True}" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                
+                    <Button Name="BtnAccountsManager"
+                        Margin="10 0 0 0"
+                        Click="BtnAccountsManager_Click"  
                         ToolTip="{_:Lang 464}"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="6" Opacity="0.6" Color="Black" />
-                    </Button.Effect>
-                    <iconPacks:PackIconMaterial Width="18" Height="18" Kind="AccountMultiple" Foreground="White" />
+                        Style="{StaticResource TransparentStyle}"
+                        Width="50">
+                    <Image Name="BtnAccountsManagerImage"
+                       MouseLeave="BtnAccountsManager_MouseLeave"
+                       MouseEnter="BtnAccountsManager_MouseEnter"
+                       Source="/Bubble Bot;component/Resources/Buttons/accountmanager_normal.png">
+                    </Image>
                 </Button>
-                <Button Name="BtnQuickActions"
+                
+                <Button x:Name="BtnQuickActions"
                         Click="BtnQuickActions_Click"
-                        Width="44"
-                        Height="44"
                         ToolTip="{_:Lang 575}"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="6" Opacity="0.6" Color="Black" />
-                    </Button.Effect>
-                    <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Flash" Foreground="White" />
-                </Button>
-                <Button Name="BtnPlanner"
-                        Click="BtnPlanner_Click"
-                        Width="44"
-                        Height="44"
-                        ToolTip="{_:Lang 600}"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="6" Opacity="0.6" Color="Black" />
-                    </Button.Effect>
-                    <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Timer" Foreground="White" />
-                </Button>
-                <Button Name="BtnOptions"
-                        Click="BtnOptions_Click"
-                        Width="44"
-                        Height="44"
-                        ToolTip="Options"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="6" Opacity="0.6" Color="Black" />
-                    </Button.Effect>
-                    <iconPacks:PackIconMaterial Width="18" Height="18" Kind="Settings" Foreground="White" />
-                </Button>
-                <Button Name="BtnMinimize"
-                        Width="44"
-                        Height="44"
-                        ToolTip="{_:Lang 465}"
-                        Click="BtnMinimize_OnClick"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="6" Opacity="0.6" Color="Black" />
-                    </Button.Effect>
-                    <iconPacks:PackIconMaterial Width="18" Height="18" Kind="ArrowDownBold" />
+                        Style="{StaticResource TransparentStyle}"
+                        Width="50">
+                    <Image Name="BtnQuickActionsImage"
+                       MouseLeave="BtnQuickActions_MouseLeave"
+                       MouseEnter="BtnQuickActions_MouseEnter"
+                       Source="/Bubble Bot;component/Resources/Buttons/quickaction_normal.png">
+                    </Image>
                 </Button>
 
+                <Button x:Name="BtnPlanner"
+                        Click="BtnPlanner_Click"
+                        ToolTip="{_:Lang 600}"
+                        Style="{StaticResource TransparentStyle}"
+                        Width="50">
+                    <Image Name="BtnPlannerImage"
+                       MouseLeave="BtnPlanner_MouseLeave"
+                       MouseEnter="BtnPlanner_MouseEnter"
+                       Source="/Bubble Bot;component/Resources/Buttons/planner_normal.png">
+                    </Image>
+                </Button>
+                
+                <Button x:Name="BtnOptions"
+                        Click="BtnOptions_Click"
+                        ToolTip="Options"
+                        Style="{StaticResource TransparentStyle}"
+                        Margin="0 0 20 0"
+                        Width="50">
+                    <Image Name="BtnOptionsImage"
+                       MouseLeave="BtnOptions_MouseLeave"
+                       MouseEnter="BtnOptions_MouseEnter"
+                       Source="/Bubble Bot;component/Resources/Buttons/settings_normal.png">
+                    </Image>
+                </Button>
+
+                </DockPanel>
                 <!-- Informations -->
                 <Grid VerticalAlignment="Center" Margin="0 0 4 0">
                     <Grid.RowDefinitions>
@@ -171,9 +232,6 @@
                       Width="186"
                       Background="{DynamicResource BaseBlackBrush}"
                       ItemsSource="{Binding Entities}">
-                <i:Interaction.Behaviors>
-                    <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" />
-                </i:Interaction.Behaviors>
 
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type groupsNs:Group}" ItemsSource="{Binding Members}">
@@ -207,26 +265,22 @@
                                        Grid.RowSpan="2"
                                        Width="18"
                                        Height="18"
-                                       Source="{Binding Path=Chief.State, 
-                                                        Mode=OneWay, 
-                                                        Converter={StaticResource AccountStatesImageConverter}}" />
+                                       Source="{Binding Chief.State, Converter={StaticResource AccountStatesImageConverter}, Mode=OneWay}" />
                                 <TextBlock Grid.Row="0"
                                            Grid.Column="1"
                                            Text="{Binding Chief.AccountConfig.Username}"
                                            Margin="4 2 0 0" />
                                 <TextBlock Grid.Row="1"
                                            Grid.Column="1"
-                                           Text="{Binding Path=Chief.State,
-                                                          Mode=OneWay,
-                                                          Converter={StaticResource AccountStatesStringConverter}}"
+                                           Text="{Binding Chief.State, Converter={StaticResource AccountStatesStringConverter}, Mode=OneWay}"
                                            Margin="4 0 0 0"
                                            FontSize="10" />
                             </Grid>
                         </StackPanel>
                     </HierarchicalDataTemplate>
-                    
+
                     <DataTemplate DataType="{x:Type accountsNs:Account}">
-                        
+
                         <Grid Height="40">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="22" />
@@ -242,23 +296,23 @@
                                    Grid.RowSpan="2"
                                    Width="18"
                                    Height="18"
-                                   Source="{Binding Path=State, 
-                                                    Mode=OneWay, 
-                                                    Converter={StaticResource AccountStatesImageConverter}}" />
+                                   Source="{Binding State, Converter={StaticResource AccountStatesImageConverter}, Mode=OneWay}" />
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1"
                                        Text="{Binding AccountConfig.Username}"
                                        Margin="4 2 0 0" />
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1"
-                                       Text="{Binding Path=State,
-                                                      Mode=OneWay,
-                                                      Converter={StaticResource AccountStatesStringConverter}}"
+                                       Text="{Binding State, Converter={StaticResource AccountStatesStringConverter}, Mode=OneWay}"
                                        Margin="4 0 0 0"
                                        FontSize="10" />
                         </Grid>
                     </DataTemplate>
                 </TreeView.Resources>
+                <i:Interaction.Behaviors>
+                    <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+
             </TreeView>
 
             <!-- Account UserControl -->

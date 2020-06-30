@@ -27,12 +27,9 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
         private QuestActiveDetailedInformations _currentStep;
         private uint _currentStepNumber;
         private bool _inTutorial;
+        public bool _terminated;
         public bool _mapchanged;
         private TaskCompletionSource<string> _nameTcs;
-
-        // Properties
-        public bool _terminated;
-
 
         // Constructor
         public CharacterCreatorExtension(Account account)
@@ -62,11 +59,14 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             _currentItemIndex = 0;
         }
 
-        public static void ActionStartTutorial(Account account)
+        public void ActionStartTutorial(Account account)
         {
             var ext = account.Extensions.CharacterCreation;
             ext._inTutorial = true;
-            account.Network.SendMessage(new QuestStepInfoRequestMessage(TutorialHelper.QuestTutorialId));
+            Task.Run(async () =>
+            {
+                await BypassTuto();
+            });
         }
 
         public async Task BypassTuto()
@@ -338,6 +338,9 @@ namespace BubbleBot.Core.Accounts.Extensions.CharacterCreator
             _account.Game.Fight.FightersUpdated -= Fight_CharacterPlaced;
             _account.Game.Fight.PlayedFighterMoving -= Fight_CharacterMoving;
             _account.Game.Fight.FighterAfterSpeelAction -= Fight_AfterSpeel;
+            _terminated = true;
+            _inTutorial = false;
+            _currentStep = null;
         }
 
         private void ProcessTutorialSteps()

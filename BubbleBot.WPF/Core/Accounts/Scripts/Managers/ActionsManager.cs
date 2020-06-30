@@ -201,17 +201,17 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 return;
 
             _account.Logger.LogWarning("Scripts", "Timed out.");
-            if(_account.HasGroup && _account.IsGroupChief)
+            if (_account.HasGroup && _account.IsGroupChief)
             {
                 _account.Scripts.StopScript();
                 _account.Scripts.StartScript();
             }
-            else if(!_account.HasGroup)
+            else if (!_account.HasGroup)
             {
                 _account.Scripts.StopScript();
                 _account.Scripts.StartScript();
             }
-            
+
         }
 
         private void ClearActions()
@@ -278,9 +278,9 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
                 return;
 
             //Si le changeMap est utiliser avec un groupe 
-            if(_account.HasGroup && _currentAction is ChangeMapAction)
+            if (_account.HasGroup && _currentAction is ChangeMapAction)
             {
-                foreach(var acc in _account.Group.Members)
+                foreach (var acc in _account.Group.Members)
                 {
                     while (acc.Game.Map.Id != _account.Game.Map.Id)
                     {
@@ -290,7 +290,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             }
 
             ClearActions();
-            if(_account.Configuration.SpeedHack == true)
+            if (_account.Configuration.SpeedHack == true)
             {
                 if (!_account.HasGroup)
                     DequeueActions(0);
@@ -440,7 +440,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
             if (!_account.Scripts.Running)
                 return;
 
-           if (_currentAction is NpcOpenShopAction) DequeueActions(400);
+            if (_currentAction is NpcOpenShopAction) DequeueActions(400);
         }
 
         private void Npcs_ShopItemSelled()
@@ -450,7 +450,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Managers
 
             if (_currentAction is NpcShopSellItemAction) DequeueActions(400);
         }
-        
+
         private void Npcs_DialogLeft()
         {
             if (!_account.Scripts.Running)

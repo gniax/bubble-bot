@@ -419,3 +419,64 @@ extscript = {
 	getValueInt = api.ExtendScript.GetValueInt,
 	getValueString = api.ExtendScript.GetValueString
 }
+
+
+-- Bot
+bot = {
+	group = api.GroupAccounts,
+	connect = function(obj)
+		connectBotFunc(obj)
+		coroutine.yield()
+	end,
+	disconnect = function(obj)
+		disconnectBotFunc(obj)
+		coroutine.yield()
+	end,
+	isConnected = isConnectedBotFunc,
+
+	inventory = {
+		itemCount = api.Inventory.ItemCount,
+	},
+
+	exchange = {
+		isInExchange = api.Exchange.IsInExchange,			
+
+		startExchange = function(username, playerId)
+                       api.Exchange.StartExchange(username, playerId)
+                       coroutine.yield()
+	            end,
+		sendReady = function(username)
+                    api.Exchange.SendReady(username)
+                    coroutine.yield()
+	            end,
+		putItem = function(username, gid, qty)
+					  api.Exchange.PutItem(username, gid, qty)
+					  coroutine.yield()
+				  end,
+		removeItem = function(username, gid, qty)
+						 api.Exchange.RemoveItem(username, gid, qty)
+						 coroutine.yield()
+					 end,
+		putKamas = function(username, qty)
+					   api.Exchange.PutKamas(username, qty)
+					   coroutine.yield()
+				   end,
+		removeKamas = function(username, qty)
+						  api.Exchange.RemoveKamas(username, qty)
+						  coroutine.yield()
+					  end,
+		putAllItems = function(username)
+						  api.Exchange.PutAllItems(username)
+						  coroutine.yield()
+					  end,
+	},
+
+	map = {
+		moveToCell = function(username, cellId)
+			if api.Map.MoveToCell(username, cellId) then
+				coroutine.yield()
+			end
+		end
+	}
+	
+}

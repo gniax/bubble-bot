@@ -315,9 +315,12 @@
     <Compile Include="Converters\Enums\PlayerStatusEnumImageConverter.cs" />
     <Compile Include="Converters\Enums\ServerConnectionStatesConverter.cs" />
     <Compile Include="Converters\Enums\SpellTargetsStringConverter.cs" />
+    <Compile Include="Converters\Null\NullHeadImageConverter.cs" />
     <Compile Include="Converters\Null\NullImageConverter.cs" />
     <Compile Include="Converters\Null\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\Specific\AccountStateToStringConverter.cs" />
     <Compile Include="Converters\Specific\BoolToStringConverter.cs" />
+    <Compile Include="Converters\Specific\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\Specific\BoostableStatsToIndexConverter.cs" />
     <Compile Include="Converters\Specific\ConnectedStateKindConverter.cs" />
     <Compile Include="Converters\Specific\ConnectedStateTextConverter.cs" />
@@ -332,6 +335,7 @@
     <Compile Include="Converters\Specific\SubscriptionTextConverter.cs" />
     <Compile Include="Converters\Utility\BooleanAndConverter.cs" />
     <Compile Include="Converters\Utility\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\Specific\ToMainTitleValueConverter.cs" />
     <Compile Include="Core\Accounts\Account.cs" />
     <Compile Include="Configurations\Accounts\CharacterCreation.cs" />
     <Compile Include="Core\Accounts\BrowserRequestContextHandler.cs" />
@@ -445,11 +449,12 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\FightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Fight\ForceFightAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Gather\GatherAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\ConnectBotAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\DelayAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Global\DisconnectBotAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\EmitSignalAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotConnectAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotDisconnectAction.cs" />
-    <Compile Include="Core\Accounts\Scripts\Actions\Global\FromBotIsConnectedAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GroupMapTeleportationAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\GuidedModeQuit.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Global\JoinFriendAction.cs" />
@@ -468,6 +473,7 @@
     <Compile Include="Core\Accounts\Scripts\Actions\Map\ChangeMapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\FromBotMoveToCellAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellAction.cs" />
+    <Compile Include="Core\Accounts\Scripts\Actions\Map\MoveToCellBotAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\SaveZaapAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\UseAction.cs" />
     <Compile Include="Core\Accounts\Scripts\Actions\Map\UseByIdAction.cs" />
@@ -520,6 +526,7 @@
     <Compile Include="Core\Accounts\Scripts\ScriptsManager.cs" />
     <Compile Include="Core\Accounts\Statistics\ObjectObtainedEntry.cs" />
     <Compile Include="Core\Accounts\Statistics\StatisticsManager.cs" />
+    <Compile Include="Core\Accounts\SubstituteAccount.cs" />
     <Compile Include="Core\Commands\Attributes.cs" />
     <Compile Include="Core\Commands\CommandsHandler.cs" />
     <Compile Include="Core\Commands\CommandsManager.cs" />
@@ -645,6 +652,12 @@
       <DependentUpon>AccountUc.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Accounts\MapViewer\JsonMap.cs" />
+    <Compile Include="Views\Others\AddSubstituteAccount.xaml.cs">
+      <DependentUpon>AddSubstituteAccount.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Others\AddSubstituteAccounts.xaml.cs">
+      <DependentUpon>AddSubstituteAccounts.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Others\ExportFormatWindow.xaml.cs">
       <DependentUpon>ExportFormatWindow.xaml</DependentUpon>
     </Compile>
@@ -731,6 +744,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Accounts\MapViewer\MapViewerUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Others\AddSubstituteAccount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Others\AddSubstituteAccounts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -832,6 +853,7 @@
     <Resource Include="Resources\circle_red.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\range.png" />
     <Resource Include="Resources\scriptsApiHelper.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -851,9 +873,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\prospecting.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\range.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\starYellow.png" />
@@ -941,6 +960,26 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Langs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Langs\" />
+    <Resource Include="Resources\random.png" />
+    <Resource Include="Resources\inactive.png" />
+    <Resource Include="Views\inactive.png" />
+    <Resource Include="Resources\Buttons\buttons_background.png" />
+    <Resource Include="Resources\FINAL.png" />
+    <Resource Include="Resources\Buttons\minimize_click.png" />
+    <Resource Include="Resources\Buttons\minimize_hover.png" />
+    <Resource Include="Resources\Buttons\minimize_normal.png" />
+    <Resource Include="Resources\Buttons\planner_click.png" />
+    <Resource Include="Resources\Buttons\planner_hover.png" />
+    <Resource Include="Resources\Buttons\planner_normal.png" />
+    <Resource Include="Resources\Buttons\settings_click.png" />
+    <Resource Include="Resources\Buttons\settings_hover.png" />
+    <Resource Include="Resources\Buttons\settings_normal.png" />
+    <Resource Include="Resources\Buttons\accountmanager_click.png" />
+    <Resource Include="Resources\Buttons\accountmanager_hover.png" />
+    <Resource Include="Resources\Buttons\accountmanager_normal.png" />
+    <Resource Include="Resources\Buttons\quickaction_click.png" />
+    <Resource Include="Resources\Buttons\quickaction_hover.png" />
+    <Resource Include="Resources\Buttons\quickaction_normal.png" />
     <Resource Include="Resources\loading.gif" />
     <Resource Include="Resources\close_btn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

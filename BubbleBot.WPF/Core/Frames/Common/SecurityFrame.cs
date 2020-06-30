@@ -67,7 +67,7 @@ namespace BubbleBot.Core.Frames.Common
                 try
                 {
                     account.State = AccountStates.BANNED;
-                    account.AccountConfig.IsBan = true;
+                    account.AccountConfig.State = 3;
                     account.PreventPlanificationReconnection = true;
                     GlobalConfiguration.Instance.Save();
 

@@ -8,8 +8,11 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BubbleBot.Configurations;
 using BubbleBot.Configurations.Language;
@@ -22,6 +25,7 @@ using BubbleBot.Utility.DofusTouch;
 using BubbleBot.Views.Accounts;
 using ColorPickerWPF;
 using ColorPickerWPF.Code;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Path = System.IO.Path;
@@ -35,7 +39,18 @@ namespace BubbleBot.Views
         {
             InitializeComponent();
 
+            TempActivateReplacement = false;
+            TempConnectAfterReplacement = false;
+            TempStartScript = false;
+            TempCreateCharacter = false;
+            TempDisconnectTimer = 0;
+
             DataContext = GlobalConfiguration.Instance;
+
+            int availableAccounts = GlobalConfiguration.Instance.SubstituteAccounts == null ? 0 : GlobalConfiguration.Instance.SubstituteAccounts.Count;
+            LabelAvailableAccounts.Inlines.Add(new Bold(new Run($"({availableAccounts}) ")));
+            LabelAvailableAccounts.Inlines.Add(new Run(LanguageManager.Translate("763")));
+
             TxtSeparator.Text = ":";
 
             CmbRace.ItemsSource = BreedsUtility.Breeds;
@@ -80,8 +95,16 @@ namespace BubbleBot.Views
 
         private void BtnDeleteAccounts_Click(object sender, RoutedEventArgs e)
         {
-            for (var i = LvAccounts.SelectedItems.Count - 1; i >= 0; i--)
-                GlobalConfiguration.Instance.RemoveAccount(LvAccounts.SelectedItems[i] as AccountConfiguration);
+            List<AccountConfiguration> list = new List<AccountConfiguration>();
+            foreach (AccountConfiguration account in LvAccounts.SelectedItems)
+            {
+                list.Add(account);
+            }
+
+            foreach (var account in list)
+            {
+                GlobalConfiguration.Instance.RemoveAccount(account);
+            }
 
             GlobalConfiguration.Instance.Save();
         }
@@ -96,7 +119,7 @@ namespace BubbleBot.Views
 
             BubbleBotMain.Instance.Server.SendMessage(new ConnectAccountsRequestMessage(LvAccounts.SelectedItems
                 .Cast<AccountConfiguration>().Select(a => a.Username).ToList()));
-            Close();
+
         }
 
         private void BtnLoadAccounts_Click(object sender, RoutedEventArgs e)
@@ -109,7 +132,7 @@ namespace BubbleBot.Views
 
             BubbleBotMain.Instance.Server.SendMessage(new LoadAccountsRequestMessage(LvAccounts.SelectedItems
                 .Cast<AccountConfiguration>().Select(a => a.Username).ToList()));
-            Close();
+
         }
 
         private void LvAccounts_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -158,7 +181,7 @@ namespace BubbleBot.Views
 
             BubbleBotMain.Instance.Server.SendMessage(
                 new LoadGroupRequestMessage(new[] {chief.Username}.Concat(members.Select(m => m.Username)).ToList()));
-            Close();
+
         }
 
         private async void BtnConnectGroup_Click(object sender, RoutedEventArgs e)
@@ -182,7 +205,7 @@ namespace BubbleBot.Views
             BubbleBotMain.Instance.Server.SendMessage(
                 new ConnectGroupRequestMessage(new[] {chief.Username}.Concat(members.Select(m => m.Username))
                     .ToList()));
-            Close();
+
         }
 
         #endregion
@@ -204,7 +227,7 @@ namespace BubbleBot.Views
             }
 
             GlobalConfiguration.Instance.AddAccountAndSave(TxtUsername.Text, TxtPassword.Password, CmbServer.Text,
-                TxtCharacter.Text, TxtNickname.Text, TxtIdentifiant.Text, false);
+                TxtCharacter.Text, TxtNickname.Text, TxtIdentifiant.Text, 0);
 
             TxtUsername.Clear();
             TxtPassword.Clear();
@@ -253,17 +276,17 @@ namespace BubbleBot.Views
                     var nbparameters = infos.Length;
 
                     if (nbparameters == 2)
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "", "", false));
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", "", "", 0));
 
                     if (nbparameters == 3)
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", false));
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], "", 0));
 
                     if (nbparameters == 4)
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], 0));
 
                     if (nbparameters == 6)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], 0));
                         accounts.ElementAt(i).Proxy.Ip = infos[4];
                         ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
@@ -271,7 +294,7 @@ namespace BubbleBot.Views
 
                     if (nbparameters == 8)
                     {
-                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                        accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], 0));
                         accounts.ElementAt(i).Proxy.Ip = infos[4];
                         ushort.TryParse(infos[5], out var paramport);
                         accounts.ElementAt(i).Proxy.Port = paramport;
@@ -283,9 +306,9 @@ namespace BubbleBot.Views
                     {
                         string serveurChar = infos[8];
                         if(serveurChar == "Terra Cogita" || serveurChar == "Herdegrize" || serveurChar == "Oshimo" || serveurChar == "Dodge" || serveurChar == "Brutas" || serveurChar == "Grandapan")
-                            accounts.Add(new AccountConfiguration(infos[0], infos[1], serveurChar, "", infos[2], infos[3], false));
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], serveurChar, "", infos[2], infos[3], 0));
                         else
-                            accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], false));
+                            accounts.Add(new AccountConfiguration(infos[0], infos[1], "-", "", infos[2], infos[3], 0));
 
                         accounts.ElementAt(i).Proxy.Ip = infos[4];
                         ushort.TryParse(infos[5], out var paramport);
@@ -336,7 +359,7 @@ namespace BubbleBot.Views
 
                         var content = lines[i].Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries);
                         var keys = TxtCustomImportFormat.Text.Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        var account = new AccountConfiguration("", "", "-", "", "", "", false);
+                        var account = new AccountConfiguration("", "", "-", "", "", "", 0);
 
                         for (int j = 0; j < keys.Count; j++)
                         {
@@ -434,7 +457,7 @@ namespace BubbleBot.Views
             var accounts = new List<AccountConfiguration>();
             for (var i = start; i <= end; i++)
                 accounts.Add(new AccountConfiguration($"{TxtUsernameIncr.Text}{i}", TxtPasswordIncr.Password, "-", "",
-                    "", "", false));
+                    "", "", 0));
 
             if (accounts.Count <= 0)
                 return;
@@ -474,9 +497,9 @@ namespace BubbleBot.Views
         {
             if (LvAccounts.SelectedItems == null)
                 return;
-            Console.WriteLine(LvAccounts.SelectedItems.Count.ToString());
+
             var selectedAccounts = LvAccounts.SelectedItems.Cast<AccountConfiguration>().ToList();
-            var accountCreatorInterface = new AccountsCharacterCreator(selectedAccounts);
+            var accountCreatorInterface = new AccountsCharacterCreator(selectedAccounts, this);
             accountCreatorInterface.ShowDialog();
         }
 
@@ -529,7 +552,12 @@ namespace BubbleBot.Views
                 return;
 
             foreach (AccountConfiguration account in LbAccounts.SelectedItems)
+            {
                 account.CharacterCreation = GetCharacterCreation();
+            }
+
+            LbAccounts.GetBindingExpression(ListBox.ItemsSourceProperty).UpdateTarget();
+            BtnReset.Visibility = Visibility.Visible;
 
             GlobalConfiguration.Instance.Save();
         }
@@ -547,9 +575,6 @@ namespace BubbleBot.Views
 
         private CharacterCreation GetCharacterCreation()
         {
-            if (!CbCreateCharacter.IsChecked.Value)
-                return new CharacterCreation();
-
             return new CharacterCreation
             {
                 Create = true,
@@ -765,14 +790,14 @@ namespace BubbleBot.Views
         private void BtnSelectAll_OnClick(object sender, RoutedEventArgs e)
         {
             var i = Convert.ToInt32((sender as Button).Tag);
-            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
+            var lb = i == 0 ? LbAccounts : i == 1 ? LbAccountsCopier : LbAccountsListReplacement;
             lb.SelectAll();
         }
 
         private void BtnUnselectAll_OnClick(object sender, RoutedEventArgs e)
         {
             var i = Convert.ToInt32((sender as Button).Tag);
-            var lb = i == 0 ? LbAccounts : LbAccountsCopier;
+            var lb = i == 0 ? LbAccounts : i == 1 ? LbAccountsCopier : LbAccountsListReplacement;
             lb.UnselectAll();
         }
 
@@ -800,6 +825,317 @@ namespace BubbleBot.Views
             CmbParametersCopier.SelectedIndex = 0;
             CmbFightsConfigurations.SelectedIndex = 0;
             CmbFightsConfigurationsCopier.SelectedIndex = 0;
+        }
+
+        private void BtnReset_Click(object sender, RoutedEventArgs e)
+        {
+            if (LvAccounts.SelectedItems == null || LvAccounts.SelectedItems?.Count == 0)
+                return;
+
+            foreach (AccountConfiguration account in LbAccounts.SelectedItems)
+            {
+                account.CharacterCreation.Create = false;
+            }
+
+            LbAccounts.GetBindingExpression(ListBox.ItemsSourceProperty).UpdateTarget();
+            BtnReset.Visibility = Visibility.Hidden;
+        }
+
+        private void LbAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LvAccounts.SelectedItems == null || LvAccounts.SelectedItems?.Count == 0)
+            {
+                BtnReset.Visibility = Visibility.Hidden;
+                return;
+            }
+
+            var accounts = new List<AccountConfiguration>();
+            foreach (AccountConfiguration account in LbAccounts.SelectedItems)
+            {
+                accounts.Add(account);
+            }
+
+            if (accounts.Any(a => a.CharacterCreation.Create))
+            {
+                BtnReset.Visibility = Visibility.Visible;
+                return;
+            }
+
+            BtnReset.Visibility = Visibility.Hidden;
+        }
+
+        #region Accounts Replacement
+
+        public bool TempActivateReplacement { get; set; }
+        public bool TempConnectAfterReplacement { get; set; }
+        public bool TempStartScript { get; set; }
+        public int TempDisconnectTimer { get; set; }
+        public bool TempCreateCharacter { get; set; }
+
+        private void BtnSaveMultipleAccountsReplacement_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbAccountsListReplacement.SelectedItems == null || LbAccountsListReplacement.SelectedItems?.Count <= 0 || GlobalConfiguration.Instance.SubstituteAccounts?.Count <= 0)
+            {
+                this.ShowMessageAsync(LanguageManager.Translate("757"), LanguageManager.Translate("770"));
+                return;
+            }
+
+            short count = 0;
+            for (int i = LbAccountsListReplacement.SelectedItems.Count - 1; i >= 0; i--)
+            {
+                var toBeReplace = LbAccountsListReplacement.SelectedItems[i] as AccountConfiguration;
+                var willReplace = GlobalConfiguration.Instance.SubstituteAccounts.FirstOrDefault();
+                if (willReplace == null)
+                {
+                    this.ShowMessageAsync(LanguageManager.Translate("757"), LanguageManager.Translate("771", count));
+                    BtnSaveMultipleAccountsReplacement.IsEnabled = false;
+                    break;
+                }
+
+
+                count++;
+                toBeReplace.Username = willReplace.Username;
+                toBeReplace.Password = willReplace.Password;
+                toBeReplace.State = 0;
+                GlobalConfiguration.Instance.RemoveAccount(willReplace);
+
+                if (BubbleBotMain.Instance.MainWindow != null)
+                {
+                    BubbleBotMain.Instance.MainWindow.treeView.ItemsSource = BubbleBotMain.Instance.Entities;
+                    BubbleBotMain.Instance.MainWindow.treeView.Items.Refresh();
+                }
+            }
+
+            LbAccountsListReplacement.ItemsSource = GlobalConfiguration.Instance.AccountsReplacementList;
+            LbAccountsListReplacement.Items.Refresh();
+            LvAccountsReplacement.Items.Refresh();
+            UpdateAvailableSubstituteAccounts();
+            BtnSaveMultipleAccountsReplacement.IsEnabled = false;
+            GlobalConfiguration.Instance.Save();
+            UpdateAccountsUI();
+        }
+
+        private void BtnAddReplacement_Click(object sender, RoutedEventArgs e)
+        {
+            var asa = new AddSubstituteAccount(this);
+            asa.ShowDialog();
+        }
+
+        private void BtnAddReplacements_Click(object sender, RoutedEventArgs e)
+        {
+            var asa = new AddSubstituteAccounts(this);
+            asa.ShowDialog();
+        }
+
+        private void BtnRemoveReplacement_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i=LvAccountsReplacement.SelectedItems.Count-1; i>=0; i--)
+            {
+                var account = LvAccountsReplacement.SelectedItems[i] as SubstituteAccount;
+                GlobalConfiguration.Instance.RemoveAccount(account);
+            }
+
+            UpdateAvailableSubstituteAccounts();
+
+            BtnRemoveReplacement.IsEnabled = false;
+        }
+
+        private void BtnRemoveSubstitute_Click(object sender, RoutedEventArgs e)
+        {
+            var obj = (sender as Button).DataContext as SubstituteAccount;
+            GlobalConfiguration.Instance.RemoveAccount(obj);
+            UpdateAvailableSubstituteAccounts();
+        }
+
+        private void LvAccountsReplacement_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LvAccountsReplacement.SelectedItems?.Count > 0)
+            {
+                BtnRemoveReplacement.IsEnabled = true;
+            }
+            else
+            {
+                BtnRemoveReplacement.IsEnabled = false;
+            }
+        }
+        public void LbAccountsListReplacement_SelectionChangedCustom(object sender, SelectionChangedEventArgs e, bool fromCharacterCreator = false)
+        {
+            if (LbAccountsListReplacement.SelectedItems?.Count > 0 && ManualReplacementTab.IsSelected)
+            {
+                BtnSaveMultipleAccountsReplacement.IsEnabled = true;
+            }
+            else if (ManualReplacementTab.IsSelected)
+            {
+                BtnSaveMultipleAccountsReplacement.IsEnabled = false;
+            }
+            else if (AutoReplacementTab.IsSelected && (LbAccountsListReplacement.SelectedItems == null || LbAccountsListReplacement.SelectedItems?.Count == 0 || LbAccountsListReplacement.SelectedItems?.Count > 1))
+            {
+                if (!fromCharacterCreator)
+                {
+                    TempActivateReplacement = false;
+                    TempConnectAfterReplacement = false;
+                    TempStartScript = false;
+                    TempCreateCharacter = false;
+                    TempDisconnectTimer = 0;
+
+                    Binding tempActivateReplacement = new Binding("TempActivateReplacement");
+                    tempActivateReplacement.Source = this;
+                    Binding tempConnectAfterReplacement = new Binding("TempConnectAfterReplacement");
+                    tempConnectAfterReplacement.Source = this;
+                    Binding tempStartScript = new Binding("TempStartScript");
+                    tempStartScript.Source = this;
+                    Binding tempCreateCharacter = new Binding("TempCreateCharacter");
+                    tempCreateCharacter.Source = this;
+                    Binding tempDisconnectTimer = new Binding("TempDisconnectTimer");
+                    tempDisconnectTimer.Source = this;
+
+                    BindingOperations.SetBinding(CbActivateReplacement, CheckBox.IsCheckedProperty, tempActivateReplacement);
+                    BindingOperations.SetBinding(CbConnectAfterReplacement, CheckBox.IsCheckedProperty, tempConnectAfterReplacement);
+                    BindingOperations.SetBinding(CbStartScript, CheckBox.IsCheckedProperty, tempStartScript);
+                    BindingOperations.SetBinding(CbCreateCharacter, CheckBox.IsCheckedProperty, tempCreateCharacter);
+                    BindingOperations.SetBinding(DisconnectTimer, NumericUpDown.ValueProperty, tempDisconnectTimer);
+                }
+
+                if (LbAccountsListReplacement.SelectedItems?.Count > 1)
+                {
+                    InfoReplacementSettings.Visibility = Visibility.Collapsed;
+                    BtnApplyReplacementSettings.Visibility = Visibility.Visible;
+                    // If they all planned to create the same character and it is activated, then we can display it
+                    var accounts = LbAccountsListReplacement.SelectedItems.Cast<AccountConfiguration>().ToList();
+
+
+
+                    if (accounts.Select(a => a.ReplacementConfiguration.SubstituteCharacterCreation.Breed).Distinct().Count() == 1 && 
+                            accounts.Select(a => a.ReplacementConfiguration.SubstituteCharacterCreation.Head).Distinct().Count() == 1 && accounts.Select(a => a.ReplacementConfiguration.SubstituteCharacterCreation.Sex).Distinct().Count() == 1)
+                    {
+                        var account = accounts.First();
+                        if (account.ReplacementConfiguration.SubstituteCharacterCreation.Breed == -1 || account.ReplacementConfiguration.SubstituteCharacterCreation.Sex == -1 || account.ReplacementConfiguration.SubstituteCharacterCreation.Head == -1)
+                        {
+                            ImgCharacterPreview.Source = new BitmapImage(new Uri($"pack://application:,,,/Resources/random.png"));
+                            return;
+                        }
+                        else if (account.ReplacementConfiguration.SubstituteCharacterCreation.Breed == 0)
+                        {
+                            ImgCharacterPreview.Source = new BitmapImage(new Uri($"pack://application:,,,/Resources/inactive.png"));
+                            return;
+                        }
+                        else
+                        {
+                            ImgCharacterPreview.Source = new BitmapImage(new Uri($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/cosmetics/{account.ReplacementConfiguration.SubstituteCharacterCreation.Breed}{account.ReplacementConfiguration.SubstituteCharacterCreation.Sex}_{account.ReplacementConfiguration.SubstituteCharacterCreation.Head + 1}.png"));
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    BtnApplyReplacementSettings.Visibility = Visibility.Collapsed;
+                    InfoReplacementSettings.Visibility = Visibility.Visible;
+                }
+
+                ImgCharacterPreview.Source = new BitmapImage(new Uri($"pack://application:,,,/Resources/inactive.png"));
+            }
+            else if (LbAccountsListReplacement.SelectedItems?.Count == 1 && AutoReplacementTab.IsSelected)
+            {
+                BtnApplyReplacementSettings.Visibility = Visibility.Collapsed;
+                InfoReplacementSettings.Visibility = Visibility.Visible;
+
+                var account = LbAccountsListReplacement.SelectedItem as AccountConfiguration;
+
+                Binding tempActivateReplacement = new Binding("ActivateReplacement");
+                tempActivateReplacement.Source = account.ReplacementConfiguration;
+                Binding tempConnectAfterReplacement = new Binding("ConnectAfterReplacement");
+                tempConnectAfterReplacement.Source = account.ReplacementConfiguration;
+                Binding tempStartScript = new Binding("StartScript");
+                tempStartScript.Source = account.ReplacementConfiguration;
+                Binding tempCreateCharacter = new Binding("Create");
+                tempCreateCharacter.Source = account.ReplacementConfiguration.SubstituteCharacterCreation;
+                Binding tempDisconnectTimer = new Binding("DisconnectTimer");
+                tempDisconnectTimer.Source = account.ReplacementConfiguration;
+
+                BindingOperations.SetBinding(CbActivateReplacement, CheckBox.IsCheckedProperty, tempActivateReplacement);
+                BindingOperations.SetBinding(CbConnectAfterReplacement, CheckBox.IsCheckedProperty, tempConnectAfterReplacement);
+                BindingOperations.SetBinding(CbStartScript, CheckBox.IsCheckedProperty, tempStartScript);
+                BindingOperations.SetBinding(CbCreateCharacter, CheckBox.IsCheckedProperty, tempCreateCharacter);
+                BindingOperations.SetBinding(DisconnectTimer, NumericUpDown.ValueProperty, tempDisconnectTimer);
+
+                if (account.ReplacementConfiguration.SubstituteCharacterCreation.Breed == -1 || account.ReplacementConfiguration.SubstituteCharacterCreation.Sex == -1 || account.ReplacementConfiguration.SubstituteCharacterCreation.Head == -1)
+                {
+                    ImgCharacterPreview.Source = new BitmapImage(new Uri($"pack://application:,,,/Resources/random.png"));
+                }
+                else if (account.ReplacementConfiguration.SubstituteCharacterCreation.Breed == 0)
+                {
+                    ImgCharacterPreview.Source = new BitmapImage(new Uri($"pack://application:,,,/Resources/inactive.png"));
+                }
+                else
+                {
+                    ImgCharacterPreview.Source = new BitmapImage(new Uri($"https://dofustouch.cdn.ankama.com/assets/{DTConstants.AssetsVersion}/gfx/cosmetics/{account.ReplacementConfiguration.SubstituteCharacterCreation.Breed}{account.ReplacementConfiguration.SubstituteCharacterCreation.Sex}_{account.ReplacementConfiguration.SubstituteCharacterCreation.Head + 1}.png"));
+                }
+                
+            }
+        }
+        private void TabReplacement_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ManualReplacementTab.IsSelected)
+            {
+                LbAccountsListReplacement.ItemsSource = GlobalConfiguration.Instance.AccountsReplacementList;
+                LbAccountsListReplacement.Items.Refresh();
+            }
+            else if (AutoReplacementTab.IsSelected)
+            {
+                LbAccountsListReplacement.ItemsSource = GlobalConfiguration.Instance.Accounts;
+                LbAccountsListReplacement.Items.Refresh();
+            }
+        }
+
+        public void UpdateAvailableSubstituteAccounts()
+        {
+            LabelAvailableAccounts.Text = "";
+            int availableAccounts = GlobalConfiguration.Instance.SubstituteAccounts == null ? 0 : GlobalConfiguration.Instance.SubstituteAccounts.Count;
+            LabelAvailableAccounts.Inlines.Add(new Bold(new Run($"({availableAccounts}) ")));
+            LabelAvailableAccounts.Inlines.Add(new Run(LanguageManager.Translate("763")));
+        }
+        private void BtnCharacterCreator_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbAccountsListReplacement.SelectedItems == null || LbAccountsListReplacement.SelectedItems?.Count <= 0)
+                return;
+
+            var selectedAccounts = LbAccountsListReplacement.SelectedItems.Cast<AccountConfiguration>().ToList();
+
+            var accountCreatorInterface = new AccountsCharacterCreator(selectedAccounts, this, true);
+            accountCreatorInterface.ShowDialog();
+        }
+        private void BtnApplyReplacementSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbAccountsListReplacement.SelectedItems == null || LbAccountsListReplacement.SelectedItems?.Count <= 1)
+                return;
+
+            var accounts = LbAccountsListReplacement.SelectedItems.Cast<AccountConfiguration>().ToList();
+            foreach (var account in accounts)
+            {
+                account.ReplacementConfiguration.ActivateReplacement = TempActivateReplacement;
+                account.ReplacementConfiguration.ConnectAfterReplacement = TempConnectAfterReplacement;
+                account.ReplacementConfiguration.StartScript = TempStartScript;
+                account.ReplacementConfiguration.SubstituteCharacterCreation.Create = TempCreateCharacter;
+                account.ReplacementConfiguration.DisconnectTimer = TempDisconnectTimer;
+            }
+
+            UpdateAccountsUI();
+
+        }
+
+        #endregion
+
+        private void UpdateAccountsUI()
+        {
+            LvAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+            LvAccounts.Items.Refresh();
+            LbAccounts.ItemsSource = GlobalConfiguration.Instance.AccountsList;
+            LbAccounts.Items.Refresh();
+        }
+
+        private void LbAccountsListReplacement_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LbAccountsListReplacement_SelectionChangedCustom(sender, e);
         }
     }
 }

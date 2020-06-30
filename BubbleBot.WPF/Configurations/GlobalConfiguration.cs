@@ -46,6 +46,7 @@ namespace BubbleBot.Configurations
         private GlobalConfiguration()
         {
             Accounts = new ObservableCollection<AccountConfiguration>();
+            SubstituteAccounts = new ObservableCollection<SubstituteAccount>();
 
             AntiCaptchaKey = "";
             ShowDebugMessages = true;
@@ -65,6 +66,7 @@ namespace BubbleBot.Configurations
 
         // Properties
         public ObservableCollection<AccountConfiguration> Accounts { get; set; }
+        public ObservableCollection<SubstituteAccount> SubstituteAccounts { get; set; }
 
         [JsonConverter(typeof(EncryptingJsonConverter), "Bûbbl€Bôt")]
         public string AntiCaptchaKey
@@ -194,6 +196,8 @@ namespace BubbleBot.Configurations
             }
         }
 
+        public List<AccountConfiguration> AccountsReplacementList => Accounts.Where(a => a.State != 0).ToList();
+
         public string Lang => Language == Languages.ENGLISH ? "en" : Language == Languages.FRENCH ? "fr" : "pt";
 
 
@@ -205,6 +209,7 @@ namespace BubbleBot.Configurations
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Accounts.Clear();
+                    AccountsReplacementList.Clear();
                     try
                     {
                         using (var sr = new StreamReader(File.Open(_configPath, FileMode.Open), Encoding.UTF8))
@@ -248,6 +253,27 @@ namespace BubbleBot.Configurations
                                     }
                                 }
                             }
+                            else
+                            {
+                                Accounts = new ObservableCollection<AccountConfiguration>();
+                            }
+
+                            var value2 = json["SubstituteAccounts"];
+                            var subAccounts = value2.ToObject<List<SubstituteAccount>>();
+                            if (value2 != null)
+                            {
+                                foreach (var acc in subAccounts)
+                                {
+                                    if (!SubstituteAccounts.Contains(acc))
+                                    {
+                                        SubstituteAccounts.Add(acc);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                SubstituteAccounts = new ObservableCollection<SubstituteAccount>();
+                            }
                         }
                     }
                     catch
@@ -285,6 +311,7 @@ namespace BubbleBot.Configurations
                 json.Proxy.Username = ProxyUsername;
                 json.Proxy.Password = ProxyPassword;
                 json.Accounts = Accounts;              
+                json.SubstituteAccounts = SubstituteAccounts;              
 
                 var serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;
@@ -294,10 +321,21 @@ namespace BubbleBot.Configurations
             _semaphore.Release();
         }
 
-        public void AddAccountAndSave(string username, string password, string server, string character,
-            string nickname, string identifiant, bool isban)
+        public void AddAccountAndSave(string username, string password)
         {
-            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant, isban));
+            SubstituteAccounts.Add(new SubstituteAccount(username, password));
+            Save();
+        }
+        public void AddAccountsAndSave(IEnumerable<SubstituteAccount> accounts)
+        {
+            foreach (var account in accounts) SubstituteAccounts.Add(account);
+            Save();
+        }
+
+        public void AddAccountAndSave(string username, string password, string server, string character,
+            string nickname, string identifiant, short state)
+        {
+            Accounts.Add(new AccountConfiguration(username, password, server, character, nickname, identifiant, state));
             RaisePropertyChanged("AccountsList");
             Save();
         }
@@ -308,6 +346,14 @@ namespace BubbleBot.Configurations
 
             RaisePropertyChanged("AccountsList");
             Save();
+        }
+
+        public void RemoveAccount(SubstituteAccount account)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                SubstituteAccounts.Remove(account);
+            });
         }
 
         public void RemoveAccount(AccountConfiguration accountConfig)

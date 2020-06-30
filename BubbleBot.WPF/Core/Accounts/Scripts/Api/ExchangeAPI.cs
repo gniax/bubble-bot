@@ -12,7 +12,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class ExchangeAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor
@@ -21,7 +21,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account = account;
         }
 
-
+        #region Basic API
         public int WeightP()
         {
             return _account.Game.Exchange.WeightPercent;
@@ -38,14 +38,12 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         }
         public bool IsInExchange()
         {
-            if (_account.State == AccountStates.EXCHANGE)
-                return true;
-            else
-                return false;
+            if (_account.State == AccountStates.EXCHANGE) return true;
+            return false;
         }
         public void StartExchange(uint playerId)
         {
-            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int) playerId), true);
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction((int) playerId), true);           
         }
 
         public void AddAccountManagerId()
@@ -145,6 +143,52 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveKamasAction(qty), true);
         }
+
+        #endregion
+
+        #region Group API
+
+        public bool IsInExchange(string username)
+        {
+            if (BubbleBotMain.Instance.GetAccountByUsername(username).State == AccountStates.EXCHANGE) return true;
+            return false;
+        }
+        public void StartExchange(string username, uint playerId)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new StartExchangeAction(BubbleBotMain.Instance.GetAccountByUsername(username), (int)playerId), true);
+        }
+
+        public void SendReady(string username)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new SendReadyAction(BubbleBotMain.Instance.GetAccountByUsername(username)), true);
+        }
+
+        public void PutItem(string username, int gid, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutItemAction(BubbleBotMain.Instance.GetAccountByUsername(username),gid, qty), true);
+        }
+
+        public void RemoveItem(string username, int gid, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveItemAction(BubbleBotMain.Instance.GetAccountByUsername(username),gid, qty), true);
+        }
+
+        public void PutAllItems(string username)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutAllItemsAction(BubbleBotMain.Instance.GetAccountByUsername(username)), true);
+        }
+
+        public void PutKamas(string username, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangePutKamasAction(BubbleBotMain.Instance.GetAccountByUsername(username),qty), true);
+        }
+
+        public void RemoveKamas(string username, uint qty)
+        {
+            _account.Scripts.ActionsManager.EnqueueAction(new ExchangeRemoveKamasAction(BubbleBotMain.Instance.GetAccountByUsername(username),qty), true);
+        }
+
+        #endregion
 
         #region IDisposable Support
 

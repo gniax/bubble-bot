@@ -17,7 +17,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
 
         internal override Task<ScriptActionResults> Process(Account account)
         {
-            //A mon avis modifier pour que l'action s'éffectue aussi sur les membres du groupe, a gérer dans ApiMap
             switch (account.Game.Managers.Movements.MoveToCell(CellId))
             {
                 case MovementRequestResults.MOVED:
@@ -28,6 +27,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Map
                 default: // FAILED
                     return FailedResult;
             }
+
         }
     }
 }

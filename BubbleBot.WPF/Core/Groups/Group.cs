@@ -53,7 +53,13 @@ namespace BubbleBot.Core.Groups
         public uint PartyId { get; set; }
         public Account Chief { get; private set; }
         public ObservableCollection<Account> Members { get; private set; }
-
+        public List<Account> EveryAccount()
+        {
+            var accounts = new List<Account>();
+            accounts.Add(Chief);
+            accounts.AddRange(Members);
+            return accounts;
+        }
         private async void Group_PlayerIsOnline(Account account)
             => await Task.Run(async () =>
             {

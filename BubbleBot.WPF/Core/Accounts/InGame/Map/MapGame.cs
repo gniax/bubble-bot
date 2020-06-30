@@ -19,7 +19,7 @@ using System.ComponentModel;
 
 namespace BubbleBot.Core.Accounts.InGame.Map
 {
-    public class MapGame : ViewModelBase, IClearable, IDisposable, INotifyPropertyChanged
+    public class MapGame : ViewModelBase, IClearable, IDisposable
     {
         // Fields
         private static readonly List<int> DoorsSkillIds = new List<int>(new[] {184, 183, 187, 198, 114, 84});

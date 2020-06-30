@@ -101,6 +101,17 @@ namespace BubbleBot.Core.Frames.Connection
                         WarnServerVersionsLocker = true;
                         BubbleBotMain.Instance.Server.SendMessage(new IncompatibleVersionsMessage());
                     }
+                    else if (message.Reason == "EMAIL_UNVALIDATED")
+                    {
+                        account.AccountConfig.State = 1;
+                        GlobalConfiguration.Instance.Save();
+
+                        if (account.AccountConfig.ReplacementConfiguration.ActivateReplacement)
+                        {
+                            BubbleBotMain.Instance.ReplaceAccount(account);
+                            return;
+                        }
+                    }
 
                     account.PreventAutoReconnection = true;
                     account.PreventPlanificationReconnection = true;
@@ -139,6 +150,18 @@ namespace BubbleBot.Core.Frames.Connection
                     reason != IdentificationFailureReasonEnum.OTP_TIMEOUT && 
                     reason != IdentificationFailureReasonEnum.WRONG_CREDENTIALS)
                 {
+                    if (reason == IdentificationFailureReasonEnum.EMAIL_UNVALIDATED)
+                    {
+                        account.AccountConfig.State = 1;
+                        GlobalConfiguration.Instance.Save();
+
+                        if (account.AccountConfig.ReplacementConfiguration.ActivateReplacement)
+                        {
+                            BubbleBotMain.Instance.ReplaceAccount(account);
+                            return;
+                        }
+                    }
+
                     account.PreventAutoReconnection = true;
                     account.PreventPlanificationReconnection = true;
                 }
@@ -151,12 +174,18 @@ namespace BubbleBot.Core.Frames.Connection
             return Task.Run(() =>
             {
                 Console.WriteLine("HandleIdentificationFailedBannedMessage");
-                account.AccountConfig.IsBan = true;
+                account.AccountConfig.State = 3;
                 GlobalConfiguration.Instance.Save();
                 account.State = AccountStates.BANNED;
                 var until = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(message.BanEndDate);
                 account.Logger.LogError("IdentificationFrame",
                     $"{(IdentificationFailureReasonEnum) message.Reason} [{until.ToShortDateString()} {until.ToShortTimeString()}]");
+
+                if (account.AccountConfig.ReplacementConfiguration.ActivateReplacement)
+                {
+                    BubbleBotMain.Instance.ReplaceAccount(account);
+                    return;
+                }
             });
         }
 

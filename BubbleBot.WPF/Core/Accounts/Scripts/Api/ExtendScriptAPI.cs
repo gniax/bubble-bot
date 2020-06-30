@@ -10,7 +10,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class ExtendScriptAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
         // Constructor
         public ExtendScriptAPI(Account account)

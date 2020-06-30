@@ -9,22 +9,41 @@
     xmlns:_="clr-namespace:BubbleBot.Configurations.Language"
     xmlns:others="clr-namespace:BubbleBot.Converters.Others"
     xmlns:enums="clr-namespace:BubbleBot.Converters.Enums"
+    xmlns:specific="clr-namespace:BubbleBot.Converters.Specific"
     xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     xmlns:local="clr-namespace:BubbleBot.Views"
     mc:Ignorable="d"
     GlowBrush="{DynamicResource AccentColorBrush}"
     BorderBrush="{StaticResource AccentColorBrush}"
     ShowMaxRestoreButton="False"
-    WindowStartupLocation="CenterOwner"
-    
+    WindowStartupLocation="CenterOwner"    
     Title="{_:Lang 237}"
     Height="550"
     Width="855.285" IsManipulationEnabled="True" RightWindowCommandsOverlayBehavior="Never" ResizeMode="CanMinimize">
 
     <Window.Resources>
-
+        <Style x:Key="SeparatorStyle" TargetType="{x:Type Separator}">
+            <Setter Property="Background" Value="{DynamicResource GrayBrush8}" />
+            <Setter Property="Margin" Value="8,0,8,0" />
+            <Setter Property="Focusable" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Border
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}"
+                        Width="1"
+                        SnapsToDevicePixels="true" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <!-- Converters -->
         <others:NullImageConverter x:Key="NullImageConverter" />
+        <others:NullHeadImageConverter x:Key="NullHeadImageConverter" />
+        <specific:AccountStateToStringConverter x:Key="AccountStateToStringConverter" />
         <enums:EnumBooleanConverter x:Key="EnumBooleanConverter" />
 
     </Window.Resources>
@@ -91,7 +110,8 @@
                           ItemsSource="{Binding AccountsList}" Width="621">
                     <ListView.ContextMenu>
                         <ContextMenu Width="220">
-                            <MenuItem Header="{_:Lang 681}"
+                            <MenuItem Foreground="White"
+                                    Header="{_:Lang 681}"
                                       Click="BtnLoadAccounts_Click">
                                 <MenuItem.Icon>
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="ProgressUpload" />
@@ -109,7 +129,7 @@
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" VerticalAlignment="Center" Kind="AccountMultiplePlus" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Trier">
+                            <MenuItem Header="Trier" Foreground="White">
                                 <MenuItem.Icon>
                                     <iconPacks:PackIconMaterial Margin="8 0 0 0" Kind="Sort" />
                                 </MenuItem.Icon>
@@ -149,7 +169,7 @@
                                 </Border>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Username}" Foreground="{Binding UsernameColor }" />
+                                        <TextBlock Text="{Binding Username}" Foreground="{Binding UsernameColor }" ToolTip="{Binding State, Converter={StaticResource AccountStateToStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -389,15 +409,25 @@
                     </StackPanel>
                     <ListBox ItemsSource="{Binding AccountsList}"
                              Name="LbAccounts"
+                             SelectionChanged="LbAccounts_SelectionChanged"
                              SelectionMode="Multiple"
                              Width="150" Height="472"
                              BorderThickness="0.6">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox Content="{Binding Username}"
-                                          Margin="-1 1 0 0"
-                                          IsChecked="{Binding IsSelected, 
-                                                      RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
+                                <DockPanel VerticalAlignment="Stretch">
+                                    <CheckBox Margin="-1 1 0 0"
+                                              IsChecked="{Binding IsSelected, 
+                                                          RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}">
+                                    </CheckBox>
+                                    <TextBlock Text="{Binding Username}" />
+                                    <Image Name="CharacterCreatorPreview"
+                                           Width="16" 
+                                           HorizontalAlignment="Right"
+                                           Source="{Binding Path=., 
+                                            Mode=OneWay,
+                                            Converter={StaticResource NullHeadImageConverter}}" />
+                                </DockPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -406,10 +436,6 @@
                 <!-- Character options -->
                 <StackPanel VerticalAlignment="Center">
                     <GroupBox Margin="4 0 4 4" Width="376">
-                        <GroupBox.Header>
-                            <CheckBox Name="CbCreateCharacter"
-                                      Content="{_:Lang 504}" />
-                        </GroupBox.Header>
                         <StackPanel>
 
                             <!-- Name -->
@@ -550,29 +576,45 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <DockPanel HorizontalAlignment="Right">
-                        <Button Width="104" Height="32"
-                                Name="BtnSave"
-                                Click="BtnSave_OnClick"
-                                HorizontalAlignment="Right"
+                    
+                    <DockPanel>
+                        <Button Width="85" Height="32"
+                                Visibility="Hidden"
+                                Name="BtnReset"
+                                Click="BtnReset_Click"
+                                HorizontalAlignment="Center"
                                 Background="{StaticResource AccentColorBrush}"
-                                Margin="4 4 2 0">
+                                Margin="10 4 2 0">
                             <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="CheckBold" />
-                                <TextBlock Margin="10 0 0 0" Text="{_:Lang 362}" />
+                                <iconPacks:PackIconMaterial Kind="Close" />
+                                <TextBlock Margin="10 0 0 0" Text="Reset" />
                             </StackPanel>
                         </Button>
-                        <Button Width="160" Height="32"
-                                Name="BtnSaveAndConnect"
-                                Click="BtnSaveAndConnect_OnClick"
-                                HorizontalAlignment="Right"
-                                Background="{StaticResource AccentColorBrush}"
-                                Margin="4 4 4 0">
-                            <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="CheckBold" />
-                                <TextBlock Margin="10 0 0 0" Text="{_:Lang 514}" />
-                            </StackPanel>
-                        </Button>
+
+                        <DockPanel HorizontalAlignment="Right">
+                            <Button Width="104" Height="32"
+                                    Name="BtnSave"
+                                    Click="BtnSave_OnClick"
+                                    HorizontalAlignment="Right"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Margin="4 4 2 0">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="CheckBold" />
+                                    <TextBlock Margin="10 0 0 0" Text="{_:Lang 362}" />
+                                </StackPanel>
+                            </Button>
+                            <Button Width="160" Height="32"
+                                    Name="BtnSaveAndConnect"
+                                    Click="BtnSaveAndConnect_OnClick"
+                                    HorizontalAlignment="Right"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Margin="4 4 4 0">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="CheckBold" />
+                                    <TextBlock Margin="10 0 0 0" Text="{_:Lang 514}" />
+                                </StackPanel>
+                            </Button>
+                        </DockPanel>
                     </DockPanel>
 
                 </StackPanel>
@@ -600,7 +642,7 @@
                                                 Kind="Information"
                                                 VerticalAlignment="Center" />
                     <TextBlock Margin="4 0 0 0"
-                               Text="Veuillez ne pas copier des configurations entre des personnages de race différente."
+                               Text="{_:Lang 761}"
                                VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -667,6 +709,286 @@
                 </StackPanel>
 
             </StackPanel>
+        </TabItem>
+ 
+        <!-- Accounts Replacement -->
+        <TabItem Controls:ControlsHelper.HeaderFontSize="16" Width="213">
+            <TabItem.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Height="22" Margin="0 2 0 0" Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="FindReplace" />
+                        <TextBlock VerticalAlignment="Center" FontSize="15"
+                                   Margin="10 0 0 0" Text="{_:Lang 752}" />
+                    </StackPanel>
+                </DataTemplate>
+
+            </TabItem.HeaderTemplate>
+
+            <DockPanel>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Click="BtnSelectAll_OnClick"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    Tag="2"
+                                    ToolTip="{_:Lang 502}">
+                            <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectAll" />
+                        </Button>
+                        <Button Click="BtnUnselectAll_OnClick"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    Tag="2"
+                                    ToolTip="{_:Lang 503}">
+                            <iconPacks:PackIconMaterial Width="12" Height="12" Kind="SelectOff" />
+                        </Button>
+                    </StackPanel>
+                    <!-- Accounts list -->
+                    <ListBox ItemsSource="{Binding AccountsReplacementList}"
+                             Name="LbAccountsListReplacement"
+                             SelectionChanged="LbAccountsListReplacement_SelectionChanged"
+                             SelectionMode="Multiple"
+                             Width="150" Height="229"
+                             BorderThickness="0.6">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel VerticalAlignment="Stretch">
+                                    <CheckBox Margin="-1 1 0 0"
+                                              IsChecked="{Binding IsSelected, 
+                                                          RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}">
+                                    </CheckBox>
+                                    <TextBlock Text="{Binding Username}" Foreground="{Binding UsernameColor}" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Margin="0 20 0 0" Height="200" Width="145">
+
+                        <Button Width="135" Height="32"
+                                    Name="BtnAddReplacement"
+                                    Click="BtnAddReplacement_Click"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9.5"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Margin="4 24 2 0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="AccountPlus" />
+                                <TextBlock Margin="4 0 0 0" Text="{_:Lang 764}" />
+                            </StackPanel>
+                        </Button>
+                        
+                        <Button Width="135" Height="32"
+                                    Name="BtnAddReplacements"
+                                    Click="BtnAddReplacements_Click"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9.5"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Margin="4 24 2 0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="AccountMultiplePlus" />
+                                <TextBlock Margin="4 0 0 0" Text="{_:Lang 765}" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Width="135" Height="32"
+                                    IsEnabled="False"
+                                    Name="BtnRemoveReplacement"
+                                    Click="BtnRemoveReplacement_Click"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9.5"
+                                    Background="{StaticResource AccentColorBrush}"
+                                    Margin="4 24 2 0">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="AccountRemove" />
+                                <TextBlock Margin="4 0 0 0" Text="{_:Lang 766}" />
+                            </StackPanel>
+                        </Button>
+                        
+                        <TextBlock Margin="0 15 0 0" Name="LabelAvailableAccounts" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+                <!-- Options -->
+                <StackPanel >
+                    <GroupBox Header="{_:Lang 757}">
+                        <TabControl Controls:TabControlHelper.Underlined="TabPanel" Margin="0,0,0,0" Height="235" SelectionChanged="TabReplacement_SelectionChanged">
+                            <!-- Manual -->
+                            <TabItem x:Name="ManualReplacementTab">
+                                <TabItem.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="Assistant" />
+                                            <TextBlock VerticalAlignment="Center"
+                                                   FontSize="15"
+                                                   Margin="10 0 0 0"
+                                                   Text="{_:Lang 758}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </TabItem.HeaderTemplate>
+
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel Height="55" Margin="0,0,0.2,0" Orientation="Vertical" Width="339">
+                                        <iconPacks:PackIconMaterial Width="14"
+                                            Height="14"
+                                            HorizontalAlignment="Center"
+                                            Kind="Information" Margin="155,0,154.2,0" />
+                                        <TextBlock Margin="4,10,-0.8,0"
+                                                   FontSize="9"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   Text="{_:Lang 772}" />       
+                                    </StackPanel>
+
+                                    <Button Name="BtnSaveMultipleAccountsReplacement"
+                                            Click="BtnSaveMultipleAccountsReplacement_Click"
+                                            Width="300"
+                                            Margin="0 20 0 0"
+                                            IsEnabled="False"
+                                            Background="{StaticResource AccentColorBrush}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="CheckCircle" Margin="0 0 12 0" />
+                                            <TextBlock Margin="0 0 0 0" Text="{_:Lang 769}" />
+                                        </StackPanel>
+                                        <Button.Triggers>
+                                            <EventTrigger RoutedEvent="Button.Click">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation To="Green"
+                                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                                        FillBehavior="Stop"
+                                                        AutoReverse="True"
+                                                        Duration="0:0:2" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Button.Triggers>
+                                    </Button>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- Automatic -->
+                            <TabItem Name="AutoReplacementTab">
+                                <TabItem.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Height="20" Margin="0 2 0 0" Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="Autorenew" />
+                                            <TextBlock VerticalAlignment="Center" FontSize="15" Margin="10 0 0 0"
+                                                   Text="{_:Lang 759}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </TabItem.HeaderTemplate>
+
+                                <StackPanel Margin="-5 0 0 0" Height="200">
+                                    <GroupBox Height="100">
+                                        <StackPanel>
+                                            <DockPanel Margin="4" VerticalAlignment="Center">
+                                                <CheckBox x:Name="CbActivateReplacement"
+                                                          IsChecked="{Binding ElementName=LbAccountsListReplacement, Path=SelectedItem.ReplacementConfiguration.ActivateReplacement}"
+                                                          Margin="4 0 0 0"
+                                                          DockPanel.Dock="Left" />
+                                                <TextBlock Text="{_:Lang 775}" FontWeight="Bold"/>
+                                            </DockPanel>
+                                            <DockPanel Margin="4" VerticalAlignment="Center">
+                                                <CheckBox Name="CbConnectAfterReplacement"
+                                                          IsChecked="{Binding ElementName=LbAccountsListReplacement, Path=SelectedItem.ReplacementConfiguration.ConnectAfterReplacement}"
+                                                          IsEnabled="{Binding ElementName=CbActivateReplacement, Path=IsChecked, TargetNullValue=false}"
+                                                          Margin="4 0 0 0"/>
+                                                <TextBlock Text="{_:Lang 776}" VerticalAlignment="Center" FontSize="9"/>
+
+                                                <Separator Style="{DynamicResource SeparatorStyle}" />
+                                                <TextBlock Text="{_:Lang 777}" VerticalAlignment="Center" FontSize="9" />
+                                                <TextBlock Name="Txt" />
+                                                <Controls:NumericUpDown Name="DisconnectTimer"
+                                                                        Value="{Binding ElementName=LbAccountsListReplacement, Path=SelectedItem.ReplacementConfiguration.DisconnectTimer}"
+                                                                        IsEnabled="{Binding ElementName=CbActivateReplacement, Path=IsChecked, TargetNullValue=false}"
+                                                                        Width="20"
+                                                                        Minimum="0"
+                                                                        HideUpDownButtons="True" />
+                                                
+                                            </DockPanel>
+                                            <DockPanel Margin="4" VerticalAlignment="Center">
+                                                <CheckBox Name="CbStartScript"
+                                                          IsChecked="{Binding ElementName=LbAccountsListReplacement, Path=SelectedItem.ReplacementConfiguration.StartScript}"
+                                                          IsEnabled="{Binding ElementName=CbActivateReplacement, Path=IsChecked, TargetNullValue=false}"
+                                                          Margin="4 0 0 0"/>
+                                                <TextBlock Text="{_:Lang 778}" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox Height="60">
+                                        <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <DockPanel Margin="4" VerticalAlignment="Center">
+                                                <CheckBox Name="CbCreateCharacter"
+                                                          IsChecked="{Binding ElementName=LbAccountsListReplacement, Path=SelectedItem.ReplacementConfiguration.SubstituteCharacterCreation.Create}"
+                                                          IsEnabled="{Binding ElementName=CbActivateReplacement, Path=IsChecked, TargetNullValue=false}"
+                                                          Margin="4 0 0 0"
+                                                          DockPanel.Dock="Left" />
+                                                <TextBlock Text="{_:Lang 774}" />
+                                            </DockPanel>
+                                            <Button x:Name="BtnCharacterCreator" IsEnabled="{Binding ElementName=CbActivateReplacement, Path=IsChecked, TargetNullValue=false}" Margin="20 0 0 0" Content="{_:Lang 773}" Background="{StaticResource AccentColorBrush}" Click="BtnCharacterCreator_Click" />
+                                            <Image x:Name="ImgCharacterPreview" Cursor="No" Height="20" Width="20" Margin="4 0 0 0" DockPanel.Dock="Right" Source="/Bubble Bot;component/Resources/inactive.png"  />
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox>
+                                        <StackPanel HorizontalAlignment="Center" >
+                                            <Button x:Name="BtnApplyReplacementSettings" Height="20" Visibility="Collapsed" Content="{_:Lang 669}" Background="{StaticResource AccentColorBrush}" Click="BtnApplyReplacementSettings_Click" />
+                                            <StackPanel x:Name="InfoReplacementSettings" Height="50" Visibility="Visible">
+                                            <iconPacks:PackIconMaterial Width="14"
+                                            Height="14"
+                                            HorizontalAlignment="Center"
+                                            Kind="Information"/>
+                                            <TextBlock
+                                                   FontSize="7.5"
+                                                   TextWrapping="Wrap"
+                                                   Text="{_:Lang 779}" />
+                                        </StackPanel>
+                                        </StackPanel>
+                                    </GroupBox>
+
+
+
+                                </StackPanel>
+                                
+
+                            </TabItem>
+                        </TabControl>
+                    </GroupBox>
+
+                    <!-- Substitute Accounts Stock Manager -->
+                    <GroupBox Header="{_:Lang 760}" Height="214" Margin="0 10 0 0">
+                        <ListView Width="460"
+                          x:Name="LvAccountsReplacement"
+                          SelectionChanged="LvAccountsReplacement_SelectionChanged"
+                          SelectionMode="Extended"
+                          IsSynchronizedWithCurrentItem="True"
+                          ItemsSource="{Binding SubstituteAccounts}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="{_:Lang 240}"
+                                        Width="185"
+                                        DisplayMemberBinding="{Binding Username}" />
+                                    <GridViewColumn Header="{_:Lang 245}"
+                                        Width="185"
+                                        DisplayMemberBinding="{Binding Password}" />
+                                    <GridViewColumn Header="{_:Lang 239}" Width="80">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Click="BtnRemoveSubstitute_Click">
+                                                    <Button.Content>
+                                                        <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="Delete" />
+                                                    </Button.Content>
+                                                </Button>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                    </GroupBox>
+                </StackPanel>
+            </DockPanel>
+
         </TabItem>
 
         <!-- Proxies -->
@@ -751,6 +1073,6 @@
             </DockPanel>
 
         </TabItem>
-
+        
     </TabControl>
 </Controls:MetroWindow>
