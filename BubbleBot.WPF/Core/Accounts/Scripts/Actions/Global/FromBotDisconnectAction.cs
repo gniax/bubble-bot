@@ -36,7 +36,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                             if (member.State == AccountStates.DISCONNECTED)
                                 return ScriptActionResults.DONE;
 
-                            await member.Network.Disconnect("Script Action");
+                            await member.Network.Disconnect("CLIENT_CLOSING");
 
                             return ScriptActionResults.DONE;
                         }
@@ -47,7 +47,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
                     if (acc.State == AccountStates.DISCONNECTED)
                         return ScriptActionResults.DONE;
 
-                    await acc.Network.Disconnect("Script Action");
+                    await acc.Network.Disconnect("CLIENT_CLOSING");
 
                     return ScriptActionResults.DONE;
                 }

@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Documents;
+using BubbleBot.Core.Accounts.Scripts.Managers;
 using BubbleBot.Protocol.Enums;
 using MoonSharp.Interpreter;
 
@@ -10,7 +15,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class CharacterAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor
@@ -18,7 +23,6 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         {
             _account = account;
         }
-
 
         public bool IsAlive()
         {

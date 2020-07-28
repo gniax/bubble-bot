@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -47,8 +48,8 @@ namespace BubbleBot.Views.Planner
         }
 
         private void BtnSaveMultipleAccounts_OnClick(object sender, RoutedEventArgs e)
+        => Task.Run(() =>
         {
-            // Just a security
             if (LbAccounts.SelectedItems == null || LbAccounts.SelectedItems.Count <= 1)
                 return;
 
@@ -61,7 +62,8 @@ namespace BubbleBot.Views.Planner
             }
 
             GlobalConfiguration.Instance.Save();
-        }
+        
+        });
 
         private void LbAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

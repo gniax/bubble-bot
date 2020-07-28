@@ -740,3 +740,31 @@
 748|Accepter les échanges de vos bots.
 749|Boutique
 750|Création de personnages
+751|Bubble Bot Touch - 
+752|Remplacement de comptes
+753|Compte valide
+754|Compte invalide : adresse e-mail non confirmée
+755|Compte invalide : mauvais identifiants
+756|Compte banni
+757|Remplacement de comptes
+758|Remplacer directement
+759|Remplacer automatiquement
+760|Réserve de comptes de remplacement
+761|Attention au chargement de configurations de combat entre des classes différentes.
+762|Format obligatoire de chaque ligne pour les comptes : NomDeCompte:MotDePasse
+763|comptes en réserve.
+764|Ajouter un compte
+765|Ajouter des comptes
+766|Supprimer la sélection
+768|Aucun compte n'a été importé, le format pour chaque ligne et compte doit être NomDeCompte:MotDePasse
+769|Remplacer la sélection par des comptes en réserve.
+770|Il n'y a pas de comptes en réserve ou vous n'avez pas sélectionné de comptes à remplacer.
+771|{0} comptes ont été remplacés, cependant il n'y a plus assez de comptes en réserve pour terminer...
+772|Vous ne pouvez remplacer que des comptes qui ne sont pas valides, ou bannis. Pour anticiper et planifier le remplacement de compte, sélectionnez l'onglet suivant.
+773|Choisir un personnage
+774|Activer la création d'un personnage
+775|Activer le remplacement automatique
+776|Connecter le compte automatiquement
+777|Délais avant reconnexion suite à un ban (en s):
+778|Relancer le script à la connexion suite au remplacement
+779|La création de personnage ne sera effective que si la case correspondante est cochée. L'image du personnage n'a pas d'importance.

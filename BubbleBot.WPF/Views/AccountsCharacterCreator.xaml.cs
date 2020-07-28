@@ -38,15 +38,34 @@ namespace BubbleBot.Views
     /// </summary>
     public partial class AccountsCharacterCreator 
     {
-       //public ObservableCollection<AccountConfiguration> SelectedAccountsList { get; set;}
+        //public ObservableCollection<AccountConfiguration> SelectedAccountsList { get; set;}
+        public bool SourceIsSubstituteAccount { get; set; }
 
-        public AccountsCharacterCreator(List<AccountConfiguration> listOfSelectedItems)
+        private AccountsManagerWindow _parent;
+        public AccountsCharacterCreator(List<AccountConfiguration> listOfSelectedItems, AccountsManagerWindow parent, bool sourceIsSubstituteAccount = false)
         {
+            SourceIsSubstituteAccount = sourceIsSubstituteAccount;
+
             InitializeComponent();
             LbAccounts.ItemsSource = listOfSelectedItems;
+            
+            // Si ça vient de l'onglet susbstitute accounts, la liste des comptes à gauche n'est pas nécessaire
+            if (sourceIsSubstituteAccount && listOfSelectedItems?.Count > 0)
+            {
+                LbAccounts.SelectAll();
+                LbAccountsContainer.Visibility = Visibility.Collapsed;
+                BtnReset.Visibility = Visibility.Hidden;
+                BtnSaveAndConnect.Visibility = Visibility.Hidden;
+
+                this.Height = 490;
+                this.Width = 400;
+            }
+
             CmbRace.ItemsSource = BreedsUtility.Breeds;
             CmbRace.SelectedIndex = 0;
             LoadConfigurations();
+
+            _parent = parent;
         }
 
         private void LoadConfigurations()
@@ -132,8 +151,33 @@ namespace BubbleBot.Views
             if (LbAccounts.SelectedItems.Count == 0)
                 return;
 
+
             foreach (AccountConfiguration account in LbAccounts.SelectedItems)
-                account.CharacterCreation = GetCharacterCreation();
+            {
+                if (SourceIsSubstituteAccount)
+                {
+                    bool tempValue = false;
+                    if (account.ReplacementConfiguration.SubstituteCharacterCreation?.Create != false)
+                        tempValue = true;
+
+                        account.ReplacementConfiguration.SubstituteCharacterCreation = GetCharacterCreation();
+
+                    account.ReplacementConfiguration.SubstituteCharacterCreation.Create = tempValue;
+                }
+                else
+                {
+                    account.CharacterCreation = GetCharacterCreation();
+                    
+                }
+            }
+
+            if (SourceIsSubstituteAccount)
+            {
+                _parent.LbAccountsListReplacement_SelectionChangedCustom(null, null, true);
+            }
+
+            LbAccounts.Items.Refresh();
+            _parent.LbAccounts.Items.Refresh();
 
             GlobalConfiguration.Instance.Save();
         }
@@ -151,12 +195,9 @@ namespace BubbleBot.Views
 
         private CharacterCreation GetCharacterCreation()
         {
-            if (!CbCreateCharacter.IsChecked.Value)
-                return new CharacterCreation();
-
             return new CharacterCreation
             {
-                Create = true,
+                Create = !SourceIsSubstituteAccount,
                 Name = TxtName.Text,
                 Server = CmbServerCC.Text,
                 Breed = CbRandomBreed.IsChecked.Value ? -1 : (CmbRace.SelectedItem as Breeds).Id,
@@ -222,7 +263,53 @@ namespace BubbleBot.Views
         {
            // await this.ShowMessageAsync(LanguageManager.Translate("513"), LanguageManager.Translate("515"));
         }
+        private void BtnReset_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbAccounts.SelectedItems == null || LbAccounts.SelectedItems?.Count == 0)
+                return;
 
+            foreach (AccountConfiguration account in LbAccounts.SelectedItems)
+            {
+                if (SourceIsSubstituteAccount)
+                {
+                    account.ReplacementConfiguration.SubstituteCharacterCreation.Create = false;
+                }
+                else
+                {
+                    account.CharacterCreation.Create = false;
+                }
+            }
 
+            LbAccounts.Items.Refresh();
+            BtnReset.Visibility = Visibility.Hidden;
+        }
+
+        private void LbAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LbAccounts.SelectedItems == null || LbAccounts.SelectedItems?.Count == 0)
+            {
+                BtnReset.Visibility = Visibility.Hidden;
+                return;
+            }
+
+            var accounts = new List<AccountConfiguration>();
+            foreach (AccountConfiguration account in LbAccounts.SelectedItems)
+            {
+                accounts.Add(account);
+            }
+
+            if (accounts.Any(a => a.CharacterCreation.Create))
+            {
+                BtnReset.Visibility = Visibility.Visible;
+                return;
+            }
+
+            BtnReset.Visibility = Visibility.Hidden;
+        }
+
+        private void LbAccounts_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

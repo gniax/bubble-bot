@@ -13,7 +13,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class BidAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor

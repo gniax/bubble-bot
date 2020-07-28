@@ -32,7 +32,6 @@ namespace BubbleBot.Core.Accounts.Scripts
     {
         // Fields
         private Account _account;
-        private API _api;
         private FunctionTypes _currentFunctionType;
         private string _currentScriptName;
         private string _signalMessage;
@@ -49,7 +48,7 @@ namespace BubbleBot.Core.Accounts.Scripts
             _scriptManager = new LuaScriptManager();
             ActionsManager = new ActionsManager(account);
             _entryFlags = new List<IFlag>();
-            _api = new API(_account);
+            Api = new API(_account);
             _signalMessage = "";
 
             _account.Game.Fight.FightJoined += Fight_FightJoined;
@@ -60,6 +59,7 @@ namespace BubbleBot.Core.Accounts.Scripts
 
         // Properties
         public ActionsManager ActionsManager { get; private set; }
+        public API Api { get; set; }
 
         public string CurrentScriptName
         {
@@ -129,11 +129,11 @@ namespace BubbleBot.Core.Accounts.Scripts
         private void BeforeDoFile()
         {
             // Set API
-            ScriptManager.SetGlobal("api", _api);
+            ScriptManager.SetGlobal("api", Api);
 
             // We'll set the character and job directly because we don't need coroutines in it
-            ScriptManager.SetGlobal("character", _api.Character);
-            ScriptManager.SetGlobal("job", _api.Jobs);
+            ScriptManager.SetGlobal("character", Api.Character);
+            ScriptManager.SetGlobal("job", Api.Jobs);
 
             // Set the globals and mount functions directly too
             ScriptManager.SetGlobal("fromBotIsConnected", new Func<string, string, bool>((groupmng, idmng) =>
@@ -166,6 +166,22 @@ namespace BubbleBot.Core.Accounts.Scripts
                 }
                 return false;
             }));
+            ScriptManager.SetGlobal("isConnectedBotFunc", new Func<string, bool>((accname) => 
+            {
+                foreach (var acc in BubbleBotMain.Instance.EveryConnectedAccount())
+                {
+                    if (accname != null && accname == acc.AccountConfig.Username)
+                    {
+                        return (acc.State == AccountStates.DISCONNECTED || acc.State == AccountStates.BANNED) ? false : true;                       
+                    }
+                }
+
+                return false;
+            }));
+            ScriptManager.SetGlobal("connectBotFunc",
+                new Action<string>((account) => ActionsManager.EnqueueAction(new ConnectBotAction(account), true)));
+            ScriptManager.SetGlobal("disconnectBotFunc",
+               new Action<string>((account) => ActionsManager.EnqueueAction(new DisconnectBotAction(account), true)));
             ScriptManager.SetGlobal("fromBotConnectFunc",
                 new Action<string, string, bool>((groupmng, idmng, rs) => ActionsManager.EnqueueAction(new FromBotConnectAction(groupmng, idmng, rs), true)));
             ScriptManager.SetGlobal("fromBotDisconnectFunc",
@@ -197,6 +213,7 @@ namespace BubbleBot.Core.Accounts.Scripts
                 new Action<int>(ms => ActionsManager.EnqueueAction(new DelayAction(ms), true)));
             ScriptManager.SetGlobal("getTimestamp", new Func<long>(() => DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             ScriptManager.SetGlobal("getServerName", new Func<string>(() => _account.Game.Server.Name));
+            ScriptManager.SetGlobal("getAccountName", new Func<string>(() => _account.AccountConfig.Username));
             ScriptManager.SetGlobal("isSubscribed", (Func<bool>) _account.IsSubscribed);
             ScriptManager.SetGlobal("isFighting", (Func<bool>) _account.IsFighting);
             ScriptManager.SetGlobal("isGathering", (Func<bool>) _account.IsGathering);
@@ -557,6 +574,24 @@ namespace BubbleBot.Core.Accounts.Scripts
         }
 
         #region Checkings
+        public bool IsNumericType(object o)
+        {
+            switch (Type.GetTypeCode(o.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         public async Task ApplyCheckings()
         {
@@ -1182,14 +1217,14 @@ namespace BubbleBot.Core.Accounts.Scripts
                 if (disposing)
                 {
                     _scriptManager.Dispose();
-                    _api.Dispose();
+                    Api.Dispose();
                     ActionsManager.Dispose();
                 }
 
                 _entryFlags.Clear();
                 _entryFlags = null;
                 _scriptManager = null;
-                _api = null;
+                Api = null;
                 ActionsManager = null;
                 Enabled = false;
                 Paused = false;

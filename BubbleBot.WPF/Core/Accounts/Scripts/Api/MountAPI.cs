@@ -10,7 +10,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class MountAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor

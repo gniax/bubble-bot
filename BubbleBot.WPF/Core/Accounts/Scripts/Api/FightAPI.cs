@@ -14,7 +14,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class FightAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor

@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using BubbleBot.Core.Accounts.Scripts.Actions.Global;
+using BubbleBot.Core.Enums;
 using MoonSharp.Interpreter;
 
 namespace BubbleBot.Core.Accounts.Scripts.Api
@@ -8,9 +12,11 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     [Obfuscation(Exclude = false, Feature = "-rename", ApplyToMembers = true)]
     public class API : IDisposable
     {
+        public Account _account;
         // Constructor
         public API(Account account)
         {
+            _account = account;
             Character = new CharacterAPI(account);
             Fight = new FightAPI(account);
             Gather = new GatherAPI(account);
@@ -24,6 +30,8 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             Bid = new BidAPI(account);
             ExtendScript = new ExtendScriptAPI(account);
         }
+
+        public IEnumerable<string> GroupAccounts() => _account.Group.EveryAccount().Select(a => a.AccountConfig.Username);
 
         // Properties
         [Obfuscation(Exclude = false, Feature = "-rename")]
@@ -62,6 +70,25 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
         [Obfuscation(Exclude = false, Feature = "-rename")]
         public ExtendScriptAPI ExtendScript { get; private set; }
 
+        public bool IsFighting()
+        {
+            return _account.State == AccountStates.FIGHTING;
+        }
+
+        public bool IsSubscribed()
+        {
+            return _account.SubscriptionEndDate.HasValue;
+        }
+
+        public bool IsGathering()
+        {
+            return _account.State == AccountStates.GATHERING;
+        }
+
+        public bool isFightLimitReached()
+        {
+            return _account.FightLimitReached;
+        }
         #region IDisposable Support
 
         private bool _disposedValue;

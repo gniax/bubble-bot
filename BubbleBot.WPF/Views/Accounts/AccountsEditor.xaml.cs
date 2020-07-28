@@ -28,7 +28,7 @@ namespace BubbleBot.Views.Accounts
         private void btnConfirmation_Click(object sender, RoutedEventArgs e)
         {
             if (Account.Username != txtUsername.Text)
-                Account.IsBan = false;
+                Account.State = 0;
 
             Account.Username = txtUsername.Text;
             Account.Password = txtPassword.Password;

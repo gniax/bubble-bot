@@ -15,10 +15,17 @@ namespace BubbleBot.Configurations
         // Fields
         private bool _planificationActivated;
 
+        // --------------------------------------------------------------------------- //
+        // ----------------------------- IMPORTANT NOTES ----------------------------- //
+        // ------------------------ STATE : 0 => VALID ACCOUNT ----------------------- //
+        // --------------- STATE : 1 => INVALID ACCOUNT : EMAIL ADDRESS -------------- //
+        // ------------ STATE : 2 => INVALID ACCOUNT : WRONG CREDENTIALS ------------- //
+        // ----------------------- STATE : 3 => ACCOUNT IS BAN ----------------------- //
+        // --------------------------------------------------------------------------- //
 
         // Constructor
         public AccountConfiguration(string username, string password, string server, string character, string nickname,
-            string identifiant, bool isban)
+            string identifiant, short state)
         {
             Username = username;
             Password = password;
@@ -26,10 +33,11 @@ namespace BubbleBot.Configurations
             Character = character;
             Nickname = nickname;
             Identifiant = identifiant;
-            IsBan = isban;
+            State = state;
             Proxy = new ProxyConfiguration();
             CharacterCreation = new CharacterCreation();
             Planification = new ObservableCollection<bool>(Enumerable.Repeat(false, 24));
+            ReplacementConfiguration = new ReplacementConfiguration();
         }
 
 
@@ -50,14 +58,20 @@ namespace BubbleBot.Configurations
         [JsonProperty("Identifiant")]
         public string Identifiant { get; set; }
 
+        [JsonProperty("State")]
+        public short State { get; set; }
+
         [JsonProperty("IsBan")]
-        public bool IsBan { get; set; }
+        public bool IsBan => State == 3;
 
         [JsonProperty("Proxy")]
         public ProxyConfiguration Proxy { get; private set; }
 
         [JsonProperty("CharacterCreation")]
         public CharacterCreation CharacterCreation { get; set; }
+
+        [JsonProperty("ReplacementConfiguration")]
+        public ReplacementConfiguration ReplacementConfiguration { get; set; }
 
         [JsonProperty("PlanificationActivated")]
         public bool PlanificationActivated
@@ -82,8 +96,7 @@ namespace BubbleBot.Configurations
         }
 
         [JsonProperty("UsernameColor")]
-        public SolidColorBrush UsernameColor =>
-            IsBan ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+        public SolidColorBrush UsernameColor => State == 0 ? new SolidColorBrush(Colors.White) : State == 3 ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Pink);
 
         [JsonProperty("Planification")]
         public ObservableCollection<bool> Planification { get; }
@@ -125,5 +138,34 @@ namespace BubbleBot.Configurations
         public bool IsValid => Ip.Length > 0;
         [JsonProperty("Url")]
         public string Url => Ip.Length > 0 ? $"http://{Ip}:{Port}" : "";
+    }
+
+    public class ReplacementConfiguration
+    {
+        // Constructor
+        public ReplacementConfiguration()
+        {
+            ActivateReplacement = false;
+            ConnectAfterReplacement = false;
+            StartScript = false;
+            DisconnectTimer = 0;
+            SubstituteCharacterCreation = new CharacterCreation();
+        }
+
+        // Properties
+        [JsonProperty("ActivateReplacement")]
+        public bool ActivateReplacement { get; set; }
+
+        [JsonProperty("ConnectAfterReplacement")]
+        public bool ConnectAfterReplacement { get; set; }
+
+        [JsonProperty("StartScript")]
+        public bool StartScript { get; set; }
+
+        [JsonProperty("DisconnectTimer")]
+        public int DisconnectTimer { get; set; }
+
+        [JsonProperty("SubstituteCharacterCreation")]
+        public CharacterCreation SubstituteCharacterCreation { get; set; }
     }
 }

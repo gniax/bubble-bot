@@ -24,6 +24,9 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using MessagesBuilder = BubbleBot.Protocol.Messages.MessagesBuilder;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace BubbleBot.WPF.Views
 {
@@ -34,19 +37,116 @@ namespace BubbleBot.WPF.Views
         {
             InitializeComponent();
 
+            DataContext = BubbleBotMain.Instance;
+            Instance = this;
+
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Icon = Properties.Resources.logo;
             _notifyIcon.DoubleClick += _notifyIcon_DoubleClick;
 
-            DataContext = BubbleBotMain.Instance;
-            Instance = this;
-
             BubbleBotMain.Instance.Server.RegisterMessage<FilesHashesMessage>(HandleFilesHashesMessage);
         }
+        #region Buttons Event
+        private void BtnAccountsManager_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/accountmanager_normal.png";
+            BtnAccountsManagerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Arrow;
+        }
+
+        private void BtnAccountsManager_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/accountmanager_hover.png";
+            BtnAccountsManagerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Hand;
+        }
+        private void BtnAccountsManager_Click(object sender, RoutedEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/accountmanager_click.png";
+            BtnAccountsManagerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+
+            var accountsManagerWindow = new AccountsManagerWindow { Owner = this };
+            BubbleBotMain.Instance.AccountsManagerWindow = accountsManagerWindow;
+            accountsManagerWindow.ShowDialog();
+        }
+
+        private void BtnQuickActions_Click(object sender, RoutedEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/quickaction_click.png";
+            BtnQuickActionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+
+            var quickActionsWindow = new QuickActionsWindow { Owner = this };
+            quickActionsWindow.ShowDialog();
+        }
+        private void BtnQuickActions_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/quickaction_normal.png";
+            BtnQuickActionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Arrow;
+        }
+
+        private void BtnQuickActions_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/quickaction_hover.png";
+            BtnQuickActionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Hand;
+        }
+
+        private void BtnPlanner_Click(object sender, RoutedEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/planner_click.png";
+            BtnPlannerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+
+            var plannerWindow = new PlannerWindow { Owner = this };
+            plannerWindow.ShowDialog();
+        }
+        private void BtnPlanner_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/planner_normal.png";
+            BtnPlannerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Arrow;
+        }
+
+        private void BtnPlanner_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/planner_hover.png";
+            BtnPlannerImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Hand;
+        }
+
+        private void BtnOptions_Click(object sender, RoutedEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/settings_click.png";
+            BtnOptionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+
+            var optionsWindow = new OptionsWindow { Owner = this };
+            optionsWindow.ShowDialog();
+        }
+        private void BtnOptions_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/settings_normal.png";
+            BtnOptionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Arrow;
+        }
+
+        private void BtnOptions_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string packUri = @"pack://application:,,,/Resources/Buttons/settings_hover.png";
+            BtnOptionsImage.Source = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource;
+            this.Cursor = System.Windows.Input.Cursors.Hand;
+        }
+
+        private void BtnMinimize_OnClick(object sender, RoutedEventArgs e)
+        {
+            _notifyIcon.Visible = true;
+            Hide();
+            _notifyIcon.ShowBalloonTip(5000, "Bubble Bot", LanguageManager.Translate("482"), ToolTipIcon.Info);
+        }
+
+        #endregion
 
         // Properties
         public static MainWindow Instance { get; private set; }
-
 
         private void HandleFilesHashesMessage(FilesHashesMessage message)
         {
@@ -117,41 +217,9 @@ namespace BubbleBot.WPF.Views
             if (group != null) await @group.Disconnect("CLIENT_CLOSING");
         }
 
-        private void BtnAccountsManager_Click(object sender, RoutedEventArgs e)
-        {
-            var accountsManagerWindow = new AccountsManagerWindow {Owner = this};
-            accountsManagerWindow.ShowDialog();
-        }
-
-        private void BtnOptions_Click(object sender, RoutedEventArgs e)
-        {
-            var optionsWindow = new OptionsWindow {Owner = this};
-            optionsWindow.ShowDialog();
-        }
-
-        private void BtnQuickActions_Click(object sender, RoutedEventArgs e)
-        {
-            var quickActionsWindow = new QuickActionsWindow {Owner = this};
-            quickActionsWindow.ShowDialog();
-        }
-
-        private void BtnPlanner_Click(object sender, RoutedEventArgs e)
-        {
-            var plannerWindow = new PlannerWindow {Owner = this};
-            plannerWindow.ShowDialog();
-        }
-
         #region Minize/Restore
 
         private readonly NotifyIcon _notifyIcon;
-
-        private void BtnMinimize_OnClick(object sender, RoutedEventArgs e)
-        {
-            _notifyIcon.Visible = true;
-            Hide();
-            _notifyIcon.ShowBalloonTip(5000, "Bubble Bot", LanguageManager.Translate("482"), ToolTipIcon.Info);
-        }
-
         private void _notifyIcon_DoubleClick(object sender, EventArgs e)
         {
             _notifyIcon.Visible = false;

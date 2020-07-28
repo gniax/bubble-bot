@@ -12,7 +12,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class InventoryAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor
@@ -21,7 +21,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account = account;
         }
 
-
+        #region Basic API
         public int Pods()
         {
             return _account.Game.Character.Inventory.Weight;
@@ -122,6 +122,16 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
             _account.Scripts.ActionsManager.EnqueueAction(new DeleteItemAction(gid, quantity), true);
             return true;
         }
+        #endregion
+
+        #region Group API
+
+        public int ItemCount(string username, int gid)
+        {
+            return BubbleBotMain.Instance.GetAccountByUsername(username).Game.Character.Inventory.GetObjectsByGID(gid).Sum(o => (int)o.Quantity);
+        }
+
+        #endregion
 
         #region IDisposable Support
 

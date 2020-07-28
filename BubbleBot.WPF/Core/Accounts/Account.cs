@@ -296,11 +296,13 @@ namespace BubbleBot.Core.Accounts
                             dictionaryRes["reason"].ToString() == "BAN"
                                 ? LanguageManager.Translate("478")
                                 : LanguageManager.Translate("552"));
+
                         if (dictionaryRes["reason"].ToString() == "BAN")
                         {
                             // Auto disconnect
                             // Note : if the account has auto reconnection and tries to reconnect and is ban, we disconnect every bots
                             // it is the only case we have to kick others bots
+
                             if (!AccountConfig.IsBan && GlobalConfiguration.Instance.AutomaticReconnection &&
                                 !PreventAutoReconnection && Game.Character != null && Game.Character.IsSelected)
                             {
@@ -324,8 +326,25 @@ namespace BubbleBot.Core.Accounts
 
                                 PreventPlanificationReconnection = true;
                                 State = AccountStates.BANNED;
-                                AccountConfig.IsBan = true;
+                                AccountConfig.State = 3;
                                 GlobalConfiguration.Instance.Save();
+                            }
+
+                            if (AccountConfig.ReplacementConfiguration.ActivateReplacement)
+                            {
+                                BubbleBotMain.Instance.ReplaceAccount(this);
+                                return;
+                            }
+                        }
+                        else // if it is wrong credentials
+                        {
+                            AccountConfig.State = 2;
+                            GlobalConfiguration.Instance.Save();
+
+                            if (AccountConfig.ReplacementConfiguration.ActivateReplacement)
+                            {
+                                BubbleBotMain.Instance.ReplaceAccount(this);
+                                return;
                             }
                         }
                     });
@@ -592,7 +611,7 @@ namespace BubbleBot.Core.Accounts
 
         #region Reconnection
 
-        public async void Reconnect(int Seconds)
+        public async void Reconnect(int Seconds, bool restartscript = true)
         {
             if (OnGoingReconnection == true)
                 return;
@@ -659,7 +678,7 @@ namespace BubbleBot.Core.Accounts
 
             await Connect().ConfigureAwait(true);
 
-            if (Network.Connected)
+            if (Network.Connected && restartscript)
                 WaitForRestartScript = true;
         }
 

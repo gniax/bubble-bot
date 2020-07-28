@@ -265,6 +265,24 @@ namespace BubbleBot.Core.Accounts.InGame.Managers.Movements
             return false;
         }
 
+        public bool MoveToCellBot(Account target, short cellId, bool stopNearTarget = false)
+        {
+            switch (target.Game.Managers.Movements.MoveToCell(cellId, stopNearTarget))
+            {
+                case MovementRequestResults.MOVED:
+                    bool result = SpinWait.SpinUntil(() => target.Game.Map.PlayedCharacter.CellId == cellId, TimeSpan.FromSeconds(15));
+                    if (result)
+                        return true;
+                    else
+                        return false;
+                case MovementRequestResults.PATH_BLOCKED:
+                case MovementRequestResults.ALREADY_THERE:
+                    return true;
+                default: // FAILED
+                    return false;
+            }
+        }
+
         public async Task MoveToCellInFight(KeyValuePair<short, MoveNode>? node)
         {
             if (_account.State != AccountStates.FIGHTING)

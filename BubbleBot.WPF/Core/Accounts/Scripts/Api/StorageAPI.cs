@@ -12,7 +12,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Api
     public class StorageAPI : IDisposable
     {
         // Fields
-        private Account _account;
+        public Account _account;
 
 
         // Constructor

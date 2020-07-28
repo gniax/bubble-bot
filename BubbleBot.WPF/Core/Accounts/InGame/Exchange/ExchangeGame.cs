@@ -51,7 +51,6 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
         public int WeightPercent => (int)((double)CurrentWeight / MaxWeight * 100);
         public int RemoteWeightPercent => (int)((double)RemoteCurrentWeight / RemoteMaxWeight * 100);
 
-
         // Events
         public event Action<int> ExchangeRequested;
         public event Action ExchangeStarted;
@@ -68,6 +67,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
                 return false;
 
             _account.Network.SendMessage(new ExchangePlayerRequestMessage(1, (uint)id));
+
             return true;
         }
         public async Task<bool> FromBotPutAllItems(string botGroupMng, string botIdMng)
@@ -323,6 +323,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             _account.Network.SendMessage(new ExchangeObjectMoveMessage(obj.UID, (int) quantity));
             _account.Logger.LogInfo(LanguageManager.Translate("117"),
                 LanguageManager.Translate("118", quantity, obj.Name));
+
             return true;
         }
 
@@ -514,6 +515,7 @@ namespace BubbleBot.Core.Accounts.InGame.Exchange
             }
 
             ExchangeStarted?.Invoke();
+
         }
 
         public void Update(ExchangeObjectAddedMessage message)

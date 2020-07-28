@@ -44,6 +44,8 @@ namespace BubbleBot.Views
                 mainWindow.Show();
                 Hide();
 
+                BubbleBotMain.Instance.MainWindow = mainWindow;
+
                 GlobalConfiguration.Instance.Username = cbRememberUsername.IsChecked.Value ? txtUsername.Text : "";
                 GlobalConfiguration.Instance.Save();
             });

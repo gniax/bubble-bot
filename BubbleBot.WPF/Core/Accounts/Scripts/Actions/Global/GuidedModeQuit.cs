@@ -12,7 +12,7 @@ namespace BubbleBot.Core.Accounts.Scripts.Actions.Global
     {
         internal override async Task<ScriptActionResults> Process(Account account)
         {
-            CharacterCreatorExtension.ActionStartTutorial(account);
+            account.Extensions.CharacterCreation.ActionStartTutorial(account);
             var tutorial = SpinWait.SpinUntil(() => account.Extensions.CharacterCreation._terminated,
                 TimeSpan.FromSeconds(180));
 
