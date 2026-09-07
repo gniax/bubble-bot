@@ -348,3 +348,10 @@ ASALocalRun/
 healthchecksdb
 *.h
 *.pak
+
+# Local configuration and data
+BubbleBot.Api/appsettings.json
+BubbleBot.Website/appsettings.json
+BubbleBot.Website/Logs/
+*.sql
+*.bak
