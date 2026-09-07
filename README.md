@@ -1,8 +1,8 @@
 # Bubble Bot
 
-Automation platform for a MMO client, built in 2020: a WPF desktop client driving many accounts at once, a hand-written protocol layer, a licensing server, a customer website and a REST API.
+Automation platform for Dofus Touch, built in 2020: a WPF desktop client driving many accounts at once, a hand-written protocol layer, a licensing server, a customer website and a REST API.
 
-Archived as-is for reference. It is not maintained, and the game protocol it targets has moved on since.
+Archived as-is for reference. It is not maintained, and the Dofus Touch protocol it targets has moved on since.
 
 ![Desktop client](docs/screenshots/02-main.png)
 
@@ -39,7 +39,7 @@ Written in C# / WPF on .NET Framework 4.8, MVVM with custom converters and contr
 
 ## Protocol layer
 
-`BubbleBot.Protocol` is the interesting part: 899 message types, 250 protocol types, 96 enums and the matching serialisation, all mapped to the game's binary protocol. Messages are read and written from raw frames, then dispatched to handlers in the client and the server.
+`BubbleBot.Protocol` is the interesting part: 899 message types, 250 protocol types, 96 enums and the matching serialisation, all mapped to the Dofus Touch binary protocol. Messages are read and written from raw frames, then dispatched to handlers in the client and the server.
 
 ## Backend
 
@@ -50,7 +50,7 @@ The website and API run on ASP.NET Core 3.1 with MySQL: user accounts, subscript
 Requires Visual Studio 2019+ with .NET Framework 4.8 and the .NET Core 3.1 SDK.
 
 ```bash
-git clone https://github.com/gniax/Bubble-Bot.git
+git clone https://github.com/gniax/bubble-bot.git
 # open BubbleBot.sln, restore NuGet packages, build
 ```
 
@@ -58,7 +58,7 @@ The website and API need a MySQL database and their own configuration. Copy `Bub
 
 ## Status and licence
 
-Public archive of a finished project. The code targets a game client version from 2020 and automating that game breaks its terms of service, so this is published for the architecture, not for use.
+Public archive of a finished project. The code targets a 2020 Dofus Touch client and automating that game breaks Ankama's terms of service, so this is published for the architecture, not for use.
 
 MIT, see [LICENSE](LICENSE).
 
